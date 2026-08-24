@@ -17,8 +17,6 @@ theorem finite_weighted_polynomial_gram_nonneg
     0 ≤ ∑ i ∈ s, w i * (∑ j : Fin (N + 1), c j * (x i) ^ (j : ℕ)) ^ 2 := by
   apply Finset.sum_nonneg
   intro i hi
-  apply Finset.sum_nonneg
-  intro _ _
   exact mul_nonneg (hw i hi) (sq_nonneg _)
 
 /-- The same positivity statement when the finite support is encoded directly
