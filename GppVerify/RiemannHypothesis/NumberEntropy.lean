@@ -1,5 +1,6 @@
 import GppVerify.RiemannHypothesis.GlobalVonMangoldtBridge
 import GppVerify.RiemannHypothesis.PrimeGasPartition
+import GppVerify.RiemannHypothesis.WeightedVarianceFinite
 import Mathlib.Tactic
 
 /-!
