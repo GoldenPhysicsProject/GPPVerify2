@@ -33,7 +33,8 @@ theorem cos_positiveType : PositiveType Real.cos := by
   have hconjA :
       (∑ j : Fin N, (starRingEnd ℂ (c j)) * (Real.cos (x j) : ℂ)) =
         (starRingEnd ℂ) A := by
-    rw [A, map_sum]
+    dsimp [A]
+    rw [map_sum]
     apply Finset.sum_congr rfl
     intro j hj
     rw [map_mul]
@@ -41,7 +42,8 @@ theorem cos_positiveType : PositiveType Real.cos := by
   have hconjB :
       (∑ j : Fin N, (starRingEnd ℂ (c j)) * (Real.sin (x j) : ℂ)) =
         (starRingEnd ℂ) B := by
-    rw [B, map_sum]
+    dsimp [B]
+    rw [map_sum]
     apply Finset.sum_congr rfl
     intro j hj
     rw [map_mul]
