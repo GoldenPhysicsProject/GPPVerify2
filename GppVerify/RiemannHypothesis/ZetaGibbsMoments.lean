@@ -84,8 +84,8 @@ theorem iteratedDeriv_three_riemannZeta_eq_neg_logCubeMomentLSeries {s : ℂ} (h
         (LSeries.logMul
           (LSeries.logMul
             (LSeries.logMul (fun _ : ℕ => (1 : ℂ))))) s := by
-  simpa [Function.iterate_succ_apply] using
-    (iteratedDeriv_riemannZeta_eq_logMomentLSeries 3 hs)
+  rw [iteratedDeriv_riemannZeta_eq_logMomentLSeries 3 hs]
+  norm_num [Function.iterate_succ_apply]
 
 end GppZetaGibbsMoments
 
