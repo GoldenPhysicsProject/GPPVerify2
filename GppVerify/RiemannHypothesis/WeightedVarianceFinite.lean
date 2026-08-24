@@ -5,12 +5,12 @@ import Mathlib.Tactic
 # Finite weighted variance positivity
 
 This file isolates the algebraic positivity mechanism needed by the zeta Gibbs/Fisher
-formalization.  For nonnegative real weights `w i` and observables `x i`, Cauchy--Schwarz
-gives
+formalization. For nonnegative real weights `w i` and observables `x i`, the pinned
+Mathlib Cauchy--Schwarz theorem gives
 
   (sum w_i x_i)^2 <= (sum w_i) (sum w_i x_i^2).
 
-Equivalently, the unnormalized weighted variance numerator is nonnegative.  The statement
+Equivalently, the unnormalized weighted variance numerator is nonnegative. The statement
 is finite and purely algebraic; no analytic continuation or zeta-zero assertion is involved.
 -/
 
@@ -24,13 +24,13 @@ theorem weighted_first_moment_sq_le
     (hw : ∀ i ∈ s, 0 ≤ w i) :
     (∑ i ∈ s, w i * x i) ^ 2 ≤
       (∑ i ∈ s, w i) * (∑ i ∈ s, w i * x i ^ 2) := by
-  apply Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul s
+  apply Finset.sum_sq_le_sum_mul_sum_of_sq_eq_mul s
   · intro i hi
     exact hw i hi
   · intro i hi
     exact mul_nonneg (hw i hi) (sq_nonneg (x i))
   · intro i hi
-    ring_nf
+    ring
 
 /-- The finite unnormalized weighted variance numerator is nonnegative. -/
 theorem weighted_variance_numerator_nonneg
@@ -49,12 +49,15 @@ theorem normalized_weighted_variance_nonneg
     0 ≤ (∑ i ∈ s, w i * x i ^ 2) / (∑ i ∈ s, w i) -
       ((∑ i ∈ s, w i * x i) / (∑ i ∈ s, w i)) ^ 2 := by
   have hnum := weighted_variance_numerator_nonneg s w x hw
-  have hW2 : 0 < (∑ i ∈ s, w i) ^ 2 := sq_pos_of_pos hW
-  apply (div_nonneg_iff hW2).2
-  constructor
-  · field_simp
-    nlinarith
-  · exact le_of_lt hW2
+  have hWne : (∑ i ∈ s, w i) ≠ 0 := ne_of_gt hW
+  rw [show
+      (∑ i ∈ s, w i * x i ^ 2) / (∑ i ∈ s, w i) -
+          ((∑ i ∈ s, w i * x i) / (∑ i ∈ s, w i)) ^ 2 =
+        ((∑ i ∈ s, w i) * (∑ i ∈ s, w i * x i ^ 2) -
+          (∑ i ∈ s, w i * x i) ^ 2) / (∑ i ∈ s, w i) ^ 2 by
+        field_simp [hWne]
+        ring]
+  exact div_nonneg hnum (sq_nonneg _)
 
 end GppWeightedVarianceFinite
 
