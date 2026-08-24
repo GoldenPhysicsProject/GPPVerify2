@@ -42,6 +42,9 @@ jobs:
       - name: Codex prime Hankel theorem check
         run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelGram.lean
 
+      - name: Build radial-bridge dependency
+        run: lake build GppVerify.RiemannHypothesis.EulerFactorLogDeriv
+
       - name: Codex prime Poisson radial bridge check
         run: lake env lean GppVerify/RiemannHypothesis/PrimePoissonRadialBridge.lean
 
