@@ -1,6 +1,6 @@
 import GppVerify.RiemannHypothesis.GlobalVonMangoldtBridge
 import GppVerify.RiemannHypothesis.PrimeGasPartition
-import GppVerify.RiemannHypothesis.ZetaGibbsSummability
+import GppVerify.RiemannHypothesis.ZetaGibbsMoments
 import Mathlib.Tactic
 
 /-!
