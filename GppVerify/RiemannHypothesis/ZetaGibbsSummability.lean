@@ -98,12 +98,14 @@ theorem summable_gibbsWeight_mul_logEnergy_sq {β : ℝ} (hβ : 1 < β) :
 /-- The total unnormalized Gibbs weight is strictly positive. -/
 theorem gibbsWeight_tsum_pos {β : ℝ} (hβ : 1 < β) :
     0 < ∑' n, gibbsWeight β n := by
-  apply (summable_gibbsWeight hβ).tsum_pos
-  · intro n
+  have hnonneg : ∀ n, 0 ≤ gibbsWeight β n := by
+    intro n
     unfold gibbsWeight
     positivity
-  · exact 0
-  · simp [gibbsWeight]
+  have hzero : 0 < gibbsWeight β 0 := by
+    unfold gibbsWeight
+    norm_num
+  exact (summable_gibbsWeight hβ).tsum_pos hnonneg 0 hzero
 
 /-- The zeta Gibbs variance is nonnegative directly from countable weighted variance. -/
 theorem gibbs_logEnergy_variance_nonneg {β : ℝ} (hβ : 1 < β) :
