@@ -77,9 +77,20 @@ theorem iteratedDeriv_two_riemannZeta_eq_logSqMomentLSeries {s : ℂ} (hs : 1 < 
   simpa [Function.iterate_succ_apply] using
     (iteratedDeriv_riemannZeta_eq_logMomentLSeries 2 hs)
 
+/-- Third derivative: three logarithmic insertions, with the expected negative sign. -/
+theorem iteratedDeriv_three_riemannZeta_eq_neg_logCubeMomentLSeries {s : ℂ} (hs : 1 < s.re) :
+    iteratedDeriv 3 riemannZeta s =
+      -LSeries
+        (LSeries.logMul
+          (LSeries.logMul
+            (LSeries.logMul (fun _ : ℕ => (1 : ℂ))))) s := by
+  simpa [Function.iterate_succ_apply] using
+    (iteratedDeriv_riemannZeta_eq_logMomentLSeries 3 hs)
+
 end GppZetaGibbsMoments
 
 #print axioms GppZetaGibbsMoments.riemannZeta_eq_LSeries_one
 #print axioms GppZetaGibbsMoments.iteratedDeriv_riemannZeta_eq_logMomentLSeries
 #print axioms GppZetaGibbsMoments.deriv_riemannZeta_eq_neg_logMomentLSeries
 #print axioms GppZetaGibbsMoments.iteratedDeriv_two_riemannZeta_eq_logSqMomentLSeries
+#print axioms GppZetaGibbsMoments.iteratedDeriv_three_riemannZeta_eq_neg_logCubeMomentLSeries
