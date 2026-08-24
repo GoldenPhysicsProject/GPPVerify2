@@ -26,6 +26,8 @@ noncomputable def WpA (p a t : ℝ) : ℝ :=
 theorem rpow_neg_eq_exp {p a : ℝ} (hp : 0 < p) :
     p ^ (-a) = Real.exp (-a * Real.log p) := by
   rw [Real.rpow_def_of_pos hp]
+  congr 1
+  ring
 
 /-- Exact arbitrary-radial local Euler-factor/Poisson-kernel identity. -/
 theorem WpA_eq_two_mul_re_minusLogDerivZetaP
