@@ -19,18 +19,20 @@ open GppZetaGibbsSummability
 
 open scoped Topology
 
-/-- Complex powers of positive integer casts agree with embedded real powers. -/
+/-- Complex powers of a positive real `n + 1` agree with embedded real powers.  The
+statement is deliberately normalized to the cast shape produced by simplification of
+`LSeries.term`, namely `↑n + 1`, rather than `↑(n+1)`. -/
 lemma natSucc_cpow_eq_ofReal_rpow (n : ℕ) (β : ℝ) :
-    (((n + 1 : ℕ) : ℂ) ^ (β : ℂ)) = ((((n + 1 : ℕ) : ℝ) ^ β : ℝ) : ℂ) := by
+    (((n : ℂ) + 1) ^ (β : ℂ)) = ((((n : ℝ) + 1) ^ β : ℝ) : ℂ) := by
   simpa using
-    (Complex.ofReal_cpow (show 0 ≤ ((n + 1 : ℕ) : ℝ) by positivity) β).symm
+    (Complex.ofReal_cpow (show 0 ≤ (n : ℝ) + 1 by positivity) β).symm
 
-/-- Complex logarithms of positive integer casts agree with embedded real logarithms. -/
+/-- Complex logarithms of positive real `n + 1` agree with embedded real logarithms. -/
 lemma natSucc_clog_eq_ofReal_log (n : ℕ) :
-    Complex.log (((n + 1 : ℕ) : ℂ)) =
-      (Real.log (((n + 1 : ℕ) : ℝ)) : ℂ) := by
+    Complex.log ((n : ℂ) + 1) =
+      (Real.log ((n : ℝ) + 1) : ℂ) := by
   simpa using
-    (Complex.ofReal_log (show 0 ≤ ((n + 1 : ℕ) : ℝ) by positivity)).symm
+    (Complex.ofReal_log (show 0 ≤ (n : ℝ) + 1 by positivity)).symm
 
 /-- The constant-one L-series on the real axis is the embedded real Gibbs partition sum. -/
 theorem LSeries_one_eq_ofReal_gibbsWeight_tsum {β : ℝ} (hβ : 1 < β) :
