@@ -12,7 +12,7 @@ For real `β > 1` the three real series needed for the Gibbs variance,
   (n+1)^(-β) log(n+1),
   (n+1)^(-β) log(n+1)^2,
 
-are summable.  The logarithmically weighted cases are obtained from Mathlib's
+are summable. The logarithmically weighted cases are obtained from Mathlib's
 L-series abscissa machinery: multiplying coefficients by `log n` does not change
 the abscissa of absolute convergence.
 -/
@@ -50,15 +50,14 @@ lemma real_log_abscissa_le_one :
 
 /-- The squared real logarithm coefficient sequence has the same convergence boundary. -/
 lemma real_log_sq_abscissa_le_one :
-    LSeries.abscissaOfAbsConv (fun n : ℕ => ((Real.log n) ^ 2 : ℂ)) ≤ 1 := by
+    LSeries.abscissaOfAbsConv (fun n : ℕ => (((Real.log n) ^ 2 : ℝ) : ℂ)) ≤ 1 := by
   calc
-    LSeries.abscissaOfAbsConv (fun n : ℕ => ((Real.log n) ^ 2 : ℂ)) =
+    LSeries.abscissaOfAbsConv (fun n : ℕ => (((Real.log n) ^ 2 : ℝ) : ℂ)) =
         LSeries.abscissaOfAbsConv
           (LSeries.logMul (LSeries.logMul (fun _ : ℕ => (1 : ℂ)))) := by
       apply LSeries.abscissaOfAbsConv_congr
       intro n hn
       simp [LSeries.logMul, Complex.natCast_log, pow_two]
-      ring
     _ = LSeries.abscissaOfAbsConv (fun _ : ℕ => (1 : ℂ)) := by
       simp
     _ ≤ 1 := constant_abscissa_le_one
@@ -69,7 +68,8 @@ theorem summable_gibbsWeight {β : ℝ} (hβ : 1 < β) :
   have hbase : Summable (fun n : ℕ => 1 / (n : ℝ) ^ β) :=
     Real.summable_one_div_nat_rpow.mpr hβ
   have hshift := (_root_.summable_nat_add_iff 1).2 hbase
-  simpa [gibbsWeight, Nat.cast_add, Nat.cast_one] using hshift
+  exact hshift.congr (fun n => by
+    simp [gibbsWeight, one_div, Nat.cast_add, Nat.cast_one])
 
 /-- The first log-energy moment is absolutely summable for `β > 1`. -/
 theorem summable_gibbsWeight_mul_logEnergy {β : ℝ} (hβ : 1 < β) :
@@ -79,23 +79,34 @@ theorem summable_gibbsWeight_mul_logEnergy {β : ℝ} (hβ : 1 < β) :
   have hbase : Summable (fun n : ℕ => Real.log n / (n : ℝ) ^ β) :=
     LSeries.summable_real_of_abscissaOfAbsConv_lt habs
   have hshift := (_root_.summable_nat_add_iff 1).2 hbase
-  simpa [gibbsWeight, logEnergy, Nat.cast_add, Nat.cast_one, div_eq_mul_inv,
-    mul_comm] using hshift
+  exact hshift.congr (fun n => by
+    simp [gibbsWeight, logEnergy, Nat.cast_add, Nat.cast_one, div_eq_mul_inv,
+      mul_comm])
 
 /-- The second log-energy moment is absolutely summable for `β > 1`. -/
 theorem summable_gibbsWeight_mul_logEnergy_sq {β : ℝ} (hβ : 1 < β) :
     Summable (fun n => gibbsWeight β n * (logEnergy n) ^ 2) := by
-  have habs : LSeries.abscissaOfAbsConv (fun n : ℕ => ((Real.log n) ^ 2 : ℂ)) < β :=
+  have habs : LSeries.abscissaOfAbsConv (fun n : ℕ => (((Real.log n) ^ 2 : ℝ) : ℂ)) < β :=
     real_log_sq_abscissa_le_one.trans_lt (by exact_mod_cast hβ)
   have hbase : Summable (fun n : ℕ => (Real.log n) ^ 2 / (n : ℝ) ^ β) :=
     LSeries.summable_real_of_abscissaOfAbsConv_lt habs
   have hshift := (_root_.summable_nat_add_iff 1).2 hbase
-  simpa [gibbsWeight, logEnergy, Nat.cast_add, Nat.cast_one, div_eq_mul_inv,
-    mul_comm] using hshift
+  exact hshift.congr (fun n => by
+    simp [gibbsWeight, logEnergy, Nat.cast_add, Nat.cast_one, div_eq_mul_inv,
+      mul_comm])
+
+/-- The total unnormalized Gibbs weight is strictly positive. -/
+theorem gibbsWeight_tsum_pos {β : ℝ} (hβ : 1 < β) :
+    0 < ∑' n, gibbsWeight β n := by
+  apply (summable_gibbsWeight hβ).tsum_pos
+  · intro n
+    unfold gibbsWeight
+    positivity
+  · exact 0
+  · simp [gibbsWeight]
 
 /-- The zeta Gibbs variance is nonnegative directly from countable weighted variance. -/
-theorem gibbs_logEnergy_variance_nonneg {β : ℝ} (hβ : 1 < β)
-    (hZ : 0 < ∑' n, gibbsWeight β n) :
+theorem gibbs_logEnergy_variance_nonneg {β : ℝ} (hβ : 1 < β) :
     0 ≤ (∑' n, gibbsWeight β n * (logEnergy n) ^ 2) / (∑' n, gibbsWeight β n) -
       ((∑' n, gibbsWeight β n * logEnergy n) / (∑' n, gibbsWeight β n)) ^ 2 := by
   apply GppWeightedVarianceInfinite.normalized_weighted_variance_nonneg_tsum
@@ -105,11 +116,12 @@ theorem gibbs_logEnergy_variance_nonneg {β : ℝ} (hβ : 1 < β)
   · exact summable_gibbsWeight hβ
   · exact summable_gibbsWeight_mul_logEnergy hβ
   · exact summable_gibbsWeight_mul_logEnergy_sq hβ
-  · exact hZ
+  · exact gibbsWeight_tsum_pos hβ
 
 end GppZetaGibbsSummability
 
 #print axioms GppZetaGibbsSummability.summable_gibbsWeight
 #print axioms GppZetaGibbsSummability.summable_gibbsWeight_mul_logEnergy
 #print axioms GppZetaGibbsSummability.summable_gibbsWeight_mul_logEnergy_sq
+#print axioms GppZetaGibbsSummability.gibbsWeight_tsum_pos
 #print axioms GppZetaGibbsSummability.gibbs_logEnergy_variance_nonneg
