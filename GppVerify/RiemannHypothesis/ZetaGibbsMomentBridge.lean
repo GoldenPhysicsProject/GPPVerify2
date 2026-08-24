@@ -23,7 +23,7 @@ open scoped Topology
 theorem LSeries_one_eq_ofReal_gibbsWeight_tsum {β : ℝ} (hβ : 1 < β) :
     LSeries (fun _ : ℕ => (1 : ℂ)) (β : ℂ) =
       ((∑' n, gibbsWeight β n : ℝ) : ℂ) := by
-  rw [← Complex.ofReal_tsum]
+  rw [Complex.ofReal_tsum]
   unfold LSeries
   have hs : LSeriesSummable (fun _ : ℕ => (1 : ℂ)) (β : ℂ) :=
     LSeriesSummable_of_abscissaOfAbsConv_lt_re
@@ -39,7 +39,7 @@ theorem LSeries_one_eq_ofReal_gibbsWeight_tsum {β : ℝ} (hβ : 1 < β) :
 theorem LSeries_logMul_one_eq_ofReal_firstMoment {β : ℝ} (hβ : 1 < β) :
     LSeries (LSeries.logMul (fun _ : ℕ => (1 : ℂ))) (β : ℂ) =
       ((∑' n, gibbsWeight β n * logEnergy n : ℝ) : ℂ) := by
-  rw [← Complex.ofReal_tsum]
+  rw [Complex.ofReal_tsum]
   unfold LSeries
   have hs : LSeriesSummable (LSeries.logMul (fun _ : ℕ => (1 : ℂ))) (β : ℂ) :=
     LSeriesSummable_of_abscissaOfAbsConv_lt_re (by
@@ -57,7 +57,7 @@ theorem LSeries_logMul_one_eq_ofReal_firstMoment {β : ℝ} (hβ : 1 < β) :
 theorem LSeries_logMul_logMul_one_eq_ofReal_secondMoment {β : ℝ} (hβ : 1 < β) :
     LSeries (LSeries.logMul (LSeries.logMul (fun _ : ℕ => (1 : ℂ)))) (β : ℂ) =
       ((∑' n, gibbsWeight β n * (logEnergy n) ^ 2 : ℝ) : ℂ) := by
-  rw [← Complex.ofReal_tsum]
+  rw [Complex.ofReal_tsum]
   unfold LSeries
   have hs : LSeriesSummable
       (LSeries.logMul (LSeries.logMul (fun _ : ℕ => (1 : ℂ)))) (β : ℂ) :=
