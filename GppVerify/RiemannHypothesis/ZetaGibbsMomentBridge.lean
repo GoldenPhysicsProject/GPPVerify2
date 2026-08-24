@@ -30,6 +30,9 @@ theorem LSeries_one_eq_ofReal_gibbsWeight_tsum {β : ℝ} (hβ : 1 < β) :
       (constant_abscissa_le_one.trans_lt (by exact_mod_cast hβ))
   change Summable (fun n => LSeries.term (fun _ : ℕ => (1 : ℂ)) (β : ℂ) n) at hs
   rw [hs.tsum_eq_zero_add]
+  have hzero : LSeries.term (fun _ : ℕ => (1 : ℂ)) (β : ℂ) 0 = 0 := by
+    simp [LSeries.term]
+  rw [hzero, zero_add]
   apply tsum_congr
   intro n
   simp [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), gibbsWeight,
@@ -47,6 +50,9 @@ theorem LSeries_logMul_one_eq_ofReal_firstMoment {β : ℝ} (hβ : 1 < β) :
   change Summable
     (fun n => LSeries.term (LSeries.logMul (fun _ : ℕ => (1 : ℂ))) (β : ℂ) n) at hs
   rw [hs.tsum_eq_zero_add]
+  have hzero : LSeries.term (LSeries.logMul (fun _ : ℕ => (1 : ℂ))) (β : ℂ) 0 = 0 := by
+    simp [LSeries.term]
+  rw [hzero, zero_add]
   apply tsum_congr
   intro n
   simp [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), LSeries.logMul,
@@ -67,6 +73,10 @@ theorem LSeries_logMul_logMul_one_eq_ofReal_secondMoment {β : ℝ} (hβ : 1 < �
     (fun n => LSeries.term
       (LSeries.logMul (LSeries.logMul (fun _ : ℕ => (1 : ℂ)))) (β : ℂ) n) at hs
   rw [hs.tsum_eq_zero_add]
+  have hzero : LSeries.term
+      (LSeries.logMul (LSeries.logMul (fun _ : ℕ => (1 : ℂ)))) (β : ℂ) 0 = 0 := by
+    simp [LSeries.term]
+  rw [hzero, zero_add]
   apply tsum_congr
   intro n
   simp [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), LSeries.logMul,
