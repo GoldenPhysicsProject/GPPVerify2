@@ -19,6 +19,19 @@ open GppZetaGibbsSummability
 
 open scoped Topology
 
+/-- Complex powers of positive integer casts agree with embedded real powers. -/
+lemma natSucc_cpow_eq_ofReal_rpow (n : ℕ) (β : ℝ) :
+    (((n + 1 : ℕ) : ℂ) ^ (β : ℂ)) = ((((n + 1 : ℕ) : ℝ) ^ β : ℝ) : ℂ) := by
+  simpa using
+    (Complex.ofReal_cpow (show 0 ≤ ((n + 1 : ℕ) : ℝ) by positivity) β).symm
+
+/-- Complex logarithms of positive integer casts agree with embedded real logarithms. -/
+lemma natSucc_clog_eq_ofReal_log (n : ℕ) :
+    Complex.log (((n + 1 : ℕ) : ℂ)) =
+      (Real.log (((n + 1 : ℕ) : ℝ)) : ℂ) := by
+  simpa using
+    (Complex.ofReal_log (show 0 ≤ ((n + 1 : ℕ) : ℝ) by positivity)).symm
+
 /-- The constant-one L-series on the real axis is the embedded real Gibbs partition sum. -/
 theorem LSeries_one_eq_ofReal_gibbsWeight_tsum {β : ℝ} (hβ : 1 < β) :
     LSeries (fun _ : ℕ => (1 : ℂ)) (β : ℂ) =
@@ -35,8 +48,8 @@ theorem LSeries_one_eq_ofReal_gibbsWeight_tsum {β : ℝ} (hβ : 1 < β) :
   rw [hzero, zero_add]
   apply tsum_congr
   intro n
-  simp [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), gibbsWeight,
-    Complex.ofReal_cpow (Nat.cast_nonneg (n + 1))]
+  simp [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), gibbsWeight]
+  exact natSucc_cpow_eq_ofReal_rpow n β
 
 /-- One logarithmic L-series insertion is the embedded first Gibbs log-energy moment. -/
 theorem LSeries_logMul_one_eq_ofReal_firstMoment {β : ℝ} (hβ : 1 < β) :
@@ -56,8 +69,10 @@ theorem LSeries_logMul_one_eq_ofReal_firstMoment {β : ℝ} (hβ : 1 < β) :
   apply tsum_congr
   intro n
   simp [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), LSeries.logMul,
-    gibbsWeight, logEnergy, Complex.natCast_log,
-    Complex.ofReal_cpow (Nat.cast_nonneg (n + 1)), mul_comm, div_eq_mul_inv]
+    gibbsWeight, logEnergy, Complex.natCast_log, div_eq_mul_inv]
+  rw [natSucc_cpow_eq_ofReal_rpow n β, natSucc_clog_eq_ofReal_log n]
+  norm_cast
+  ring
 
 /-- Two logarithmic L-series insertions give the embedded second Gibbs log-energy moment. -/
 theorem LSeries_logMul_logMul_one_eq_ofReal_secondMoment {β : ℝ} (hβ : 1 < β) :
@@ -80,12 +95,15 @@ theorem LSeries_logMul_logMul_one_eq_ofReal_secondMoment {β : ℝ} (hβ : 1 < �
   apply tsum_congr
   intro n
   simp [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), LSeries.logMul,
-    gibbsWeight, logEnergy, Complex.natCast_log,
-    Complex.ofReal_cpow (Nat.cast_nonneg (n + 1)), pow_two, mul_comm, mul_left_comm,
-    mul_assoc, div_eq_mul_inv]
+    gibbsWeight, logEnergy, Complex.natCast_log, pow_two, div_eq_mul_inv]
+  rw [natSucc_cpow_eq_ofReal_rpow n β, natSucc_clog_eq_ofReal_log n]
+  norm_cast
+  ring
 
 end GppZetaGibbsMomentBridge
 
+#print axioms GppZetaGibbsMomentBridge.natSucc_cpow_eq_ofReal_rpow
+#print axioms GppZetaGibbsMomentBridge.natSucc_clog_eq_ofReal_log
 #print axioms GppZetaGibbsMomentBridge.LSeries_one_eq_ofReal_gibbsWeight_tsum
 #print axioms GppZetaGibbsMomentBridge.LSeries_logMul_one_eq_ofReal_firstMoment
 #print axioms GppZetaGibbsMomentBridge.LSeries_logMul_logMul_one_eq_ofReal_secondMoment
