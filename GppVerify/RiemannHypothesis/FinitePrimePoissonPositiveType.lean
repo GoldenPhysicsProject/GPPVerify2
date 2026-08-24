@@ -39,11 +39,7 @@ theorem positiveType_add {f g : ℝ → ℝ}
       (∑ i : Fin n, ∑ j : Fin n,
         (starRingEnd ℂ (c i)) * c j * (g (x i - x j) : ℂ)) := by
     push_cast
-    simp_rw [mul_add]
-    rw [Finset.sum_add_distrib]
-    apply Finset.sum_congr rfl
-    intro i hi
-    rw [Finset.sum_add_distrib]
+    simp_rw [mul_add, Finset.sum_add_distrib]
   rw [heq, Complex.add_re]
   exact add_nonneg hf' hg'
 
