@@ -63,6 +63,9 @@ jobs:
       - name: Codex finite-prime positive-type check
         run: lake env lean GppVerify/RiemannHypothesis/FinitePrimePoissonPositiveType.lean
 
+      - name: Codex positive-type limit check
+        run: lake env lean GppVerify/RiemannHypothesis/PositiveTypeLimit.lean
+
       - name: Build
         run: set -o pipefail && lake build 2>&1 | tee /tmp/build.log
 
