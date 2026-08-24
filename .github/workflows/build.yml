@@ -42,6 +42,9 @@ jobs:
       - name: Codex prime Hankel theorem check
         run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelGram.lean
 
+      - name: Codex prime Poisson radial bridge check
+        run: lake env lean GppVerify/RiemannHypothesis/PrimePoissonRadialBridge.lean
+
       - name: Build
         run: set -o pipefail && lake build 2>&1 | tee /tmp/build.log
 
