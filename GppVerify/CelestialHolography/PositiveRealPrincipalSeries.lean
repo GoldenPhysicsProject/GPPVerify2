@@ -29,15 +29,43 @@ def celestialShadow (Δ : ℂ) : ℂ := 2 - Δ
 
 /-- On the critical/unitary axis `Re s = 1/2`, inversion is complex conjugation. -/
 theorem critical_reflection_eq_conj {s : ℂ} (hs : s.re = (1 : ℝ) / 2) :
-    criticalReflection s = Complex.conj s := by
+    criticalReflection s = starRingEnd ℂ s := by
   apply Complex.ext
   · simp [criticalReflection, hs]
   · simp [criticalReflection]
+
+/-- Conversely, if inversion equals conjugation, then `s` lies on `Re s = 1/2`. -/
+theorem critical_re_eq_half_of_reflection_eq_conj {s : ℂ}
+    (h : criticalReflection s = starRingEnd ℂ s) :
+    s.re = (1 : ℝ) / 2 := by
+  have hre := congrArg Complex.re h
+  simp [criticalReflection] at hre
+  linarith
+
+/-- Exact characterization of the positive-real unitary axis. -/
+theorem critical_reflection_eq_conj_iff {s : ℂ} :
+    criticalReflection s = starRingEnd ℂ s ↔ s.re = (1 : ℝ) / 2 := by
+  constructor
+  · exact critical_re_eq_half_of_reflection_eq_conj
+  · exact critical_reflection_eq_conj
 
 /-- `Δ = 2s` maps the arithmetic critical axis to the scalar celestial principal axis. -/
 theorem celestialWeight_re_eq_one {s : ℂ} (hs : s.re = (1 : ℝ) / 2) :
     (celestialWeight s).re = 1 := by
   simp [celestialWeight, hs]
+
+/-- Conversely, `Re (2s) = 1` forces the arithmetic critical axis. -/
+theorem critical_re_eq_half_of_celestialWeight_re_eq_one {s : ℂ}
+    (hΔ : (celestialWeight s).re = 1) : s.re = (1 : ℝ) / 2 := by
+  simp [celestialWeight] at hΔ
+  linarith
+
+/-- `Δ = 2s` identifies the arithmetic and scalar celestial unitary axes exactly. -/
+theorem celestialWeight_re_eq_one_iff {s : ℂ} :
+    (celestialWeight s).re = 1 ↔ s.re = (1 : ℝ) / 2 := by
+  constructor
+  · exact critical_re_eq_half_of_celestialWeight_re_eq_one
+  · exact celestialWeight_re_eq_one
 
 /-- `Δ = 2s` exactly intertwines `s ↦ 1-s` with the celestial shadow `Δ ↦ 2-Δ`. -/
 theorem celestialWeight_intertwines_shadow (s : ℂ) :
