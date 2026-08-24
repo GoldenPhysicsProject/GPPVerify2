@@ -48,6 +48,12 @@ jobs:
       - name: Codex prime Poisson radial bridge check
         run: lake env lean GppVerify/RiemannHypothesis/PrimePoissonRadialBridge.lean
 
+      - name: Build prime Poisson radial bridge
+        run: lake build GppVerify.RiemannHypothesis.PrimePoissonRadialBridge
+
+      - name: Codex radial positive-type check
+        run: lake env lean GppVerify/RiemannHypothesis/PrimePoissonRadialPositiveType.lean
+
       - name: Build
         run: set -o pipefail && lake build 2>&1 | tee /tmp/build.log
 
