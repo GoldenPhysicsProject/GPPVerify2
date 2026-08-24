@@ -50,6 +50,7 @@ theorem zetaVarianceResponse_eq_ofReal_logEnergyVariance {β : ℝ} (hβ : 1 < �
   rw [riemannZeta_eq_LSeries_one hs]
   rw [LSeries_one_eq_ofReal_gibbsWeight_tsum hβ]
   norm_cast
+  ring
 
 /-- The Gibbs logarithmic-energy variance is nonnegative for every `β > 1`. -/
 theorem logEnergyVariance_nonneg {β : ℝ} (hβ : 1 < β) :
