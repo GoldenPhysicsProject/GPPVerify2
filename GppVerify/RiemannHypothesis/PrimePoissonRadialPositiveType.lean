@@ -43,7 +43,8 @@ theorem positiveType_nonneg_mul {f : ℝ → ℝ}
       (∑ i : Fin n, ∑ j : Fin n,
         (starRingEnd ℂ (z i)) * z j * ((c * f (x i - x j) : ℝ) : ℂ)) =
       (c : ℂ) * S := by
-    rw [S, Finset.mul_sum]
+    dsimp [S]
+    rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro i hi
     rw [Finset.mul_sum]
