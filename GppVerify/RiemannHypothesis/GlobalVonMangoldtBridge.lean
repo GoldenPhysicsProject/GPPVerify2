@@ -47,9 +47,19 @@ theorem neg_zeta_logDeriv_eq_tsum_vonMangoldt_terms {s : ℂ} (hs : 1 < s.re) :
   rw [neg_zeta_logDeriv_eq_vonMangoldtLSeries hs]
   rfl
 
+/-- The same global response written as the literal Dirichlet `tsum`
+`∑' n, Λ(n) / n^s`.  This is the exact countable series whose real part on
+`s = a + it` is the von-Mangoldt cosine series. -/
+theorem neg_zeta_logDeriv_eq_tsum_vonMangoldt_div {s : ℂ} (hs : 1 < s.re) :
+    -(deriv riemannZeta s / riemannZeta s) =
+      ∑' n : ℕ, vonMangoldtComplex n / (n : ℂ) ^ s := by
+  rw [neg_zeta_logDeriv_eq_vonMangoldtLSeries hs]
+  exact LSeries_def₀ (by simp [vonMangoldtComplex]) s
+
 end GppGlobalVonMangoldt
 
 #print axioms GppGlobalVonMangoldt.vonMangoldtLSeries_eq_neg_zeta_logDeriv
 #print axioms GppGlobalVonMangoldt.riemannZeta_ne_zero_right_half_plane
 #print axioms GppGlobalVonMangoldt.neg_zeta_logDeriv_eq_vonMangoldtLSeries
 #print axioms GppGlobalVonMangoldt.neg_zeta_logDeriv_eq_tsum_vonMangoldt_terms
+#print axioms GppGlobalVonMangoldt.neg_zeta_logDeriv_eq_tsum_vonMangoldt_div
