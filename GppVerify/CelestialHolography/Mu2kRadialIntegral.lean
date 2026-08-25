@@ -87,6 +87,39 @@ theorem integral_radialShell (k : ℕ) :
   rw [radialAntideriv_zero] at h
   linarith
 
+/-- **Exact radial tail law.** Above any nonnegative radius `R`, the remaining shell mass
+is the threshold normalization times `sech(R)^(2r)`. -/
+theorem integral_radialShell_tail (k : ℕ) {R : ℝ} (hR : 0 ≤ R) :
+    ∫ x in Set.Ioi R,
+      Real.tanh x / Real.cosh x ^ (2 * (k + 1)) =
+      (1 / (2 * ((k : ℝ) + 1))) *
+        (1 / Real.cosh R ^ (2 * (k + 1))) := by
+  have h := integral_Ioi_of_hasDerivAt_of_nonneg
+    ((hasDerivAt_radialAntideriv k R).continuousAt.continuousWithinAt)
+    (fun x _ => hasDerivAt_radialAntideriv k x)
+    (fun x hx => radialShell_nonneg k (lt_of_le_of_lt hR hx))
+    (tendsto_radialAntideriv_zero k)
+  have hcosh :
+      1 / Real.cosh R ^ (2 * (k + 1)) =
+        (1 - Real.tanh R ^ 2) ^ (k + 1) := by
+    rw [show Real.cosh R ^ (2 * (k + 1)) =
+      (Real.cosh R ^ 2) ^ (k + 1) by rw [pow_mul]]
+    rw [one_div_pow, one_div_cosh_sq]
+  rw [hcosh]
+  simpa [radialAntideriv] using h
+
+/-- After multiplying by the normalization `2r`, the survival function is exactly
+`sech(R)^(2r)`. This is the formal content of the uniformizing variable
+`U = sech(R)^(2r) = (2 mu/M)^(2r)`. -/
+theorem normalized_radialTail (k : ℕ) {R : ℝ} (hR : 0 ≤ R) :
+    (2 * ((k : ℝ) + 1)) *
+      (∫ x in Set.Ioi R,
+        Real.tanh x / Real.cosh x ^ (2 * (k + 1))) =
+      1 / Real.cosh R ^ (2 * (k + 1)) := by
+  rw [integral_radialShell_tail k hR]
+  have hk : (2 * ((k : ℝ) + 1)) ≠ 0 := by positivity
+  field_simp [hk]
+
 /-- The `mu^2` bubble shell is the `k=0` member. -/
 theorem integral_mu2_shell :
     ∫ x in Set.Ioi (0 : ℝ), Real.tanh x / Real.cosh x ^ 2 = 1 / 2 := by
@@ -100,3 +133,5 @@ theorem integral_mu8_shell :
 end GppMu2kRadial
 
 #print axioms GppMu2kRadial.integral_radialShell
+#print axioms GppMu2kRadial.integral_radialShell_tail
+#print axioms GppMu2kRadial.normalized_radialTail
