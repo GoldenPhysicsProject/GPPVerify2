@@ -138,12 +138,17 @@ theorem eta_mul_B_small
     (hB0 : 0 ≤ B) (hB : B ≤ 48 / 31) :
     0 ≤ η * B ∧ η * B ≤ 12 / 31 ∧ η * B < 1 / 2 := by
   have hprod0 : 0 ≤ η * B := mul_nonneg hη0 hB0
-  have hprod : η * B ≤ 12 / 31 := by nlinarith
+  have hprod : η * B ≤ 12 / 31 := by
+    calc
+      η * B ≤ (1 / 4 : ℝ) * B := mul_le_mul_of_nonneg_right hη hB0
+      _ ≤ (1 / 4 : ℝ) * (48 / 31 : ℝ) :=
+        mul_le_mul_of_nonneg_left hB (by norm_num)
+      _ = 12 / 31 := by norm_num
   constructor
   · exact hprod0
   · constructor
     · exact hprod
-    · nlinarith
+    · linarith
 
 /-- Branch-free local dilogarithm control at the moving endpoint.  Combining
 `η B ≤ 12/31` with the geometric-series majorant gives the exact uniform
@@ -159,7 +164,7 @@ theorem etaB_li2_uniform_bound
   have hden : 0 < 1 - η * B := by linarith
   have hfrac : η * B / (1 - η * B) ≤ (12 : ℝ) / 19 := by
     apply (div_le_iff₀ hden).2
-    nlinarith [hxupper]
+    linarith [hxupper]
   constructor
   · exact (abs_li2Series_le_of_nonneg hx0 hx1).trans hfrac
   · exact (abs_li2Series_neg_le_of_nonneg hx0 hx1).trans hfrac
