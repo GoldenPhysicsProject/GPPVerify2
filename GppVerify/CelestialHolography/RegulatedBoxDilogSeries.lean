@@ -28,7 +28,7 @@ theorem summable_li2Series_terms {x : ℝ} (hx : |x| < 1) :
     exact summable_geometric_of_abs_lt_one (by simpa using hx)
   have hgeom : Summable (fun n : ℕ => |x| ^ (n + 1)) := by
     simpa [pow_succ, mul_comm] using hgeom0.mul_left |x|
-  apply Summable.of_norm_bounded hgeom
+  apply Summable.of_norm_bounded (fun n : ℕ => |x| ^ (n + 1)) hgeom
   intro n
   rw [Real.norm_eq_abs, abs_div, abs_pow]
   rw [abs_of_nonneg (sq_nonneg (((n + 1 : ℕ) : ℝ)))]
@@ -67,7 +67,7 @@ theorem abs_li2Series_le {x : ℝ} (hx : |x| < 1) :
   have hterm : ∀ n : ℕ, ‖f n‖ ≤ |x| ^ (n + 1) := by
     intro n
     dsimp [f]
-    rw [Real.norm_eq_abs, abs_div, abs_pow]
+    rw [abs_div, abs_pow]
     rw [abs_of_nonneg (sq_nonneg (((n + 1 : ℕ) : ℝ)))]
     have hden : (1 : ℝ) ≤ (((n + 1 : ℕ) : ℝ) ^ 2) := by
       have hn : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by
