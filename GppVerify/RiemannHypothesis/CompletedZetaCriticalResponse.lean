@@ -6,9 +6,9 @@ import Mathlib.Tactic
 /-!
 # Completed-zeta critical-line logarithmic response
 
-The completed zeta function is real on `Re s = 1/2`.  Combining its conjugation
+The completed zeta function is real on `Re s = 1/2`. Combining its conjugation
 symmetry with Mathlib's derivative-under-conjugation theorem shows that its complex
-derivative is purely imaginary there.  Consequently its logarithmic derivative has
+derivative is purely imaginary there. Consequently its logarithmic derivative has
 zero real part wherever the completed zeta value is nonzero.
 
 No zero-location statement is inferred.
@@ -68,15 +68,24 @@ theorem completedRiemannZeta_deriv_re_eq_zero_of_re_half {s : ℂ}
   linarith
 
 /-- Wherever completed zeta is nonzero on the critical line, its logarithmic
-response has zero real part. -/
+response has zero real part. The nonzero hypothesis records the analytic domain of
+the logarithmic derivative even though Lean's division is totalized. -/
 theorem completedRiemannZeta_logDeriv_re_eq_zero_of_re_half {s : ℂ}
     (hs : s.re = 1 / 2) (hΛ : completedRiemannZeta s ≠ 0) :
     (deriv completedRiemannZeta s / completedRiemannZeta s).re = 0 := by
   have hvalIm := GppCompletedZetaReality.completedRiemannZeta_im_eq_zero_of_re_half hs
   have hderRe := completedRiemannZeta_deriv_re_eq_zero_of_re_half hs
-  apply Complex.div_re_eq_zero_of_re_eq_zero_of_im_eq_zero
-  · exact hderRe
-  · exact hvalIm
+  have hnum : deriv completedRiemannZeta s =
+      Complex.I * ((deriv completedRiemannZeta s).im : ℂ) := by
+    apply Complex.ext
+    · simp [hderRe]
+    · simp
+  have hden : completedRiemannZeta s = ((completedRiemannZeta s).re : ℂ) := by
+    apply Complex.ext
+    · simp
+    · simp [hvalIm]
+  rw [hnum, hden]
+  simp
 
 end GppCompletedZetaCriticalResponse
 
