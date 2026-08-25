@@ -75,6 +75,9 @@ jobs:
       - name: Codex scalar-box Spence derivative kernel check
         run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceDerivativeKernel
 
+      - name: Codex half-density Hermitian shadow check
+        run: lake build GppVerify.RiemannHypothesis.ScaleShadowHalfDensity
+
       - name: Codex Gamma Wiener-Hopf real-axis check
         run: lake build GppVerify.QuantumGravity.GammaWienerHopfFactor
 
