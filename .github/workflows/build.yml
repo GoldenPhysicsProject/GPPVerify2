@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "codex/lean-workbench"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "codex/lean-workbench"]
 
 jobs:
   build:
