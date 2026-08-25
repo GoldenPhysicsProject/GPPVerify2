@@ -57,6 +57,9 @@ jobs:
       - name: Codex infinite Hankel lift check
         run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelInfiniteLift.lean
 
+      - name: Codex Fisher Hankel specialization check
+        run: lake build GppVerify.RiemannHypothesis.PrimeHankelFisherSpecialization
+
       - name: Build radial-bridge dependency
         run: lake build GppVerify.RiemannHypothesis.EulerFactorLogDeriv
 
