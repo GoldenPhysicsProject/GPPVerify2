@@ -1,4 +1,3 @@
-import GppVerify.RiemannHypothesis.PrimeHankelGram
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Tactic
 
