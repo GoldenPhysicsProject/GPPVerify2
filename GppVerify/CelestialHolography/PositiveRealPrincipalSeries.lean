@@ -35,6 +35,7 @@ theorem critical_reflection_eq_conj {s : ℂ} (hs : s.re = (1 : ℝ) / 2) :
     criticalReflection s = complexConj s := by
   apply Complex.ext
   · simp [criticalReflection, complexConj, hs]
+    norm_num
   · simp [criticalReflection, complexConj]
 
 /-- Conversely, if inversion equals conjugation, then `s` lies on `Re s = 1/2`. -/
