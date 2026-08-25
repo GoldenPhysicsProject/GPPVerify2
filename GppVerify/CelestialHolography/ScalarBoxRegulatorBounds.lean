@@ -30,6 +30,27 @@ theorem kappa_mem_rational_interval
     nlinarith
   constructor <;> nlinarith
 
+/-- If `0 ≤ δ ≤ 1/4`, `R ≥ 0`, and `R² = 1/(1+δ)`, then
+`8/9 ≤ R ≤ 1`. The constants are deliberately rational and slightly weaker
+than the sharp square-root bounds. -/
+theorem R_mem_rational_interval
+    (δ R : ℝ)
+    (hδ0 : 0 ≤ δ) (hδ : δ ≤ 1 / 4)
+    (hR0 : 0 ≤ R)
+    (hsq : R ^ 2 = 1 / (1 + δ)) :
+    8 / 9 ≤ R ∧ R ≤ 1 := by
+  have hden : 0 < 1 + δ := by linarith
+  have hupperSq : R ^ 2 ≤ 1 := by
+    rw [hsq]
+    apply (div_le_iff₀ hden).2
+    nlinarith
+  have hlowerSq : (8 / 9 : ℝ) ^ 2 ≤ R ^ 2 := by
+    rw [hsq]
+    apply (le_div_iff₀ hden).2
+    nlinarith
+  constructor <;> nlinarith
+
 end GppScalarBoxRegulatorBounds
 
 #print axioms GppScalarBoxRegulatorBounds.kappa_mem_rational_interval
+#print axioms GppScalarBoxRegulatorBounds.R_mem_rational_interval
