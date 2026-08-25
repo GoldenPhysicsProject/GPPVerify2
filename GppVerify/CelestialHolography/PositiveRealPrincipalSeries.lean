@@ -27,24 +27,27 @@ def celestialWeight (s : ℂ) : ℂ := 2 * s
 /-- Scalar celestial shadow reflection. -/
 def celestialShadow (Δ : ℂ) : ℂ := 2 - Δ
 
+/-- Complex conjugation written componentwise, avoiding API-name dependence. -/
+def complexConj (s : ℂ) : ℂ := ⟨s.re, -s.im⟩
+
 /-- On the critical/unitary axis `Re s = 1/2`, inversion is complex conjugation. -/
 theorem critical_reflection_eq_conj {s : ℂ} (hs : s.re = (1 : ℝ) / 2) :
-    criticalReflection s = starRingEnd ℂ s := by
+    criticalReflection s = complexConj s := by
   apply Complex.ext
-  · simp [criticalReflection, hs]
-  · simp [criticalReflection]
+  · simp [criticalReflection, complexConj, hs]
+  · simp [criticalReflection, complexConj]
 
 /-- Conversely, if inversion equals conjugation, then `s` lies on `Re s = 1/2`. -/
 theorem critical_re_eq_half_of_reflection_eq_conj {s : ℂ}
-    (h : criticalReflection s = starRingEnd ℂ s) :
+    (h : criticalReflection s = complexConj s) :
     s.re = (1 : ℝ) / 2 := by
   have hre := congrArg Complex.re h
-  simp [criticalReflection] at hre
+  simp [criticalReflection, complexConj] at hre
   linarith
 
 /-- Exact characterization of the positive-real unitary axis. -/
 theorem critical_reflection_eq_conj_iff {s : ℂ} :
-    criticalReflection s = starRingEnd ℂ s ↔ s.re = (1 : ℝ) / 2 := by
+    criticalReflection s = complexConj s ↔ s.re = (1 : ℝ) / 2 := by
   constructor
   · exact critical_re_eq_half_of_reflection_eq_conj
   · exact critical_reflection_eq_conj
