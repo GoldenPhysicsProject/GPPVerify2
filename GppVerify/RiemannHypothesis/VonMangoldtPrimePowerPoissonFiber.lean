@@ -88,6 +88,18 @@ theorem two_mul_primePower_inner_tsum_eq_WpA
     _ = WpA ((p : ℕ) : ℝ) a t := by
       simp [WpA, r, θ]
 
+/-- Absolute convergence of the outer prime-Poisson response on `a>1`. -/
+theorem summable_WpA {a : ℝ} (ha : 1 < a) (t : ℝ) :
+    Summable (fun p : Nat.Primes => WpA ((p : ℕ) : ℝ) a t) := by
+  have houter : Summable (fun p : Nat.Primes =>
+      ∑' k : ℕ, cosineSummand a t ((p : ℕ) ^ (k + 1))) :=
+    (summable_primePower_pair ha t).prod
+  have hscaled : Summable (fun p : Nat.Primes =>
+      2 * (∑' k : ℕ, cosineSummand a t ((p : ℕ) ^ (k + 1)))) :=
+    houter.mul_left 2
+  exact hscaled.congr (fun p =>
+    two_mul_primePower_inner_tsum_eq_WpA p (lt_trans zero_lt_one ha) t)
+
 /-- **Global prime-Poisson closure on the honest convergence half-plane.**
 The real logarithmic derivative is exactly the countable sum of local radial
 Poisson responses. No analytic continuation into the critical strip is used. -/
@@ -108,4 +120,5 @@ end GppVonMangoldtPrimePowerPoissonFiber
 #print axioms GppVonMangoldtPrimePowerPoissonFiber.exp_primePower_damping_eq_rpow_nat
 #print axioms GppVonMangoldtPrimePowerPoissonFiber.cosineSummand_primePower_eq_radial_mode
 #print axioms GppVonMangoldtPrimePowerPoissonFiber.two_mul_primePower_inner_tsum_eq_WpA
+#print axioms GppVonMangoldtPrimePowerPoissonFiber.summable_WpA
 #print axioms GppVonMangoldtPrimePowerPoissonFiber.two_mul_neg_zeta_logDeriv_re_eq_tsum_WpA
