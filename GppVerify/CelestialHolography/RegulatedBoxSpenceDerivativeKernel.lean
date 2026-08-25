@@ -1,29 +1,27 @@
-import GppVerify.CelestialHolography.RegulatedBoxDilogSeries
+import GppVerify.CelestialHolography.RegulatedBoxDilogDerivative
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Tactic
 
 /-!
 # Derivative cancellation kernel for the real Spence identity
 
-This file isolates the algebraic/calculus part of the real Spence argument from the
-remaining hard analytic input: differentiating the project's `li2Series`.
-
-Once the two local derivative identities for `li2Series` are supplied at `x` and
-`1 - x`, the full Spence combination has derivative zero on `0 < x < 1`.
+The local dilogarithm series has now been differentiated directly on `0<x<1`.
+Consequently the real Spence combination has derivative zero there, without any
+functional-equation assumption.
 -/
 
 namespace GppRegulatedBoxSpenceDerivativeKernel
 
 open GppRegulatedBoxDilogSeries
+open GppRegulatedBoxDilogDerivative
 
 /-- The real Spence combination built from the project's local dilogarithm series. -/
 noncomputable def spenceCombination (x : ℝ) : ℝ :=
   li2Series x + li2Series (1 - x) + Real.log x * Real.log (1 - x)
 
-/-- Exact derivative cancellation for the Spence combination, conditional only on
-having established the local derivative formula for `li2Series` at `x` and `1-x`.
-This theorem contains no dilogarithm functional equation assumption. -/
-theorem spenceCombination_hasDerivAt_zero
+/-- Exact derivative cancellation for the Spence combination from supplied local
+derivative identities.  This algebraic kernel remains useful independently. -/
+theorem spenceCombination_hasDerivAt_zero_of_derivatives
     {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1)
     (hLx : HasDerivAt li2Series (-Real.log (1 - x) / x) x)
     (hL1x : HasDerivAt li2Series (-Real.log x / (1 - x)) (1 - x)) :
@@ -59,6 +57,20 @@ theorem spenceCombination_hasDerivAt_zero
   rw [hzero] at hsum
   simpa [spenceCombination] using hsum
 
+/-- **Unconditional local Spence derivative cancellation.**  On `0<x<1`, the
+project's actual local dilogarithm series makes the Spence combination stationary. -/
+theorem spenceCombination_hasDerivAt_zero
+    {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1) :
+    HasDerivAt spenceCombination 0 x := by
+  have hLx := hasDerivAt_li2Series hx0 hx1
+  have h1x0 : 0 < 1 - x := by linarith
+  have h1x1 : 1 - x < 1 := by linarith
+  have hL1x := hasDerivAt_li2Series h1x0 h1x1
+  have hrewrite : 1 - (1 - x) = x := by ring
+  rw [hrewrite] at hL1x
+  exact spenceCombination_hasDerivAt_zero_of_derivatives hx0 hx1 hLx hL1x
+
 end GppRegulatedBoxSpenceDerivativeKernel
 
+#print axioms GppRegulatedBoxSpenceDerivativeKernel.spenceCombination_hasDerivAt_zero_of_derivatives
 #print axioms GppRegulatedBoxSpenceDerivativeKernel.spenceCombination_hasDerivAt_zero
