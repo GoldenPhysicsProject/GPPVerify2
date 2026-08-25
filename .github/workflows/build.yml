@@ -51,6 +51,12 @@ jobs:
       - name: Codex strict finite Hankel Gram check
         run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelFiniteGramStrict.lean
 
+      - name: Build infinite-lift dependency
+        run: lake build GppVerify.RiemannHypothesis.PrimeHankelFiniteGramStrict
+
+      - name: Codex infinite Hankel lift check
+        run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelInfiniteLift.lean
+
       - name: Build radial-bridge dependency
         run: lake build GppVerify.RiemannHypothesis.EulerFactorLogDeriv
 
