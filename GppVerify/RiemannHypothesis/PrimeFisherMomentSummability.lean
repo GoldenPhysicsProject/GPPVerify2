@@ -1,6 +1,6 @@
 import GppVerify.RiemannHypothesis.PrimeHankelFisherSpecialization
 import GppVerify.RiemannHypothesis.VonMangoldtCumulantSummability
-import GppVerify.RiemannHypothesis.VonMangoldtCosineBridge
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic
 
 /-!
@@ -20,7 +20,6 @@ namespace GppPrimeFisherMomentSummability
 open Complex LSeries ArithmeticFunction
 open GppGlobalVonMangoldt
 open GppVonMangoldtCumulantSummability
-open GppVonMangoldtCosine
 open GppPrimeHankelFisherSpecialization
 open scoped LSeries.notation ArithmeticFunction
 
@@ -35,24 +34,22 @@ theorem iterated_logMul_apply (m n : ℕ) :
       simp [Function.iterate_succ', Function.comp_def, ih, pow_succ]
       ring
 
-/-- On the real spectral axis the natural-number complex power is itself real. -/
-theorem natCast_neg_cpow_im_real
+/-- For a positive natural base, the real-axis complex power is exactly the embedded
+Fisher exponential.  This uses `Complex.ofReal_cpow` and `Real.rpow_def_of_pos`, avoiding
+branch-sensitive complex-log simplification. -/
+theorem natCast_neg_cpow_eq_ofReal_exp
     (n : ℕ) (hn : n ≠ 0) (β : ℝ) :
-    (((n : ℂ) ^ (-(β : ℂ))).im) = 0 := by
-  rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hn)]
-  rw [Complex.exp_im]
-  have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) :=
-    Complex.natCast_log.symm
-  rw [hlog]
-  simp
-
-/-- Real part of the negative complex power on the real axis, obtained from the
-already-certified von-Mangoldt cosine bridge at frequency zero. -/
-theorem natCast_neg_cpow_re_real
-    (n : ℕ) (hn : n ≠ 0) (β : ℝ) :
-    (((n : ℂ) ^ (-(β : ℂ))).re) = Real.exp (-Real.log n * β) := by
-  have h := natCast_neg_cpow_re n hn β 0
-  simpa using h
+    ((n : ℂ) ^ (-(β : ℂ))) =
+      (Real.exp (-Real.log n * β) : ℂ) := by
+  have hnpos : 0 < (n : ℝ) := by
+    exact_mod_cast Nat.pos_of_ne_zero hn
+  calc
+    ((n : ℂ) ^ (-(β : ℂ))) = (((n : ℝ) ^ (-β) : ℝ) : ℂ) := by
+      simpa using (Complex.ofReal_cpow hnpos.le (-β)).symm
+    _ = (Real.exp (-Real.log n * β) : ℂ) := by
+      rw [Real.rpow_def_of_pos hnpos]
+      congr 1
+      ring
 
 /-- The real part of the `(r+1)`-fold logarithm-weighted von Mangoldt L-series term
 is exactly the `r`th Fisher log-moment summand. -/
@@ -64,14 +61,11 @@ theorem iterated_logMul_term_re_eq_fisher_moment
   · simp [fisherWeight, LSeries.term]
   · rw [LSeries.term_of_ne_zero hn, iterated_logMul_apply]
     rw [div_eq_mul_inv, ← Complex.cpow_neg]
-    rw [Complex.mul_re]
+    rw [natCast_neg_cpow_eq_ofReal_exp n hn β]
     have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) :=
       Complex.natCast_log.symm
     rw [hlog]
-    simp [vonMangoldtComplex,
-      natCast_neg_cpow_re_real n hn β,
-      natCast_neg_cpow_im_real n hn β,
-      fisherWeight]
+    simp [vonMangoldtComplex, fisherWeight]
     ring
 
 /-- Every finite logarithmic moment of the actual prime-gas Fisher weight is summable
@@ -93,4 +87,5 @@ theorem summable_fisherWeight_mul_log_pow
 end GppPrimeFisherMomentSummability
 
 #print axioms GppPrimeFisherMomentSummability.iterated_logMul_apply
+#print axioms GppPrimeFisherMomentSummability.natCast_neg_cpow_eq_ofReal_exp
 #print axioms GppPrimeFisherMomentSummability.summable_fisherWeight_mul_log_pow
