@@ -63,6 +63,9 @@ jobs:
       - name: Codex von Mangoldt all-log summability check
         run: lake build GppVerify.RiemannHypothesis.VonMangoldtCumulantSummability
 
+      - name: Codex Fisher log-moment summability check
+        run: lake build GppVerify.RiemannHypothesis.PrimeFisherMomentSummability
+
       - name: Codex massive-vector 5D Ward reconstruction check
         run: lake build GppVerify.CelestialHolography.MassiveVectorWardReconstruction
 
