@@ -30,7 +30,9 @@ theorem fisherWeight_nonneg (β : ℝ) (n : ℕ) : 0 ≤ fisherWeight β n := by
     rcases n with _ | n
     · simp
     · exact Real.log_nonneg (by exact_mod_cast Nat.succ_le_succ (Nat.zero_le n))
-  positivity
+  exact mul_nonneg
+    (mul_nonneg ArithmeticFunction.vonMangoldt_nonneg hlog)
+    (Real.exp_pos _).le
 
 /-- Strict positivity for the actual prime-gas Fisher weights, once a finite
 positive-support witness and summability of the polynomial-square series are given. -/
