@@ -38,8 +38,18 @@ theorem neg_zeta_logDeriv_eq_vonMangoldtLSeries {s : ℂ} (hs : 1 < s.re) :
   rw [neg_div] at h
   exact h.symm
 
+/-- The global logarithmic derivative is the explicit countable `tsum` of
+von-Mangoldt L-series terms on `Re s > 1`.  This exposes the infinite-series
+object needed for later prime-power regrouping and real-part/cosine extraction. -/
+theorem neg_zeta_logDeriv_eq_tsum_vonMangoldt_terms {s : ℂ} (hs : 1 < s.re) :
+    -(deriv riemannZeta s / riemannZeta s) =
+      ∑' n : ℕ, LSeries.term vonMangoldtComplex s n := by
+  rw [neg_zeta_logDeriv_eq_vonMangoldtLSeries hs]
+  rfl
+
 end GppGlobalVonMangoldt
 
 #print axioms GppGlobalVonMangoldt.vonMangoldtLSeries_eq_neg_zeta_logDeriv
 #print axioms GppGlobalVonMangoldt.riemannZeta_ne_zero_right_half_plane
 #print axioms GppGlobalVonMangoldt.neg_zeta_logDeriv_eq_vonMangoldtLSeries
+#print axioms GppGlobalVonMangoldt.neg_zeta_logDeriv_eq_tsum_vonMangoldt_terms
