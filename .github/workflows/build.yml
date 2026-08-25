@@ -66,6 +66,14 @@ jobs:
       - name: Codex scalar-box regulator endpoint check
         run: set -o pipefail && lake build GppVerify.CelestialHolography.ScalarBoxRegulatorBounds 2>&1 | tee /tmp/scalar-box.log
 
+      - name: Upload scalar-box diagnostic
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: scalar-box-diagnostic
+          path: /tmp/scalar-box.log
+          if-no-files-found: ignore
+
       - name: Build
         run: set -o pipefail && lake build 2>&1 | tee /tmp/build.log
 
