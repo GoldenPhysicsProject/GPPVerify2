@@ -71,6 +71,29 @@ theorem Hplus_mul_Hminus (k : ℝ) :
       push_cast
       field_simp [Real.pi_ne_zero, hcosh]
 
+/-- The upper real-axis Gamma factor never vanishes.  This follows directly from
+its exact product with the lower factor and positivity of `cosh`. -/
+theorem Hplus_ne_zero (k : ℝ) : Hplus k ≠ 0 := by
+  intro hz
+  have hfactor := Hplus_mul_Hminus k
+  rw [hz, zero_mul] at hfactor
+  have hcosh : Real.cosh (k / 2) ≠ 0 := ne_of_gt (Real.cosh_pos _)
+  have hrhs : ((1 / (Real.cosh (k / 2)) ^ 2 : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast (div_ne_zero one_ne_zero (pow_ne_zero 2 hcosh))
+  exact hrhs hfactor.symm
+
+/-- The lower real-axis Gamma factor never vanishes. -/
+theorem Hminus_ne_zero (k : ℝ) : Hminus k ≠ 0 := by
+  rw [Hminus_eq_conj_Hplus]
+  exact map_ne_zero_of_injective Complex.conj_injective (Hplus_ne_zero k)
+
+/-- The real-axis quotient is a pure phase: it has exactly unit modulus.
+This is a real-axis statement only and does not assert a Hardy-space inner factor. -/
+theorem norm_Hminus_div_Hplus (k : ℝ) :
+    ‖Hminus k / Hplus k‖ = 1 := by
+  rw [norm_div, norm_Hminus_eq_norm_Hplus, div_self]
+  exact norm_ne_zero_iff.mpr (Hplus_ne_zero k)
+
 /-- Every integer chamber inherits the same factorization multiplicatively. -/
 theorem Hplus_pow_mul_Hminus_pow (m : ℕ) (k : ℝ) :
     Hplus k ^ m * Hminus k ^ m =
@@ -82,4 +105,7 @@ end GppGammaWienerHopf
 #print axioms GppGammaWienerHopf.Hminus_eq_conj_Hplus
 #print axioms GppGammaWienerHopf.norm_Hminus_eq_norm_Hplus
 #print axioms GppGammaWienerHopf.Hplus_mul_Hminus
+#print axioms GppGammaWienerHopf.Hplus_ne_zero
+#print axioms GppGammaWienerHopf.Hminus_ne_zero
+#print axioms GppGammaWienerHopf.norm_Hminus_div_Hplus
 #print axioms GppGammaWienerHopf.Hplus_pow_mul_Hminus_pow
