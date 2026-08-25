@@ -41,17 +41,23 @@ theorem spenceCombination_hasDerivAt_zero
   have hlog1x :
       HasDerivAt (fun y : ℝ => Real.log (1 - y))
         ((1 / (1 - x)) * (-1)) x := by
-    exact (Real.hasDerivAt_log h1xne).comp x hone_sub
+    simpa [one_div, Function.comp_def] using
+      (Real.hasDerivAt_log h1xne).comp x hone_sub
   have hprod :
       HasDerivAt (fun y : ℝ => Real.log y * Real.log (1 - y))
         ((1 / x) * Real.log (1 - x) +
           Real.log x * ((1 / (1 - x)) * (-1))) x := by
     exact hlogx.mul hlog1x
   have hsum := hLx.add hL1x_comp |>.add hprod
-  convert hsum using 1
-  · rfl
-  · field_simp [hxne, h1xne]
+  have hzero :
+      -Real.log (1 - x) / x +
+          -Real.log x / (1 - x) * (-1) +
+          ((1 / x) * Real.log (1 - x) +
+            Real.log x * ((1 / (1 - x)) * (-1))) = 0 := by
+    field_simp [hxne, h1xne]
     ring
+  rw [hzero] at hsum
+  simpa [spenceCombination] using hsum
 
 end GppRegulatedBoxSpenceDerivativeKernel
 
