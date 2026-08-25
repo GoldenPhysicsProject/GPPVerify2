@@ -65,6 +65,20 @@ theorem abs_zetaResponse_le_zero {a : ℝ} (ha : 1 < a) (t : ℝ) :
   have h := abs_le_at_zero_of_even_positiveType hP heven t
   simpa [P] using h
 
+/-- **Undoubled form.** The real part of the logarithmic derivative at height `t`
+is bounded in absolute value by its positive-real-axis value. -/
+theorem abs_neg_zeta_logDeriv_re_le_real_axis {a : ℝ} (ha : 1 < a) (t : ℝ) :
+    |(-(Complex.deriv Complex.riemannZeta
+      ((a : ℂ) + (t : ℂ) * Complex.I) /
+      Complex.riemannZeta ((a : ℂ) + (t : ℂ) * Complex.I))).re| ≤
+    (-(Complex.deriv Complex.riemannZeta (a : ℂ) /
+      Complex.riemannZeta (a : ℂ))).re := by
+  have h := abs_zetaResponse_le_zero ha t
+  rw [abs_mul] at h
+  norm_num at h
+  linarith
+
 end GppGlobalPrimePoissonBound
 
 #print axioms GppGlobalPrimePoissonBound.abs_zetaResponse_le_zero
+#print axioms GppGlobalPrimePoissonBound.abs_neg_zeta_logDeriv_re_le_real_axis
