@@ -24,7 +24,8 @@ theorem q_sub_a_factorization
     (ha : a = (κ - 1) / (κ + 1)) :
     q - a = 2 * (1 - κ * R) / ((1 + R) * (1 + κ)) := by
   rw [hq, ha]
-  field_simp
+  have hκ' : κ + 1 ≠ 0 := by simpa [add_comm] using hκ
+  field_simp [hR, hκ, hκ']
   ring
 
 /-- Rationalization of the quadratic endpoint relation. If
@@ -67,14 +68,14 @@ theorem q_sub_a_exact_m_sq
         (S * (U + 4 * m) * (1 + κ * R) * (1 + R) * (1 + κ)) := by
   rw [q_sub_a_factorization R κ q a hR hκ hq ha]
   rw [one_sub_kappa_mul_R_factorization S U m R κ hSU hplus hsq]
-  field_simp
+  field_simp [hSU, hplus, hR, hκ]
   ring
 
 /-- Squared endpoint variable of the regulated dispersive box. -/
-def endpointR2 (U m : ℝ) : ℝ := U / (U + 4 * m)
+noncomputable def endpointR2 (U m : ℝ) : ℝ := U / (U + 4 * m)
 
 /-- Squared `κ` variable of the regulated dispersive box. -/
-def kappa2 (S U m : ℝ) : ℝ :=
+noncomputable def kappa2 (S U m : ℝ) : ℝ :=
   (S * (U + 4 * m) - 4 * m ^ 2) / (S * U)
 
 /-- Common rescaling of `U` and the regulator mass-square leaves `R²` invariant. -/
@@ -82,7 +83,10 @@ theorem endpointR2_scale_invariant
     {c U m : ℝ} (hc : c ≠ 0) (hden : U + 4 * m ≠ 0) :
     endpointR2 (c * U) (c * m) = endpointR2 U m := by
   unfold endpointR2
-  field_simp [hc, hden]
+  have hscaled : c * U + 4 * (c * m) ≠ 0 := by
+    have hprod : c * (U + 4 * m) ≠ 0 := mul_ne_zero hc hden
+    convert hprod using 1 <;> ring
+  field_simp [hscaled, hden]
   ring
 
 /-- Common rescaling of `S,U,m` leaves `κ²` invariant. -/
