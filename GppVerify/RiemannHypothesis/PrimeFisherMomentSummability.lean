@@ -1,6 +1,6 @@
 import GppVerify.RiemannHypothesis.PrimeHankelFisherSpecialization
 import GppVerify.RiemannHypothesis.VonMangoldtCumulantSummability
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
+import GppVerify.RiemannHypothesis.VonMangoldtCosineBridge
 import Mathlib.Tactic
 
 /-!
@@ -20,6 +20,7 @@ namespace GppPrimeFisherMomentSummability
 open Complex LSeries ArithmeticFunction
 open GppGlobalVonMangoldt
 open GppVonMangoldtCumulantSummability
+open GppVonMangoldtCosine
 open GppPrimeHankelFisherSpecialization
 open scoped LSeries.notation ArithmeticFunction
 
@@ -31,19 +32,27 @@ theorem iterated_logMul_apply (m n : ℕ) :
   induction m with
   | zero => simp
   | succ m ih =>
-      rw [Function.iterate_succ_apply]
-      simp only [LSeries.logMul]
-      rw [ih]
+      simp [Function.iterate_succ', Function.comp_def, ih, pow_succ]
       ring
 
-/-- Real part of the negative complex power of a positive natural number on the real
-axis. -/
+/-- On the real spectral axis the natural-number complex power is itself real. -/
+theorem natCast_neg_cpow_im_real
+    (n : ℕ) (hn : n ≠ 0) (β : ℝ) :
+    (((n : ℂ) ^ (-(β : ℂ))).im) = 0 := by
+  rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hn)]
+  rw [Complex.exp_im]
+  have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) :=
+    Complex.natCast_log.symm
+  rw [hlog]
+  simp
+
+/-- Real part of the negative complex power on the real axis, obtained from the
+already-certified von-Mangoldt cosine bridge at frequency zero. -/
 theorem natCast_neg_cpow_re_real
     (n : ℕ) (hn : n ≠ 0) (β : ℝ) :
     (((n : ℂ) ^ (-(β : ℂ))).re) = Real.exp (-Real.log n * β) := by
-  rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hn)]
-  rw [Complex.exp_re]
-  simp [Complex.natCast_log]
+  have h := natCast_neg_cpow_re n hn β 0
+  simpa using h
 
 /-- The real part of the `(r+1)`-fold logarithm-weighted von Mangoldt L-series term
 is exactly the `r`th Fisher log-moment summand. -/
@@ -56,8 +65,13 @@ theorem iterated_logMul_term_re_eq_fisher_moment
   · rw [LSeries.term_of_ne_zero hn, iterated_logMul_apply]
     rw [div_eq_mul_inv, ← Complex.cpow_neg]
     rw [Complex.mul_re]
-    simp [vonMangoldtComplex, Complex.natCast_log,
-      natCast_neg_cpow_re_real n hn β, fisherWeight]
+    have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) :=
+      Complex.natCast_log.symm
+    rw [hlog]
+    simp [vonMangoldtComplex,
+      natCast_neg_cpow_re_real n hn β,
+      natCast_neg_cpow_im_real n hn β,
+      fisherWeight]
     ring
 
 /-- Every finite logarithmic moment of the actual prime-gas Fisher weight is summable
