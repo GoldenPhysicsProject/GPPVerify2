@@ -32,8 +32,7 @@ theorem completedZeta_eqOn_conj_conj :
   intro s hs
   have hcs : 0 < (conj s).re := by simpa using hs
   have h := GppCompletedZetaReality.completedRiemannZeta_conj hcs
-  simp [Function.comp_def] at h ⊢
-  exact (congrArg conj h).symm
+  simpa [Function.comp_def] using h
 
 /-- The derivative of completed zeta respects complex conjugation on `Re s > 0`. -/
 theorem completedRiemannZeta_deriv_conj {s : ℂ} (hs : 0 < s.re) :
