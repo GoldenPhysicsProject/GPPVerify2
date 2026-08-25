@@ -12,7 +12,7 @@ the shadow involution `s -> 1-s` negates the centered exponent. Hence it sends t
 multiplicative dilation character to its reciprocal. Together with
 `GppScaleMass.critical_line_iff_dilation_unitary`, this is the exact algebraic skeleton
 behind the principal-series statement: on the unitary locus the shadow is the inverse
-character, and therefore (for unit-modulus characters) the Hermitian conjugate character.
+character, and therefore the Hermitian conjugate character.
 
 No zeta-zero statement is used or implied.
 -/
@@ -39,6 +39,25 @@ theorem dilationCharacter_shadow_involution (s : ℂ) (a : ℝ) :
     dilationCharacter (1 - (1 - s)) a = dilationCharacter s a := by
   ring_nf
 
+/-- On the critical line, complex conjugation of the spectral parameter is exactly
+shadow: `conj s = 1 - s`. -/
+theorem conj_eq_shadow_of_re_eq_half {s : ℂ} (hs : s.re = 1 / 2) :
+    conj s = 1 - s := by
+  apply Complex.ext
+  · simp [hs]
+    norm_num
+  · simp
+
+/-- **Critical-line Hermitian shadow law.**  On `Re s = 1/2`, shadow is not merely
+reciprocal: it is literally complex conjugation of the half-density character. -/
+theorem dilationCharacter_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) (a : ℝ) :
+    dilationCharacter (1 - s) a = conj (dilationCharacter s a) := by
+  unfold dilationCharacter
+  rw [map_exp]
+  rw [map_mul]
+  have hsconj := conj_eq_shadow_of_re_eq_half hs
+  simp [hsconj]
+
 /-- At a nontrivial positive scale, the critical line is exactly the locus on which
     the character is unitary; on that same locus shadow acts by inversion. -/
 theorem critical_line_iff_unitary_with_shadow {s : ℂ} {a : ℝ}
@@ -57,4 +76,6 @@ end GppScaleShadow
 
 #print axioms GppScaleShadow.dilationCharacter_shadow_eq_inv
 #print axioms GppScaleShadow.dilationCharacter_shadow_involution
+#print axioms GppScaleShadow.conj_eq_shadow_of_re_eq_half
+#print axioms GppScaleShadow.dilationCharacter_shadow_eq_conj
 #print axioms GppScaleShadow.critical_line_iff_unitary_with_shadow
