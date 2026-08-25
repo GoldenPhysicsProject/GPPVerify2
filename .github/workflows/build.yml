@@ -60,6 +60,9 @@ jobs:
       - name: Codex Fisher Hankel specialization check
         run: lake build GppVerify.RiemannHypothesis.PrimeHankelFisherSpecialization
 
+      - name: Codex von Mangoldt all-log summability check
+        run: lake build GppVerify.RiemannHypothesis.VonMangoldtCumulantSummability
+
       - name: Build radial-bridge dependency
         run: lake build GppVerify.RiemannHypothesis.EulerFactorLogDeriv
 
