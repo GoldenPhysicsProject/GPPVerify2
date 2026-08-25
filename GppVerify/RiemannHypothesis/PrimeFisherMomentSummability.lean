@@ -83,9 +83,11 @@ theorem iterated_logMul_term_re_eq_fisher_moment
     (r n : ℕ) (β : ℝ) :
     (LSeries.term ((LSeries.logMul^[r + 1]) vonMangoldtComplex) (β : ℂ) n).re =
       fisherWeight β n * (Real.log n) ^ r := by
-  have h := congrArg Complex.re
-    (iterated_logMul_term_eq_ofReal_fisher_moment r n β)
-  simpa using h
+  calc
+    (LSeries.term ((LSeries.logMul^[r + 1]) vonMangoldtComplex) (β : ℂ) n).re =
+        (((fisherWeight β n * (Real.log n) ^ r : ℝ) : ℂ)).re :=
+      congrArg Complex.re (iterated_logMul_term_eq_ofReal_fisher_moment r n β)
+    _ = fisherWeight β n * (Real.log n) ^ r := by rfl
 
 /-- Every finite logarithmic moment of the actual prime-gas Fisher weight is summable
 on the honest half-plane `β > 1`. -/
