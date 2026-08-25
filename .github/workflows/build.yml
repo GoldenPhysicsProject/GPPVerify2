@@ -66,6 +66,9 @@ jobs:
       - name: Codex Fisher log-moment summability check
         run: lake build GppVerify.RiemannHypothesis.PrimeFisherMomentSummability
 
+      - name: Codex Fisher polynomial-square summability check
+        run: lake build GppVerify.RiemannHypothesis.PrimeHankelPolynomialSummability
+
       - name: Codex massive-vector 5D Ward reconstruction check
         run: lake build GppVerify.CelestialHolography.MassiveVectorWardReconstruction
 
