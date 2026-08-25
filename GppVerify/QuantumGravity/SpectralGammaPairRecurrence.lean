@@ -1,0 +1,74 @@
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Tactic
+
+/-!
+# Gamma-pair recurrence for the spectral convolution family
+
+The all-order Mehler--Fock/Wiener--Hopf family uses the conjugate Gamma product
+
+  Gamma(a+i x) Gamma(a-i x).
+
+The only special-function input needed for its polynomial recursion is Euler's
+one-step Gamma recurrence.  This file proves, for every real `a>0`,
+
+  Gamma(a+1+i x) Gamma(a+1-i x)
+    = (a^2+x^2) Gamma(a+i x) Gamma(a-i x).
+
+This is the exact algebraic engine behind the product
+`prod_{j=1}^{m-1} (j^2+x^2)` in the normalized convolution densities.
+-/
+
+namespace GppSpectralGammaPair
+
+open Complex
+
+/-- Conjugate-principal-series Gamma pair at real height `x` and positive real shift `a`. -/
+noncomputable def gammaPair (a x : ℝ) : ℂ :=
+  Complex.Gamma ((a : ℂ) + (x : ℂ) * I) *
+    Complex.Gamma ((a : ℂ) - (x : ℂ) * I)
+
+/-- The conjugate Gamma pair gains exactly the quadratic factor `a^2+x^2` under `a -> a+1`. -/
+theorem gammaPair_add_one {a : ℝ} (ha : 0 < a) (x : ℝ) :
+    gammaPair (a + 1) x =
+      (((a ^ 2 + x ^ 2 : ℝ) : ℂ) * gammaPair a x) := by
+  let zp : ℂ := (a : ℂ) + (x : ℂ) * I
+  let zm : ℂ := (a : ℂ) - (x : ℂ) * I
+  have hzp : zp ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    simp [zp] at hre
+    linarith
+  have hzm : zm ≠ 0 := by
+    intro h
+    have hre := congrArg Complex.re h
+    simp [zm] at hre
+    linarith
+  have hp := Complex.Gamma_add_one zp hzp
+  have hm := Complex.Gamma_add_one zm hzm
+  have hplus :
+      ((a + 1 : ℝ) : ℂ) + (x : ℂ) * I = zp + 1 := by
+    simp [zp]
+    ring
+  have hminus :
+      ((a + 1 : ℝ) : ℂ) - (x : ℂ) * I = zm + 1 := by
+    simp [zm]
+    ring
+  unfold gammaPair
+  rw [hplus, hminus, hp, hm]
+  have hquad : zp * zm = ((a ^ 2 + x ^ 2 : ℝ) : ℂ) := by
+    simp [zp, zm]
+    ring
+  rw [← mul_assoc, mul_assoc zp, hquad]
+  ring
+
+/-- Integer-step specialization used by the `rho_m` hierarchy. -/
+theorem gammaPair_nat_succ (m : ℕ) (x : ℝ) :
+    gammaPair ((m : ℝ) + 2) x =
+      (((((m : ℝ) + 1) ^ 2 + x ^ 2 : ℝ) : ℂ) *
+        gammaPair ((m : ℝ) + 1) x) := by
+  simpa [add_assoc] using gammaPair_add_one (a := (m : ℝ) + 1) (by positivity) x
+
+end GppSpectralGammaPair
+
+#print axioms GppSpectralGammaPair.gammaPair_add_one
+#print axioms GppSpectralGammaPair.gammaPair_nat_succ
