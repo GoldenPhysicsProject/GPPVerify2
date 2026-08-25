@@ -32,6 +32,19 @@ noncomputable def Hminus (k : ℝ) : ℂ :=
   Complex.Gamma (((1 : ℂ) / 2) +
       (((k / (2 * Real.pi) : ℝ) : ℂ) * I)) ^ 2 / (Real.pi : ℂ)
 
+/-- On the real spectral axis the two normalized Gamma factors are complex conjugates. -/
+theorem Hminus_eq_conj_Hplus (k : ℝ) :
+    Hminus k = conj (Hplus k) := by
+  unfold Hminus Hplus
+  rw [map_div, map_pow, ← Complex.Gamma_conj]
+  congr 2 <;> simp
+
+/-- Consequently the two real-axis factors have exactly the same modulus. -/
+theorem norm_Hminus_eq_norm_Hplus (k : ℝ) :
+    ‖Hminus k‖ = ‖Hplus k‖ := by
+  rw [Hminus_eq_conj_Hplus]
+  exact norm_conj _
+
 /-- **Exact normalized Gamma factorization** of the `sech^2` spectral multiplier. -/
 theorem Hplus_mul_Hminus (k : ℝ) :
     Hplus k * Hminus k =
@@ -66,5 +79,7 @@ theorem Hplus_pow_mul_Hminus_pow (m : ℕ) (k : ℝ) :
 
 end GppGammaWienerHopf
 
+#print axioms GppGammaWienerHopf.Hminus_eq_conj_Hplus
+#print axioms GppGammaWienerHopf.norm_Hminus_eq_norm_Hplus
 #print axioms GppGammaWienerHopf.Hplus_mul_Hminus
 #print axioms GppGammaWienerHopf.Hplus_pow_mul_Hminus_pow
