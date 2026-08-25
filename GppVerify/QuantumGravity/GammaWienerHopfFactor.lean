@@ -94,6 +94,11 @@ theorem norm_Hminus_div_Hplus (k : ℝ) :
   rw [norm_div, norm_Hminus_eq_norm_Hplus, div_self]
   exact norm_ne_zero_iff.mpr (Hplus_ne_zero k)
 
+/-- Every integer chamber power of the real-axis phase remains unimodular. -/
+theorem norm_Hminus_div_Hplus_pow (m : ℕ) (k : ℝ) :
+    ‖(Hminus k / Hplus k) ^ m‖ = 1 := by
+  rw [norm_pow, norm_Hminus_div_Hplus, one_pow]
+
 /-- Every integer chamber inherits the same factorization multiplicatively. -/
 theorem Hplus_pow_mul_Hminus_pow (m : ℕ) (k : ℝ) :
     Hplus k ^ m * Hminus k ^ m =
@@ -108,4 +113,5 @@ end GppGammaWienerHopf
 #print axioms GppGammaWienerHopf.Hplus_ne_zero
 #print axioms GppGammaWienerHopf.Hminus_ne_zero
 #print axioms GppGammaWienerHopf.norm_Hminus_div_Hplus
+#print axioms GppGammaWienerHopf.norm_Hminus_div_Hplus_pow
 #print axioms GppGammaWienerHopf.Hplus_pow_mul_Hminus_pow
