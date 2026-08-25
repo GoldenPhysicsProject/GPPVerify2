@@ -39,25 +39,16 @@ theorem neg_zeta_logDeriv_eq_vonMangoldtLSeries {s : ℂ} (hs : 1 < s.re) :
   exact h.symm
 
 /-- The global logarithmic derivative is the explicit countable `tsum` of
-von-Mangoldt L-series terms on `Re s > 1`.  This exposes the infinite-series
-object needed for later prime-power regrouping and real-part/cosine extraction. -/
+von-Mangoldt L-series terms on `Re s > 1`. This is the stable infinite-series
+object used for later real-part extraction and prime-power regrouping. -/
 theorem neg_zeta_logDeriv_eq_tsum_vonMangoldt_terms {s : ℂ} (hs : 1 < s.re) :
     -(deriv riemannZeta s / riemannZeta s) =
       ∑' n : ℕ, LSeries.term vonMangoldtComplex s n := by
   rw [neg_zeta_logDeriv_eq_vonMangoldtLSeries hs]
   rfl
 
-/-- The same global response written as the literal Dirichlet `tsum`
-`∑' n, Λ(n) / n^s`.  This is the exact countable series whose real part on
-`s = a + it` is the von-Mangoldt cosine series. -/
-theorem neg_zeta_logDeriv_eq_tsum_vonMangoldt_div {s : ℂ} (hs : 1 < s.re) :
-    -(deriv riemannZeta s / riemannZeta s) =
-      ∑' n : ℕ, vonMangoldtComplex n / (n : ℂ) ^ s := by
-  rw [neg_zeta_logDeriv_eq_vonMangoldtLSeries hs]
-  exact LSeries_def₀ (by simp [vonMangoldtComplex]) s
-
 /-- Absolute convergence allows the real part to pass through the global
-von-Mangoldt `tsum` on `Re s > 1`.  This is the rigorous interchange step
+von-Mangoldt `tsum` on `Re s > 1`. This is the rigorous interchange step
 needed before simplifying each term to the cosine kernel on `s = a + it`. -/
 theorem neg_zeta_logDeriv_re_eq_tsum_re_terms {s : ℂ} (hs : 1 < s.re) :
     (-(deriv riemannZeta s / riemannZeta s)).re =
@@ -74,5 +65,4 @@ end GppGlobalVonMangoldt
 #print axioms GppGlobalVonMangoldt.riemannZeta_ne_zero_right_half_plane
 #print axioms GppGlobalVonMangoldt.neg_zeta_logDeriv_eq_vonMangoldtLSeries
 #print axioms GppGlobalVonMangoldt.neg_zeta_logDeriv_eq_tsum_vonMangoldt_terms
-#print axioms GppGlobalVonMangoldt.neg_zeta_logDeriv_eq_tsum_vonMangoldt_div
 #print axioms GppGlobalVonMangoldt.neg_zeta_logDeriv_re_eq_tsum_re_terms
