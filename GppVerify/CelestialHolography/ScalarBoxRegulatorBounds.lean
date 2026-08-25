@@ -157,13 +157,9 @@ theorem etaB_li2_uniform_bound
   rcases eta_mul_B_small η B hη0 hη hB0 hB with ⟨hx0, hxupper, hxhalf⟩
   have hx1 : η * B < 1 := by linarith
   have hden : 0 < 1 - η * B := by linarith
-  have hscaled : 31 * (η * B) ≤ 12 := by
-    nlinarith [hxupper]
-  have hcross : 19 * (η * B) ≤ 12 * (1 - η * B) := by
-    nlinarith [hscaled]
   have hfrac : η * B / (1 - η * B) ≤ (12 : ℝ) / 19 := by
-    rw [div_le_iff₀ hden]
-    nlinarith [hcross]
+    apply (div_le_iff₀ hden).2
+    nlinarith [hxupper]
   constructor
   · exact (abs_li2Series_le_of_nonneg hx0 hx1).trans hfrac
   · exact (abs_li2Series_neg_le_of_nonneg hx0 hx1).trans hfrac
