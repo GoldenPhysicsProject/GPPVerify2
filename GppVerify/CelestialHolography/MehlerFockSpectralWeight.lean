@@ -52,14 +52,31 @@ theorem collapsedWeight_pos {λ : ℝ} (hλ : λ ≠ 0) :
 theorem mehlerFockWeight_zero : mehlerFockWeight 0 = 0 := by
   simp [mehlerFockWeight]
 
-/-- The collapsed density also vanishes exactly at the origin in the forward direction. -/
+/-- The collapsed density vanishes at the origin. -/
 theorem collapsedWeight_zero : collapsedWeight 0 = 0 := by
   simp [collapsedWeight]
+
+/-- The collapsed density is an even spectral weight. -/
+theorem collapsedWeight_neg (λ : ℝ) : collapsedWeight (-λ) = collapsedWeight λ := by
+  unfold collapsedWeight
+  rw [Real.cosh_neg]
+  ring
+
+/-- The origin is the exact zero set of the collapsed density. -/
+theorem collapsedWeight_eq_zero_iff (λ : ℝ) :
+    collapsedWeight λ = 0 ↔ λ = 0 := by
+  constructor
+  · intro h
+    by_contra hλ
+    exact (ne_of_gt (collapsedWeight_pos hλ)) h
+  · intro hλ
+    subst λ
+    exact collapsedWeight_zero
 
 end GppMehlerFockSpectral
 
 #print axioms GppMehlerFockSpectral.weight_product
 #print axioms GppMehlerFockSpectral.collapsedWeight_nonneg
 #print axioms GppMehlerFockSpectral.collapsedWeight_pos
-#print axioms GppMehlerFockSpectral.mehlerFockWeight_zero
-#print axioms GppMehlerFockSpectral.collapsedWeight_zero
+#print axioms GppMehlerFockSpectral.collapsedWeight_neg
+#print axioms GppMehlerFockSpectral.collapsedWeight_eq_zero_iff
