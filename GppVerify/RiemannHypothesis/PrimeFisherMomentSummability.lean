@@ -23,16 +23,22 @@ open GppVonMangoldtCumulantSummability
 open GppPrimeHankelFisherSpecialization
 open scoped LSeries.notation ArithmeticFunction
 
-/-- Iterating `logMul` multiplies a coefficient by the corresponding power of the
-complex logarithm. -/
+/-- Iterating `logMul` multiplies an arbitrary coefficient sequence by the
+corresponding power of the complex logarithm. -/
+theorem iterated_logMul_apply_general (m n : ℕ) (f : ℕ → ℂ) :
+    ((LSeries.logMul^[m]) f) n =
+      (Complex.log n) ^ m * f n := by
+  induction m generalizing f with
+  | zero => simp
+  | succ m ih =>
+      simp [Function.iterate_succ', Function.comp_def, ih, pow_succ,
+        mul_assoc, mul_left_comm, mul_comm]
+
+/-- Specialization of the generic coefficient identity to the von Mangoldt sequence. -/
 theorem iterated_logMul_apply (m n : ℕ) :
     ((LSeries.logMul^[m]) vonMangoldtComplex) n =
       (Complex.log n) ^ m * vonMangoldtComplex n := by
-  induction m with
-  | zero => simp
-  | succ m ih =>
-      simp [Function.iterate_succ', Function.comp_def, ih, pow_succ]
-      ring
+  exact iterated_logMul_apply_general m n vonMangoldtComplex
 
 /-- For a positive natural base, the real-axis complex power is exactly the embedded
 Fisher exponential.  This uses `Complex.ofReal_cpow` and `Real.rpow_def_of_pos`, avoiding
@@ -51,12 +57,12 @@ theorem natCast_neg_cpow_eq_ofReal_exp
       congr 1
       ring
 
-/-- The real part of the `(r+1)`-fold logarithm-weighted von Mangoldt L-series term
-is exactly the `r`th Fisher log-moment summand. -/
-theorem iterated_logMul_term_re_eq_fisher_moment
+/-- The complete complex `(r+1)`-fold logarithm-weighted von Mangoldt L-series term
+is the embedding of the corresponding real Fisher log-moment summand. -/
+theorem iterated_logMul_term_eq_ofReal_fisher_moment
     (r n : ℕ) (β : ℝ) :
-    (LSeries.term ((LSeries.logMul^[r + 1]) vonMangoldtComplex) (β : ℂ) n).re =
-      fisherWeight β n * (Real.log n) ^ r := by
+    LSeries.term ((LSeries.logMul^[r + 1]) vonMangoldtComplex) (β : ℂ) n =
+      ((fisherWeight β n * (Real.log n) ^ r : ℝ) : ℂ) := by
   rcases eq_or_ne n 0 with rfl | hn
   · simp [fisherWeight, LSeries.term]
   · rw [LSeries.term_of_ne_zero hn, iterated_logMul_apply]
@@ -65,8 +71,20 @@ theorem iterated_logMul_term_re_eq_fisher_moment
     have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) :=
       Complex.natCast_log.symm
     rw [hlog]
-    simp [vonMangoldtComplex, fisherWeight]
+    simp only [vonMangoldtComplex]
+    push_cast
+    unfold fisherWeight
+    rw [pow_succ]
     ring
+
+/-- The real part of the `(r+1)`-fold logarithm-weighted von Mangoldt L-series term
+is exactly the `r`th Fisher log-moment summand. -/
+theorem iterated_logMul_term_re_eq_fisher_moment
+    (r n : ℕ) (β : ℝ) :
+    (LSeries.term ((LSeries.logMul^[r + 1]) vonMangoldtComplex) (β : ℂ) n).re =
+      fisherWeight β n * (Real.log n) ^ r := by
+  rw [iterated_logMul_term_eq_ofReal_fisher_moment r n β]
+  simp
 
 /-- Every finite logarithmic moment of the actual prime-gas Fisher weight is summable
 on the honest half-plane `β > 1`. -/
@@ -86,6 +104,8 @@ theorem summable_fisherWeight_mul_log_pow
 
 end GppPrimeFisherMomentSummability
 
+#print axioms GppPrimeFisherMomentSummability.iterated_logMul_apply_general
 #print axioms GppPrimeFisherMomentSummability.iterated_logMul_apply
 #print axioms GppPrimeFisherMomentSummability.natCast_neg_cpow_eq_ofReal_exp
+#print axioms GppPrimeFisherMomentSummability.iterated_logMul_term_eq_ofReal_fisher_moment
 #print axioms GppPrimeFisherMomentSummability.summable_fisherWeight_mul_log_pow
