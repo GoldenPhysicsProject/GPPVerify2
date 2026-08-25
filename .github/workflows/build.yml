@@ -45,6 +45,9 @@ jobs:
       - name: Codex prime Hankel root-escape check
         run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelRootEscape.lean
 
+      - name: Build strict-Gram dependency
+        run: lake build GppVerify.RiemannHypothesis.PrimeHankelRootEscape
+
       - name: Codex strict finite Hankel Gram check
         run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelFiniteGramStrict.lean
 
