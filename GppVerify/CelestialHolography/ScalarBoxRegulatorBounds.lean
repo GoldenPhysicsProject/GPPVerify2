@@ -128,7 +128,27 @@ theorem B_pos_and_le
   constructor
   · exact div_pos (by nlinarith) hden
   · apply (div_le_iff₀ hden).2
-    nlinarith [mul_nonneg hδ0 (sub_nonneg.mpr hη)]
+    have hnum : 2 * (1 + κ) ≤ (17 / 4 : ℝ) := by linarith
+    have hδlo : (1 : ℝ) ≤ 1 + δ := by linarith
+    have hxlo' : (31 / 16 : ℝ) ≤ 1 + x := by linarith
+    have hRlo' : (17 / 9 : ℝ) ≤ 1 + R := by linarith
+    have hηlo : (3 / 4 : ℝ) ≤ 1 - η := by linarith
+    have hp1 : (1 : ℝ) * (31 / 16) ≤ (1 + δ) * (1 + x) := by
+      exact mul_le_mul hδlo hxlo' (by norm_num) h1δ.le
+    have hp1non : 0 ≤ (1 + δ) * (1 + x) := mul_nonneg h1δ.le h1x.le
+    have hp2 : ((1 : ℝ) * (31 / 16)) * (17 / 9) ≤
+        ((1 + δ) * (1 + x)) * (1 + R) := by
+      exact mul_le_mul hp1 hRlo' (by norm_num) hp1non
+    have hp2non : 0 ≤ ((1 + δ) * (1 + x)) * (1 + R) :=
+      mul_nonneg hp1non h1R.le
+    have hp3 : (((1 : ℝ) * (31 / 16)) * (17 / 9)) * (3 / 4) ≤
+        (((1 + δ) * (1 + x)) * (1 + R)) * (1 - η) := by
+      exact mul_le_mul hp2 hηlo (by norm_num) hp2non
+    have hdenlower : (527 / 192 : ℝ) ≤
+        (1 + δ) * (1 + x) * (1 + R) * (1 - η) := by
+      norm_num at hp3 ⊢
+      exact hp3
+    nlinarith
 
 /-- The dilogarithm endpoint `η B` is uniformly inside the elementary `x<1/2`
 regime: `0 ≤ ηB ≤ 12/31 < 1/2`. -/
