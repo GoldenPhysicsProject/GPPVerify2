@@ -4,7 +4,7 @@ import Mathlib.Tactic
 /-!
 # Uniform scalar-box regulator bounds
 
-This file begins promotion of the explicit rational interval estimates derived in
+This file promotes the explicit rational interval estimates derived in
 `GPPDiscovery2/discovery/celestial_box/REGULATOR_UNIFORM_SCALE_BOUNDS.md`.
 -/
 
@@ -76,8 +76,26 @@ theorem kappaR_mem_rational_interval
     nlinarith
   constructor <;> nlinarith
 
+/-- The multiplicative endpoint scale
+`A = 4(1-η)/(1+κ)^2` lies in `[192/289,1]` under the rational regulator box. -/
+theorem A_mem_rational_interval
+    (η κ A : ℝ)
+    (hη0 : 0 ≤ η) (hη : η ≤ 1 / 4)
+    (hκlo : 1 ≤ κ) (hκhi : κ ≤ 9 / 8)
+    (hA : A = 4 * (1 - η) / (1 + κ) ^ 2) :
+    192 / 289 ≤ A ∧ A ≤ 1 := by
+  have hbase : 0 < 1 + κ := by linarith
+  have hden : 0 < (1 + κ) ^ 2 := sq_pos_of_pos hbase
+  rw [hA]
+  constructor
+  · apply (le_div_iff₀ hden).2
+    nlinarith [sq_nonneg (κ - 1), sq_nonneg (9 / 8 - κ)]
+  · apply (div_le_iff₀ hden).2
+    nlinarith [sq_nonneg (κ - 1)]
+
 end GppScalarBoxRegulatorBounds
 
 #print axioms GppScalarBoxRegulatorBounds.kappa_mem_rational_interval
 #print axioms GppScalarBoxRegulatorBounds.R_mem_rational_interval
 #print axioms GppScalarBoxRegulatorBounds.kappaR_mem_rational_interval
+#print axioms GppScalarBoxRegulatorBounds.A_mem_rational_interval
