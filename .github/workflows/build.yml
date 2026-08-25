@@ -90,6 +90,9 @@ jobs:
       - name: Codex scalar-box regulator endpoint check
         run: set -o pipefail && lake build GppVerify.CelestialHolography.ScalarBoxRegulatorBounds 2>&1 | tee /tmp/scalar-box.log
 
+      - name: Codex scalar-box Spence derivative kernel check
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceDerivativeKernel
+
       - name: Upload scalar-box diagnostic
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
