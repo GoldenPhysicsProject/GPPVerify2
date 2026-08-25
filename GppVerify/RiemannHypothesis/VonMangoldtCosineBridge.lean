@@ -1,6 +1,6 @@
 import GppVerify.RiemannHypothesis.GlobalVonMangoldtBridge
 import Mathlib.Analysis.SpecialFunctions.Complex.Log
-import Mathlib.Analysis.Complex.Trigonometric
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
 import Mathlib.Tactic
 
 /-!
