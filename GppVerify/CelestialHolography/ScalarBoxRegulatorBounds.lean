@@ -93,9 +93,28 @@ theorem A_mem_rational_interval
   · apply (div_le_iff₀ hden).2
     nlinarith [sq_nonneg (κ - 1)]
 
+/-- If the rationalized square-root increment satisfies `0 ≤ r ≤ 1/8`, then
+`Q = 1/(1+r+r²/4)` lies in `[256/289,1]`. -/
+theorem Q_mem_rational_interval
+    (r Q : ℝ)
+    (hr0 : 0 ≤ r) (hr : r ≤ 1 / 8)
+    (hQ : Q = 1 / (1 + r + r ^ 2 / 4)) :
+    256 / 289 ≤ Q ∧ Q ≤ 1 := by
+  have hden : 0 < 1 + r + r ^ 2 / 4 := by
+    nlinarith [sq_nonneg r]
+  have hrsq : r ^ 2 ≤ 1 / 64 := by
+    nlinarith [mul_nonneg hr0 (sub_nonneg.mpr hr)]
+  rw [hQ]
+  constructor
+  · apply (le_div_iff₀ hden).2
+    nlinarith
+  · apply (div_le_iff₀ hden).2
+    nlinarith [sq_nonneg r]
+
 end GppScalarBoxRegulatorBounds
 
 #print axioms GppScalarBoxRegulatorBounds.kappa_mem_rational_interval
 #print axioms GppScalarBoxRegulatorBounds.R_mem_rational_interval
 #print axioms GppScalarBoxRegulatorBounds.kappaR_mem_rational_interval
 #print axioms GppScalarBoxRegulatorBounds.A_mem_rational_interval
+#print axioms GppScalarBoxRegulatorBounds.Q_mem_rational_interval
