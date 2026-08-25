@@ -28,11 +28,18 @@ theorem abscissa_vonMangoldtComplex_le_one :
   exact ArithmeticFunction.LSeriesSummable_vonMangoldt
     (show 1 < ((y : ℂ).re) by simpa using hy)
 
+private theorem abscissa_vonMangoldtComplex_lt_beta
+    {β : ℝ} (hβ : 1 < β) :
+    LSeries.abscissaOfAbsConv vonMangoldtComplex < (((β : ℂ).re : ℝ) : EReal) := by
+  have hβE : (1 : EReal) < (β : EReal) := by
+    exact_mod_cast hβ
+  exact lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one (by simpa using hβE)
+
 /-- One logarithmic insertion remains absolutely summable for every real `β > 1`. -/
 theorem summable_logMul_vonMangoldt {β : ℝ} (hβ : 1 < β) :
     LSeriesSummable (LSeries.logMul vonMangoldtComplex) (β : ℂ) := by
-  apply LSeriesSummable_logMul_of_lt_re
-  exact lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one (by simpa using hβ)
+  apply LSeriesSummable_of_abscissaOfAbsConv_lt_re
+  simpa using abscissa_vonMangoldtComplex_lt_beta hβ
 
 /-- Two logarithmic insertions remain absolutely summable for every real `β > 1`.
 This is the convergence layer for the cubic zeta-Gibbs cumulant series
@@ -40,25 +47,16 @@ This is the convergence layer for the cubic zeta-Gibbs cumulant series
 theorem summable_logMul_logMul_vonMangoldt {β : ℝ} (hβ : 1 < β) :
     LSeriesSummable
       (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ) := by
-  apply LSeriesSummable_logMul_of_lt_re
-  simpa using
-    (lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one (by simpa using hβ))
+  apply LSeriesSummable_of_abscissaOfAbsConv_lt_re
+  simpa using abscissa_vonMangoldtComplex_lt_beta hβ
 
 /-- In fact every finite number of logarithmic insertions has the same convergence
 half-plane.  This is the analytic convergence spine for the full cumulant hierarchy. -/
 theorem summable_iterated_logMul_vonMangoldt
     (m : ℕ) {β : ℝ} (hβ : 1 < β) :
     LSeriesSummable ((LSeries.logMul^[m]) vonMangoldtComplex) (β : ℂ) := by
-  induction m with
-  | zero =>
-      simpa using ArithmeticFunction.LSeriesSummable_vonMangoldt
-        (show 1 < ((β : ℂ).re) by simpa using hβ)
-  | succ m ih =>
-      rw [Function.iterate_succ_apply]
-      apply LSeriesSummable_logMul_of_lt_re
-      have hbase : LSeries.abscissaOfAbsConv vonMangoldtComplex < ((β : ℂ).re : ℝ) := by
-        exact_mod_cast lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one (by simpa using hβ)
-      simpa using hbase
+  apply LSeriesSummable_of_abscissaOfAbsConv_lt_re
+  simpa using abscissa_vonMangoldtComplex_lt_beta hβ
 
 end GppVonMangoldtCumulantSummability
 
