@@ -1,4 +1,5 @@
 import GppVerify.CelestialHolography.ScalarBoxRegulatorAlgebra
+import GppVerify.CelestialHolography.RegulatedBoxDilogSeries
 import Mathlib.Tactic
 
 /-!
@@ -9,6 +10,8 @@ This file promotes the explicit rational interval estimates derived in
 -/
 
 namespace GppScalarBoxRegulatorBounds
+
+open GppRegulatedBoxDilogSeries
 
 /-- If `0 ≤ δ,η ≤ 1/4`, `κ ≥ 0`, and
 `κ² = 1 + δ(1-η)`, then the rational bounds `1 ≤ κ ≤ 9/8` hold. -/
@@ -142,6 +145,25 @@ theorem eta_mul_B_small
     · exact hprod
     · nlinarith
 
+/-- Branch-free local dilogarithm control at the moving endpoint.  Combining
+`η B ≤ 12/31` with the geometric-series majorant gives the exact uniform
+constant `12/19` for both signs of the small argument. -/
+theorem etaB_li2_uniform_bound
+    (η B : ℝ)
+    (hη0 : 0 ≤ η) (hη : η ≤ 1 / 4)
+    (hB0 : 0 ≤ B) (hB : B ≤ 48 / 31) :
+    |li2Series (η * B)| ≤ 12 / 19 ∧
+    |li2Series (-(η * B))| ≤ 12 / 19 := by
+  rcases eta_mul_B_small η B hη0 hη hB0 hB with ⟨hx0, hxupper, hxhalf⟩
+  have hx1 : η * B < 1 := by linarith
+  have hden : 0 < 1 - η * B := by linarith
+  have hfrac : η * B / (1 - η * B) ≤ 12 / 19 := by
+    apply (div_le_iff₀ hden).2
+    nlinarith
+  constructor
+  · exact (abs_li2Series_le_of_nonneg hx0 hx1).trans hfrac
+  · exact (abs_li2Series_neg_le_of_nonneg hx0 hx1).trans hfrac
+
 end GppScalarBoxRegulatorBounds
 
 #print axioms GppScalarBoxRegulatorBounds.kappa_mem_rational_interval
@@ -151,3 +173,4 @@ end GppScalarBoxRegulatorBounds
 #print axioms GppScalarBoxRegulatorBounds.Q_mem_rational_interval
 #print axioms GppScalarBoxRegulatorBounds.B_pos_and_le
 #print axioms GppScalarBoxRegulatorBounds.eta_mul_B_small
+#print axioms GppScalarBoxRegulatorBounds.etaB_li2_uniform_bound
