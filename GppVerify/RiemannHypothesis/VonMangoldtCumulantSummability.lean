@@ -31,7 +31,7 @@ theorem abscissa_vonMangoldtComplex_le_one :
 /-- One logarithmic insertion remains absolutely summable for every real `β > 1`. -/
 theorem summable_logMul_vonMangoldt {β : ℝ} (hβ : 1 < β) :
     LSeriesSummable (LSeries.logMul vonMangoldtComplex) (β : ℂ) := by
-  apply LSeries.LSeriesSummable_logMul_of_lt_re
+  apply LSeriesSummable_logMul_of_lt_re
   exact lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one (by simpa using hβ)
 
 /-- Two logarithmic insertions remain absolutely summable for every real `β > 1`.
@@ -40,7 +40,7 @@ This is the convergence layer for the cubic zeta-Gibbs cumulant series
 theorem summable_logMul_logMul_vonMangoldt {β : ℝ} (hβ : 1 < β) :
     LSeriesSummable
       (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ) := by
-  apply LSeries.LSeriesSummable_logMul_of_lt_re
+  apply LSeriesSummable_logMul_of_lt_re
   simpa using
     (lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one (by simpa using hβ))
 
@@ -55,7 +55,7 @@ theorem summable_iterated_logMul_vonMangoldt
         (show 1 < ((β : ℂ).re) by simpa using hβ)
   | succ m ih =>
       rw [Function.iterate_succ_apply]
-      apply LSeries.LSeriesSummable_logMul_of_lt_re
+      apply LSeriesSummable_logMul_of_lt_re
       have hbase : LSeries.abscissaOfAbsConv vonMangoldtComplex < ((β : ℂ).re : ℝ) := by
         exact_mod_cast lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one (by simpa using hβ)
       simpa using hbase
