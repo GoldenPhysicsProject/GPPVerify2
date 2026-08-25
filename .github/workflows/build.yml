@@ -64,7 +64,7 @@ jobs:
         run: lake env lean GppVerify/RiemannHypothesis/FinitePrimePoissonPositiveType.lean
 
       - name: Codex scalar-box regulator endpoint check
-        run: lake env lean GppVerify/CelestialHolography/ScalarBoxRegulatorBounds.lean
+        run: set -o pipefail && lake build GppVerify.CelestialHolography.ScalarBoxRegulatorBounds 2>&1 | tee /tmp/scalar-box.log
 
       - name: Build
         run: set -o pipefail && lake build 2>&1 | tee /tmp/build.log
@@ -72,7 +72,7 @@ jobs:
       - name: Sorry gate (FAILS the build)
         run: |
           echo "=== Sorry gate ==="
-          if grep -F "declaration uses 'sorry'" /tmp/build.log; then
+          if grep -F "declaration uses 'sorry'" /tmp/build.log /tmp/scalar-box.log; then
             echo "::error::A declaration uses 'sorry'. Standing rule: no sorry ever committed."
             exit 1
           fi
