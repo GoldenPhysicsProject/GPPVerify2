@@ -89,6 +89,20 @@ theorem entropyBetaDerivative_nonpos {β : ℝ} (hβ : 1 < β) :
   have hβ0 : 0 ≤ β := le_trans (by norm_num) hβ.le
   exact mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hβ0) (logEnergyVariance_nonneg hβ)
 
+/-- Exact Fisher-geometry algebra: the square of the entropy response equals
+heat capacity times the Fisher metric coefficient (the log-energy variance).
+This is the coordinate-β version of `C = (dS/dτ)^2` once `dτ = sqrt(g) dβ`
+is introduced. -/
+theorem entropyBetaDerivative_sq_eq_heatCapacity_mul_variance (β : ℝ) :
+    entropyBetaDerivative β ^ 2 = heatCapacity β * logEnergyVariance β := by
+  unfold entropyBetaDerivative heatCapacity
+  ring
+
+/-- The squared entropy response is nonnegative. -/
+theorem entropyBetaDerivative_sq_nonneg (β : ℝ) :
+    0 ≤ entropyBetaDerivative β ^ 2 := by
+  exact sq_nonneg _
+
 end GppZetaGibbsFisher
 
 #print axioms GppZetaGibbsFisher.zetaVarianceResponse_eq_ofReal_logEnergyVariance
@@ -96,3 +110,4 @@ end GppZetaGibbsFisher
 #print axioms GppZetaGibbsFisher.zetaVarianceResponse_re_nonneg
 #print axioms GppZetaGibbsFisher.heatCapacity_nonneg
 #print axioms GppZetaGibbsFisher.entropyBetaDerivative_nonpos
+#print axioms GppZetaGibbsFisher.entropyBetaDerivative_sq_eq_heatCapacity_mul_variance
