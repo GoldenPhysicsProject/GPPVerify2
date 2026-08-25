@@ -111,6 +111,30 @@ theorem Q_mem_rational_interval
   · apply (div_le_iff₀ hden).2
     nlinarith [sq_nonneg r]
 
+/-- The pole-endpoint normalization
+`B = 2(1+κ)/((1+δ)(1+x)(1+R)(1-η))` obeys the exact coarse bound
+`0 < B ≤ 48/31` on the rational regulator box. Here `x` represents `κR`. -/
+theorem B_pos_and_le
+    (δ η κ x R B : ℝ)
+    (hδ0 : 0 ≤ δ)
+    (hη0 : 0 ≤ η) (hη : η ≤ 1 / 4)
+    (hκlo : 1 ≤ κ) (hκhi : κ ≤ 9 / 8)
+    (hxlo : 15 / 16 ≤ x)
+    (hRlo : 8 / 9 ≤ R)
+    (hB : B = 2 * (1 + κ) /
+      ((1 + δ) * (1 + x) * (1 + R) * (1 - η))) :
+    0 < B ∧ B ≤ 48 / 31 := by
+  have h1δ : 0 < 1 + δ := by linarith
+  have h1x : 0 < 1 + x := by linarith
+  have h1R : 0 < 1 + R := by linarith
+  have h1η : 0 < 1 - η := by linarith
+  have hden : 0 < (1 + δ) * (1 + x) * (1 + R) * (1 - η) := by positivity
+  rw [hB]
+  constructor
+  · exact div_pos (by nlinarith) hden
+  · apply (div_le_iff₀ hden).2
+    nlinarith [mul_nonneg hδ0 (sub_nonneg.mpr hη)]
+
 end GppScalarBoxRegulatorBounds
 
 #print axioms GppScalarBoxRegulatorBounds.kappa_mem_rational_interval
@@ -118,3 +142,4 @@ end GppScalarBoxRegulatorBounds
 #print axioms GppScalarBoxRegulatorBounds.kappaR_mem_rational_interval
 #print axioms GppScalarBoxRegulatorBounds.A_mem_rational_interval
 #print axioms GppScalarBoxRegulatorBounds.Q_mem_rational_interval
+#print axioms GppScalarBoxRegulatorBounds.B_pos_and_le
