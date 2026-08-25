@@ -43,9 +43,19 @@ theorem tsum_re_pow_succ {z : ℂ} (hz : ‖z‖ < 1) :
   congr 1
   exact tsum_pow_succ hz
 
-/-- The positive-frequency geometric fiber is one half of the vacuum-subtracted
-Poisson kernel. This form keeps the summand as a complex-power real part; the next
-bridge identifies it with `r^(k+1) cos((k+1)θ)`. -/
+/-- De Moivre form of the real part of a radial phase power. -/
+theorem re_radial_phase_pow (r θ : ℝ) (m : ℕ) :
+    (((r : ℂ) * Complex.exp (θ * Complex.I)) ^ m).re =
+      r ^ m * Real.cos ((m : ℝ) * θ) := by
+  rw [mul_pow]
+  rw [← Complex.exp_nat_mul]
+  have harg : (m : ℂ) * (θ * Complex.I) = (((m : ℝ) * θ : ℝ) : ℂ) * Complex.I := by
+    push_cast
+    ring
+  rw [harg, Complex.exp_ofReal_mul_I]
+  simp [Complex.mul_re]
+
+/-- Complex-power form of the positive-frequency Poisson fiber. -/
 theorem two_mul_tsum_re_pow_succ_eq_KrClosed_sub_one
     {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (θ : ℝ) :
     2 * (∑' k : ℕ,
@@ -57,8 +67,20 @@ theorem two_mul_tsum_re_pow_succ_eq_KrClosed_sub_one
   rw [tsum_re_pow_succ hz]
   exact (KrClosed_sub_one_eq_two_mul_re hr0 hr1 θ).symm
 
+/-- Readable real cosine form of the one-sided Poisson fiber. -/
+theorem two_mul_tsum_rpow_cos_eq_KrClosed_sub_one
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (θ : ℝ) :
+    2 * (∑' k : ℕ,
+      r ^ (k + 1) * Real.cos (((k + 1 : ℕ) : ℝ) * θ)) =
+      KrClosed r θ - 1 := by
+  rw [← two_mul_tsum_re_pow_succ_eq_KrClosed_sub_one hr0 hr1 θ]
+  congr 1
+  apply tsum_congr
+  intro k
+  exact (re_radial_phase_pow r θ (k + 1)).symm
+
 end GppPoissonGeometricFiber
 
 #print axioms GppPoissonGeometricFiber.tsum_pow_succ
-#print axioms GppPoissonGeometricFiber.tsum_re_pow_succ
-#print axioms GppPoissonGeometricFiber.two_mul_tsum_re_pow_succ_eq_KrClosed_sub_one
+#print axioms GppPoissonGeometricFiber.re_radial_phase_pow
+#print axioms GppPoissonGeometricFiber.two_mul_tsum_rpow_cos_eq_KrClosed_sub_one
