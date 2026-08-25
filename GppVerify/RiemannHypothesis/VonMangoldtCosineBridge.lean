@@ -39,13 +39,30 @@ theorem vonMangoldt_term_re_eq_exp_cos
   simp [vonMangoldtComplex, natCast_neg_cpow_re n hn a t]
   ring
 
-/-- The zero-index term vanishes, matching the zero von-Mangoldt coefficient. -/
+/-- The zero-index term vanishes. -/
 theorem vonMangoldt_term_zero_re (a t : ℝ) :
     (LSeries.term vonMangoldtComplex
       ((a : ℂ) + (t : ℂ) * Complex.I) 0).re = 0 := by
   simp
 
+/-- Global von-Mangoldt cosine series on the half-plane of absolute convergence. -/
+theorem neg_zeta_logDeriv_re_eq_vonMangoldt_cosine_tsum
+    {a t : ℝ} (ha : 1 < a) :
+    (-(deriv riemannZeta ((a : ℂ) + (t : ℂ) * Complex.I) /
+      riemannZeta ((a : ℂ) + (t : ℂ) * Complex.I))).re =
+      ∑' n : ℕ, ArithmeticFunction.vonMangoldt n *
+        Real.exp (-Real.log n * a) * Real.cos (Real.log n * t) := by
+  have hs : 1 < (((a : ℂ) + (t : ℂ) * Complex.I).re) := by
+    simpa using ha
+  rw [neg_zeta_logDeriv_re_eq_tsum_re_terms hs]
+  apply tsum_congr
+  intro n
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp
+  · exact vonMangoldt_term_re_eq_exp_cos n hn a t
+
 end GppVonMangoldtCosine
 
 #print axioms GppVonMangoldtCosine.natCast_neg_cpow_re
 #print axioms GppVonMangoldtCosine.vonMangoldt_term_re_eq_exp_cos
+#print axioms GppVonMangoldtCosine.neg_zeta_logDeriv_re_eq_vonMangoldt_cosine_tsum
