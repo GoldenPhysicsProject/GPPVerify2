@@ -43,7 +43,7 @@ theorem gamma_half_add_mul_gamma_half_sub (y : ℝ) :
   rw [hone, hsin] at href
   rw [← Complex.ofReal_mul, ← Complex.ofReal_cosh] at href
   push_cast at href
-  simpa using href
+  simpa [z] using href
 
 end GppGammaHalfModulus
 
