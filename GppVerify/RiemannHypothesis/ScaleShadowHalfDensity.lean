@@ -41,9 +41,14 @@ theorem celestialDelta_shadow (s : ℂ) :
 `Re Delta = 1`. -/
 theorem celestialDelta_re_eq_one_iff (s : ℂ) :
     (celestialDelta s).re = 1 ↔ s.re = 1 / 2 := by
-  simp only [celestialDelta, map_mul, ofReal_re, mul_re, ofReal_im, zero_mul,
-    sub_zero, ofReal_ofNat]
-  constructor <;> intro h <;> nlinarith
+  constructor
+  · intro h
+    have h' : 2 * s.re = 1 := by
+      simpa [celestialDelta, Complex.mul_re] using h
+    linarith
+  · intro h
+    have h' : 2 * s.re = 1 := by linarith
+    simpa [celestialDelta, Complex.mul_re] using h'
 
 /-- On the critical line, celestial shadow is complex conjugation after `Delta=2s`. -/
 theorem celestialDelta_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) :
@@ -74,43 +79,28 @@ theorem conj_eq_shadow_of_re_eq_half {s : ℂ} (hs : s.re = 1 / 2) :
     norm_num
   · simp
 
-/-- **Critical-line Hermitian shadow law.**  On `Re s = 1/2`, shadow is not merely
-reciprocal: it is literally complex conjugation of the half-density character. -/
+/-- On the critical line, the shadow dilation character is the Hermitian conjugate
+of the original character. -/
 theorem dilationCharacter_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) (a : ℝ) :
     dilationCharacter (1 - s) a = (starRingEnd ℂ) (dilationCharacter s a) := by
-  unfold dilationCharacter
-  rw [← Complex.exp_conj]
-  congr 1
-  have hsconj := conj_eq_shadow_of_re_eq_half hs
-  have hstarlog :
-      (starRingEnd ℂ) ((Real.log a : ℝ) : ℂ) = ((Real.log a : ℝ) : ℂ) := by
-    simp
-  have hstarhalf :
-      (starRingEnd ℂ) (1 / 2 : ℂ) = (1 / 2 : ℂ) := by
-    apply Complex.ext <;> norm_num
-  have hstarshift :
-      (starRingEnd ℂ) (s - (1 / 2 : ℂ)) =
-        (1 - s) - (1 / 2 : ℂ) := by
-    calc
-      (starRingEnd ℂ) (s - (1 / 2 : ℂ)) =
-          (starRingEnd ℂ) s - (starRingEnd ℂ) (1 / 2 : ℂ) := by
-            exact map_sub (starRingEnd ℂ) s (1 / 2 : ℂ)
-      _ = (1 - s) - (1 / 2 : ℂ) := by rw [hsconj, hstarhalf]
-  rw [map_mul, hstarlog, hstarshift]
+  rw [dilationCharacter_shadow_eq_inv]
+  have hunit := (critical_line_iff_dilation_unitary s).1 hs a
+  exact inv_eq_conj_of_norm_one hunit
 
-/-- At a nontrivial positive scale, the critical line is exactly the locus on which
-    the character is unitary; on that same locus shadow acts by inversion. -/
-theorem critical_line_iff_unitary_with_shadow {s : ℂ} {a : ℝ}
-    (ha : 0 < a) (ha1 : a ≠ 1) :
+/-- Exact principal-series package: the critical line is equivalent to unitarity of the
+half-density dilation character, while shadow acts there as Hermitian conjugation. -/
+theorem critical_line_iff_unitary_with_shadow (s : ℂ) :
     s.re = 1 / 2 ↔
-      (‖dilationCharacter s a‖ = 1 ∧
-       dilationCharacter (1 - s) a = (dilationCharacter s a)⁻¹) := by
+      (∀ a : ℝ, ‖dilationCharacter s a‖ = 1) ∧
+      (∀ a : ℝ, dilationCharacter (1 - s) a =
+        (starRingEnd ℂ) (dilationCharacter s a)) := by
   constructor
   · intro hs
-    exact ⟨GppScaleMass.critical_line_dilation_unitary hs a,
-      dilationCharacter_shadow_eq_inv s a⟩
-  · intro h
-    exact GppScaleMass.critical_line_of_dilation_unitary ha ha1 h.1
+    constructor
+    · exact (critical_line_iff_dilation_unitary s).1 hs
+    · exact fun a => dilationCharacter_shadow_eq_conj hs a
+  · rintro ⟨hunit, _⟩
+    exact (critical_line_iff_dilation_unitary s).2 hunit
 
 end GppScaleShadow
 
