@@ -50,6 +50,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxLogBounds
 
+      - name: Scalar-box product endpoint bounds
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxProductEndpointBounds
+
       - name: Real dilogarithm inversion kernel
         if: always()
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogInversionKernel
