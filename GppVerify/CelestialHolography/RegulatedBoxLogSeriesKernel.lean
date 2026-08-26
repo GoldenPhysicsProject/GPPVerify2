@@ -43,8 +43,10 @@ theorem hasSum_pow_succ_div_succ_eq_neg_log
   convert htail using 1
   · funext n
     norm_cast
-  · rw [map_neg, Complex.ofReal_log hpos]
-    norm_cast
+  · calc
+      (((-Real.log (1 - x) : ℝ) : ℂ)) = -(Real.log (1 - x) : ℂ) := by norm_cast
+      _ = -Complex.log ((1 - x : ℝ) : ℂ) := by rw [Complex.ofReal_log hpos]
+      _ = -Complex.log (1 - (x : ℂ)) := by norm_cast
 
 /-- After dividing by a nonzero `x`, the derivative series is exactly
 `-log(1-x)/x`. -/
@@ -61,6 +63,7 @@ theorem hasSum_pow_div_succ_eq_neg_log_div
     have hn : (((n + 1 : ℕ) : ℝ)) ≠ 0 := by positivity
     rw [pow_succ]
     field_simp [hx0, hn]
+    ring
   rw [hfun]
   exact h
 
