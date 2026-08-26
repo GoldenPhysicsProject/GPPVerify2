@@ -59,6 +59,9 @@ jobs:
       - name: Codex scalar-box Spence constancy check
         run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceConstancy
 
+      - name: Codex scalar-box real Spence identity check
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceIdentity
+
       - name: Codex prime Hankel theorem check
         run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelGram.lean
 
