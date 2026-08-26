@@ -39,7 +39,7 @@ theorem Hminus_eq_conj_Hplus (k : ℝ) :
   have harg :
       conj (((1 : ℂ) / 2) - (((k / (2 * Real.pi) : ℝ) : ℂ) * I)) =
         ((1 : ℂ) / 2) + (((k / (2 * Real.pi) : ℝ) : ℂ) * I) := by
-    simp
+    apply Complex.ext <;> simp
   have hgamma :
       Complex.Gamma (((1 : ℂ) / 2) +
           (((k / (2 * Real.pi) : ℝ) : ℂ) * I)) =
