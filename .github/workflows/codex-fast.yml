@@ -186,6 +186,10 @@ jobs:
         if: always()
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsFreeEnergy
 
+      - name: Zeta Gibbs differential entropy law
+        if: always()
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsEntropyDerivative
+
       - name: Massive-vector 5D Ward reconstruction
         if: always()
         run: lake build GppVerify.CelestialHolography.MassiveVectorWardReconstruction
