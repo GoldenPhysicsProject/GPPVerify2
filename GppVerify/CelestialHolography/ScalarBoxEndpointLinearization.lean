@@ -31,6 +31,44 @@ theorem q_exact_linear_m
   field_simp [hU4, hR]
   nlinarith [hsq']
 
+/-- On the regulator interval used by the scalar box, the individual endpoint `q`
+is linearly small:
+
+`0 ≤ q ≤ (324/289) m/U`.
+-/
+theorem q_nonneg_and_le_linear_m
+    {U m R q : ℝ}
+    (hU : 0 < U) (hm : 0 ≤ m)
+    (hRlo : 8 / 9 ≤ R)
+    (hq : q = (1 - R) / (1 + R))
+    (hsq : R ^ 2 = U / (U + 4 * m)) :
+    0 ≤ q ∧ q ≤ (324 / 289 : ℝ) * (m / U) := by
+  have hU4pos : 0 < U + 4 * m := by linarith
+  have hRpluspos : 0 < 1 + R := by linarith
+  have hqexact := q_exact_linear_m hU4pos.ne' hRpluspos.ne' hq hsq
+  rw [hqexact]
+  have hRfac : (289 / 81 : ℝ) ≤ (1 + R) ^ 2 := by
+    have hfac : 0 ≤ (R - 8 / 9) * (R + 26 / 9) :=
+      mul_nonneg (by linarith) (by linarith)
+    nlinarith
+  have hUstep : U ≤ U + 4 * m := by linarith
+  have hdenlower : (289 / 81 : ℝ) * U ≤
+      (U + 4 * m) * (1 + R) ^ 2 := by
+    have H := mul_le_mul hUstep hRfac (by norm_num : (0 : ℝ) ≤ 289 / 81) hU4pos.le
+    nlinarith
+  have hbasepos : 0 < (289 / 81 : ℝ) * U := by positivity
+  have hdenpos : 0 < (U + 4 * m) * (1 + R) ^ 2 := by positivity
+  have hnum0 : 0 ≤ 4 * m := by positivity
+  constructor
+  · exact div_nonneg hnum0 hdenpos.le
+  · calc
+      4 * m / ((U + 4 * m) * (1 + R) ^ 2) ≤
+          4 * m / ((289 / 81 : ℝ) * U) := by
+            exact div_le_div_of_nonneg_left hnum0 hbasepos hdenlower
+      _ = (324 / 289 : ℝ) * (m / U) := by
+        field_simp [hU.ne']
+        ring
+
 /-- Rationalizing
 
 `κ² = 1 + 4m(S-m)/(SU)`
@@ -54,4 +92,5 @@ theorem a_exact_linear_m
 end GppScalarBoxEndpointLinearization
 
 #print axioms GppScalarBoxEndpointLinearization.q_exact_linear_m
+#print axioms GppScalarBoxEndpointLinearization.q_nonneg_and_le_linear_m
 #print axioms GppScalarBoxEndpointLinearization.a_exact_linear_m
