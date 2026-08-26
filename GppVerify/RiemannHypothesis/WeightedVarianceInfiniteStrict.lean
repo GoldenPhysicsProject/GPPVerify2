@@ -64,15 +64,18 @@ theorem normalized_weighted_variance_pos_tsum
         (∑' n, w n * x n ^ 2) - 2 * μ * M + μ ^ 2 * W := by
     have hlin : Summable (fun n => (2 * μ) * (w n * x n)) := hM.mul_left _
     have hconst : Summable (fun n => μ ^ 2 * w n) := hW.mul_left _
+    have hadd := (hQ.sub hlin).tsum_add hconst
+    have hsub := hQ.tsum_sub hlin
     calc
       (∑' n, w n * (x n - μ) ^ 2) =
           ∑' n, (w n * x n ^ 2 - (2 * μ) * (w n * x n)) + μ ^ 2 * w n := by
             apply tsum_congr
             intro n
             ring
-      _ = (∑' n, w n * x n ^ 2) - (∑' n, (2 * μ) * (w n * x n)) +
-          (∑' n, μ ^ 2 * w n) := by
-            rw [tsum_add (hQ.sub hlin) hconst, tsum_sub hQ hlin]
+      _ = (∑' n, w n * x n ^ 2 - (2 * μ) * (w n * x n)) +
+          (∑' n, μ ^ 2 * w n) := hadd
+      _ = ((∑' n, w n * x n ^ 2) - (∑' n, (2 * μ) * (w n * x n))) +
+          (∑' n, μ ^ 2 * w n) := by rw [hsub]
       _ = (∑' n, w n * x n ^ 2) - 2 * μ * M + μ ^ 2 * W := by
             rw [hM.tsum_mul_left, hW.tsum_mul_left]
             rfl
