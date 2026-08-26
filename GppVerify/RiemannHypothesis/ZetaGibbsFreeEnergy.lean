@@ -30,7 +30,7 @@ theorem Z_pos {β : ℝ} (hβ : 1 < β) : 0 < Z β := by
   unfold Z
   exact gibbsWeight_tsum_pos hβ
 
-/-- Exact Legendre relation `F = U - S/β`. -/
+/-- Exact Legendre relation `F = U - S/β` away from the singular coordinate `β=0`. -/
 theorem freeEnergy_eq_internalEnergy_sub_entropy_div
     {β : ℝ} (hβ : β ≠ 0) :
     freeEnergy β = internalEnergy β - entropy β / β := by
@@ -38,21 +38,24 @@ theorem freeEnergy_eq_internalEnergy_sub_entropy_div
   field_simp [hβ]
   ring
 
-/-- Equivalent entropy/free-energy relation `S = β(U-F)`. -/
+/-- Equivalent entropy/free-energy relation `S = β(U-F)` away from `β=0`. -/
 theorem entropy_eq_beta_mul_internalEnergy_sub_freeEnergy
-    (β : ℝ) :
+    {β : ℝ} (hβ : β ≠ 0) :
     entropy β = β * (internalEnergy β - freeEnergy β) := by
   unfold entropy freeEnergy
-  by_cases hβ : β = 0
-  · simp [hβ]
-  · field_simp [hβ]
-    ring
+  field_simp [hβ]
+  ring
 
-/-- On `β>1` all thermodynamic coordinates use a positive partition function and the
-Legendre relation has no zero-temperature denominator obstruction. -/
+/-- On `β>1` all thermodynamic coordinates use a positive partition function and both
+forms of the Legendre relation are valid. -/
 theorem gibbs_legendre_relation {β : ℝ} (hβ : 1 < β) :
-    0 < Z β ∧ freeEnergy β = internalEnergy β - entropy β / β := by
-  exact ⟨Z_pos hβ, freeEnergy_eq_internalEnergy_sub_entropy_div (by linarith)⟩
+    0 < Z β ∧
+      freeEnergy β = internalEnergy β - entropy β / β ∧
+      entropy β = β * (internalEnergy β - freeEnergy β) := by
+  have hβ0 : β ≠ 0 := by linarith
+  exact ⟨Z_pos hβ,
+    freeEnergy_eq_internalEnergy_sub_entropy_div hβ0,
+    entropy_eq_beta_mul_internalEnergy_sub_freeEnergy hβ0⟩
 
 end GppZetaGibbsFreeEnergy
 
