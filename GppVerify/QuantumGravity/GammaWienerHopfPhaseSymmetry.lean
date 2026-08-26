@@ -25,11 +25,15 @@ theorem Q_ne_zero (k : ℝ) : Q k ≠ 0 := by
   exact div_ne_zero (Hminus_ne_zero k) (Hplus_ne_zero k)
 
 /-- Exact conjugate-reciprocal symmetry of the Gamma phase. -/
-theorem conj_Q_eq_inv (k : ℝ) : Complex.conj (Q k) = (Q k)⁻¹ := by
+theorem conj_Q_eq_inv (k : ℝ) :
+    (starRingEnd ℂ) (Q k) = (Q k)⁻¹ := by
+  have hstarMinus : (starRingEnd ℂ) (Hminus k) = Hplus k := by
+    rw [Hminus_eq_conj_Hplus]
+    simp
+  have hstarPlus : (starRingEnd ℂ) (Hplus k) = Hminus k := by
+    exact (Hminus_eq_conj_Hplus k).symm
   unfold Q
-  rw [map_div]
-  rw [Hminus_eq_conj_Hplus]
-  simp [inv_div]
+  rw [map_div, hstarMinus, hstarPlus, inv_div]
 
 /-- The phase ratio has unit modulus, restated in the phase notation. -/
 theorem norm_Q (k : ℝ) : ‖Q k‖ = 1 := by
@@ -37,7 +41,7 @@ theorem norm_Q (k : ℝ) : ‖Q k‖ = 1 := by
 
 /-- Every chamber power keeps conjugate-reciprocal symmetry. -/
 theorem conj_Q_pow_eq_inv_pow (m : ℕ) (k : ℝ) :
-    Complex.conj ((Q k) ^ m) = ((Q k) ^ m)⁻¹ := by
+    (starRingEnd ℂ) ((Q k) ^ m) = ((Q k) ^ m)⁻¹ := by
   rw [map_pow, conj_Q_eq_inv, inv_pow]
 
 end GppGammaWienerHopfPhase
