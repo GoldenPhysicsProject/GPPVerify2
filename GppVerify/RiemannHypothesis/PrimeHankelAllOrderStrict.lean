@@ -34,7 +34,7 @@ theorem logTwo_support_injective :
     (Real.log_pos (by norm_num : (1 : ℝ) < 2)).ne'
   intro a b hab
   have hab' : (((a + 1 : ℕ) : ℝ)) = (((b + 1 : ℕ) : ℝ)) :=
-    (mul_right_inj' hlog2).mp hab
+    (mul_left_inj' hlog2).mp hab
   exact Nat.succ.inj (by exact_mod_cast hab')
 
 /-- The first `N+1` powers of two provide `N+1` distinct logarithmic support values. -/
