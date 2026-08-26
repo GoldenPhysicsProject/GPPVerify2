@@ -22,6 +22,20 @@ theorem reciprocal_cosh_product_identity
   field_simp [hA, hB]
   ring
 
+/-- Solved form of the same identity, ready for integration: the reciprocal-cosh
+product is a tanh sum divided by the total-channel `sinh`. -/
+theorem reciprocal_cosh_product_eq_tanh_sum_div
+    (A B : ℝ)
+    (hA : Real.cosh A ≠ 0)
+    (hB : Real.cosh B ≠ 0)
+    (hAB : Real.sinh (A + B) ≠ 0) :
+    1 / (Real.cosh A * Real.cosh B) =
+      (Real.sinh A / Real.cosh A + Real.sinh B / Real.cosh B) /
+        Real.sinh (A + B) := by
+  have h := reciprocal_cosh_product_identity A B hA hB
+  rw [h]
+  field_simp [hAB]
+
 /-- Specialized kernel identity for `A = pi*x`, `B = pi*(lambda-x)`.
 It is the algebraic heart of the elementary self-convolution proof. -/
 theorem pi_shift_kernel_identity
@@ -36,7 +50,28 @@ theorem pi_shift_kernel_identity
     (Real.pi * x) (Real.pi * (λ - x)) hx hshift
   convert h using 1 <;> ring
 
+/-- Derivative-ready specialized solved form.  For `lambda != 0`, the convolution
+integrand is exactly a sum of two tanh kernels divided by `sinh(pi*lambda)`. -/
+theorem pi_shift_reciprocal_product_eq_tanh_sum_div
+    (x λ : ℝ) (hλ : λ ≠ 0) :
+    1 / (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (λ - x))) =
+      (Real.sinh (Real.pi * x) / Real.cosh (Real.pi * x) +
+        Real.sinh (Real.pi * (λ - x)) / Real.cosh (Real.pi * (λ - x))) /
+        Real.sinh (Real.pi * λ) := by
+  have hx : Real.cosh (Real.pi * x) ≠ 0 := ne_of_gt (Real.cosh_pos _)
+  have hshift : Real.cosh (Real.pi * (λ - x)) ≠ 0 := ne_of_gt (Real.cosh_pos _)
+  have hpiλ : Real.pi * λ ≠ 0 := mul_ne_zero Real.pi_ne_zero hλ
+  have hsinh : Real.sinh (Real.pi * λ) ≠ 0 := by
+    rw [Real.sinh_ne_zero]
+    exact hpiλ
+  have h := reciprocal_cosh_product_eq_tanh_sum_div
+    (Real.pi * x) (Real.pi * (λ - x)) hx hshift (by
+      convert hsinh using 1 <;> ring)
+  convert h using 1 <;> ring
+
 end GppSechConvolutionKernel
 
 #print axioms GppSechConvolutionKernel.reciprocal_cosh_product_identity
+#print axioms GppSechConvolutionKernel.reciprocal_cosh_product_eq_tanh_sum_div
 #print axioms GppSechConvolutionKernel.pi_shift_kernel_identity
+#print axioms GppSechConvolutionKernel.pi_shift_reciprocal_product_eq_tanh_sum_div
