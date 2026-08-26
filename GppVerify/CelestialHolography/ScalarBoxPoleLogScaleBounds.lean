@@ -55,8 +55,13 @@ theorem one_sub_R_le_delta_half
   have hRfac : R ^ 2 ≤ (1 + R) / 2 := by
     nlinarith [mul_nonneg (by linarith : 0 ≤ 1 - R) (by linarith : 0 ≤ 2 * R + 1)]
   have hplus : 0 < 1 + R := by linarith
-  apply (le_div_iff₀ hplus).1
-  rw [hid]
+  have hscaled : δ * R ^ 2 ≤ δ * ((1 + R) / 2) :=
+    mul_le_mul_of_nonneg_left hRfac hδ0
+  have heq : 1 - R = δ * R ^ 2 / (1 + R) := by
+    apply (eq_div_iff hplus.ne').2
+    exact hid
+  rw [heq]
+  apply (div_le_iff₀ hplus).2
   nlinarith
 
 /-- If `x²=1-δη/(1+δ)` and `x≥15/16`, the product-channel defect is bilinear:
