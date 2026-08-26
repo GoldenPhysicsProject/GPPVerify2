@@ -68,16 +68,8 @@ theorem landenCombination_eq_zero
     li2Series_tendsto_zero_signed.comp hneg
 
   have hlog : Tendsto (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) L (𝓝 0) := by
-    have hinner : HasDerivAt (fun y : ℝ => 1 + y) 1 0 := by
-      convert (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).add (hasDerivAt_id 0) using 1 <;>
-        norm_num
-    have hlogBase : HasDerivAt Real.log 1 (1 + 0 : ℝ) := by
-      convert Real.hasDerivAt_log (by norm_num : (1 + 0 : ℝ) ≠ 0) using 1 <;> norm_num
-    have hlogderiv : HasDerivAt (fun y : ℝ => Real.log (1 + y)) 1 0 := by
-      have h := hlogBase.comp 0 hinner
-      simpa using h
-    have hc : ContinuousAt (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) 0 :=
-      ((hlogderiv.pow 2).div_const 2).continuousAt
+    have hc : ContinuousAt (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) 0 := by
+      fun_prop
     simpa using hc.tendsto.mono_left (show L ≤ 𝓝 (0 : ℝ) by
       dsimp [L]
       exact nhdsWithin_le_nhds)
