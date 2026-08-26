@@ -42,9 +42,17 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogDerivativeUnitDisk
 
+      - name: Real dilogarithm signed zero continuity
+        if: always()
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogSignedZeroContinuity
+
       - name: Gamma real-axis phase symmetry
         if: always()
         run: lake build GppVerify.QuantumGravity.GammaWienerHopfPhaseSymmetry
+
+      - name: Mehler-Fock Gamma collapsed weight
+        if: always()
+        run: lake build GppVerify.CelestialHolography.MehlerFockGammaCollapsedWeight
 
       - name: Strict infinite weighted variance
         if: always()
