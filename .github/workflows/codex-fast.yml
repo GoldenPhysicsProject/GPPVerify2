@@ -35,10 +35,17 @@ jobs:
         run: lake exe cache get || true
 
       - name: Real dilogarithm inversion kernel
+        if: always()
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogInversionKernel
 
       - name: Gamma real-axis phase symmetry
+        if: always()
         run: lake build GppVerify.QuantumGravity.GammaWienerHopfPhaseSymmetry
 
+      - name: Strict infinite weighted variance
+        if: always()
+        run: lake build GppVerify.RiemannHypothesis.WeightedVarianceInfiniteStrict
+
       - name: Strict zeta Gibbs thermodynamics
+        if: always()
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
