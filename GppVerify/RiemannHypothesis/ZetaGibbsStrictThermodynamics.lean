@@ -83,6 +83,7 @@ theorem entropyBetaDerivative_eq_neg_heatCapacity_div_beta
     entropyBetaDerivative β = -heatCapacity β / β := by
   unfold heatCapacity entropyBetaDerivative
   field_simp [hβ]
+  ring
 
 /-- On the honest Gibbs domain the ratio of positive heat capacity to the positive
 entropy-loss rate recovers the inverse temperature exactly. -/
@@ -92,7 +93,6 @@ theorem heatCapacity_div_neg_entropyBetaDerivative_eq_beta
   have hne : entropyBetaDerivative β ≠ 0 := entropyBetaDerivative_ne_zero hβ
   rw [heatCapacity_eq_neg_beta_mul_entropyBetaDerivative]
   field_simp [hne]
-  ring
 
 end GppZetaGibbsStrictThermodynamics
 
