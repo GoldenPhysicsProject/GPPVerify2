@@ -40,9 +40,9 @@ theorem dilationCharacter_shadow_involution (s : ℂ) (a : ℝ) :
   ring_nf
 
 /-- On the critical line, complex conjugation of the spectral parameter is exactly
-shadow: `conj s = 1 - s`. -/
+shadow: `star s = 1 - s`. -/
 theorem conj_eq_shadow_of_re_eq_half {s : ℂ} (hs : s.re = 1 / 2) :
-    conj s = 1 - s := by
+    (starRingEnd ℂ) s = 1 - s := by
   apply Complex.ext
   · simp [hs]
     norm_num
@@ -51,12 +51,14 @@ theorem conj_eq_shadow_of_re_eq_half {s : ℂ} (hs : s.re = 1 / 2) :
 /-- **Critical-line Hermitian shadow law.**  On `Re s = 1/2`, shadow is not merely
 reciprocal: it is literally complex conjugation of the half-density character. -/
 theorem dilationCharacter_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) (a : ℝ) :
-    dilationCharacter (1 - s) a = conj (dilationCharacter s a) := by
+    dilationCharacter (1 - s) a = (starRingEnd ℂ) (dilationCharacter s a) := by
   unfold dilationCharacter
-  rw [map_exp]
+  rw [← Complex.exp_conj]
+  congr 1
   rw [map_mul]
   have hsconj := conj_eq_shadow_of_re_eq_half hs
-  simp [hsconj]
+  rw [hsconj]
+  simp
 
 /-- At a nontrivial positive scale, the critical line is exactly the locus on which
     the character is unitary; on that same locus shadow acts by inversion. -/
