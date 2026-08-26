@@ -90,6 +90,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxSpecialFunctionRemainder
 
+      - name: Physical scalar-box special-function remainder
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxPhysicalSpecialRemainder
+
       - name: Scalar-box special-function remainder vanishing
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxSpecialRemainderVanishing
