@@ -55,7 +55,7 @@ theorem entropyBetaDerivative_neg {β : ℝ} (hβ : 1 < β) :
     entropyBetaDerivative β < 0 := by
   unfold entropyBetaDerivative
   have hβ0 : 0 < β := lt_trans (by norm_num) hβ
-  exact mul_neg_of_neg_of_pos (neg_neg.mpr hβ0) (logEnergyVariance_pos hβ)
+  exact mul_neg_of_neg_of_pos (neg_neg_of_pos hβ0) (logEnergyVariance_pos hβ)
 
 end GppZetaGibbsStrictThermodynamics
 
