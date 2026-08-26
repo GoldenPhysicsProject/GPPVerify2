@@ -66,6 +66,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxPoleLogScaleBounds
 
+      - name: Scalar-box logarithmic square remainder
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxLogSquareRemainder
+
       - name: Adjacent-MHV bubble subtraction algebra
         if: always()
         run: lake build GppVerify.CelestialHolography.FourPointMHVBubbleSubtractionAlgebra
