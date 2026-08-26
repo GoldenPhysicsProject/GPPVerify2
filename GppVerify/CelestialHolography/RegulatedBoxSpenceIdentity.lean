@@ -34,9 +34,10 @@ theorem log_one_sub_div_tendsto_neg_one :
       (𝓝[Ioo (0 : ℝ) 1] 0) (𝓝 (-1 : ℝ)) := by
   have hone_sub : HasDerivAt (fun y : ℝ => 1 - y) (-1) 0 := by
     convert (hasDerivAt_const (0 : ℝ) (1 : ℝ)).sub (hasDerivAt_id 0) using 1 <;> ring
+  have hlog1 : HasDerivAt Real.log 1 1 := by
+    simpa using Real.hasDerivAt_log (by norm_num : (1 : ℝ) ≠ 0)
   have hlog : HasDerivAt (fun y : ℝ => Real.log (1 - y)) (-1) 0 := by
-    simpa using
-      (Real.hasDerivAt_log (by norm_num : (1 : ℝ) ≠ 0)).comp 0 hone_sub
+    simpa using hlog1.comp 0 hone_sub
   have hright :
       𝓝[Ioo (0 : ℝ) 1] 0 ≤ 𝓝[>] (0 : ℝ) := by
     rw [nhdsWithin_le_iff]
@@ -49,11 +50,12 @@ theorem log_one_sub_div_tendsto_neg_one :
 theorem log_mul_log_one_sub_tendsto_zero :
     Tendsto (fun x : ℝ => Real.log x * Real.log (1 - x))
       (𝓝[Ioo (0 : ℝ) 1] 0) (𝓝 0) := by
+  have hcont : ContinuousAt (fun x : ℝ => x * Real.log x) 0 := by
+    exact Real.continuous_mul_log.continuousAt
   have hmul :
       Tendsto (fun x : ℝ => x * Real.log x)
         (𝓝[Ioo (0 : ℝ) 1] 0) (𝓝 0) := by
-    simpa using
-      Real.continuous_mul_log.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+    simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
   have hratio := log_one_sub_div_tendsto_neg_one
   have hraw :
       Tendsto
@@ -91,7 +93,8 @@ theorem spenceCombination_eq_pi_sq_div_six
         exact nhdsWithin_le_nhds)
     · dsimp [L]
       filter_upwards [self_mem_nhdsWithin] with y hy
-      exact ⟨by linarith, by linarith⟩
+      rcases hy with ⟨hy0, hy1⟩
+      constructor <;> linarith
   have hL1x :
       Tendsto (fun y : ℝ => li2Series (1 - y)) L (𝓝 (Real.pi ^ 2 / 6)) :=
     li2Series_tendsto_pi_sq_div_six.comp hmap
