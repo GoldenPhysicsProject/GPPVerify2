@@ -89,8 +89,51 @@ theorem a_exact_linear_m
   field_simp [hSU, hκ]
   nlinarith [hsq']
 
+/-- Under the physical inequalities `0 ≤ m ≤ S` and `κ ≥ 1`, the second Möbius
+endpoint is bounded by the same natural linear regulator scale:
+
+`0 ≤ a ≤ m/U`.
+-/
+theorem a_nonneg_and_le_linear_m
+    {S U m κ a : ℝ}
+    (hS : 0 < S) (hU : 0 < U)
+    (hm0 : 0 ≤ m) (hmS : m ≤ S)
+    (hκlo : 1 ≤ κ)
+    (ha : a = (κ - 1) / (κ + 1))
+    (hsq : κ ^ 2 = 1 + 4 * m * (S - m) / (S * U)) :
+    0 ≤ a ∧ a ≤ m / U := by
+  have hSUpos : 0 < S * U := mul_pos hS hU
+  have hκplus : 0 < κ + 1 := by linarith
+  have haexact := a_exact_linear_m hSUpos.ne' hκplus.ne' ha hsq
+  rw [haexact]
+  have hSm : 0 ≤ S - m := by linarith
+  have hnum0 : 0 ≤ 4 * m * (S - m) := by positivity
+  have hnumle : 4 * m * (S - m) ≤ 4 * m * S := by
+    nlinarith [sq_nonneg m]
+  have hκfac : (4 : ℝ) ≤ (κ + 1) ^ 2 := by
+    have hfac : 0 ≤ (κ - 1) * (κ + 3) :=
+      mul_nonneg (by linarith) (by linarith)
+    nlinarith
+  have hdenlower : 4 * (S * U) ≤ (S * U) * (κ + 1) ^ 2 := by
+    exact mul_le_mul_of_nonneg_left hκfac hSUpos.le
+  have hbasepos : 0 < 4 * (S * U) := by positivity
+  have hdenpos : 0 < (S * U) * (κ + 1) ^ 2 := by positivity
+  have hnumUpper0 : 0 ≤ 4 * m * S := by positivity
+  constructor
+  · exact div_nonneg hnum0 hdenpos.le
+  · calc
+      4 * m * (S - m) / ((S * U) * (κ + 1) ^ 2) ≤
+          (4 * m * S) / ((S * U) * (κ + 1) ^ 2) := by
+            exact div_le_div_of_nonneg_right hnumle hdenpos.le
+      _ ≤ (4 * m * S) / (4 * (S * U)) := by
+            exact div_le_div_of_nonneg_left hnumUpper0 hbasepos hdenlower
+      _ = m / U := by
+        field_simp [hS.ne', hU.ne']
+        ring
+
 end GppScalarBoxEndpointLinearization
 
 #print axioms GppScalarBoxEndpointLinearization.q_exact_linear_m
 #print axioms GppScalarBoxEndpointLinearization.q_nonneg_and_le_linear_m
 #print axioms GppScalarBoxEndpointLinearization.a_exact_linear_m
+#print axioms GppScalarBoxEndpointLinearization.a_nonneg_and_le_linear_m
