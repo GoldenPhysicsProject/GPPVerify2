@@ -68,7 +68,7 @@ theorem abs_li2Series_neg_a_div_one_sub_a_le_rho
   have hrewrite :
       (a / (1 - a)) / (1 - a / (1 - a)) = a / (1 - 2 * a) := by
     field_simp [hden.ne', h2a.ne', h2a']
-    ring
+    ring_nf
   rw [hrewrite] at hli
   calc
     |li2Series (-(a / (1 - a)))| ≤ a / (1 - 2 * a) := hli
@@ -164,7 +164,6 @@ theorem abs_specialRemainder_le
                 |(1 / 2 : ℝ) * (Real.log (1 - a)) ^ 2| +
                 |li2Series (-(a / (1 - a)))| + |li2Series a| := by
                   simp only [abs_neg]
-                  ring
     _ ≤ (48 / 19 : ℝ) * η + (648 / 289 : ℝ) * ρ ^ 2 +
         ((486 / 289 : ℝ) * ρ ^ 2 *
           (|Real.log ρ| + (81 / 32 : ℝ) * ρ)) +
