@@ -41,17 +41,17 @@ theorem celestialDelta_shadow (s : ℂ) :
 `Re Delta = 1`. -/
 theorem celestialDelta_re_eq_one_iff (s : ℂ) :
     (celestialDelta s).re = 1 ↔ s.re = 1 / 2 := by
-  unfold celestialDelta
-  simp only [map_mul, Complex.ofReal_ofNat_re]
-  constructor <;> intro h <;> norm_num at h ⊢ <;> linarith
+  change 2 * s.re = 1 ↔ s.re = 1 / 2
+  constructor <;> intro h <;> nlinarith
 
 /-- On the critical line, celestial shadow is complex conjugation after `Delta=2s`. -/
 theorem celestialDelta_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) :
     2 - celestialDelta s = (starRingEnd ℂ) (celestialDelta s) := by
   apply Complex.ext
-  · simp [celestialDelta, hs]
-    norm_num
-  · simp [celestialDelta]
+  · change 2 - 2 * s.re = 2 * s.re
+    nlinarith
+  · change -(2 * s.im) = -(2 * s.im)
+    rfl
 
 /-- The shadow character is exactly the reciprocal dilation character. -/
 theorem dilationCharacter_shadow_eq_inv (s : ℂ) (a : ℝ) :
