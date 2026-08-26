@@ -79,6 +79,12 @@ theorem conj_eq_shadow_of_re_eq_half {s : ℂ} (hs : s.re = 1 / 2) :
     norm_num
   · simp
 
+/-- A complex number of norm one has reciprocal equal to its Hermitian conjugate. -/
+lemma inv_eq_star_of_norm_one {z : ℂ} (hz : ‖z‖ = 1) :
+    z⁻¹ = (starRingEnd ℂ) z := by
+  rw [Complex.inv_def, Complex.normSq_eq_norm_sq, hz]
+  simp
+
 /-- On the critical line, the shadow dilation character is the Hermitian conjugate
 of the original character. -/
 theorem dilationCharacter_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) (a : ℝ) :
@@ -86,7 +92,7 @@ theorem dilationCharacter_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) (a : ℝ)
   rw [dilationCharacter_shadow_eq_inv]
   have hunit : ‖dilationCharacter s a‖ = 1 :=
     critical_line_dilation_unitary hs a
-  exact inv_eq_conj_of_norm_one hunit
+  exact inv_eq_star_of_norm_one hunit
 
 /-- Exact principal-series package: the critical line is equivalent to unitarity of the
 half-density dilation character at every real scale, while shadow acts there as Hermitian
@@ -114,5 +120,6 @@ end GppScaleShadow
 #print axioms GppScaleShadow.dilationCharacter_shadow_eq_inv
 #print axioms GppScaleShadow.dilationCharacter_shadow_involution
 #print axioms GppScaleShadow.conj_eq_shadow_of_re_eq_half
+#print axioms GppScaleShadow.inv_eq_star_of_norm_one
 #print axioms GppScaleShadow.dilationCharacter_shadow_eq_conj
 #print axioms GppScaleShadow.critical_line_iff_unitary_with_shadow
