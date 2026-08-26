@@ -25,8 +25,10 @@ theorem abs_log_one_sub_le_three_halves
   have h := Complex.norm_log_one_add_half_le_self hz
   have hpos : 0 ≤ 1 - x := by linarith
   have hlog : Complex.log ((1 - x : ℝ) : ℂ) = (Real.log (1 - x) : ℂ) := by
-    simpa using Complex.ofReal_log hpos
-  have hone : (1 : ℂ) + (-(x : ℂ)) = ((1 - x : ℝ) : ℂ) := by norm_num
+    simpa using (Complex.ofReal_log hpos).symm
+  have hone : (1 : ℂ) + (-(x : ℂ)) = ((1 - x : ℝ) : ℂ) := by
+    push_cast
+    ring
   rw [hone, hlog] at h
   simpa [Complex.norm_real, abs_of_nonneg hx0] using h
 
@@ -35,8 +37,12 @@ theorem half_log_one_sub_sq_le
     {x : ℝ} (hx0 : 0 ≤ x) (hx : x ≤ 1 / 2) :
     (1 / 2 : ℝ) * (Real.log (1 - x)) ^ 2 ≤ (9 / 8 : ℝ) * x ^ 2 := by
   have h := abs_log_one_sub_le_three_halves hx0 hx
-  have hsquare : (Real.log (1 - x)) ^ 2 ≤ ((3 / 2 : ℝ) * x) ^ 2 := by
-    nlinarith [sq_nonneg (|Real.log (1 - x)| - (3 / 2 : ℝ) * x)]
+  have hrhs0 : 0 ≤ (3 / 2 : ℝ) * x := by positivity
+  have habsSq : |Real.log (1 - x)| ^ 2 = (Real.log (1 - x)) ^ 2 := by
+    rw [sq_abs]
+  have hsquareAbs : |Real.log (1 - x)| ^ 2 ≤ ((3 / 2 : ℝ) * x) ^ 2 := by
+    nlinarith [sq_nonneg ((3 / 2 : ℝ) * x - |Real.log (1 - x)|)]
+  rw [habsSq] at hsquareAbs
   nlinarith
 
 /-- The scalar-box lower endpoint inherits a linear logarithmic regulator bound.
