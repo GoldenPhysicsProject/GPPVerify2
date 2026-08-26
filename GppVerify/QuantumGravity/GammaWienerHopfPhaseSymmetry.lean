@@ -19,13 +19,13 @@ open GppGammaWienerHopf
 /-- Real-axis Gamma phase ratio. -/
 noncomputable def Q (k : ℝ) : ℂ := Hminus k / Hplus k
 
-/-- The real-axis phase ratio never vanishes. -/
+/-- The real-axis Gamma phase ratio never vanishes. -/
 theorem Q_ne_zero (k : ℝ) : Q k ≠ 0 := by
   unfold Q
   exact div_ne_zero (Hminus_ne_zero k) (Hplus_ne_zero k)
 
 /-- Exact conjugate-reciprocal symmetry of the Gamma phase. -/
-theorem conj_Q_eq_inv (k : ℝ) : conj (Q k) = (Q k)⁻¹ := by
+theorem conj_Q_eq_inv (k : ℝ) : Complex.conj (Q k) = (Q k)⁻¹ := by
   unfold Q
   rw [map_div]
   rw [Hminus_eq_conj_Hplus]
@@ -37,7 +37,7 @@ theorem norm_Q (k : ℝ) : ‖Q k‖ = 1 := by
 
 /-- Every chamber power keeps conjugate-reciprocal symmetry. -/
 theorem conj_Q_pow_eq_inv_pow (m : ℕ) (k : ℝ) :
-    conj ((Q k) ^ m) = ((Q k) ^ m)⁻¹ := by
+    Complex.conj ((Q k) ^ m) = ((Q k) ^ m)⁻¹ := by
   rw [map_pow, conj_Q_eq_inv, inv_pow]
 
 end GppGammaWienerHopfPhase
