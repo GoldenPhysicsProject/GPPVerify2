@@ -1,40 +1,47 @@
-import GppVerify.RiemannHypothesis.ZetaGibbsFisherStrict
-import Mathlib.Topology.Algebra.InfiniteSum.Order
+import GppVerify.RiemannHypothesis.ZetaGibbsFisher
+import GppVerify.RiemannHypothesis.WeightedVarianceInfiniteStrict
 import Mathlib.Tactic
 
 /-!
 # Strict thermodynamic stability of the zeta Gibbs gas
 
-The project already identifies the genuine Gibbs log-energy variance with the positive
-von-Mangoldt Fisher series.  This file upgrades the existing weak inequalities to strict
-ones by using the single `n = 2` arithmetic mode as a witness.
+The honest Gibbs distribution already has two positive support points with distinct
+log-energies: `n = 0` has energy `log 1 = 0`, while `n = 1` has energy `log 2 > 0`.
+The generic strict weighted-variance theorem therefore upgrades the existing weak
+thermodynamic inequalities without using the stale von-Mangoldt strict-derivative chain.
 -/
 
 namespace GppZetaGibbsStrictThermodynamics
 
-open ArithmeticFunction
+open GppZetaGibbsSummability
 open GppZetaGibbsFisher
-open GppZetaFisherStrictMonotonicity
-open GppZetaGibbsFisherStrict
+open GppWeightedVarianceInfiniteStrict
 
-/-- The `n = 2` Fisher mode is strictly positive at every real inverse temperature. -/
-theorem fisherSummand_two_pos (β : ℝ) : 0 < fisherSummand β 2 := by
-  unfold fisherSummand
-  rw [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
-  have hlog : 0 < Real.log (2 : ℝ) := Real.log_pos (by norm_num)
-  positivity
-
-/-- The full arithmetic Fisher series is strictly positive for every `β > 1`. -/
-theorem fisher_tsum_pos {β : ℝ} (hβ : 1 < β) :
-    0 < ∑' n : ℕ, fisherSummand β n := by
-  exact (summable_fisherSummand hβ).tsum_pos
-    (fisherSummand_nonneg β) 2 (fisherSummand_two_pos β)
-
-/-- The genuine zeta-Gibbs Fisher metric / log-energy variance is strictly positive. -/
+/-- The genuine zeta-Gibbs log-energy variance is strictly positive for `β > 1`. -/
 theorem logEnergyVariance_pos {β : ℝ} (hβ : 1 < β) :
     0 < logEnergyVariance β := by
-  rw [logEnergyVariance_eq_fisher_tsum hβ]
-  exact fisher_tsum_pos hβ
+  have hw : ∀ n, 0 ≤ gibbsWeight β n := by
+    intro n
+    unfold gibbsWeight
+    positivity
+  have hw0 : 0 < gibbsWeight β 0 := by
+    unfold gibbsWeight
+    norm_num
+  have hw1 : 0 < gibbsWeight β 1 := by
+    unfold gibbsWeight
+    positivity
+  have hx01 : logEnergy 0 ≠ logEnergy 1 := by
+    simp only [logEnergy, Nat.cast_add, Nat.cast_zero, Nat.cast_one]
+    norm_num
+    exact ne_of_lt (Real.log_pos (by norm_num : (1 : ℝ) < 2))
+  unfold logEnergyVariance M2 M1 Z
+  exact normalized_weighted_variance_pos_tsum
+    (gibbsWeight β) logEnergy hw
+    (summable_gibbsWeight hβ)
+    (summable_gibbsWeight_mul_logEnergy hβ)
+    (summable_gibbsWeight_mul_logEnergy_sq hβ)
+    (gibbsWeight_tsum_pos hβ)
+    hw0 hw1 hx01
 
 /-- Strict positive heat capacity on the honest Gibbs domain. -/
 theorem heatCapacity_pos {β : ℝ} (hβ : 1 < β) :
@@ -52,7 +59,6 @@ theorem entropyBetaDerivative_neg {β : ℝ} (hβ : 1 < β) :
 
 end GppZetaGibbsStrictThermodynamics
 
-#print axioms GppZetaGibbsStrictThermodynamics.fisher_tsum_pos
 #print axioms GppZetaGibbsStrictThermodynamics.logEnergyVariance_pos
 #print axioms GppZetaGibbsStrictThermodynamics.heatCapacity_pos
 #print axioms GppZetaGibbsStrictThermodynamics.entropyBetaDerivative_neg
