@@ -23,7 +23,7 @@ open GppScalarBoxEndpointLinearization
 open GppScalarBoxRegulatorBounds
 
 /-- Dimensionless multiplicative correction in `a=(m/U)A`. -/
-def endpointA (η κ : ℝ) : ℝ :=
+noncomputable def endpointA (η κ : ℝ) : ℝ :=
   4 * (1 - η) / (1 + κ) ^ 2
 
 /-- For `c ≤ x ≤ 1` with `c>0`, the negative logarithm is bounded by the relative
@@ -38,7 +38,6 @@ theorem abs_log_le_one_sub_div_lower
   rw [Real.log_inv] at hinvlog
   have hrewrite : x⁻¹ - 1 = (1 - x) / x := by
     field_simp [hx.ne']
-    ring
   rw [hrewrite] at hinvlog
   have hnum0 : 0 ≤ 1 - x := sub_nonneg.mpr hx1
   have hratio : (1 - x) / x ≤ (1 - x) / c := by
