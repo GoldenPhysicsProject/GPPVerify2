@@ -36,8 +36,10 @@ theorem log_one_sub_div_tendsto_neg_one :
     convert (hasDerivAt_const (0 : ℝ) (1 : ℝ)).sub (hasDerivAt_id 0) using 1 <;> ring
   have hlog1 : HasDerivAt Real.log 1 1 := by
     simpa using Real.hasDerivAt_log (by norm_num : (1 : ℝ) ≠ 0)
+  have hlog1' : HasDerivAt Real.log 1 ((fun y : ℝ => 1 - y) 0) := by
+    simpa using hlog1
   have hlog : HasDerivAt (fun y : ℝ => Real.log (1 - y)) (-1) 0 := by
-    simpa using hlog1.comp 0 hone_sub
+    simpa using hlog1'.comp 0 hone_sub
   have hright :
       𝓝[Ioo (0 : ℝ) 1] 0 ≤ 𝓝[>] (0 : ℝ) := by
     rw [nhdsWithin_le_iff]
