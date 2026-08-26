@@ -10,7 +10,7 @@ The pinned Mathlib version proves
 
   sum_{n>=0} z^n/n = -Log(1-z)
 
-on the open unit disk as `Complex.hasSum_taylorSeries_neg_log`.  Its `n=0` term is
+on the open unit disk as `Complex.hasSum_taylorSeries_neg_log`. Its `n=0` term is
 zero, so shifting the index and taking real parts gives the exact real-axis form needed
 to identify the termwise derivative of the project's local dilogarithm series.
 -/
@@ -25,14 +25,18 @@ theorem hasSum_pow_succ_div_succ_eq_neg_log
       (-Real.log (1 - x)) := by
   have hxc : ‖(x : ℂ)‖ < 1 := by
     simpa [Complex.norm_real] using hx
-  have hcomplex := Complex.hasSum_taylorSeries_neg_log hxc
+  have hcomplex :
+      HasSum (fun n : ℕ => (x : ℂ) ^ n / (n : ℂ))
+        (-Complex.log (1 - (x : ℂ))) :=
+    Complex.hasSum_taylorSeries_neg_log hxc
   have htail :
       HasSum
         (fun n : ℕ => (x : ℂ) ^ (n + 1) / ((n + 1 : ℕ) : ℂ))
         (-Complex.log (1 - (x : ℂ))) := by
-    apply (hasSum_nat_add_iff 1).2
+    apply (hasSum_nat_add_iff
+      (f := fun m : ℕ => (x : ℂ) ^ m / (m : ℂ)) 1).2
     simpa using hcomplex
-  have hre := hasSum_re htail
+  have hre := Complex.hasSum_re htail
   simpa [Complex.log_ofReal_re] using hre
 
 /-- After dividing by a nonzero `x`, the derivative series is exactly
@@ -43,8 +47,7 @@ theorem hasSum_pow_div_succ_eq_neg_log_div
       (fun n : ℕ => x ^ n / ((n + 1 : ℕ) : ℝ))
       (-Real.log (1 - x) / x) := by
   have h := (hasSum_pow_succ_div_succ_eq_neg_log hx).div_const x
-  refine h.congr ?_
-  intro n
+  convert h using 1 with n
   rw [pow_succ]
   have hn : (((n + 1 : ℕ) : ℝ)) ≠ 0 := by positivity
   field_simp [hx0, hn]
