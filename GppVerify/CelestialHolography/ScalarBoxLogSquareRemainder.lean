@@ -18,6 +18,21 @@ final `m log^2 m -> 0` regulator remainder.
 
 namespace GppScalarBoxLogSquareRemainder
 
+/-- Certified lower-endpoint logarithmic error scale. -/
+def lowerLogError (δ η : ℝ) : ℝ :=
+  (289 / 192 : ℝ) * (η + (33 / 64 : ℝ) * δ)
+
+/-- Certified pole-endpoint logarithmic error scale. -/
+def poleLogError (δ η : ℝ) : ℝ :=
+  (103 / 68 : ℝ) * δ + (1 / 3 : ℝ) * (δ * η) + (4 / 3 : ℝ) * η
+
+/-- Both certified error scales are nonnegative on the physical chamber. -/
+theorem logError_nonneg
+    {δ η : ℝ} (hδ : 0 ≤ δ) (hη : 0 ≤ η) :
+    0 ≤ lowerLogError δ η ∧ 0 ≤ poleLogError δ η := by
+  unfold lowerLogError poleLogError
+  constructor <;> positivity
+
 /-- If `x` differs from `y` by at most `E`, then their squares differ by at most
 `E * (2 * |y| + E)`. -/
 theorem abs_sq_sub_sq_le_of_abs_sub_le
@@ -74,7 +89,25 @@ theorem abs_log_square_pair_remainder_le
     _ ≤ Ea * (2 * |Real.log (m / U)| + Ea) +
         Et * (2 * |Real.log (m / S)| + Et) := add_le_add ha2 ht2
 
+/-- The scalar-box specialization with the exact endpoint error scales already
+proved in `ScalarBoxLogScaleBounds` and `ScalarBoxPoleLogScaleBounds`. -/
+theorem abs_log_square_pair_remainder_le_regulator
+    {a t m S U δ η : ℝ}
+    (hδ : 0 ≤ δ) (hη : 0 ≤ η)
+    (ha : |Real.log a - Real.log (m / U)| ≤ lowerLogError δ η)
+    (ht : |Real.log t - Real.log (m / S)| ≤ poleLogError δ η) :
+    |((Real.log a) ^ 2 - (Real.log t) ^ 2) -
+      ((Real.log (m / U)) ^ 2 - (Real.log (m / S)) ^ 2)| ≤
+      lowerLogError δ η *
+          (2 * |Real.log (m / U)| + lowerLogError δ η) +
+      poleLogError δ η *
+          (2 * |Real.log (m / S)| + poleLogError δ η) := by
+  rcases logError_nonneg hδ hη with ⟨hEa, hEt⟩
+  exact abs_log_square_pair_remainder_le hEa hEt ha ht
+
 end GppScalarBoxLogSquareRemainder
 
+#print axioms GppScalarBoxLogSquareRemainder.logError_nonneg
 #print axioms GppScalarBoxLogSquareRemainder.abs_sq_sub_sq_le_of_abs_sub_le
 #print axioms GppScalarBoxLogSquareRemainder.abs_log_square_pair_remainder_le
+#print axioms GppScalarBoxLogSquareRemainder.abs_log_square_pair_remainder_le_regulator
