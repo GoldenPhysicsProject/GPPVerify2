@@ -34,7 +34,6 @@ the defining real power series. -/
 theorem li2NegativeExtension_eq_series_neg
     {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1) :
     li2NegativeExtension (-x) = li2Series (-x) := by
-  have hden : (1 + x : ℝ) ≠ 0 := by linarith
   have harg : (-(-x)) / (1 - (-x)) = x / (1 + x) := by ring
   have hlogarg : 1 - (-x) = 1 + x := by ring
   have hL := li2Series_landen hx0 hx1
@@ -75,7 +74,6 @@ theorem hasDerivAt_li2NegativeExtension
   have hone_minus : 1 - a = 1 / (1 - y) := by
     dsimp [a]
     field_simp [hden]
-    ring
   have hrecipne : (1 / (1 - y) : ℝ) ≠ 0 := one_div_ne_zero hden
   have hlogrecip : Real.log (1 / (1 - y)) = -Real.log (1 - y) := by
     have hm := Real.log_mul hrecipne hden
@@ -108,7 +106,7 @@ theorem hasDerivAt_li2NegativeExtension
     ring
   unfold li2NegativeExtension
   convert hsum using 1
-  exact hcoef.symm
+  simpa [sub_eq_add_neg] using hcoef.symm
 
 end GppRegulatedBoxDilogNegativeExtension
 
