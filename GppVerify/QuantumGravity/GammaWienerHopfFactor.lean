@@ -37,8 +37,9 @@ noncomputable def Hminus (k : ℝ) : ℂ :=
 theorem Hminus_eq_conj_Hplus (k : ℝ) :
     Hminus k = conj (Hplus k) := by
   unfold Hminus Hplus
-  rw [map_div, map_pow, ← Complex.Gamma_conj]
-  congr 2 <;> simp
+  rw [starRingEnd_apply, star_div, star_pow]
+  rw [← starRingEnd_apply, ← Complex.Gamma_conj]
+  simp
 
 /-- Consequently the two real-axis factors have exactly the same modulus. -/
 theorem norm_Hminus_eq_norm_Hplus (k : ℝ) :
@@ -73,6 +74,7 @@ theorem Hplus_mul_Hminus (k : ℝ) :
           (Real.pi / Real.cosh (k / 2)) ^ 2 / Real.pi ^ 2 =
             1 / Real.cosh (k / 2) ^ 2 := by
         field_simp [Real.pi_ne_zero, hcosh]
+        ring
       exact_mod_cast hreal
 
 /-- The upper real-axis Gamma factor never vanishes.  This follows directly from
