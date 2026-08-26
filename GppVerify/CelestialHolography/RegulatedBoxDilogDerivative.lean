@@ -78,7 +78,8 @@ theorem hasDerivAt_li2Series
     have hxabs : |x| < 1 := by simpa [abs_of_pos hx0] using hx1
     simpa [g'] using tsum_pow_div_succ_eq_neg_log_div hxabs hx0.ne'
   rw [hsum] at H
-  simpa [li2Series, g, Nat.cast_add, Nat.cast_one] using H
+  change HasDerivAt (fun z : ℝ => ∑' n : ℕ, g n z) (-Real.log (1 - x) / x) x
+  exact H
 
 end GppRegulatedBoxDilogDerivative
 
