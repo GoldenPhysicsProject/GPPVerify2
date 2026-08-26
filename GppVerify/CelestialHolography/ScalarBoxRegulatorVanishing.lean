@@ -60,6 +60,17 @@ theorem tendsto_mul_abs_log_div_const_nhdsGT_zero
   filter_upwards [self_mem_nhdsWithin] with m hmpos
   rw [abs_mul, abs_of_pos hmpos]
 
+/-- One additional power of the regulator also kills a shifted absolute logarithm. -/
+theorem tendsto_sq_mul_abs_log_div_const_nhdsGT_zero
+    {C : ℝ} (hC : 0 < C) :
+    Tendsto (fun m : ℝ => m ^ 2 * |Real.log (m / C)|) (𝓝[>] 0) (𝓝 0) := by
+  have hm : Tendsto (fun m : ℝ => m) (𝓝[>] 0) (𝓝 0) := by
+    exact (continuousAt_id.tendsto).mono_left inf_le_left
+  have h := hm.mul (tendsto_mul_abs_log_div_const_nhdsGT_zero hC)
+  apply h.congr'
+  filter_upwards with m
+  ring
+
 /-- The corresponding quadratic logarithmic remainder vanishes as well. -/
 theorem tendsto_sq_mul_log_div_const_sq_nhdsGT_zero
     {C : ℝ} (hC : 0 < C) :
@@ -82,12 +93,7 @@ theorem tendsto_poly_error_log_square_majorant
   have hE : Tendsto (fun m : ℝ => A * m + B * m ^ 2) (𝓝[>] 0) (𝓝 0) := by
     simpa using (hm.const_mul A).add (hm2.const_mul B)
   have hmlog := tendsto_mul_abs_log_div_const_nhdsGT_zero hC
-  have hm2log :
-      Tendsto (fun m : ℝ => m ^ 2 * |Real.log (m / C)|) (𝓝[>] 0) (𝓝 0) := by
-    have h := hm.mul hmlog
-    apply h.congr'
-    filter_upwards with m
-    ring
+  have hm2log := tendsto_sq_mul_abs_log_div_const_nhdsGT_zero hC
   have hElog :
       Tendsto
         (fun m : ℝ => (A * m + B * m ^ 2) * |Real.log (m / C)|)
@@ -160,6 +166,7 @@ end GppScalarBoxRegulatorVanishing
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_sq_mul_log_sq_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_log_div_const_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_abs_log_div_const_nhdsGT_zero
+#print axioms GppScalarBoxRegulatorVanishing.tendsto_sq_mul_abs_log_div_const_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_sq_mul_log_div_const_sq_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_poly_error_log_square_majorant
 #print axioms GppScalarBoxRegulatorVanishing.lowerLogError_regulator_polynomial
