@@ -90,6 +90,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxPrefactorRemainder
 
+      - name: Scalar-box convergence assembly
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxConvergenceAssembly
+
       - name: Scalar-box special-function remainder
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxSpecialFunctionRemainder
