@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: ["main", "codex/lean-workbench"]
 
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: lake build
