@@ -24,7 +24,7 @@ theorem summable_weight_mul_polynomial_eval
     Summable (fun n : ℕ => w n * p.eval (x n)) := by
   induction p using Polynomial.induction_on' with
   | add p q hp hq =>
-      have h := (hp hpow).add (hq hpow)
+      have h := hp.add hq
       exact h.congr (fun n => by simp [mul_add])
   | monomial r a =>
       have h := (hpow r).mul_left a
