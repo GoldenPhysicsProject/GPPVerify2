@@ -1,5 +1,6 @@
 import GppVerify.CelestialHolography.ScalarBoxStructuredRemainder
 import GppVerify.CelestialHolography.ScalarBoxPhysicalSpecialRemainder
+import GppVerify.CelestialHolography.ScalarBoxSpecialRemainderVanishing
 import GppVerify.CelestialHolography.ScalarBoxRegulatorVanishing
 import GppVerify.CelestialHolography.ScalarBoxD0PrefactorVanishing
 import Mathlib.Tactic
