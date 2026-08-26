@@ -1,8 +1,6 @@
 name: Spence debug
 
 on:
-  push:
-    branches: ["codex/lean-workbench"]
   workflow_dispatch:
 
 jobs:
