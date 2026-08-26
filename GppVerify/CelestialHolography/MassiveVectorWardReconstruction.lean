@@ -81,9 +81,34 @@ theorem double_massive_projector_eq_fiveDim_product
   rw [massive_projector_eq_fiveDim_contraction hμ₁ hμ₁0 hL₁ hR₁]
   rw [massive_projector_eq_fiveDim_contraction hμ₂ hμ₂0 hL₂ hR₂]
 
+/-- The exact error made by replacing both massive-vector projectors by bare 4D metric
+contractions.  There are three omitted pieces: the two single-longitudinal cross terms
+and the double-longitudinal term. -/
+theorem double_projector_sub_double_bare_metric
+    {j4dot₁ pJL₁ pJR₁ jL5₁ jR5₁ κ₁ μ₁ : ℝ}
+    {j4dot₂ pJL₂ pJR₂ jL5₂ jR5₂ κ₂ μ₂ : ℝ}
+    (hμ₁ : μ₁ ^ 2 = κ₁ ^ 2)
+    (hμ₁0 : μ₁ ≠ 0)
+    (hL₁ : pJL₁ = κ₁ * jL5₁)
+    (hR₁ : pJR₁ = κ₁ * jR5₁)
+    (hμ₂ : μ₂ ^ 2 = κ₂ ^ 2)
+    (hμ₂0 : μ₂ ≠ 0)
+    (hL₂ : pJL₂ = κ₂ * jL5₂)
+    (hR₂ : pJR₂ = κ₂ * jR5₂) :
+    (-j4dot₁ + pJL₁ * pJR₁ / μ₁ ^ 2) *
+        (-j4dot₂ + pJL₂ * pJR₂ / μ₂ ^ 2) -
+      ((-j4dot₁) * (-j4dot₂)) =
+    (-j4dot₁) * (jL5₂ * jR5₂) +
+      (jL5₁ * jR5₁) * (-j4dot₂) +
+      (jL5₁ * jR5₁) * (jL5₂ * jR5₂) := by
+  rw [double_massive_projector_eq_fiveDim_product
+    hμ₁ hμ₁0 hL₁ hR₁ hμ₂ hμ₂0 hL₂ hR₂]
+  ring
+
 end GppMassiveVectorWardReconstruction
 
 #print axioms GppMassiveVectorWardReconstruction.longitudinal_term_eq_fifth_current
 #print axioms GppMassiveVectorWardReconstruction.massive_projector_eq_fiveDim_contraction
 #print axioms GppMassiveVectorWardReconstruction.massive_projector_sub_bare_metric_eq_fifth_current
 #print axioms GppMassiveVectorWardReconstruction.double_massive_projector_eq_fiveDim_product
+#print axioms GppMassiveVectorWardReconstruction.double_projector_sub_double_bare_metric
