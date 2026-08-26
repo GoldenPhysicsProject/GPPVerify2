@@ -37,8 +37,8 @@ jobs:
       - name: Real dilogarithm inversion kernel
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogInversionKernel
 
-      - name: Strict zeta Gibbs thermodynamics
-        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
-
       - name: Gamma real-axis phase symmetry
         run: lake build GppVerify.QuantumGravity.GammaWienerHopfPhaseSymmetry
+
+      - name: Strict zeta Gibbs thermodynamics
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
