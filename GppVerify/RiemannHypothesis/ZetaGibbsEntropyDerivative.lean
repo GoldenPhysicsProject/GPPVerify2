@@ -40,11 +40,14 @@ theorem hasDerivAt_zetaEntropy
     HasDerivAt zetaEntropy (entropyBetaDerivative β) β := by
   have hA := hasDerivAt_zetaLogPartition hβ
   have hU := hasDerivAt_zetaMeanEnergy hβ
-  have hβid : HasDerivAt (fun x : ℝ => x) 1 β := hasDerivAt_id β
-  have hβU := hβid.mul hU
-  have hS := hA.add hβU
-  convert hS using 1 <;>
-    simp [zetaEntropy, entropyBetaDerivative] <;> ring
+  have hS := hA.add ((hasDerivAt_id β).mul hU)
+  have hcoef :
+      -zetaMeanEnergy β +
+          (1 * zetaMeanEnergy β + β * (-logEnergyVariance β)) =
+        entropyBetaDerivative β := by
+    unfold entropyBetaDerivative
+    ring
+  simpa only [zetaEntropy, hcoef] using hS
 
 /-- Consequently the zeta Gibbs entropy is strictly decreasing with inverse temperature
 throughout the honest Gibbs domain. -/
