@@ -34,8 +34,42 @@ theorem tendsto_sq_mul_log_sq_nhdsGT_zero :
     Tendsto (fun m : ℝ => (m * Real.log m) ^ 2) (𝓝[>] 0) (𝓝 0) := by
   simpa using tendsto_mul_log_nhdsGT_zero.pow 2
 
+/-- Multiplying a shifted regulator logarithm by `m` still kills the logarithmic
+singularity for every fixed positive scale `C`. -/
+theorem tendsto_mul_log_div_const_nhdsGT_zero
+    {C : ℝ} (hC : 0 < C) :
+    Tendsto (fun m : ℝ => m * Real.log (m / C)) (𝓝[>] 0) (𝓝 0) := by
+  have hm : Tendsto (fun m : ℝ => m) (𝓝[>] 0) (𝓝 0) := by
+    exact (continuousAt_id.tendsto).mono_left inf_le_left
+  have hconst :
+      Tendsto (fun m : ℝ => m * Real.log C) (𝓝[>] 0) (𝓝 0) := by
+    simpa using hm.mul_const (Real.log C)
+  have hdiff := tendsto_mul_log_nhdsGT_zero.sub hconst
+  apply hdiff.congr'
+  filter_upwards [self_mem_nhdsWithin] with m hmpos
+  rw [Real.log_div hmpos.ne' hC.ne']
+  ring
+
+/-- Absolute-value form used by the explicit scalar-box remainder bounds. -/
+theorem tendsto_mul_abs_log_div_const_nhdsGT_zero
+    {C : ℝ} (hC : 0 < C) :
+    Tendsto (fun m : ℝ => m * |Real.log (m / C)|) (𝓝[>] 0) (𝓝 0) := by
+  have h := (tendsto_mul_log_div_const_nhdsGT_zero hC).abs
+  apply h.congr'
+  filter_upwards [self_mem_nhdsWithin] with m hmpos
+  rw [abs_mul, abs_of_pos hmpos]
+
+/-- The corresponding quadratic logarithmic remainder vanishes as well. -/
+theorem tendsto_sq_mul_log_div_const_sq_nhdsGT_zero
+    {C : ℝ} (hC : 0 < C) :
+    Tendsto (fun m : ℝ => (m * Real.log (m / C)) ^ 2) (𝓝[>] 0) (𝓝 0) := by
+  simpa using (tendsto_mul_log_div_const_nhdsGT_zero hC).pow 2
+
 end GppScalarBoxRegulatorVanishing
 
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_log_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_abs_mul_log_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_sq_mul_log_sq_nhdsGT_zero
+#print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_log_div_const_nhdsGT_zero
+#print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_abs_log_div_const_nhdsGT_zero
+#print axioms GppScalarBoxRegulatorVanishing.tendsto_sq_mul_log_div_const_sq_nhdsGT_zero
