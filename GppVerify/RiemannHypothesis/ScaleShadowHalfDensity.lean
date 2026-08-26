@@ -22,9 +22,35 @@ namespace GppScaleShadow
 open Complex
 open GppScaleMass
 
+/-- Project celestial dictionary from the Mellin coordinate to scalar dimension. -/
+noncomputable def celestialDelta (s : ℂ) : ℂ := 2 * s
+
 /-- Shadow negates the half-density-centered exponent. -/
 lemma shadow_centered_exponent (s : ℂ) :
     (1 - s) - (1 / 2 : ℂ) = -(s - (1 / 2 : ℂ)) := by
+  ring
+
+/-- The project dictionary `Delta = 2s` exactly intertwines the Riemann reflection
+`s -> 1-s` with the scalar celestial shadow `Delta -> 2-Delta`. -/
+theorem celestialDelta_shadow (s : ℂ) :
+    celestialDelta (1 - s) = 2 - celestialDelta s := by
+  unfold celestialDelta
+  ring
+
+/-- The Riemann critical line maps exactly to the scalar celestial principal line
+`Re Delta = 1`. -/
+theorem celestialDelta_re_eq_one_iff (s : ℂ) :
+    (celestialDelta s).re = 1 ↔ s.re = 1 / 2 := by
+  unfold celestialDelta
+  simp only [map_mul, Complex.ofReal_ofNat_re]
+  constructor <;> intro h <;> norm_num at h ⊢ <;> linarith
+
+/-- On the critical line, celestial shadow is complex conjugation after `Delta=2s`. -/
+theorem celestialDelta_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) :
+    2 - celestialDelta s = (starRingEnd ℂ) (celestialDelta s) := by
+  have hsconj : (starRingEnd ℂ) s = 1 - s := conj_eq_shadow_of_re_eq_half hs
+  rw [celestialDelta, map_mul, hsconj]
+  simp only [map_ofNat]
   ring
 
 /-- The shadow character is exactly the reciprocal dilation character. -/
@@ -88,6 +114,9 @@ theorem critical_line_iff_unitary_with_shadow {s : ℂ} {a : ℝ}
 
 end GppScaleShadow
 
+#print axioms GppScaleShadow.celestialDelta_shadow
+#print axioms GppScaleShadow.celestialDelta_re_eq_one_iff
+#print axioms GppScaleShadow.celestialDelta_shadow_eq_conj
 #print axioms GppScaleShadow.dilationCharacter_shadow_eq_inv
 #print axioms GppScaleShadow.dilationCharacter_shadow_involution
 #print axioms GppScaleShadow.conj_eq_shadow_of_re_eq_half
