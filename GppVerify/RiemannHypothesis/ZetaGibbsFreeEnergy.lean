@@ -41,23 +41,21 @@ theorem beta_mul_freeEnergy_eq_neg_logZ
     {β : ℝ} (hβ : β ≠ 0) :
     β * freeEnergy β = -Real.log (Z β) := by
   unfold freeEnergy
-  field_simp [hβ]
+  field_simp [hβ] <;> ring
 
 /-- Exact Legendre relation `F = U - S/β` away from the singular coordinate `β=0`. -/
 theorem freeEnergy_eq_internalEnergy_sub_entropy_div
     {β : ℝ} (hβ : β ≠ 0) :
     freeEnergy β = internalEnergy β - entropy β / β := by
   unfold freeEnergy entropy
-  field_simp [hβ]
-  ring
+  field_simp [hβ] <;> ring
 
 /-- Equivalent entropy/free-energy relation `S = β(U-F)` away from `β=0`. -/
 theorem entropy_eq_beta_mul_internalEnergy_sub_freeEnergy
     {β : ℝ} (hβ : β ≠ 0) :
     entropy β = β * (internalEnergy β - freeEnergy β) := by
   unfold entropy freeEnergy
-  field_simp [hβ]
-  ring
+  field_simp [hβ] <;> ring
 
 /-- Massieu/Legendre balance: `S + βF = βU`. -/
 theorem entropy_add_beta_mul_freeEnergy_eq_beta_mul_internalEnergy
