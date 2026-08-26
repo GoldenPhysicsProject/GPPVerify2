@@ -38,6 +38,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogInversionKernel
 
+      - name: Real dilogarithm punctured-unit-disk derivative
+        if: always()
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogDerivativeUnitDisk
+
       - name: Gamma real-axis phase symmetry
         if: always()
         run: lake build GppVerify.QuantumGravity.GammaWienerHopfPhaseSymmetry
@@ -49,3 +53,7 @@ jobs:
       - name: Strict zeta Gibbs thermodynamics
         if: always()
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
+
+      - name: Massive-vector 5D Ward reconstruction
+        if: always()
+        run: lake build GppVerify.CelestialHolography.MassiveVectorWardReconstruction
