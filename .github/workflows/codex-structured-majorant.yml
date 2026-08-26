@@ -34,4 +34,11 @@ jobs:
       - name: Get Mathlib cache
         run: lake exe cache get || true
       - name: Structured physical scalar-box majorant
+        if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxStructuredPhysicalMajorant
+      - name: Physical structured scalar-box core bound
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxPhysicalCoreBound
+      - name: Structured physical scalar-box convergence
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxStructuredPhysicalConvergence
