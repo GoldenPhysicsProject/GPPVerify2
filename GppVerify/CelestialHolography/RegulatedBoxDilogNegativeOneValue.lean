@@ -81,12 +81,14 @@ theorem landen_at_one_endpoint :
   haveI : NeBot L := by
     dsimp [L]
     exact right_nhdsWithin_Ioo_neBot (by norm_num : (0 : ℝ) < 1)
-  exact (tendsto_nhds_unique hlimit hzero)
+  exact tendsto_nhds_unique hlimit hzero
 
 /-- Spence at one half, with the logarithm written as `log 2`. -/
 theorem two_mul_li2Series_half :
     2 * li2Series (1 / 2 : ℝ) = Real.pi ^ 2 / 6 - (Real.log 2) ^ 2 := by
   have hs := li2Series_spence (x := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
+  have hhalfsub : (1 : ℝ) - 1 / 2 = 1 / 2 := by norm_num
+  rw [hhalfsub] at hs
   have hhalfne : (1 / 2 : ℝ) ≠ 0 := by norm_num
   have htwone : (2 : ℝ) ≠ 0 := by norm_num
   have hlogmul := Real.log_mul hhalfne htwone
@@ -94,7 +96,6 @@ theorem two_mul_li2Series_half :
   rw [hmul, Real.log_one] at hlogmul
   have hloghalf : Real.log (1 / 2 : ℝ) = -Real.log 2 := by
     linarith
-  norm_num at hs ⊢
   rw [hloghalf] at hs
   nlinarith
 
