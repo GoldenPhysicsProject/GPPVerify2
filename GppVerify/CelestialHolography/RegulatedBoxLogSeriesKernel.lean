@@ -11,8 +11,9 @@ The pinned Mathlib version proves
   sum_{n>=0} z^n/n = -Log(1-z)
 
 on the open unit disk as `Complex.hasSum_taylorSeries_neg_log`. Its `n=0` term is
-zero, so shifting the index and taking real parts gives the exact real-axis form needed
-to identify the termwise derivative of the project's local dilogarithm series.
+zero, so shifting the index and then using the real-axis `ofReal` embedding gives the
+exact real form needed to identify the termwise derivative of the project's local
+dilogarithm series.
 -/
 
 namespace GppRegulatedBoxLogSeriesKernel
@@ -36,8 +37,14 @@ theorem hasSum_pow_succ_div_succ_eq_neg_log
     apply (hasSum_nat_add_iff
       (f := fun m : ℕ => (x : ℂ) ^ m / (m : ℂ)) 1).2
     simpa using hcomplex
-  have hre := Complex.hasSum_re htail
-  simpa [Complex.log_ofReal_re] using hre
+  have hx1 : x < 1 := lt_of_le_of_lt (le_abs_self x) hx
+  have hpos : 0 ≤ 1 - x := (sub_pos.mpr hx1).le
+  rw [← Complex.hasSum_ofReal]
+  convert htail using 1
+  · funext n
+    norm_cast
+  · rw [map_neg, Complex.ofReal_log hpos]
+    norm_cast
 
 /-- After dividing by a nonzero `x`, the derivative series is exactly
 `-log(1-x)/x`. -/
@@ -47,10 +54,15 @@ theorem hasSum_pow_div_succ_eq_neg_log_div
       (fun n : ℕ => x ^ n / ((n + 1 : ℕ) : ℝ))
       (-Real.log (1 - x) / x) := by
   have h := (hasSum_pow_succ_div_succ_eq_neg_log hx).div_const x
-  convert h using 1 with n
-  rw [pow_succ]
-  have hn : (((n + 1 : ℕ) : ℝ)) ≠ 0 := by positivity
-  field_simp [hx0, hn]
+  have hfun :
+      (fun n : ℕ => x ^ n / ((n + 1 : ℕ) : ℝ)) =
+        (fun n : ℕ => x ^ (n + 1) / ((n + 1 : ℕ) : ℝ) / x) := by
+    funext n
+    have hn : (((n + 1 : ℕ) : ℝ)) ≠ 0 := by positivity
+    rw [pow_succ]
+    field_simp [hx0, hn]
+  rw [hfun]
+  exact h
 
 /-- `tsum` form used by the derivative theorem for `li2Series`. -/
 theorem tsum_pow_div_succ_eq_neg_log_div
