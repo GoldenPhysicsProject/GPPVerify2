@@ -60,8 +60,8 @@ theorem normalized_weighted_variance_pos_tsum
 
   have hWne : W ≠ 0 := ne_of_gt hWpos
   have hTidentity :
-      (∑' n, w n * (x n - μ) ^ 2) =
-        (∑' n, w n * x n ^ 2) - 2 * μ * M + μ ^ 2 * W := by
+      (∑' n : ℕ, (w n * (x n - μ) ^ 2)) =
+        (∑' n : ℕ, (w n * x n ^ 2)) - 2 * μ * M + μ ^ 2 * W := by
     let a : ℕ → ℝ := fun n => w n * x n ^ 2
     let b : ℕ → ℝ := fun n => (2 * μ) * (w n * x n)
     let c : ℕ → ℝ := fun n => μ ^ 2 * w n
@@ -76,30 +76,33 @@ theorem normalized_weighted_variance_pos_tsum
       dsimp [a, b, c]
       ring
     have hadd :
-        (∑' n, (a n - b n) + c n) =
-          (∑' n, a n - b n) + (∑' n, c n) := hab.tsum_add hc
+        (∑' n : ℕ, ((a n - b n) + c n)) =
+          (∑' n : ℕ, (a n - b n)) + (∑' n : ℕ, (c n)) := hab.tsum_add hc
     have hsub :
-        (∑' n, a n - b n) = (∑' n, a n) - (∑' n, b n) := ha.tsum_sub hb
-    have hb_sum : (∑' n, b n) = 2 * μ * M := by
+        (∑' n : ℕ, (a n - b n)) =
+          (∑' n : ℕ, (a n)) - (∑' n : ℕ, (b n)) := ha.tsum_sub hb
+    have hb_sum : (∑' n : ℕ, (b n)) = 2 * μ * M := by
       dsimp [b, M]
       simpa using hM.tsum_mul_left (2 * μ)
-    have hc_sum : (∑' n, c n) = μ ^ 2 * W := by
+    have hc_sum : (∑' n : ℕ, (c n)) = μ ^ 2 * W := by
       dsimp [c, W]
       simpa using hW.tsum_mul_left (μ ^ 2)
-    have ha_sum : (∑' n, a n) = ∑' n, w n * x n ^ 2 := by
+    have ha_sum : (∑' n : ℕ, (a n)) = ∑' n : ℕ, (w n * x n ^ 2) := by
       rfl
     calc
-      (∑' n, w n * (x n - μ) ^ 2) = ∑' n, (a n - b n) + c n := by
+      (∑' n : ℕ, (w n * (x n - μ) ^ 2)) =
+          ∑' n : ℕ, ((a n - b n) + c n) := by
         apply tsum_congr
         exact hterm
-      _ = (∑' n, a n - b n) + (∑' n, c n) := hadd
-      _ = ((∑' n, a n) - (∑' n, b n)) + (∑' n, c n) := by rw [hsub]
-      _ = (∑' n, w n * x n ^ 2) - 2 * μ * M + μ ^ 2 * W := by
+      _ = (∑' n : ℕ, (a n - b n)) + (∑' n : ℕ, (c n)) := hadd
+      _ = ((∑' n : ℕ, (a n)) - (∑' n : ℕ, (b n))) +
+          (∑' n : ℕ, (c n)) := by rw [hsub]
+      _ = (∑' n : ℕ, (w n * x n ^ 2)) - 2 * μ * M + μ ^ 2 * W := by
         rw [ha_sum, hb_sum, hc_sum]
 
   have hvar_identity :
-      (∑' n, w n * x n ^ 2) / W - (M / W) ^ 2 =
-        (∑' n, w n * (x n - μ) ^ 2) / W := by
+      (∑' n : ℕ, (w n * x n ^ 2)) / W - (M / W) ^ 2 =
+        (∑' n : ℕ, (w n * (x n - μ) ^ 2)) / W := by
     rw [hTidentity]
     dsimp [μ]
     field_simp [hWne]
