@@ -7,7 +7,7 @@ on:
     branches: ["main", "codex/lean-workbench"]
 
 concurrency:
-  group: build-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  group: build-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
