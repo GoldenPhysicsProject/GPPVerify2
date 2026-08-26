@@ -114,11 +114,9 @@ Fisher variance. -/
 theorem neg_entropyBetaDerivative_sq_div_heatCapacity_eq_variance
     {β : ℝ} (hβ : 1 < β) :
     (-entropyBetaDerivative β) ^ 2 / heatCapacity β = logEnergyVariance β := by
-  have hβ0 : β ≠ 0 := ne_of_gt (lt_trans (by norm_num) hβ)
   have hC : heatCapacity β ≠ 0 := ne_of_gt (heatCapacity_pos hβ)
-  unfold heatCapacity entropyBetaDerivative
-  field_simp [hβ0, hC]
-  ring
+  rw [neg_sq, entropyBetaDerivative_sq_eq_heatCapacity_mul_variance]
+  field_simp [hC]
 
 end GppZetaGibbsStrictThermodynamics
 
