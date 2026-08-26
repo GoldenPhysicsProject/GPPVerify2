@@ -46,33 +46,41 @@ theorem q_div_a_sub_one_eq_eta_mul_B
     (hB : B = 2 * (1 + κ) /
       ((1 + δ) * (1 + κ * R) * (1 + R) * (1 - η))) :
     q / a - 1 = η * B := by
+  have hSm : 0 < S - m := sub_pos.mpr hmS
+  have hSU : 0 < S * U := mul_pos hS hU
   have hU4 : 0 < U + 4 * m := by linarith
   have hSU4 : 0 < S * (U + 4 * m) := mul_pos hS hU4
   have hκRplus : 1 + κ * R ≠ 0 := by
     intro hz
     have hκR : κ * R = -1 := by linarith
     rw [hκR] at hprodSq
-    have hfrac : 0 < 4 * m ^ 2 / (S * (U + 4 * m)) := by positivity
+    have hfrac : 0 < 4 * m ^ 2 / (S * (U + 4 * m)) := by
+      exact div_pos (by positivity) hSU4
     nlinarith
   have hRplus : 1 + R ≠ 0 := by
     intro hz
     have hR : R = -1 := by linarith
     rw [hR] at hprodSq
-    have hfrac : 0 < 4 * m ^ 2 / (S * (U + 4 * m)) := by positivity
+    have hfrac : 0 < 4 * m ^ 2 / (S * (U + 4 * m)) := by
+      exact div_pos (by positivity) hSU4
     have hκsqLower : 1 < κ ^ 2 := by
       rw [hκsq]
-      have : 0 < 4 * m * (S - m) / (S * U) := by positivity
+      have hnum : 0 < 4 * m * (S - m) := by positivity
+      have hcorr : 0 < 4 * m * (S - m) / (S * U) := div_pos hnum hSU
       linarith
     nlinarith
   have hκplus : 1 + κ ≠ 0 := by linarith
   have hqa := q_sub_a_exact_m_sq S U m R κ q a
     hSU4.ne' hκRplus hRplus hκplus hq ha hprodSq
   have haExact := a_exact_linear_m
-    (mul_pos hS hU).ne' (by linarith : κ + 1 ≠ 0) ha hκsq
+    hSU.ne' (by linarith : κ + 1 ≠ 0) ha hκsq
   have ha0 : a ≠ 0 := by
     rw [haExact]
-    positivity
-  rw [div_sub_one, ← sub_div, hqa, haExact, hδ, hη, hB]
+    have hnum : 0 < 4 * m * (S - m) := by positivity
+    have hden : 0 < S * U * (κ + 1) ^ 2 := by
+      exact mul_pos hSU (sq_pos_of_pos (by linarith : 0 < κ + 1))
+    exact (div_pos hnum hden).ne'
+  rw [div_sub_one, hqa, haExact, hδ, hη, hB]
   field_simp [hS.ne', hU.ne', hm.ne', sub_ne_zero.mpr hmS.ne']
   ring
 
