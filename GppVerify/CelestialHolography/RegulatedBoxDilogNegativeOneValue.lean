@@ -35,8 +35,12 @@ theorem landen_at_one_endpoint :
   let L : Filter ℝ := 𝓝[Ioo (0 : ℝ) 1] 1
 
   have hfrac : Tendsto (fun y : ℝ => y / (1 + y)) L (𝓝 (1 / 2 : ℝ)) := by
-    have hc : ContinuousAt (fun y : ℝ => y / (1 + y)) 1 := by
-      fun_prop
+    have hnum : HasDerivAt (fun y : ℝ => y) 1 1 := hasDerivAt_id 1
+    have hden : HasDerivAt (fun y : ℝ => 1 + y) 1 1 := by
+      convert (hasDerivAt_const (x := (1 : ℝ)) (c := (1 : ℝ))).add (hasDerivAt_id 1) using 1 <;>
+        norm_num
+    have hc : ContinuousAt (fun y : ℝ => y / (1 + y)) 1 :=
+      (hnum.div hden (by norm_num)).continuousAt
     simpa [L] using hc.tendsto.mono_left nhdsWithin_le_nhds
 
   have hhalf_cont : ContinuousAt li2Series (1 / 2 : ℝ) := by
@@ -53,6 +57,7 @@ theorem landen_at_one_endpoint :
       simpa [L] using hc.tendsto.mono_left nhdsWithin_le_nhds
     · dsimp [L]
       filter_upwards [self_mem_nhdsWithin] with y hy
+      rcases hy with ⟨hy0, hy1⟩
       exact ⟨by linarith, by linarith⟩
   have hLiNeg :
       Tendsto (fun y : ℝ => li2Series (-y)) L (𝓝 (li2Series (-1))) :=
@@ -61,8 +66,14 @@ theorem landen_at_one_endpoint :
   have hlog :
       Tendsto (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) L
         (𝓝 ((Real.log 2) ^ 2 / 2)) := by
-    have hc : ContinuousAt (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) 1 := by
-      fun_prop
+    have hinner : HasDerivAt (fun y : ℝ => 1 + y) 1 1 := by
+      convert (hasDerivAt_const (x := (1 : ℝ)) (c := (1 : ℝ))).add (hasDerivAt_id 1) using 1 <;>
+        norm_num
+    have hlogderiv : HasDerivAt (fun y : ℝ => Real.log (1 + y)) (1 / 2) 1 := by
+      have h := (Real.hasDerivAt_log (by norm_num : (2 : ℝ) ≠ 0)).comp 1 hinner
+      simpa using h
+    have hc : ContinuousAt (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) 1 :=
+      ((hlogderiv.pow 2).div_const 2).continuousAt
     simpa [L] using hc.tendsto.mono_left nhdsWithin_le_nhds
 
   have hlimit :
