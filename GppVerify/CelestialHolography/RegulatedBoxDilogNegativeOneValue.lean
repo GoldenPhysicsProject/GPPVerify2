@@ -41,7 +41,9 @@ theorem landen_at_one_endpoint :
         norm_num
     have hc : ContinuousAt (fun y : ℝ => y / (1 + y)) 1 :=
       (hnum.div hden (by norm_num)).continuousAt
-    simpa [L] using hc.tendsto.mono_left nhdsWithin_le_nhds
+    change Tendsto (fun y : ℝ => y / (1 + y)) (𝓝[Ioo (0 : ℝ) 1] 1) (𝓝 (1 / 2 : ℝ))
+    convert hc.tendsto.mono_left
+      (nhdsWithin_le_nhds : 𝓝[Ioo (0 : ℝ) 1] 1 ≤ 𝓝 1) using 1 <;> norm_num
 
   have hhalf_cont : ContinuousAt li2Series (1 / 2 : ℝ) := by
     exact (hasDerivAt_li2Series (by norm_num) (by norm_num)).continuousAt
@@ -69,12 +71,16 @@ theorem landen_at_one_endpoint :
     have hinner : HasDerivAt (fun y : ℝ => 1 + y) 1 1 := by
       convert (hasDerivAt_const (x := (1 : ℝ)) (c := (1 : ℝ))).add (hasDerivAt_id 1) using 1 <;>
         norm_num
+    have hlogAt : HasDerivAt Real.log ((1 + 1 : ℝ)⁻¹) (1 + 1 : ℝ) := by
+      convert Real.hasDerivAt_log (by norm_num : (2 : ℝ) ≠ 0) using 1 <;> norm_num
     have hlogderiv : HasDerivAt (fun y : ℝ => Real.log (1 + y)) (1 / 2) 1 := by
-      have h := (Real.hasDerivAt_log (by norm_num : (2 : ℝ) ≠ 0)).comp 1 hinner
-      simpa using h
+      convert hlogAt.comp 1 hinner using 1 <;> norm_num
     have hc : ContinuousAt (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) 1 :=
       ((hlogderiv.pow 2).div_const 2).continuousAt
-    simpa [L] using hc.tendsto.mono_left nhdsWithin_le_nhds
+    change Tendsto (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2)
+      (𝓝[Ioo (0 : ℝ) 1] 1) (𝓝 ((Real.log 2) ^ 2 / 2))
+    convert hc.tendsto.mono_left
+      (nhdsWithin_le_nhds : 𝓝[Ioo (0 : ℝ) 1] 1 ≤ 𝓝 1) using 1 <;> norm_num
 
   have hlimit :
       Tendsto landenCombination L
