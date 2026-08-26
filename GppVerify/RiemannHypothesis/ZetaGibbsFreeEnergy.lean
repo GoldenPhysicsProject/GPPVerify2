@@ -30,6 +30,19 @@ theorem Z_pos {β : ℝ} (hβ : 1 < β) : 0 < Z β := by
   unfold Z
   exact gibbsWeight_tsum_pos hβ
 
+/-- The Massieu potential is exactly the entropy minus `β` times mean log-energy. -/
+theorem entropy_sub_beta_mul_internalEnergy_eq_logZ (β : ℝ) :
+    entropy β - β * internalEnergy β = Real.log (Z β) := by
+  unfold entropy
+  ring
+
+/-- Away from the singular inverse-temperature coordinate, `βF = -log Z`. -/
+theorem beta_mul_freeEnergy_eq_neg_logZ
+    {β : ℝ} (hβ : β ≠ 0) :
+    β * freeEnergy β = -Real.log (Z β) := by
+  unfold freeEnergy
+  field_simp [hβ]
+
 /-- Exact Legendre relation `F = U - S/β` away from the singular coordinate `β=0`. -/
 theorem freeEnergy_eq_internalEnergy_sub_entropy_div
     {β : ℝ} (hβ : β ≠ 0) :
@@ -46,6 +59,14 @@ theorem entropy_eq_beta_mul_internalEnergy_sub_freeEnergy
   field_simp [hβ]
   ring
 
+/-- Massieu/Legendre balance: `S + βF = βU`. -/
+theorem entropy_add_beta_mul_freeEnergy_eq_beta_mul_internalEnergy
+    {β : ℝ} (hβ : β ≠ 0) :
+    entropy β + β * freeEnergy β = β * internalEnergy β := by
+  rw [beta_mul_freeEnergy_eq_neg_logZ hβ]
+  unfold entropy
+  ring
+
 /-- On `β>1` all thermodynamic coordinates use a positive partition function and both
 forms of the Legendre relation are valid. -/
 theorem gibbs_legendre_relation {β : ℝ} (hβ : 1 < β) :
@@ -60,6 +81,9 @@ theorem gibbs_legendre_relation {β : ℝ} (hβ : 1 < β) :
 end GppZetaGibbsFreeEnergy
 
 #print axioms GppZetaGibbsFreeEnergy.Z_pos
+#print axioms GppZetaGibbsFreeEnergy.entropy_sub_beta_mul_internalEnergy_eq_logZ
+#print axioms GppZetaGibbsFreeEnergy.beta_mul_freeEnergy_eq_neg_logZ
 #print axioms GppZetaGibbsFreeEnergy.freeEnergy_eq_internalEnergy_sub_entropy_div
 #print axioms GppZetaGibbsFreeEnergy.entropy_eq_beta_mul_internalEnergy_sub_freeEnergy
+#print axioms GppZetaGibbsFreeEnergy.entropy_add_beta_mul_freeEnergy_eq_beta_mul_internalEnergy
 #print axioms GppZetaGibbsFreeEnergy.gibbs_legendre_relation
