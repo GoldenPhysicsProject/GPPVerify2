@@ -37,11 +37,12 @@ theorem q_eq_rho_mul_endpointQ
   have hU4 : 0 < U + 4 * m := by positivity
   have hRplus : 0 < 1 + R := by linarith
   have hqexact := q_exact_linear_m hU4.ne' hRplus.ne' hq hRsq
-  rw [hqexact, hρ]
-  unfold endpointQ
-  have hsqmul : R ^ 2 * (U + 4 * m) = U := (eq_div_iff hU4.ne').mp hRsq
+  have hQ : endpointQ R = 4 * R ^ 2 / (1 + R) ^ 2 := by
+    unfold endpointQ
+    ring
+  rw [hqexact, hρ, hQ, hRsq]
   field_simp [hU.ne', hU4.ne', hRplus.ne']
-  nlinarith
+  ring
 
 /-- On `8/9 <= R <= 1`, the normalization factor is in `[256/289,1]`. -/
 theorem endpointQ_mem
