@@ -1,63 +1,63 @@
+import GppVerify.CelestialHolography.RegulatedBoxDilogDerivativeUnitDisk
 import GppVerify.CelestialHolography.RegulatedBoxLandenIdentity
-import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Tactic
 
 /-!
-# Branch-free real dilogarithm on the full negative axis
+# Branch-free extension of the real dilogarithm to the negative axis
 
-For `y < 0`, write `x = -y > 0` and use Landen as the definition
+For `y < 0`, set
 
-  Li2_neg(y) = -Li2(x/(1+x)) - (1/2) log(1+x)^2.
+  Li₂⁻(y) = -Li₂(-y/(1-y)) - 1/2 log(1-y)^2.
 
-Equivalently,
-
-  Li2_neg(y) = -Li2((-y)/(1-y)) - (1/2) log(1-y)^2.
-
-The transformed dilogarithm argument always lies in `(0,1)`, so this extends the
-project's real series to the entire negative axis without complex logarithms or branch
-choices.  Its derivative is the classical real formula `-log(1-y)/y`.
+The transformed argument lies in `(0,1)`, so the right-hand side uses only the already
+certified real power-series dilogarithm.  Landen identifies this extension with the
+series on `(-1,0)`, while direct differentiation gives the standard real derivative
+`-log(1-y)/y` on the whole negative axis.
 -/
 
 namespace GppRegulatedBoxDilogNegativeExtension
 
 open GppRegulatedBoxDilogSeries
-open GppRegulatedBoxDilogDerivative
+open GppRegulatedBoxDilogDerivativeUnitDisk
 open GppRegulatedBoxLandenIdentity
 
-/-- Landen-defined real continuation to negative arguments.  Its intended domain is
-`y < 0`; the formula itself is left total as a real function for compositional use. -/
+/-- Branch-free real dilogarithm extension on the negative axis. -/
 noncomputable def li2NegativeExtension (y : ℝ) : ℝ :=
   -li2Series ((-y) / (1 - y)) - (Real.log (1 - y)) ^ 2 / 2
 
-/-- On the original negative unit interval, the Landen extension agrees exactly with
-the defining real power series. -/
-theorem li2NegativeExtension_eq_series_neg
-    {x : ℝ} (hx0 : 0 < x) (hx1 : x < 1) :
-    li2NegativeExtension (-x) = li2Series (-x) := by
-  have harg : (-(-x)) / (1 - (-x)) = x / (1 + x) := by ring
-  have hlogarg : 1 - (-x) = 1 + x := by ring
-  have hL := li2Series_landen hx0 hx1
-  unfold li2NegativeExtension
-  rw [harg, hlogarg]
-  linarith
+/-- The Landen-transformed argument of a negative real number lies in `(0,1)`. -/
+theorem neg_div_one_sub_mem_Ioo {y : ℝ} (hy : y < 0) :
+    0 < (-y) / (1 - y) ∧ (-y) / (1 - y) < 1 := by
+  have hden : 0 < 1 - y := by linarith
+  constructor
+  · positivity
+  · apply (div_lt_one hden).2
+    linarith
 
-/-- The Landen extension has the classical real dilogarithm derivative at every
-negative real argument. -/
+/-- On `(-1,0)`, the branch-free extension agrees with the original real series. -/
+theorem li2NegativeExtension_eq_series_neg
+    {y : ℝ} (hyneg : -1 < y) (hy0 : y < 0) :
+    li2NegativeExtension y = li2Series y := by
+  have hx0 : 0 < -y := by linarith
+  have hx1 : -y < 1 := by linarith
+  have hL := li2Series_landen hx0 hx1
+  dsimp [li2NegativeExtension]
+  have harg : (-y) / (1 - y) = (-y) / (1 + (-y)) := by ring_nf
+  rw [harg]
+  nlinarith
+
+/-- The branch-free negative-axis extension has the expected derivative. -/
 theorem hasDerivAt_li2NegativeExtension
     {y : ℝ} (hy : y < 0) :
     HasDerivAt li2NegativeExtension (-Real.log (1 - y) / y) y := by
-  have hyneg : 0 < -y := neg_pos.mpr hy
+  have hyneg : 0 < -y := by linarith
   have hdenpos : 0 < 1 - y := by linarith
-  have hden : (1 - y : ℝ) ≠ 0 := ne_of_gt hdenpos
+  have hden : 1 - y ≠ 0 := hdenpos.ne'
   have hyne : y ≠ 0 := ne_of_lt hy
   let a : ℝ := (-y) / (1 - y)
-  have ha0 : 0 < a := by
-    dsimp [a]
-    exact div_pos hyneg hdenpos
-  have ha1 : a < 1 := by
-    dsimp [a]
-    apply (div_lt_one hdenpos).2
-    linarith
+  have ha := neg_div_one_sub_mem_Ioo hy
+  have ha0 : 0 < a := by simpa [a] using ha.1
+  have ha1 : a < 1 := by simpa [a] using ha.2
 
   have hnum : HasDerivAt (fun t : ℝ => -t) (-1) y := by
     simpa using (hasDerivAt_id y).neg
@@ -86,6 +86,7 @@ theorem hasDerivAt_li2NegativeExtension
         (-Real.log (1 - y) / (y * (1 - y))) y := by
     rw [hone_minus, hlogrecip] at hLiComp
     have H := hLiComp.neg
+    dsimp [a] at H
     convert H using 1 <;> field_simp [hyne, hden] <;> ring
 
   have hlogBase : HasDerivAt Real.log (1 / (1 - y)) (1 - y) := by
@@ -98,15 +99,9 @@ theorem hasDerivAt_li2NegativeExtension
     have Hneg := H.neg
     convert Hneg using 1 <;> field_simp [hden] <;> ring
 
-  have hsum := hLi.add hlogSq
-  have hcoef :
-      -Real.log (1 - y) / (y * (1 - y)) +
-          Real.log (1 - y) / (1 - y) = -Real.log (1 - y) / y := by
-    field_simp [hyne, hden]
-    ring
   unfold li2NegativeExtension
-  convert hsum using 1
-  simpa [sub_eq_add_neg] using hcoef.symm
+  have H := hLi.add hlogSq
+  convert H using 1 <;> field_simp [hyne, hden] <;> ring
 
 end GppRegulatedBoxDilogNegativeExtension
 
