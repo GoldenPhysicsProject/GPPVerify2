@@ -43,7 +43,9 @@ theorem inversionCombination_hasDerivAt_zero
     have h := (hasDerivAt_const x (-1 : ℝ)).div (hasDerivAt_id x) hxne
     convert h using 1 <;> field_simp [hxne] <;> ring
   have hinvpos : 0 < 1 / x := one_div_pos.mpr hx
-  have hargneg : -1 / x < 0 := by linarith
+  have hargneg : -1 / x < 0 := by
+    rw [show (-1 : ℝ) / x = -(1 / x) by ring]
+    exact neg_neg_of_pos hinvpos
   have hLinv := hL (-1 / x) hargneg
   have hinv_comp := hLinv.comp x hinv_inner
   have hinv : HasDerivAt (fun t : ℝ => L (-1 / t))
@@ -64,11 +66,19 @@ theorem inversionCombination_hasDerivAt_zero
     congr 1
     field_simp [hxne]
     ring
+  have hnum :
+      -Real.log (1 + x) + Real.log (1 + 1 / x) + Real.log x = 0 := by
+    linarith [hlog_identity]
+  have hcoef :
+      -Real.log (1 + x) / x + Real.log (1 + 1 / x) / x + Real.log x / x = 0 := by
+    calc
+      -Real.log (1 + x) / x + Real.log (1 + 1 / x) / x + Real.log x / x =
+          (-Real.log (1 + x) + Real.log (1 + 1 / x) + Real.log x) / x := by ring
+      _ = 0 := by rw [hnum, zero_div]
 
   unfold inversionCombination
   convert hsum using 1
-  field_simp [hxne]
-  nlinarith [hlog_identity]
+  exact hcoef.symm
 
 end GppRegulatedBoxDilogInversionKernel
 
