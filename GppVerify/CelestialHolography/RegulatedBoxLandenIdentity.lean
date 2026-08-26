@@ -71,8 +71,10 @@ theorem landenCombination_eq_zero
     have hinner : HasDerivAt (fun y : ℝ => 1 + y) 1 0 := by
       convert (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).add (hasDerivAt_id 0) using 1 <;>
         norm_num
+    have hlogBase : HasDerivAt Real.log 1 (1 + 0 : ℝ) := by
+      convert Real.hasDerivAt_log (by norm_num : (1 + 0 : ℝ) ≠ 0) using 1 <;> norm_num
     have hlogderiv : HasDerivAt (fun y : ℝ => Real.log (1 + y)) 1 0 := by
-      have h := (Real.hasDerivAt_log (by norm_num : (1 : ℝ) ≠ 0)).comp 0 hinner
+      have h := hlogBase.comp 0 hinner
       simpa using h
     have hc : ContinuousAt (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) 0 :=
       ((hlogderiv.pow 2).div_const 2).continuousAt
