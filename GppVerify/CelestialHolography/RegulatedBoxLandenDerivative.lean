@@ -81,13 +81,14 @@ theorem landenCombination_hasDerivAt_zero
 
   have hsum := (hpos.add hneg).add hlogsq
   have hcoef :
-      Real.log (1 + x) / (x * (1 + x)) - Real.log (1 + x) / x +
+      Real.log (1 + x) / (x * (1 + x)) +
+          (-Real.log (1 + x)) / x +
           Real.log (1 + x) / (1 + x) = 0 := by
     field_simp [hx0.ne', hden]
     ring
   unfold landenCombination
   convert hsum using 1
-  simpa [sub_eq_add_neg] using hcoef.symm
+  exact hcoef.symm
 
 end GppRegulatedBoxLandenDerivative
 
