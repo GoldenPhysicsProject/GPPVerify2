@@ -36,12 +36,14 @@ noncomputable def Hminus (k : ℝ) : ℂ :=
 /-- On the real spectral axis the two normalized Gamma factors are complex conjugates. -/
 theorem Hminus_eq_conj_Hplus (k : ℝ) :
     Hminus k = conj (Hplus k) := by
-  have hhalf : ((1 : ℂ) / 2) = (((1 : ℝ) / 2 : ℝ) : ℂ) := by
+  have hhalf : ((1 : ℂ) / 2) = (((1 / 2 : ℝ) : ℂ)) := by
     norm_num
   have harg :
       conj (((1 : ℂ) / 2) - (((k / (2 * Real.pi) : ℝ) : ℂ) * I)) =
         ((1 : ℂ) / 2) + (((k / (2 * Real.pi) : ℝ) : ℂ) * I) := by
     rw [hhalf]
+    change conj ((((1 / 2 : ℝ) : ℂ)) - (((k / (2 * Real.pi) : ℝ) : ℂ) * I)) =
+      (((1 / 2 : ℝ) : ℂ)) + (((k / (2 * Real.pi) : ℝ) : ℂ) * I)
     simp
   have hgamma :
       Complex.Gamma (((1 : ℂ) / 2) +
