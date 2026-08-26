@@ -29,17 +29,18 @@ open GppPrimeHankelPolynomialSummability
 
 /-- The arithmetic progression `(k+1) log 2` is injective. -/
 theorem logTwo_support_injective :
-    Function.Injective (fun k : ℕ => (((k + 1 : ℕ) : ℝ) * Real.log 2)) := by
-  have hlog2 : 0 < Real.log (2 : ℝ) := Real.log_pos (by norm_num)
+    Function.Injective (fun k : ℕ => (((k + 1 : ℕ) : ℝ) * Real.log (2 : ℝ))) := by
+  have hlog2 : Real.log (2 : ℝ) ≠ 0 :=
+    (Real.log_pos (by norm_num : (1 : ℝ) < 2)).ne'
   intro a b hab
-  have hab' : (((a + 1 : ℕ) : ℝ)) = (((b + 1 : ℕ) : ℝ)) := by
-    nlinarith
+  have hab' : (((a + 1 : ℕ) : ℝ)) = (((b + 1 : ℕ) : ℝ)) :=
+    (mul_right_inj' hlog2).mp hab
   exact Nat.succ.inj (by exact_mod_cast hab')
 
 /-- The first `N+1` powers of two provide `N+1` distinct logarithmic support values. -/
 theorem logTwo_support_card (N : ℕ) :
     ((Finset.range (N + 1)).image
-      (fun k : ℕ => (((k + 1 : ℕ) : ℝ) * Real.log 2)).card = N + 1 := by
+      (fun k : ℕ => (((k + 1 : ℕ) : ℝ) * Real.log (2 : ℝ)))).card = N + 1 := by
   rw [Finset.card_image_iff.mpr logTwo_support_injective.injOn]
   exact Finset.card_range (N + 1)
 
@@ -49,12 +50,12 @@ theorem fisherWeight_two_pow_pos
     0 < fisherWeight β (2 ^ (k + 1)) := by
   have hk : k + 1 ≠ 0 := by omega
   have hvm :
-      ArithmeticFunction.vonMangoldt (2 ^ (k + 1)) = Real.log 2 := by
+      ArithmeticFunction.vonMangoldt (2 ^ (k + 1)) = Real.log (2 : ℝ) := by
     rw [ArithmeticFunction.vonMangoldt_apply_pow hk]
-    rw [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+    simpa using (ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two)
   have hlogpow :
       Real.log (((2 ^ (k + 1) : ℕ) : ℝ)) =
-        (((k + 1 : ℕ) : ℝ) * Real.log 2) := by
+        (((k + 1 : ℕ) : ℝ) * Real.log (2 : ℝ)) := by
     simpa only [Nat.cast_pow, Nat.cast_ofNat] using
       (Real.log_pow (2 : ℝ) (k + 1))
   unfold fisherWeight
@@ -72,7 +73,7 @@ theorem fisher_polynomial_tsum_pos_unconditional
       fisherWeight β n * (p.eval (Real.log n)) ^ 2 := by
   let T : Finset ℝ :=
     (Finset.range (p.natDegree + 1)).image
-      (fun k : ℕ => (((k + 1 : ℕ) : ℝ) * Real.log 2))
+      (fun k : ℕ => (((k + 1 : ℕ) : ℝ) * Real.log (2 : ℝ)))
   have hcard : p.natDegree < T.card := by
     have hT : T.card = p.natDegree + 1 := by
       simpa [T] using logTwo_support_card p.natDegree
@@ -82,7 +83,7 @@ theorem fisher_polynomial_tsum_pos_unconditional
   rcases Finset.mem_image.mp hy with ⟨k, hk, rfl⟩
   let n : ℕ := 2 ^ (k + 1)
   have hlogn :
-      Real.log (n : ℝ) = (((k + 1 : ℕ) : ℝ) * Real.log 2) := by
+      Real.log (n : ℝ) = (((k + 1 : ℕ) : ℝ) * Real.log (2 : ℝ)) := by
     dsimp [n]
     simpa only [Nat.cast_pow, Nat.cast_ofNat] using
       (Real.log_pow (2 : ℝ) (k + 1))
