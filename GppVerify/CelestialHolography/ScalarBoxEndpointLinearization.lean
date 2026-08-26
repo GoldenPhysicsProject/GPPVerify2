@@ -43,10 +43,10 @@ theorem a_exact_linear_m
     (ha : a = (κ - 1) / (κ + 1))
     (hsq : κ ^ 2 = 1 + 4 * m * (S - m) / (S * U)) :
     a = 4 * m * (S - m) / ((S * U) * (κ + 1) ^ 2) := by
+  have hdiff : κ ^ 2 - 1 = 4 * m * (S - m) / (S * U) := by
+    linarith [hsq]
   have hsq' : (κ ^ 2 - 1) * (S * U) = 4 * m * (S - m) := by
-    have H := (sub_eq_iff_eq_add).2 hsq
-    field_simp [hSU] at H ⊢
-    nlinarith [H]
+    exact (eq_div_iff hSU).mp hdiff
   rw [ha]
   field_simp [hSU, hκ]
   nlinarith [hsq']
