@@ -59,9 +59,12 @@ theorem dilationCharacter_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) (a : ℝ)
   have hstarlog :
       (starRingEnd ℂ) ((Real.log a : ℝ) : ℂ) = ((Real.log a : ℝ) : ℂ) := by
     simp
+  have hhalfReal : (1 / 2 : ℂ) = (((1 / 2 : ℝ) : ℂ)) := by
+    norm_num
   have hstarhalf :
       (starRingEnd ℂ) (1 / 2 : ℂ) = (1 / 2 : ℂ) := by
-    norm_num
+    rw [hhalfReal]
+    simp
   have hstarshift :
       (starRingEnd ℂ) (s - (1 / 2 : ℂ)) =
         (1 - s) - (1 / 2 : ℂ) := by
