@@ -80,7 +80,7 @@ theorem q_div_a_sub_one_eq_eta_mul_B
     have hden : 0 < S * U * (κ + 1) ^ 2 := by
       exact mul_pos hSU (sq_pos_of_pos (by linarith : 0 < κ + 1))
     exact (div_pos hnum hden).ne'
-  rw [div_sub_one, hqa, haExact, hδ, hη, hB]
+  rw [div_sub_one, hqa, haExact, hB, hδ, hη]
   field_simp [hS.ne', hU.ne', hm.ne', sub_ne_zero.mpr hmS.ne']
   ring
 
