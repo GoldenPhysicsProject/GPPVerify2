@@ -5,6 +5,10 @@ on:
     branches: ["codex/lean-workbench"]
   workflow_dispatch:
 
+concurrency:
+  group: codex-fast-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   fast:
     runs-on: ubuntu-latest
