@@ -61,9 +61,8 @@ theorem pi_shift_reciprocal_product_eq_tanh_sum_div
   have hx : Real.cosh (Real.pi * x) ≠ 0 := ne_of_gt (Real.cosh_pos _)
   have hshift : Real.cosh (Real.pi * (λ - x)) ≠ 0 := ne_of_gt (Real.cosh_pos _)
   have hpiλ : Real.pi * λ ≠ 0 := mul_ne_zero Real.pi_ne_zero hλ
-  have hsinh : Real.sinh (Real.pi * λ) ≠ 0 := by
-    rw [Real.sinh_ne_zero]
-    exact hpiλ
+  have hsinh : Real.sinh (Real.pi * λ) ≠ 0 :=
+    (Real.sinh_ne_zero).2 hpiλ
   have h := reciprocal_cosh_product_eq_tanh_sum_div
     (Real.pi * x) (Real.pi * (λ - x)) hx hshift (by
       convert hsinh using 1 <;> ring)
