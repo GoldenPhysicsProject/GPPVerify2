@@ -110,6 +110,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxPhysicalMajorantVanishing
 
+      - name: Physical scalar-box convergence
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxPhysicalConvergence
+
       - name: Adjacent-MHV bubble subtraction algebra
         if: always()
         run: lake build GppVerify.CelestialHolography.FourPointMHVBubbleSubtractionAlgebra
