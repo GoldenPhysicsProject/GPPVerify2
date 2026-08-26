@@ -94,6 +94,32 @@ theorem heatCapacity_div_neg_entropyBetaDerivative_eq_beta
   rw [heatCapacity_eq_neg_beta_mul_entropyBetaDerivative]
   field_simp [hne]
 
+/-- The Fisher metric coefficient is exactly heat capacity divided by `β²`. -/
+theorem heatCapacity_div_beta_sq_eq_variance
+    {β : ℝ} (hβ : β ≠ 0) :
+    heatCapacity β / β ^ 2 = logEnergyVariance β := by
+  unfold heatCapacity
+  field_simp [hβ]
+
+/-- The same Fisher metric coefficient is the entropy-loss rate divided by `β`. -/
+theorem neg_entropyBetaDerivative_div_beta_eq_variance
+    {β : ℝ} (hβ : β ≠ 0) :
+    (-entropyBetaDerivative β) / β = logEnergyVariance β := by
+  unfold entropyBetaDerivative
+  field_simp [hβ]
+
+/-- On `β>1`, the three positive fluctuation observables satisfy an exact quadratic
+response identity: entropy-loss-rate squared divided by heat capacity equals the
+Fisher variance. -/
+theorem neg_entropyBetaDerivative_sq_div_heatCapacity_eq_variance
+    {β : ℝ} (hβ : 1 < β) :
+    (-entropyBetaDerivative β) ^ 2 / heatCapacity β = logEnergyVariance β := by
+  have hβ0 : β ≠ 0 := ne_of_gt (lt_trans (by norm_num) hβ)
+  have hC : heatCapacity β ≠ 0 := ne_of_gt (heatCapacity_pos hβ)
+  unfold heatCapacity entropyBetaDerivative
+  field_simp [hβ0, hC]
+  ring
+
 end GppZetaGibbsStrictThermodynamics
 
 #print axioms GppZetaGibbsStrictThermodynamics.logEnergyVariance_pos
@@ -104,3 +130,6 @@ end GppZetaGibbsStrictThermodynamics
 #print axioms GppZetaGibbsStrictThermodynamics.heatCapacity_eq_neg_beta_mul_entropyBetaDerivative
 #print axioms GppZetaGibbsStrictThermodynamics.entropyBetaDerivative_eq_neg_heatCapacity_div_beta
 #print axioms GppZetaGibbsStrictThermodynamics.heatCapacity_div_neg_entropyBetaDerivative_eq_beta
+#print axioms GppZetaGibbsStrictThermodynamics.heatCapacity_div_beta_sq_eq_variance
+#print axioms GppZetaGibbsStrictThermodynamics.neg_entropyBetaDerivative_div_beta_eq_variance
+#print axioms GppZetaGibbsStrictThermodynamics.neg_entropyBetaDerivative_sq_div_heatCapacity_eq_variance
