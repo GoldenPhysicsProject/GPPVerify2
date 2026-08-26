@@ -21,13 +21,13 @@ open GppScalarBoxRegulatorBounds
 open GppScalarBoxLogScaleBounds
 
 /-- Numerator normalization `N=(1+κ)/2`. -/
-def poleN (κ : ℝ) : ℝ := (1 + κ) / 2
+noncomputable def poleN (κ : ℝ) : ℝ := (1 + κ) / 2
 
 /-- Product-channel normalization `D₂=(1+x)/2`, with `x=κR`. -/
-def poleD2 (x : ℝ) : ℝ := (1 + x) / 2
+noncomputable def poleD2 (x : ℝ) : ℝ := (1 + x) / 2
 
 /-- Endpoint normalization `D₃=(1+R)/2`. -/
-def poleD3 (R : ℝ) : ℝ := (1 + R) / 2
+noncomputable def poleD3 (R : ℝ) : ℝ := (1 + R) / 2
 
 /-- Rewrite the exact Badger-style pole normalization into unit-centered factors. -/
 theorem B_eq_unit_centered
@@ -38,7 +38,7 @@ theorem B_eq_unit_centered
       ((1 + δ) * poleD2 x * poleD3 R * (1 - η)) := by
   rw [hB]
   unfold poleN poleD2 poleD3
-  ring
+  ring_nf
 
 /-- If `R²=1/(1+δ)` and `0≤R≤1`, then the endpoint defect satisfies
 `1-R≤δ/2`. -/
@@ -133,7 +133,7 @@ theorem abs_log_poleD2_le
   calc
     |Real.log (poleD2 x)| ≤ (1 - poleD2 x) / (31 / 32 : ℝ) := hlog
     _ ≤ (1 / 3 : ℝ) * (δ * η) := by
-      have hnon : 0 ≤ 32 / 31 := by norm_num
+      have hnon : (0 : ℝ) ≤ 32 / 31 := by norm_num
       have hm := mul_le_mul_of_nonneg_left hdef hnon
       convert hm using 1 <;> ring_nf
       · norm_num
@@ -211,7 +211,6 @@ theorem abs_log_B_le
     rw [Real.log_mul (mul_ne_zero (mul_ne_zero h1δ.ne' hD2pos.ne') hD3pos.ne') h1η.ne']
     rw [Real.log_mul (mul_ne_zero h1δ.ne' hD2pos.ne') hD3pos.ne']
     rw [Real.log_mul h1δ.ne' hD2pos.ne']
-    ring
   have hlogB :
       Real.log B = Real.log (poleN κ) - Real.log (1 + δ) -
         Real.log (poleD2 x) - Real.log (poleD3 R) - Real.log (1 - η) := by
@@ -259,7 +258,7 @@ theorem abs_log_t_sub_log_m_div_S_le
     hκsq hxsq hRsq hB
   rw [ht, Real.log_mul hηpos.ne' hBpos.ne', hηdef]
   simp only [add_sub_cancel_left]
-  exact hlog
+  simpa [hηdef] using hlog
 
 end GppScalarBoxPoleLogScaleBounds
 
