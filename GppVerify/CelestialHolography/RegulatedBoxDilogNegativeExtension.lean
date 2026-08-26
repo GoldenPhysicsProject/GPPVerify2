@@ -18,6 +18,7 @@ series on `(-1,0)`, while direct differentiation gives the standard real derivat
 namespace GppRegulatedBoxDilogNegativeExtension
 
 open GppRegulatedBoxDilogSeries
+open GppRegulatedBoxDilogDerivative
 open GppRegulatedBoxDilogDerivativeUnitDisk
 open GppRegulatedBoxLandenIdentity
 
@@ -30,7 +31,7 @@ theorem neg_div_one_sub_mem_Ioo {y : ℝ} (hy : y < 0) :
     0 < (-y) / (1 - y) ∧ (-y) / (1 - y) < 1 := by
   have hden : 0 < 1 - y := by linarith
   constructor
-  · positivity
+  · exact div_pos (by linarith) hden
   · apply (div_lt_one hden).2
     linarith
 
@@ -41,16 +42,16 @@ theorem li2NegativeExtension_eq_series_neg
   have hx0 : 0 < -y := by linarith
   have hx1 : -y < 1 := by linarith
   have hL := li2Series_landen hx0 hx1
+  have hnegneg : -(-y) = y := by ring
+  have hone : 1 + (-y) = 1 - y := by ring
+  rw [hnegneg, hone] at hL
   dsimp [li2NegativeExtension]
-  have harg : (-y) / (1 - y) = (-y) / (1 + (-y)) := by ring_nf
-  rw [harg]
-  nlinarith
+  linarith
 
 /-- The branch-free negative-axis extension has the expected derivative. -/
 theorem hasDerivAt_li2NegativeExtension
     {y : ℝ} (hy : y < 0) :
     HasDerivAt li2NegativeExtension (-Real.log (1 - y) / y) y := by
-  have hyneg : 0 < -y := by linarith
   have hdenpos : 0 < 1 - y := by linarith
   have hden : 1 - y ≠ 0 := hdenpos.ne'
   have hyne : y ≠ 0 := ne_of_lt hy
@@ -68,7 +69,7 @@ theorem hasDerivAt_li2NegativeExtension
       HasDerivAt (fun t : ℝ => (-t) / (1 - t)) (-1 / (1 - y) ^ 2) y := by
     convert hinner_raw using 1 <;> field_simp [hden] <;> ring
 
-  have hLiBase := hasDerivAt_li2Series ha0 ha1
+  have hLiBase := GppRegulatedBoxDilogDerivative.hasDerivAt_li2Series ha0 ha1
   have hLiComp := hLiBase.comp y hinner
 
   have hone_minus : 1 - a = 1 / (1 - y) := by
