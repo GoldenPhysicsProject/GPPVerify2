@@ -59,16 +59,17 @@ theorem dilationCharacter_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) (a : ℝ)
   have hstarlog :
       (starRingEnd ℂ) ((Real.log a : ℝ) : ℂ) = ((Real.log a : ℝ) : ℂ) := by
     simp
-  have hhalfReal : (1 / 2 : ℂ) = (((1 / 2 : ℝ) : ℂ)) := by
-    norm_num
   have hstarhalf :
       (starRingEnd ℂ) (1 / 2 : ℂ) = (1 / 2 : ℂ) := by
-    rw [hhalfReal]
-    simp
+    apply Complex.ext <;> norm_num
   have hstarshift :
       (starRingEnd ℂ) (s - (1 / 2 : ℂ)) =
         (1 - s) - (1 / 2 : ℂ) := by
-    rw [map_sub, hsconj, hstarhalf]
+    calc
+      (starRingEnd ℂ) (s - (1 / 2 : ℂ)) =
+          (starRingEnd ℂ) s - (starRingEnd ℂ) (1 / 2 : ℂ) := by
+            exact map_sub (starRingEnd ℂ) s (1 / 2 : ℂ)
+      _ = (1 - s) - (1 / 2 : ℂ) := by rw [hsconj, hstarhalf]
   rw [map_mul, hstarlog, hstarshift]
 
 /-- At a nontrivial positive scale, the critical line is exactly the locus on which
