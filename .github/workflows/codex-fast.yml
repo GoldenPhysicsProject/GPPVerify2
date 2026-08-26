@@ -46,6 +46,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogSignedZeroContinuity
 
+      - name: Real Landen derivative cancellation
+        if: always()
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxLandenDerivative
+
       - name: Gamma real-axis phase symmetry
         if: always()
         run: lake build GppVerify.QuantumGravity.GammaWienerHopfPhaseSymmetry
