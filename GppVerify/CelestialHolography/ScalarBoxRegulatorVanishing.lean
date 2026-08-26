@@ -15,6 +15,7 @@ namespace GppScalarBoxRegulatorVanishing
 
 open Filter Set
 open scoped Topology
+open GppScalarBoxLogSquareRemainder
 
 /-- `m log m -> 0` from the physical side `m -> 0+`. -/
 theorem tendsto_mul_log_nhdsGT_zero :
@@ -65,6 +66,93 @@ theorem tendsto_sq_mul_log_div_const_sq_nhdsGT_zero
     Tendsto (fun m : ℝ => (m * Real.log (m / C)) ^ 2) (𝓝[>] 0) (𝓝 0) := by
   simpa using (tendsto_mul_log_div_const_nhdsGT_zero hC).pow 2
 
+/-- Any polynomial error scale `A m + B m²` annihilates a single shifted logarithm,
+and its complete square-error majorant tends to zero. -/
+theorem tendsto_poly_error_log_square_majorant
+    {C A B : ℝ} (hC : 0 < C) :
+    Tendsto
+      (fun m : ℝ =>
+        (A * m + B * m ^ 2) *
+          (2 * |Real.log (m / C)| + (A * m + B * m ^ 2)))
+      (𝓝[>] 0) (𝓝 0) := by
+  have hm : Tendsto (fun m : ℝ => m) (𝓝[>] 0) (𝓝 0) := by
+    exact (continuousAt_id.tendsto).mono_left inf_le_left
+  have hm2 : Tendsto (fun m : ℝ => m ^ 2) (𝓝[>] 0) (𝓝 0) := by
+    simpa using hm.pow 2
+  have hE : Tendsto (fun m : ℝ => A * m + B * m ^ 2) (𝓝[>] 0) (𝓝 0) := by
+    simpa using (hm.const_mul A).add (hm2.const_mul B)
+  have hmlog := tendsto_mul_abs_log_div_const_nhdsGT_zero hC
+  have hm2log :
+      Tendsto (fun m : ℝ => m ^ 2 * |Real.log (m / C)|) (𝓝[>] 0) (𝓝 0) := by
+    have h := hm.mul hmlog
+    apply h.congr'
+    filter_upwards with m
+    ring
+  have hElog :
+      Tendsto
+        (fun m : ℝ => (A * m + B * m ^ 2) * |Real.log (m / C)|)
+        (𝓝[>] 0) (𝓝 0) := by
+    have h := (hmlog.const_mul A).add (hm2log.const_mul B)
+    apply h.congr'
+    filter_upwards with m
+    ring
+  have hmain := (hElog.const_mul 2).add (hE.mul hE)
+  apply hmain.congr'
+  filter_upwards with m
+  ring
+
+/-- Exact polynomial form of the lower-endpoint logarithmic error after
+`δ=4m/U`, `η=m/S`. -/
+theorem lowerLogError_regulator_polynomial
+    {S U m : ℝ} (hS : S ≠ 0) (hU : U ≠ 0) :
+    lowerLogError (4 * m / U) (m / S) =
+      ((289 / 192 : ℝ) * (1 / S + (33 / 16 : ℝ) * (1 / U))) * m := by
+  unfold lowerLogError
+  field_simp [hS, hU]
+  ring
+
+/-- Exact polynomial form of the pole logarithmic error after
+`δ=4m/U`, `η=m/S`. -/
+theorem poleLogError_regulator_polynomial
+    {S U m : ℝ} (hS : S ≠ 0) (hU : U ≠ 0) :
+    poleLogError (4 * m / U) (m / S) =
+      ((103 / 17 : ℝ) * (1 / U) + (4 / 3 : ℝ) * (1 / S)) * m +
+      (4 / (3 * S * U) : ℝ) * m ^ 2 := by
+  unfold poleLogError
+  field_simp [hS, hU]
+  ring
+
+/-- The full lower-endpoint log-square majorant tends to zero. -/
+theorem tendsto_lower_log_square_majorant
+    {S U : ℝ} (hS : 0 < S) (hU : 0 < U) :
+    Tendsto
+      (fun m : ℝ =>
+        lowerLogError (4 * m / U) (m / S) *
+          (2 * |Real.log (m / U)| + lowerLogError (4 * m / U) (m / S)))
+      (𝓝[>] 0) (𝓝 0) := by
+  let A : ℝ := (289 / 192 : ℝ) * (1 / S + (33 / 16 : ℝ) * (1 / U))
+  have h := tendsto_poly_error_log_square_majorant (C := U) (A := A) (B := 0) hU
+  apply h.congr'
+  filter_upwards with m
+  rw [lowerLogError_regulator_polynomial hS.ne' hU.ne']
+  simp [A]
+
+/-- The full pole-endpoint log-square majorant tends to zero. -/
+theorem tendsto_pole_log_square_majorant
+    {S U : ℝ} (hS : 0 < S) (hU : 0 < U) :
+    Tendsto
+      (fun m : ℝ =>
+        poleLogError (4 * m / U) (m / S) *
+          (2 * |Real.log (m / S)| + poleLogError (4 * m / U) (m / S)))
+      (𝓝[>] 0) (𝓝 0) := by
+  let A : ℝ := (103 / 17 : ℝ) * (1 / U) + (4 / 3 : ℝ) * (1 / S)
+  let B : ℝ := 4 / (3 * S * U)
+  have h := tendsto_poly_error_log_square_majorant (C := S) (A := A) (B := B) hS
+  apply h.congr'
+  filter_upwards with m
+  rw [poleLogError_regulator_polynomial hS.ne' hU.ne']
+  rfl
+
 end GppScalarBoxRegulatorVanishing
 
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_log_nhdsGT_zero
@@ -73,3 +161,8 @@ end GppScalarBoxRegulatorVanishing
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_log_div_const_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_abs_log_div_const_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_sq_mul_log_div_const_sq_nhdsGT_zero
+#print axioms GppScalarBoxRegulatorVanishing.tendsto_poly_error_log_square_majorant
+#print axioms GppScalarBoxRegulatorVanishing.lowerLogError_regulator_polynomial
+#print axioms GppScalarBoxRegulatorVanishing.poleLogError_regulator_polynomial
+#print axioms GppScalarBoxRegulatorVanishing.tendsto_lower_log_square_majorant
+#print axioms GppScalarBoxRegulatorVanishing.tendsto_pole_log_square_majorant
