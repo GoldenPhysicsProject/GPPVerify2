@@ -190,6 +190,10 @@ jobs:
         if: always()
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsEntropyDerivative
 
+      - name: Zeta Gibbs differential Legendre law
+        if: always()
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsLegendreDifferential
+
       - name: Massive-vector 5D Ward reconstruction
         if: always()
         run: lake build GppVerify.CelestialHolography.MassiveVectorWardReconstruction
