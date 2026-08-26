@@ -37,8 +37,7 @@ noncomputable def Hminus (k : ℝ) : ℂ :=
 theorem Hminus_eq_conj_Hplus (k : ℝ) :
     Hminus k = conj (Hplus k) := by
   unfold Hminus Hplus
-  rw [starRingEnd_apply, star_div, star_pow]
-  rw [← starRingEnd_apply, ← Complex.Gamma_conj]
+  rw [map_div, map_pow, ← Complex.Gamma_conj]
   simp
 
 /-- Consequently the two real-axis factors have exactly the same modulus. -/
