@@ -66,6 +66,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogNegativeOneValue
 
+      - name: Branch-free negative-axis dilogarithm extension
+        if: always()
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogNegativeExtension
+
       - name: Gamma real-axis phase symmetry
         if: always()
         run: lake build GppVerify.QuantumGravity.GammaWienerHopfPhaseSymmetry
