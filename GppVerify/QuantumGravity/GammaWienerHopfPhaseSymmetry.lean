@@ -5,7 +5,7 @@ import Mathlib.Tactic
 # Conjugate-reciprocal symmetry of the real-axis Gamma phase
 
 The normalized Gamma factors already satisfy `Hminus = conj Hplus` and are both
-nonzero on the real spectral axis.  Their quotient is therefore not merely unimodular:
+nonzero on the real spectral axis. Their quotient is therefore not merely unimodular:
 it obeys the exact scattering-phase symmetry `conj Q = Q⁻¹`.
 
 This remains a real-axis statement and makes no Hardy/outer/inner factor claim.
@@ -37,8 +37,8 @@ theorem conj_Q_eq_inv (k : ℝ) :
   unfold Q
   calc
     (starRingEnd ℂ) (Hminus k / Hplus k) =
-        (starRingEnd ℂ) (Hminus k) / (starRingEnd ℂ) (Hplus k) :=
-      map_div (starRingEnd ℂ) (Hminus k) (Hplus k)
+        (starRingEnd ℂ) (Hminus k) / (starRingEnd ℂ) (Hplus k) := by
+      simp only [map_div₀]
     _ = Hplus k / Hminus k := by rw [hstarMinus, hstarPlus]
     _ = (Hminus k / Hplus k)⁻¹ := by
       simp [div_eq_mul_inv, hminus0, hplus0, mul_comm]
@@ -50,7 +50,8 @@ theorem norm_Q (k : ℝ) : ‖Q k‖ = 1 := by
 /-- Every chamber power keeps conjugate-reciprocal symmetry. -/
 theorem conj_Q_pow_eq_inv_pow (m : ℕ) (k : ℝ) :
     (starRingEnd ℂ) ((Q k) ^ m) = ((Q k) ^ m)⁻¹ := by
-  rw [map_pow, conj_Q_eq_inv, inv_pow]
+  rw [map_pow, conj_Q_eq_inv]
+  exact (inv_pow (Q k) m).symm
 
 end GppGammaWienerHopfPhase
 
