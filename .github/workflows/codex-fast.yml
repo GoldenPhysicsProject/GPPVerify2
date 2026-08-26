@@ -106,6 +106,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxSpecialRemainderVanishing
 
+      - name: Physical scalar-box core majorant vanishing
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxPhysicalMajorantVanishing
+
       - name: Adjacent-MHV bubble subtraction algebra
         if: always()
         run: lake build GppVerify.CelestialHolography.FourPointMHVBubbleSubtractionAlgebra
