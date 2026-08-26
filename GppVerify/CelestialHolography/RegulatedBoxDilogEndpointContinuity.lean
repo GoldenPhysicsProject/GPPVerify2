@@ -36,7 +36,10 @@ theorem li2Series_tendsto_one_within :
     have hcont : ContinuousAt (fun x : ℝ => term x n) 1 := by
       dsimp [term]
       fun_prop
-    have hlim := hcont.tendsto.mono_left inf_le_left
+    have hlim :
+        Tendsto (fun x : ℝ => term x n)
+          (𝓝[Icc (0 : ℝ) 1] 1) (𝓝 (term 1 n)) :=
+      hcont.tendsto.mono_left nhdsWithin_le_nhds
     simpa [term, bound] using hlim
   have hbound : ∀ᶠ x in 𝓝[Icc (0 : ℝ) 1] 1, ∀ n : ℕ,
       ‖term x n‖ ≤ bound n := by
@@ -46,7 +49,7 @@ theorem li2Series_tendsto_one_within :
     have hpow : x ^ (n + 1) ≤ 1 := pow_le_one₀ hx0 hx1
     have hden : 0 < (((n + 1 : ℕ) : ℝ) ^ 2) := by positivity
     dsimp [term, bound]
-    rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg (pow_nonneg hx0 _) hden.le)]
+    rw [abs_of_nonneg (div_nonneg (pow_nonneg hx0 _) hden.le)]
     exact (div_le_div_iff_of_pos_right hden).2 hpow
   have H := tendsto_tsum_of_dominated_convergence hsum hterm hbound
   simpa [term, bound] using H
@@ -65,7 +68,10 @@ theorem li2Series_tendsto_zero_within :
     have hcont : ContinuousAt (fun x : ℝ => term x n) 0 := by
       dsimp [term]
       fun_prop
-    have hlim := hcont.tendsto.mono_left inf_le_left
+    have hlim :
+        Tendsto (fun x : ℝ => term x n)
+          (𝓝[Icc (0 : ℝ) 1] 0) (𝓝 (term 0 n)) :=
+      hcont.tendsto.mono_left nhdsWithin_le_nhds
     simpa [term] using hlim
   have hbound : ∀ᶠ x in 𝓝[Icc (0 : ℝ) 1] 0, ∀ n : ℕ,
       ‖term x n‖ ≤ bound n := by
@@ -75,7 +81,7 @@ theorem li2Series_tendsto_zero_within :
     have hpow : x ^ (n + 1) ≤ 1 := pow_le_one₀ hx0 hx1
     have hden : 0 < (((n + 1 : ℕ) : ℝ) ^ 2) := by positivity
     dsimp [term, bound]
-    rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg (pow_nonneg hx0 _) hden.le)]
+    rw [abs_of_nonneg (div_nonneg (pow_nonneg hx0 _) hden.le)]
     exact (div_le_div_iff_of_pos_right hden).2 hpow
   have H := tendsto_tsum_of_dominated_convergence hsum hterm hbound
   simpa [term] using H
