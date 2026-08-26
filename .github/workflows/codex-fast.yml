@@ -58,6 +58,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxPoleEndpointScale
 
+      - name: Adjacent-MHV bubble subtraction algebra
+        if: always()
+        run: lake build GppVerify.CelestialHolography.FourPointMHVBubbleSubtractionAlgebra
+
       - name: Real dilogarithm inversion kernel
         if: always()
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogInversionKernel
