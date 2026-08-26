@@ -39,6 +39,7 @@ theorem q_eq_rho_mul_endpointQ
   have hqexact := q_exact_linear_m hU4.ne' hRplus.ne' hq hRsq
   have hQ : endpointQ R = 4 * R ^ 2 / (1 + R) ^ 2 := by
     unfold endpointQ
+    field_simp [hRplus.ne']
     ring
   rw [hqexact, hρ, hQ, hRsq]
   field_simp [hU.ne', hU4.ne', hRplus.ne']
