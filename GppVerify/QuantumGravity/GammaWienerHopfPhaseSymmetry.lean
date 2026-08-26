@@ -51,7 +51,7 @@ theorem norm_Q (k : ℝ) : ‖Q k‖ = 1 := by
 theorem conj_Q_pow_eq_inv_pow (m : ℕ) (k : ℝ) :
     (starRingEnd ℂ) ((Q k) ^ m) = ((Q k) ^ m)⁻¹ := by
   rw [map_pow, conj_Q_eq_inv]
-  exact (inv_pow (Q k) m).symm
+  exact inv_pow (Q k) m
 
 end GppGammaWienerHopfPhase
 
