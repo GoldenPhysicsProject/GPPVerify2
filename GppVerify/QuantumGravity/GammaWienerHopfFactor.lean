@@ -37,7 +37,8 @@ noncomputable def Hminus (k : ℝ) : ℂ :=
 theorem Hminus_eq_conj_Hplus (k : ℝ) :
     Hminus k = conj (Hplus k) := by
   have hstar2 : (starRingEnd ℂ) (2 : ℂ) = 2 := by
-    simpa using (Complex.conj_ofNat 2)
+    change conj (2 : ℂ) = 2
+    apply Complex.ext <;> norm_num
   have harg :
       conj (((1 : ℂ) / 2) - (((k / (2 * Real.pi) : ℝ) : ℂ) * I)) =
         ((1 : ℂ) / 2) + (((k / (2 * Real.pi) : ℝ) : ℂ) * I) := by
