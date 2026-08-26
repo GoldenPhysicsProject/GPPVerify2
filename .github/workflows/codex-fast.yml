@@ -82,6 +82,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxPrefactorRemainder
 
+      - name: Scalar-box special-function remainder
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxSpecialFunctionRemainder
+
       - name: Adjacent-MHV bubble subtraction algebra
         if: always()
         run: lake build GppVerify.CelestialHolography.FourPointMHVBubbleSubtractionAlgebra
