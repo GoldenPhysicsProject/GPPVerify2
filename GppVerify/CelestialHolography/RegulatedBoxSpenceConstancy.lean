@@ -24,7 +24,7 @@ theorem spenceCombination_eq_on_Ioo
     exact (spenceCombination_hasDerivAt_zero hz.1 hz.2).differentiableAt.differentiableWithinAt
   · intro z hz
     rw [fderivWithin_of_isOpen isOpen_Ioo hz]
-    simpa using (spenceCombination_hasDerivAt_zero hz.1 hz.2).fderiv
+    simpa using (spenceCombination_hasDerivAt_zero hz.1 hz.2).hasFDerivAt.fderiv
   · exact hx
   · exact hy
 
