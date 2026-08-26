@@ -45,7 +45,7 @@ theorem one_add_sq_pos (u : ℝ) : 0 < 1 + u ^ 2 := by
 /-- Real part of the fully moment-mapped surviving triangle subtraction before
 Badger's explicit `-1/2` subtraction prefactor.  The physical expression is `i` times
 this real coefficient. -/
-def mappedSubtractionReal (u mu2 : ℝ) : ℝ :=
+noncomputable def mappedSubtractionReal (u mu2 : ℝ) : ℝ :=
   (10 * mu2 * u ^ 2 + 6 * mu2 - u ^ 2) / (3 * (1 + u ^ 2))
 
 /-- The mapped subtraction is exactly affine in `mu2`; its slope is the rational
@@ -66,11 +66,11 @@ theorem mappedSubtractionReal_unit_difference
   simpa using mappedSubtractionReal_affine u mu2 1
 
 /-- Real coefficient for one scalar-flow orientation after Badger's `-1/2` prefactor. -/
-def oneFlowBubbleReal (u : ℝ) : ℝ :=
+noncomputable def oneFlowBubbleReal (u : ℝ) : ℝ :=
   -(5 * u ^ 2 + 3) / (3 * (1 + u ^ 2))
 
 /-- The frame value of `s12` used by the rational cut parametrization. -/
-def frameS12 (u : ℝ) : ℝ :=
+noncomputable def frameS12 (u : ℝ) : ℝ :=
   -(u ^ 2) / (1 + u ^ 2)
 
 /-- Pure rational restoration identity.  If the state-space convention supplies two
