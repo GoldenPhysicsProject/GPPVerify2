@@ -47,7 +47,6 @@ theorem landenCombination_hasDerivAt_zero
 
   have hone_minus : 1 - x / (1 + x) = 1 / (1 + x) := by
     field_simp [hden]
-    ring
   have hrecipne : (1 / (1 + x) : ℝ) ≠ 0 := one_div_ne_zero hden
   have hlogrecip : Real.log (1 / (1 + x)) = -Real.log (1 + x) := by
     have hm := Real.log_mul hrecipne hden
@@ -88,7 +87,7 @@ theorem landenCombination_hasDerivAt_zero
     ring
   unfold landenCombination
   convert hsum using 1
-  exact hcoef.symm
+  simpa [sub_eq_add_neg] using hcoef.symm
 
 end GppRegulatedBoxLandenDerivative
 
