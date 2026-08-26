@@ -32,15 +32,20 @@ theorem landenCombination_eq_zero
   have hfrac : Tendsto (fun y : ℝ => y / (1 + y)) L
       (𝓝[Icc (-1 : ℝ) 1] 0) := by
     apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
-    · have hc : ContinuousAt (fun y : ℝ => y / (1 + y)) 0 := by
-        fun_prop
+    · have hnum : HasDerivAt (fun y : ℝ => y) 1 0 := hasDerivAt_id 0
+      have hden : HasDerivAt (fun y : ℝ => 1 + y) 1 0 := by
+        convert (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).add (hasDerivAt_id 0) using 1 <;>
+          norm_num
+      have hc : ContinuousAt (fun y : ℝ => y / (1 + y)) 0 :=
+        (hnum.div hden (by norm_num)).continuousAt
       simpa [L] using hc.tendsto.mono_left (show L ≤ 𝓝 (0 : ℝ) by
         dsimp [L]
         exact nhdsWithin_le_nhds)
     · dsimp [L]
       filter_upwards [self_mem_nhdsWithin] with y hy
+      rcases hy with ⟨hy0, hy1⟩
       have hdenpos : 0 < 1 + y := by linarith
-      have hyfrac0 : 0 ≤ y / (1 + y) := (div_nonneg hy.1.le hdenpos.le)
+      have hyfrac0 : 0 ≤ y / (1 + y) := div_nonneg hy0.le hdenpos.le
       have hyfrac1 : y / (1 + y) ≤ 1 := by
         exact (div_le_one hdenpos).2 (by linarith)
       exact ⟨by linarith, hyfrac1⟩
@@ -54,6 +59,7 @@ theorem landenCombination_eq_zero
         exact nhdsWithin_le_nhds)
     · dsimp [L]
       filter_upwards [self_mem_nhdsWithin] with y hy
+      rcases hy with ⟨hy0, hy1⟩
       exact ⟨by linarith, by linarith⟩
 
   have hLiFrac : Tendsto (fun y : ℝ => li2Series (y / (1 + y))) L (𝓝 0) :=
@@ -62,8 +68,14 @@ theorem landenCombination_eq_zero
     li2Series_tendsto_zero_signed.comp hneg
 
   have hlog : Tendsto (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) L (𝓝 0) := by
-    have hc : ContinuousAt (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) 0 := by
-      fun_prop
+    have hinner : HasDerivAt (fun y : ℝ => 1 + y) 1 0 := by
+      convert (hasDerivAt_const (x := (0 : ℝ)) (c := (1 : ℝ))).add (hasDerivAt_id 0) using 1 <;>
+        norm_num
+    have hlogderiv : HasDerivAt (fun y : ℝ => Real.log (1 + y)) 1 0 := by
+      have h := (Real.hasDerivAt_log (by norm_num : (1 : ℝ) ≠ 0)).comp 0 hinner
+      simpa using h
+    have hc : ContinuousAt (fun y : ℝ => (Real.log (1 + y)) ^ 2 / 2) 0 :=
+      ((hlogderiv.pow 2).div_const 2).continuousAt
     simpa using hc.tendsto.mono_left (show L ≤ 𝓝 (0 : ℝ) by
       dsimp [L]
       exact nhdsWithin_le_nhds)
