@@ -55,10 +55,18 @@ theorem dilationCharacter_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) (a : ℝ)
   unfold dilationCharacter
   rw [← Complex.exp_conj]
   congr 1
-  rw [map_mul]
   have hsconj := conj_eq_shadow_of_re_eq_half hs
-  rw [hsconj]
-  simp
+  have hstarlog :
+      (starRingEnd ℂ) ((Real.log a : ℝ) : ℂ) = ((Real.log a : ℝ) : ℂ) := by
+    simp
+  have hstarhalf :
+      (starRingEnd ℂ) (1 / 2 : ℂ) = (1 / 2 : ℂ) := by
+    norm_num
+  have hstarshift :
+      (starRingEnd ℂ) (s - (1 / 2 : ℂ)) =
+        (1 - s) - (1 / 2 : ℂ) := by
+    rw [map_sub, hsconj, hstarhalf]
+  rw [map_mul, hstarlog, hstarshift]
 
 /-- At a nontrivial positive scale, the critical line is exactly the locus on which
     the character is unitary; on that same locus shadow acts by inversion. -/
