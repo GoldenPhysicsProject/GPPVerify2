@@ -71,8 +71,7 @@ theorem hasDerivAt_li2Series_of_abs_lt_one
   have hzero_mem : (0 : ℝ) ∈ Ioo (-q) q := by
     exact ⟨by linarith, hq0⟩
   have hxmem : x ∈ Ioo (-q) q := by
-    rw [← abs_lt]
-    exact hxq
+    exact abs_lt.mp hxq
   have H := hasDerivAt_tsum_of_isPreconnected
     hgeom isOpen_Ioo isPreconnected_Ioo hderiv hbound hzero_mem hzero hxmem
   have hsum :
