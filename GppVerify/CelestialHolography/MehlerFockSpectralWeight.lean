@@ -59,7 +59,8 @@ theorem collapsedWeight_zero : collapsedWeight 0 = 0 := by
 /-- The collapsed density is an even spectral weight. -/
 theorem collapsedWeight_neg (lam : ℝ) : collapsedWeight (-lam) = collapsedWeight lam := by
   unfold collapsedWeight
-  rw [Real.cosh_neg]
+  have harg : Real.pi * (-lam) = -(Real.pi * lam) := by ring
+  rw [harg, Real.cosh_neg]
   ring
 
 /-- The origin is the exact zero set of the collapsed density. -/
