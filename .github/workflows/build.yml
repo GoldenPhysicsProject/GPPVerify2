@@ -95,6 +95,9 @@ jobs:
       - name: Codex all-order strict Fisher Gram check
         run: lake build GppVerify.RiemannHypothesis.PrimeHankelAllOrderStrict
 
+      - name: Codex strict zeta Gibbs thermodynamics check
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
+
       - name: Codex massive-vector 5D Ward reconstruction check
         run: lake build GppVerify.CelestialHolography.MassiveVectorWardReconstruction
 
@@ -103,6 +106,9 @@ jobs:
 
       - name: Codex Gamma Wiener-Hopf real-axis check
         run: lake build GppVerify.QuantumGravity.GammaWienerHopfFactor
+
+      - name: Codex Gamma phase symmetry check
+        run: lake build GppVerify.QuantumGravity.GammaWienerHopfPhaseSymmetry
 
       - name: Build radial-bridge dependency
         run: lake build GppVerify.RiemannHypothesis.EulerFactorLogDeriv
