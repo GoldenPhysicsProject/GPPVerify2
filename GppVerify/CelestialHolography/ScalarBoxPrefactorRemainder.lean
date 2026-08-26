@@ -31,6 +31,40 @@ theorem abs_inv_kappa_sub_one_le
   rw [habs]
   exact (div_le_self hdiff0 hκ).trans hκdiff
 
+/-- The defining physical relation for `κ²` itself supplies the prefactor estimate.
+For `0 ≤ m ≤ S`, `U>0`, and `κ≥1`, one has
+
+`κ - 1 ≤ 2m/U = (4m/U)/2`.
+
+Thus no independent asymptotic hypothesis on the inverse prefactor is needed. -/
+theorem kappa_sub_one_le_two_mul_m_div_U
+    {S U m κ : ℝ}
+    (hS : 0 < S) (hU : 0 < U)
+    (hm0 : 0 ≤ m) (hmS : m ≤ S)
+    (hκ : 1 ≤ κ)
+    (hκsq : κ ^ 2 = 1 + 4 * m * (S - m) / (S * U)) :
+    κ - 1 ≤ 2 * m / U := by
+  have hSU : 0 < S * U := mul_pos hS hU
+  have hSm : 0 ≤ S - m := by linarith
+  have hsqdiff : κ ^ 2 - 1 = 4 * m * (S - m) / (S * U) := by
+    rw [hκsq]
+    ring
+  have hrhsle : 4 * m * (S - m) / (S * U) ≤ 4 * m / U := by
+    apply (div_le_iff₀ hSU).2
+    field_simp [hU.ne']
+    nlinarith
+  have hprodlo : 2 * (κ - 1) ≤ (κ - 1) * (κ + 1) := by
+    have hk0 : 0 ≤ κ - 1 := by linarith
+    have hkplus : 2 ≤ κ + 1 := by linarith
+    exact mul_le_mul_of_nonneg_left hkplus hk0
+  have hprodhi : (κ - 1) * (κ + 1) ≤ 4 * m / U := by
+    calc
+      (κ - 1) * (κ + 1) = κ ^ 2 - 1 := by ring
+      _ = 4 * m * (S - m) / (S * U) := hsqdiff
+      _ ≤ 4 * m / U := hrhsle
+  have htwo : 2 * (κ - 1) ≤ 4 * m / U := hprodlo.trans hprodhi
+  linarith
+
 /-- Exact decomposition of the prefactor-corrected remainder. -/
 theorem prefactor_remainder_identity
     {D D0 κ : ℝ} (hκ : κ ≠ 0) :
@@ -68,9 +102,26 @@ theorem abs_prefactor_remainder_le_of_core_bound
   exact (abs_prefactor_remainder_le hκ hκdiff).trans
     (add_le_add_right hcore ((δ / 2) * |D0|))
 
+/-- Physical specialization: the quadratic definition of `κ` discharges the
+prefactor hypothesis automatically. -/
+theorem abs_prefactor_remainder_le_of_physical_core_bound
+    {S U m D D0 κ M : ℝ}
+    (hS : 0 < S) (hU : 0 < U)
+    (hm0 : 0 ≤ m) (hmS : m ≤ S)
+    (hκ : 1 ≤ κ)
+    (hκsq : κ ^ 2 = 1 + 4 * m * (S - m) / (S * U))
+    (hcore : |D - D0| ≤ M) :
+    |D / κ - D0| ≤ M + ((4 * m / U) / 2) * |D0| := by
+  apply abs_prefactor_remainder_le_of_core_bound hκ
+  · have h := kappa_sub_one_le_two_mul_m_div_U hS hU hm0 hmS hκ hκsq
+    convert h using 1 <;> ring
+  · exact hcore
+
 end GppScalarBoxPrefactorRemainder
 
 #print axioms GppScalarBoxPrefactorRemainder.abs_inv_kappa_sub_one_le
+#print axioms GppScalarBoxPrefactorRemainder.kappa_sub_one_le_two_mul_m_div_U
 #print axioms GppScalarBoxPrefactorRemainder.prefactor_remainder_identity
 #print axioms GppScalarBoxPrefactorRemainder.abs_prefactor_remainder_le
 #print axioms GppScalarBoxPrefactorRemainder.abs_prefactor_remainder_le_of_core_bound
+#print axioms GppScalarBoxPrefactorRemainder.abs_prefactor_remainder_le_of_physical_core_bound
