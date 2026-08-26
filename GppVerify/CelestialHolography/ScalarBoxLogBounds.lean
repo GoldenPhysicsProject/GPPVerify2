@@ -38,10 +38,22 @@ theorem half_log_one_sub_sq_le
     (1 / 2 : ℝ) * (Real.log (1 - x)) ^ 2 ≤ (9 / 8 : ℝ) * x ^ 2 := by
   have h := abs_log_one_sub_le_three_halves hx0 hx
   have hrhs0 : 0 ≤ (3 / 2 : ℝ) * x := by positivity
+  have habs0 : 0 ≤ |Real.log (1 - x)| := abs_nonneg _
+  have hdiff :
+      0 ≤ (3 / 2 : ℝ) * x - |Real.log (1 - x)| :=
+    sub_nonneg.mpr h
+  have hsum :
+      0 ≤ (3 / 2 : ℝ) * x + |Real.log (1 - x)| :=
+    add_nonneg hrhs0 habs0
+  have hprod :
+      0 ≤ ((3 / 2 : ℝ) * x - |Real.log (1 - x)|) *
+        ((3 / 2 : ℝ) * x + |Real.log (1 - x)|) :=
+    mul_nonneg hdiff hsum
+  have hsquareAbs :
+      |Real.log (1 - x)| ^ 2 ≤ ((3 / 2 : ℝ) * x) ^ 2 := by
+    nlinarith
   have habsSq : |Real.log (1 - x)| ^ 2 = (Real.log (1 - x)) ^ 2 := by
     rw [sq_abs]
-  have hsquareAbs : |Real.log (1 - x)| ^ 2 ≤ ((3 / 2 : ℝ) * x) ^ 2 := by
-    nlinarith [sq_nonneg ((3 / 2 : ℝ) * x - |Real.log (1 - x)|)]
   rw [habsSq] at hsquareAbs
   nlinarith
 
