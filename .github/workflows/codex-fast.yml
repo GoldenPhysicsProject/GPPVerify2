@@ -42,6 +42,10 @@ jobs:
         if: always()
         run: lake build GppVerify.RiemannHypothesis.ScaleShadowHalfDensity
 
+      - name: Scalar-box endpoint linearization
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxEndpointLinearization
+
       - name: Real dilogarithm inversion kernel
         if: always()
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogInversionKernel
