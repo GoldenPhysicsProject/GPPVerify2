@@ -74,16 +74,24 @@ theorem a_exact_linear_m
     (ha : a = (κ - 1) / (κ + 1))
     (hsq : κ ^ 2 = 1 + 4 * m * (S - m) / (S * U)) :
     a = 4 * m * (S - m) / ((S * U) * (κ + 1) ^ 2) := by
-  have hfac : (κ - 1) * (κ + 1) * (S * U) = 4 * m * (S - m) := by
+  have hfac0 : κ ^ 2 * (S * U) - S * U = 4 * m * (S - m) := by
     have h := hsq
     field_simp [hSU] at h
     nlinarith
+  have hfac : (κ - 1) * (κ + 1) * (S * U) = 4 * m * (S - m) := by
+    calc
+      (κ - 1) * (κ + 1) * (S * U) = κ ^ 2 * (S * U) - S * U := by ring
+      _ = 4 * m * (S - m) := hfac0
+  have hden : (S * U) * (κ + 1) ^ 2 ≠ 0 :=
+    mul_ne_zero hSU (pow_ne_zero 2 hκplus)
+  apply (eq_div_iff hden).2
   rw [ha]
-  apply (div_eq_div_iff ?_ ?_).2
-  · ring_nf at hfac ⊢
-    nlinarith
-  · exact hκplus
-  · exact mul_ne_zero hSU (sq_ne_zero.mpr hκplus)
+  calc
+    (κ - 1) / (κ + 1) * ((S * U) * (κ + 1) ^ 2) =
+        (κ - 1) * (κ + 1) * (S * U) := by
+          field_simp [hκplus]
+          ring
+    _ = 4 * m * (S - m) := hfac
 
 /-- On the physical interval `0 ≤ m ≤ S`, the lower endpoint satisfies the sharp
 linear estimate `0 ≤ a ≤ m/U`. -/
