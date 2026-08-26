@@ -21,6 +21,7 @@ separate complex-analysis layer.
 namespace GppGammaWienerHopf
 
 open Complex
+open scoped ComplexConjugate
 
 /-- Upper-half-plane candidate factor, restricted here to real spectral parameter `k`. -/
 noncomputable def Hplus (k : ℝ) : ℂ :=
@@ -34,7 +35,7 @@ noncomputable def Hminus (k : ℝ) : ℂ :=
 
 /-- On the real spectral axis the two normalized Gamma factors are complex conjugates. -/
 theorem Hminus_eq_conj_Hplus (k : ℝ) :
-    Hminus k = Complex.conj (Hplus k) := by
+    Hminus k = conj (Hplus k) := by
   unfold Hminus Hplus
   rw [map_div, map_pow, ← Complex.Gamma_conj]
   congr 2 <;> simp
@@ -68,9 +69,11 @@ theorem Hplus_mul_Hminus (k : ℝ) :
           (Real.pi : ℂ) ^ 2) := by rw [href]
     _ = ((1 / (Real.cosh (k / 2)) ^ 2 : ℝ) : ℂ) := by
       have hcosh : Real.cosh (k / 2) ≠ 0 := ne_of_gt (Real.cosh_pos _)
-      apply Complex.ofReal_injective
-      norm_cast
-      field_simp [Real.pi_ne_zero, hcosh]
+      have hreal :
+          (Real.pi / Real.cosh (k / 2)) ^ 2 / Real.pi ^ 2 =
+            1 / Real.cosh (k / 2) ^ 2 := by
+        field_simp [Real.pi_ne_zero, hcosh]
+      exact_mod_cast hreal
 
 /-- The upper real-axis Gamma factor never vanishes.  This follows directly from
 its exact product with the lower factor and positivity of `cosh`. -/
