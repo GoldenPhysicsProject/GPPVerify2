@@ -60,13 +60,14 @@ theorem abs_li2Series_neg_a_div_one_sub_a_le_rho
   have hden : 0 < 1 - a := by linarith
   have hx0 : 0 ≤ a / (1 - a) := div_nonneg ha0 hden.le
   have h2a : 0 < 1 - 2 * a := by linarith
+  have h2a' : 1 - a * 2 ≠ 0 := by nlinarith
   have hx1 : a / (1 - a) < 1 := by
     apply (div_lt_iff₀ hden).2
     linarith
   have hli := abs_li2Series_neg_le_of_nonneg hx0 hx1
   have hrewrite :
       (a / (1 - a)) / (1 - a / (1 - a)) = a / (1 - 2 * a) := by
-    field_simp [hden.ne', h2a.ne']
+    field_simp [hden.ne', h2a.ne', h2a']
     ring
   rw [hrewrite] at hli
   calc
@@ -157,7 +158,6 @@ theorem abs_specialRemainder_le
                     |Real.log q * Real.log (1 - a * q)|) +
                     |(1 / 2 : ℝ) * (Real.log (1 - a)) ^ 2|) +
                     |li2Series (-(a / (1 - a)))|) + |li2Series a| := by
-                  gcongr
                   simpa using (abs_sub (-li2Series (-t)) (li2Series (a * q)))
             _ = |li2Series (-t)| + |li2Series (a * q)| +
                 |Real.log q * Real.log (1 - a * q)| +
