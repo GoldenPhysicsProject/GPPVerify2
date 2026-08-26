@@ -81,6 +81,9 @@ jobs:
       - name: Codex scalar-box logarithm series kernel check
         run: lake build GppVerify.CelestialHolography.RegulatedBoxLogSeriesKernel
 
+      - name: Codex scalar-box Spence endpoint constant check
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceConstant
+
       - name: Codex scalar-box Spence derivative kernel check
         run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceDerivativeKernel
 
