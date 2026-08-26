@@ -86,7 +86,7 @@ theorem one_sub_endpointQ_le_two_q
   have hfac : (1 + 3 * R) / (1 + R) ≤ 2 := by
     apply (div_le_iff₀ hplus).2
     linarith
-  exact mul_le_mul_of_nonneg_left hfac hq0
+  simpa [mul_comm] using mul_le_mul_of_nonneg_left hfac hq0
 
 /-- The unit-centered correction contributes at most `(81/32) rho` to the log. -/
 theorem abs_log_endpointQ_le
