@@ -35,6 +35,24 @@ theorem tendsto_sq_mul_log_sq_nhdsGT_zero :
     Tendsto (fun m : ℝ => (m * Real.log m) ^ 2) (𝓝[>] 0) (𝓝 0) := by
   simpa using tendsto_mul_log_nhdsGT_zero.pow 2
 
+/-- The prefactor-critical monomial `m log^2 m` tends to zero from the physical side.
+This is obtained by taking the standard Mathlib limit
+`log m * m^(1/2) -> 0` and squaring it. -/
+theorem tendsto_mul_log_sq_nhdsGT_zero :
+    Tendsto (fun m : ℝ => m * (Real.log m) ^ 2) (𝓝[>] 0) (𝓝 0) := by
+  have hhalf :
+      Tendsto (fun m : ℝ => Real.log m * m ^ (1 / 2 : ℝ)) (𝓝[>] 0) (𝓝 0) := by
+    exact tendsto_log_mul_rpow_nhdsGT_zero (by norm_num)
+  have hsq := hhalf.pow 2
+  apply hsq.congr'
+  filter_upwards [self_mem_nhdsWithin] with m hm
+  have hm0 : 0 ≤ m := hm.le
+  have hrpow : (m ^ (1 / 2 : ℝ)) ^ (2 : ℕ) = m := by
+    convert Real.rpow_inv_natCast_pow hm0 (by norm_num : (2 : ℕ) ≠ 0) using 1 <;>
+      norm_num
+  rw [mul_pow, hrpow]
+  ring
+
 /-- Multiplying a shifted regulator logarithm by `m` still kills the logarithmic
 singularity for every fixed positive scale `C`. -/
 theorem tendsto_mul_log_div_const_nhdsGT_zero
@@ -164,6 +182,7 @@ end GppScalarBoxRegulatorVanishing
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_log_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_abs_mul_log_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_sq_mul_log_sq_nhdsGT_zero
+#print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_log_sq_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_log_div_const_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_mul_abs_log_div_const_nhdsGT_zero
 #print axioms GppScalarBoxRegulatorVanishing.tendsto_sq_mul_abs_log_div_const_nhdsGT_zero
