@@ -45,7 +45,6 @@ theorem q_nonneg_and_le_linear_m
   rw [hqexact]
   have hdenpos : 0 < (U + 4 * m) * (1 + R) ^ 2 := by positivity
   have hRfac : (17 / 9 : ℝ) ≤ 1 + R := by linarith
-  have hRfac0 : 0 ≤ (17 / 9 : ℝ) := by norm_num
   have hsqfac : (289 / 81 : ℝ) ≤ (1 + R) ^ 2 := by nlinarith
   have hU4ge : U ≤ U + 4 * m := by linarith
   have hdenlower : U * (289 / 81 : ℝ) ≤ (U + 4 * m) * (1 + R) ^ 2 := by
@@ -75,9 +74,16 @@ theorem a_exact_linear_m
     (ha : a = (κ - 1) / (κ + 1))
     (hsq : κ ^ 2 = 1 + 4 * m * (S - m) / (S * U)) :
     a = 4 * m * (S - m) / ((S * U) * (κ + 1) ^ 2) := by
+  have hfac : (κ - 1) * (κ + 1) * (S * U) = 4 * m * (S - m) := by
+    have h := hsq
+    field_simp [hSU] at h
+    nlinarith
   rw [ha]
-  field_simp [hκplus, hSU]
-  nlinarith
+  apply (div_eq_div_iff ?_ ?_).2
+  · ring_nf at hfac ⊢
+    nlinarith
+  · exact hκplus
+  · exact mul_ne_zero hSU (sq_ne_zero.mpr hκplus)
 
 /-- On the physical interval `0 ≤ m ≤ S`, the lower endpoint satisfies the sharp
 linear estimate `0 ≤ a ≤ m/U`. -/
