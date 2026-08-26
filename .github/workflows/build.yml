@@ -39,6 +39,26 @@ jobs:
       - name: Get Mathlib cache
         run: lake exe cache get || true
 
+      # Scalar-box/Spence gates run first because this is the active analytic frontier.
+      # The full build and every other theorem gate still run once these pass.
+      - name: Codex scalar-box regulator endpoint check
+        run: set -o pipefail && lake build GppVerify.CelestialHolography.ScalarBoxRegulatorBounds 2>&1 | tee /tmp/scalar-box.log
+
+      - name: Codex scalar-box logarithm series kernel check
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxLogSeriesKernel
+
+      - name: Codex scalar-box Spence endpoint constant check
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceConstant
+
+      - name: Codex scalar-box dilogarithm endpoint continuity check
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogEndpointContinuity
+
+      - name: Codex scalar-box Spence derivative kernel check
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceDerivativeKernel
+
+      - name: Codex scalar-box Spence constancy check
+        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceConstancy
+
       - name: Codex prime Hankel theorem check
         run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelGram.lean
 
@@ -74,24 +94,6 @@ jobs:
 
       - name: Codex massive-vector 5D Ward reconstruction check
         run: lake build GppVerify.CelestialHolography.MassiveVectorWardReconstruction
-
-      - name: Codex scalar-box regulator endpoint check
-        run: set -o pipefail && lake build GppVerify.CelestialHolography.ScalarBoxRegulatorBounds 2>&1 | tee /tmp/scalar-box.log
-
-      - name: Codex scalar-box logarithm series kernel check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxLogSeriesKernel
-
-      - name: Codex scalar-box Spence endpoint constant check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceConstant
-
-      - name: Codex scalar-box dilogarithm endpoint continuity check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogEndpointContinuity
-
-      - name: Codex scalar-box Spence derivative kernel check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceDerivativeKernel
-
-      - name: Codex scalar-box Spence constancy check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceConstancy
 
       - name: Codex half-density Hermitian shadow check
         run: lake build GppVerify.RiemannHypothesis.ScaleShadowHalfDensity
