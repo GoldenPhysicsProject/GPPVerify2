@@ -7,8 +7,8 @@ import Mathlib.Tactic
 # Derivative of the local regulated-box dilogarithm series
 
 For `0 < x < 1`, differentiate the defining real power series term-by-term on a
-smaller open interval contained in `(-1,1)`.  The derivative terms are dominated by
-a geometric series `q^n`, where `x < q < 1`.  The derivative series is then identified
+smaller open interval contained in `(-1,1)`. The derivative terms are dominated by
+a geometric series `q^n`, where `x < q < 1`. The derivative series is then identified
 with `-log(1-x)/x` using `RegulatedBoxLogSeriesKernel`.
 -/
 
@@ -24,9 +24,8 @@ theorem hasDerivAt_li2_term (n : ℕ) (x : ℝ) :
       (fun y : ℝ => y ^ (n + 1) / (((n + 1 : ℕ) : ℝ) ^ 2))
       (x ^ n / ((n + 1 : ℕ) : ℝ)) x := by
   have hn : (((n + 1 : ℕ) : ℝ)) ≠ 0 := by positivity
-  convert (hasDerivAt_pow (n + 1) x).div_const ((((n + 1 : ℕ) : ℝ) ^ 2)) using 1
-  · field_simp [hn]
-  · rfl
+  convert (hasDerivAt_pow (n + 1) x).div_const ((((n + 1 : ℕ) : ℝ) ^ 2)) using 1 <;>
+    field_simp [hn] <;> ring
 
 /-- The defining local dilogarithm series has the classical real derivative on `0<x<1`. -/
 theorem hasDerivAt_li2Series
@@ -61,7 +60,7 @@ theorem hasDerivAt_li2Series
     have hden : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by
       exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
     dsimp [g']
-    rw [Real.norm_eq_abs, abs_div, abs_pow, abs_of_nonneg (by positivity : 0 ≤ ((n + 1 : ℕ) : ℝ))]
+    rw [abs_div, abs_pow, abs_of_nonneg (by positivity : 0 ≤ ((n + 1 : ℕ) : ℝ))]
     calc
       |y| ^ n / ((n + 1 : ℕ) : ℝ) ≤ |y| ^ n :=
         div_le_self (pow_nonneg (abs_nonneg y) n) hden
@@ -79,7 +78,7 @@ theorem hasDerivAt_li2Series
     have hxabs : |x| < 1 := by simpa [abs_of_pos hx0] using hx1
     simpa [g'] using tsum_pow_div_succ_eq_neg_log_div hxabs hx0.ne'
   rw [hsum] at H
-  simpa [li2Series, g] using H
+  simpa [li2Series, g, Nat.cast_add, Nat.cast_one] using H
 
 end GppRegulatedBoxDilogDerivative
 
