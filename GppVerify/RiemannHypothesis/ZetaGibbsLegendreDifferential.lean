@@ -32,16 +32,15 @@ noncomputable def zetaFreeEnergy (β : ℝ) : ℝ :=
 theorem hasDerivAt_zetaFreeEnergy
     {β : ℝ} (hβ : 1 < β) :
     HasDerivAt zetaFreeEnergy (zetaEntropy β / β ^ 2) β := by
-  have hA := (hasDerivAt_zetaLogPartition hβ).neg
-  have hβid : HasDerivAt (fun x : ℝ => x) 1 β := hasDerivAt_id β
   have hβ0 : β ≠ 0 := by linarith
-  have hF := hA.div hβid hβ0
-  convert hF using 1
-  · unfold zetaFreeEnergy
-    rfl
-  · unfold zetaEntropy
-    field_simp [hβ0]
+  have hF := (hasDerivAt_zetaLogPartition hβ).neg.div (hasDerivAt_id β) hβ0
+  have hcoef :
+      (zetaMeanEnergy β * β - (-zetaLogPartition β) * 1) / β ^ 2 =
+        zetaEntropy β / β ^ 2 := by
+    unfold zetaEntropy
+    congr 1
     ring
+  simpa only [zetaFreeEnergy, neg_neg, hcoef] using hF
 
 /-- The ordinary derivative version of the same Legendre differential identity. -/
 theorem deriv_zetaFreeEnergy
