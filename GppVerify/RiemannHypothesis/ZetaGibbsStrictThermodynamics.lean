@@ -69,6 +69,32 @@ theorem entropyBetaDerivative_ne_zero {β : ℝ} (hβ : 1 < β) :
     entropyBetaDerivative β ≠ 0 := by
   exact ne_of_lt (entropyBetaDerivative_neg hβ)
 
+/-- Exact thermodynamic response identity: heat capacity is `-β` times the entropy
+response. This is algebraic and therefore does not require differentiability hypotheses. -/
+theorem heatCapacity_eq_neg_beta_mul_entropyBetaDerivative (β : ℝ) :
+    heatCapacity β = -β * entropyBetaDerivative β := by
+  unfold heatCapacity entropyBetaDerivative
+  ring
+
+/-- On any nonzero inverse temperature, the entropy response is exactly heat capacity
+divided by `-β`. -/
+theorem entropyBetaDerivative_eq_neg_heatCapacity_div_beta
+    {β : ℝ} (hβ : β ≠ 0) :
+    entropyBetaDerivative β = -heatCapacity β / β := by
+  unfold heatCapacity entropyBetaDerivative
+  field_simp [hβ]
+  ring
+
+/-- On the honest Gibbs domain the ratio of positive heat capacity to the positive
+entropy-loss rate recovers the inverse temperature exactly. -/
+theorem heatCapacity_div_neg_entropyBetaDerivative_eq_beta
+    {β : ℝ} (hβ : 1 < β) :
+    heatCapacity β / (-entropyBetaDerivative β) = β := by
+  have hne : entropyBetaDerivative β ≠ 0 := entropyBetaDerivative_ne_zero hβ
+  rw [heatCapacity_eq_neg_beta_mul_entropyBetaDerivative]
+  field_simp [hne]
+  ring
+
 end GppZetaGibbsStrictThermodynamics
 
 #print axioms GppZetaGibbsStrictThermodynamics.logEnergyVariance_pos
@@ -76,3 +102,6 @@ end GppZetaGibbsStrictThermodynamics
 #print axioms GppZetaGibbsStrictThermodynamics.heatCapacity_pos
 #print axioms GppZetaGibbsStrictThermodynamics.entropyBetaDerivative_neg
 #print axioms GppZetaGibbsStrictThermodynamics.entropyBetaDerivative_ne_zero
+#print axioms GppZetaGibbsStrictThermodynamics.heatCapacity_eq_neg_beta_mul_entropyBetaDerivative
+#print axioms GppZetaGibbsStrictThermodynamics.entropyBetaDerivative_eq_neg_heatCapacity_div_beta
+#print axioms GppZetaGibbsStrictThermodynamics.heatCapacity_div_neg_entropyBetaDerivative_eq_beta
