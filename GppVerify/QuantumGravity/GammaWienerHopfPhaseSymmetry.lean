@@ -32,13 +32,16 @@ theorem conj_Q_eq_inv (k : ℝ) :
     simp
   have hstarPlus : (starRingEnd ℂ) (Hplus k) = Hminus k := by
     exact (Hminus_eq_conj_Hplus k).symm
+  have hminus0 : Hminus k ≠ 0 := Hminus_ne_zero k
+  have hplus0 : Hplus k ≠ 0 := Hplus_ne_zero k
   unfold Q
   calc
     (starRingEnd ℂ) (Hminus k / Hplus k) =
         (starRingEnd ℂ) (Hminus k) / (starRingEnd ℂ) (Hplus k) :=
       map_div (starRingEnd ℂ) (Hminus k) (Hplus k)
     _ = Hplus k / Hminus k := by rw [hstarMinus, hstarPlus]
-    _ = (Hminus k / Hplus k)⁻¹ := by rw [inv_div]
+    _ = (Hminus k / Hplus k)⁻¹ := by
+      field_simp [hminus0, hplus0]
 
 /-- The phase ratio has unit modulus, restated in the phase notation. -/
 theorem norm_Q (k : ℝ) : ‖Q k‖ = 1 := by
