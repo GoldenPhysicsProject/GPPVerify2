@@ -21,79 +21,66 @@ endpoint `q=(1-R)/(1+R)`. -/
 theorem q_exact_linear_m
     {U m R q : ℝ}
     (hU4 : U + 4 * m ≠ 0)
-    (hR : 1 + R ≠ 0)
+    (hRplus : 1 + R ≠ 0)
     (hq : q = (1 - R) / (1 + R))
     (hsq : R ^ 2 = U / (U + 4 * m)) :
     q = 4 * m / ((U + 4 * m) * (1 + R) ^ 2) := by
-  have hsq' : R ^ 2 * (U + 4 * m) = U :=
-    (eq_div_iff hU4).mp hsq
+  have hsq' : R ^ 2 * (U + 4 * m) = U := (eq_div_iff hU4).mp hsq
   rw [hq]
-  field_simp [hU4, hR]
-  nlinarith [hsq']
+  field_simp [hRplus, hU4]
+  nlinarith
 
-/-- On the regulator interval used by the scalar box, the individual endpoint `q`
-is linearly small:
-
-`0 ≤ q ≤ (324/289) m/U`.
--/
+/-- On the physical small-regulator interval, `q` is nonnegative and linearly small:
+`0 ≤ q ≤ (324/289) m/U`. -/
 theorem q_nonneg_and_le_linear_m
     {U m R q : ℝ}
-    (hU : 0 < U) (hm : 0 ≤ m)
+    (hU : 0 < U) (hm0 : 0 ≤ m)
     (hRlo : 8 / 9 ≤ R)
     (hq : q = (1 - R) / (1 + R))
     (hsq : R ^ 2 = U / (U + 4 * m)) :
     0 ≤ q ∧ q ≤ (324 / 289 : ℝ) * (m / U) := by
-  have hU4pos : 0 < U + 4 * m := by linarith
+  have hU4pos : 0 < U + 4 * m := by positivity
   have hRpluspos : 0 < 1 + R := by linarith
   have hqexact := q_exact_linear_m hU4pos.ne' hRpluspos.ne' hq hsq
   rw [hqexact]
-  have hRfac : (289 / 81 : ℝ) ≤ (1 + R) ^ 2 := by
-    have hfac : 0 ≤ (R - 8 / 9) * (R + 26 / 9) :=
-      mul_nonneg (by linarith) (by linarith)
-    nlinarith
-  have hUstep : U ≤ U + 4 * m := by linarith
-  have hdenlower : (289 / 81 : ℝ) * U ≤
-      (U + 4 * m) * (1 + R) ^ 2 := by
-    have H := mul_le_mul hUstep hRfac (by norm_num : (0 : ℝ) ≤ 289 / 81) hU4pos.le
-    nlinarith
-  have hbasepos : 0 < (289 / 81 : ℝ) * U := by positivity
   have hdenpos : 0 < (U + 4 * m) * (1 + R) ^ 2 := by positivity
-  have hnum0 : 0 ≤ 4 * m := by positivity
+  have hRfac : (17 / 9 : ℝ) ≤ 1 + R := by linarith
+  have hRfac0 : 0 ≤ (17 / 9 : ℝ) := by norm_num
+  have hsqfac : (289 / 81 : ℝ) ≤ (1 + R) ^ 2 := by nlinarith
+  have hU4ge : U ≤ U + 4 * m := by linarith
+  have hdenlower : U * (289 / 81 : ℝ) ≤ (U + 4 * m) * (1 + R) ^ 2 := by
+    calc
+      U * (289 / 81 : ℝ) ≤ (U + 4 * m) * (289 / 81 : ℝ) := by
+        exact mul_le_mul_of_nonneg_right hU4ge (by norm_num)
+      _ ≤ (U + 4 * m) * (1 + R) ^ 2 := by
+        exact mul_le_mul_of_nonneg_left hsqfac hU4pos.le
+  have hbasepos : 0 < U * (289 / 81 : ℝ) := by positivity
   constructor
-  · exact div_nonneg hnum0 hdenpos.le
-  · calc
+  · exact div_nonneg (by positivity) hdenpos.le
+  · have hnum0 : 0 ≤ 4 * m := by positivity
+    calc
       4 * m / ((U + 4 * m) * (1 + R) ^ 2) ≤
-          4 * m / ((289 / 81 : ℝ) * U) := by
+          4 * m / (U * (289 / 81 : ℝ)) := by
             exact div_le_div_of_nonneg_left hnum0 hbasepos hdenlower
       _ = (324 / 289 : ℝ) * (m / U) := by
-        field_simp [hU.ne']
-        ring
+            field_simp [hU.ne']
+            ring
 
-/-- Rationalizing
-
-`κ² = 1 + 4m(S-m)/(SU)`
-
-exposes an exact factor of `m` in `a=(κ-1)/(κ+1)`. -/
+/-- Rationalizing `κ² = 1 + 4m(S-m)/(SU)` exposes an exact factor of `m` in
+`a=(κ-1)/(κ+1)`. -/
 theorem a_exact_linear_m
     {S U m κ a : ℝ}
     (hSU : S * U ≠ 0)
-    (hκ : κ + 1 ≠ 0)
+    (hκplus : κ + 1 ≠ 0)
     (ha : a = (κ - 1) / (κ + 1))
     (hsq : κ ^ 2 = 1 + 4 * m * (S - m) / (S * U)) :
     a = 4 * m * (S - m) / ((S * U) * (κ + 1) ^ 2) := by
-  have hdiff : κ ^ 2 - 1 = 4 * m * (S - m) / (S * U) := by
-    linarith [hsq]
-  have hsq' : (κ ^ 2 - 1) * (S * U) = 4 * m * (S - m) := by
-    exact (eq_div_iff hSU).mp hdiff
   rw [ha]
-  field_simp [hSU, hκ]
-  nlinarith [hsq']
+  field_simp [hκplus, hSU]
+  nlinarith
 
-/-- Under the physical inequalities `0 ≤ m ≤ S` and `κ ≥ 1`, the second Möbius
-endpoint is bounded by the same natural linear regulator scale:
-
-`0 ≤ a ≤ m/U`.
--/
+/-- On the physical interval `0 ≤ m ≤ S`, the lower endpoint satisfies the sharp
+linear estimate `0 ≤ a ≤ m/U`. -/
 theorem a_nonneg_and_le_linear_m
     {S U m κ a : ℝ}
     (hS : 0 < S) (hU : 0 < U)
@@ -115,7 +102,7 @@ theorem a_nonneg_and_le_linear_m
       mul_nonneg (by linarith) (by linarith)
     nlinarith
   have hdenlower : 4 * (S * U) ≤ (S * U) * (κ + 1) ^ 2 := by
-    exact mul_le_mul_of_nonneg_left hκfac hSUpos.le
+    simpa [mul_comm] using mul_le_mul_of_nonneg_left hκfac hSUpos.le
   have hbasepos : 0 < 4 * (S * U) := by positivity
   have hdenpos : 0 < (S * U) * (κ + 1) ^ 2 := by positivity
   have hnumUpper0 : 0 ≤ 4 * m * S := by positivity
@@ -128,8 +115,8 @@ theorem a_nonneg_and_le_linear_m
       _ ≤ (4 * m * S) / (4 * (S * U)) := by
             exact div_le_div_of_nonneg_left hnumUpper0 hbasepos hdenlower
       _ = m / U := by
-        field_simp [hS.ne', hU.ne']
-        ring
+            field_simp [hS.ne', hU.ne']
+            ring
 
 end GppScalarBoxEndpointLinearization
 
