@@ -12,6 +12,7 @@ This file promotes the explicit rational interval estimates derived in
 namespace GppScalarBoxRegulatorBounds
 
 open GppRegulatedBoxDilogSeries
+open GppScalarBoxRegulatorAlgebra
 
 /-- If `0 ≤ δ,η ≤ 1/4`, `κ ≥ 0`, and
 `κ² = 1 + δ(1-η)`, then the rational bounds `1 ≤ κ ≤ 9/8` hold. -/
@@ -150,6 +151,79 @@ theorem B_pos_and_le
       exact hp3
     nlinarith
 
+/-- The exact Möbius endpoint separation is uniformly quadratic in the regulator.
+Under the rational interval bounds already established for the physical domain,
+`q-a` is nonnegative and is bounded by `(576/527) m²/(SU)`. -/
+theorem q_sub_a_nonneg_and_le_m_sq
+    {S U m R κ q a : ℝ}
+    (hS : 0 < S) (hU : 0 < U) (hm : 0 ≤ m)
+    (hκRlo : 15 / 16 ≤ κ * R)
+    (hRlo : 8 / 9 ≤ R)
+    (hκlo : 1 ≤ κ)
+    (hq : q = (1 - R) / (1 + R))
+    (ha : a = (κ - 1) / (κ + 1))
+    (hsq : (κ * R) ^ 2 = 1 - 4 * m ^ 2 / (S * (U + 4 * m))) :
+    0 ≤ q - a ∧
+      q - a ≤ (576 / 527 : ℝ) * (m ^ 2 / (S * U)) := by
+  have hU4 : 0 < U + 4 * m := by linarith
+  have hSUpos : 0 < S * (U + 4 * m) := mul_pos hS hU4
+  have hpluspos : 0 < 1 + κ * R := by linarith
+  have hRpluspos : 0 < 1 + R := by linarith
+  have hκpluspos : 0 < 1 + κ := by linarith
+  have hfac := q_sub_a_exact_m_sq S U m R κ q a
+    hSUpos.ne' hpluspos.ne' hRpluspos.ne' hκpluspos.ne' hq ha hsq
+  rw [hfac]
+  have hSUstep : S * U ≤ S * (U + 4 * m) := by
+    exact mul_le_mul_of_nonneg_left (by linarith) hS.le
+  have h1κR : (31 / 16 : ℝ) ≤ 1 + κ * R := by linarith
+  have h1R : (17 / 9 : ℝ) ≤ 1 + R := by linarith
+  have h1κ : (2 : ℝ) ≤ 1 + κ := by linarith
+  have hp1 : (S * U) * (31 / 16 : ℝ) ≤
+      (S * (U + 4 * m)) * (1 + κ * R) := by
+    exact mul_le_mul hSUstep h1κR (by norm_num) hSUpos.le
+  have hp1non : 0 ≤ (S * (U + 4 * m)) * (1 + κ * R) := by positivity
+  have hp2 : ((S * U) * (31 / 16 : ℝ)) * (17 / 9 : ℝ) ≤
+      ((S * (U + 4 * m)) * (1 + κ * R)) * (1 + R) := by
+    exact mul_le_mul hp1 h1R (by positivity) hp1non
+  have hp2non :
+      0 ≤ ((S * (U + 4 * m)) * (1 + κ * R)) * (1 + R) := by positivity
+  have hp3 : (((S * U) * (31 / 16 : ℝ)) * (17 / 9 : ℝ)) * 2 ≤
+      (((S * (U + 4 * m)) * (1 + κ * R)) * (1 + R)) * (1 + κ) := by
+    exact mul_le_mul hp2 h1κ (by norm_num) hp2non
+  have hdenlower : (527 / 72 : ℝ) * (S * U) ≤
+      S * (U + 4 * m) * (1 + κ * R) * (1 + R) * (1 + κ) := by
+    convert hp3 using 1 <;> ring
+  have hbasepos : 0 < (527 / 72 : ℝ) * (S * U) := by positivity
+  have hdenpos :
+      0 < S * (U + 4 * m) * (1 + κ * R) * (1 + R) * (1 + κ) := by
+    positivity
+  have hnum0 : 0 ≤ 8 * m ^ 2 := by positivity
+  constructor
+  · exact div_nonneg hnum0 hdenpos.le
+  · calc
+      8 * m ^ 2 /
+          (S * (U + 4 * m) * (1 + κ * R) * (1 + R) * (1 + κ)) ≤
+          8 * m ^ 2 / ((527 / 72 : ℝ) * (S * U)) := by
+            exact div_le_div_of_nonneg_left hnum0 hbasepos hdenlower
+      _ = (576 / 527 : ℝ) * (m ^ 2 / (S * U)) := by
+        field_simp [hS.ne', hU.ne']
+        ring
+
+/-- Absolute-value version of the quadratic endpoint-separation bound. -/
+theorem abs_q_sub_a_le_m_sq
+    {S U m R κ q a : ℝ}
+    (hS : 0 < S) (hU : 0 < U) (hm : 0 ≤ m)
+    (hκRlo : 15 / 16 ≤ κ * R)
+    (hRlo : 8 / 9 ≤ R)
+    (hκlo : 1 ≤ κ)
+    (hq : q = (1 - R) / (1 + R))
+    (ha : a = (κ - 1) / (κ + 1))
+    (hsq : (κ * R) ^ 2 = 1 - 4 * m ^ 2 / (S * (U + 4 * m))) :
+    |q - a| ≤ (576 / 527 : ℝ) * (m ^ 2 / (S * U)) := by
+  rcases q_sub_a_nonneg_and_le_m_sq hS hU hm hκRlo hRlo hκlo hq ha hsq with
+    ⟨hqa0, hqa⟩
+  simpa [abs_of_nonneg hqa0] using hqa
+
 /-- The dilogarithm endpoint `η B` is uniformly inside the elementary `x<1/2`
 regime: `0 ≤ ηB ≤ 12/31 < 1/2`. -/
 theorem eta_mul_B_small
@@ -197,5 +271,7 @@ end GppScalarBoxRegulatorBounds
 #print axioms GppScalarBoxRegulatorBounds.A_mem_rational_interval
 #print axioms GppScalarBoxRegulatorBounds.Q_mem_rational_interval
 #print axioms GppScalarBoxRegulatorBounds.B_pos_and_le
+#print axioms GppScalarBoxRegulatorBounds.q_sub_a_nonneg_and_le_m_sq
+#print axioms GppScalarBoxRegulatorBounds.abs_q_sub_a_le_m_sq
 #print axioms GppScalarBoxRegulatorBounds.eta_mul_B_small
 #print axioms GppScalarBoxRegulatorBounds.etaB_li2_uniform_bound
