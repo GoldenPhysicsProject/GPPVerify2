@@ -6,10 +6,13 @@ import Mathlib.Tactic
 /-!
 # Real logarithm series kernel for the regulated scalar box
 
-The pinned Mathlib version proves the complex Taylor series for `log (1+z)` as
-`Complex.hasSum_taylorSeries_log`.  Substituting `z=-x`, negating, dropping the zero
-`n=0` term, and shifting the index gives the real-axis form needed to identify the
-termwise derivative of the project's local dilogarithm series.
+The pinned Mathlib version proves
+
+  sum_{n>=0} z^n/n = -Log(1-z)
+
+on the open unit disk as `Complex.hasSum_taylorSeries_neg_log`.  Its `n=0` term is
+zero, so shifting the index and taking real parts gives the exact real-axis form needed
+to identify the termwise derivative of the project's local dilogarithm series.
 -/
 
 namespace GppRegulatedBoxLogSeriesKernel
@@ -20,31 +23,9 @@ theorem hasSum_pow_succ_div_succ_eq_neg_log
     HasSum
       (fun n : ℕ => x ^ (n + 1) / ((n + 1 : ℕ) : ℝ))
       (-Real.log (1 - x)) := by
-  have hxc : ‖(-(x : ℂ))‖ < 1 := by
+  have hxc : ‖(x : ℂ)‖ < 1 := by
     simpa [Complex.norm_real] using hx
-  have hlog := Complex.hasSum_taylorSeries_log hxc
-  have hcomplex :
-      HasSum
-        (fun n : ℕ => (x : ℂ) ^ n / (n : ℂ))
-        (-Complex.log (1 - (x : ℂ))) := by
-    have hneg := hlog.neg
-    have hterm : ∀ n : ℕ,
-        -(((-1 : ℂ) ^ (n + 1) * (-(x : ℂ)) ^ n / (n : ℂ))) =
-          (x : ℂ) ^ n / (n : ℂ) := by
-      intro n
-      have hsign :
-          (-1 : ℂ) ^ (n + 1) * (-(x : ℂ)) ^ n = -((x : ℂ) ^ n) := by
-        rw [neg_pow, pow_succ]
-        calc
-          ((-1 : ℂ) ^ n * -1) * ((-1 : ℂ) ^ n * (x : ℂ) ^ n) =
-              -((((-1 : ℂ) ^ n) * ((-1 : ℂ) ^ n)) * (x : ℂ) ^ n) := by ring
-          _ = -((x : ℂ) ^ n) := by
-            rw [← mul_pow]
-            norm_num
-      rw [hsign]
-      ring
-    have hneg' := hneg.congr hterm
-    simpa [sub_eq_add_neg] using hneg'
+  have hcomplex := Complex.hasSum_taylorSeries_neg_log hxc
   have htail :
       HasSum
         (fun n : ℕ => (x : ℂ) ^ (n + 1) / ((n + 1 : ℕ) : ℂ))
@@ -52,9 +33,7 @@ theorem hasSum_pow_succ_div_succ_eq_neg_log
     apply (hasSum_nat_add_iff 1).2
     simpa using hcomplex
   have hre := hasSum_re htail
-  have hx1 : x < 1 := lt_of_le_of_lt (le_abs_self x) hx
-  have hpos : 0 < 1 - x := sub_pos.mpr hx1
-  simpa [Complex.log_ofReal_re, hpos.le] using hre
+  simpa [Complex.log_ofReal_re] using hre
 
 /-- After dividing by a nonzero `x`, the derivative series is exactly
 `-log(1-x)/x`. -/
