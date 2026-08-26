@@ -90,6 +90,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.FourPointMHVBubbleSubtractionAlgebra
 
+      - name: Massive-vector scalar state reconstruction
+        if: always()
+        run: lake build GppVerify.CelestialHolography.MassiveVectorStateSumReconstruction
+
       - name: Real dilogarithm inversion kernel
         if: always()
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogInversionKernel
