@@ -31,8 +31,7 @@ theorem li2NegativeExtension_neg_one :
   have hN := li2Series_neg_one
   unfold li2NegativeExtension
   norm_num
-  rw [hN]
-  linarith
+  linarith [hL, hN]
 
 /-- The reciprocal combination for the Landen extension has zero derivative on `(0,∞)`. -/
 theorem inversionCombination_extension_hasDerivAt_zero
@@ -64,10 +63,14 @@ theorem inversionCombination_extension_eq_neg_pi_sq_div_six
   have hc := inversionCombination_extension_eq_on_Ioi
     (x := x) (y := (1 : ℝ)) hx (by norm_num)
   have hneg := li2NegativeExtension_neg_one
-  unfold inversionCombination at hc
-  norm_num at hc
-  rw [hneg] at hc
-  linarith
+  calc
+    inversionCombination li2NegativeExtension x =
+        inversionCombination li2NegativeExtension (1 : ℝ) := hc
+    _ = -(Real.pi ^ 2) / 6 := by
+      unfold inversionCombination
+      norm_num
+      rw [hneg]
+      ring
 
 /-- **Branch-free real reciprocal dilogarithm identity.** -/
 theorem li2NegativeExtension_reciprocal
