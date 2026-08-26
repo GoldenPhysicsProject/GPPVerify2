@@ -34,7 +34,7 @@ noncomputable def Hminus (k : ℝ) : ℂ :=
 
 /-- On the real spectral axis the two normalized Gamma factors are complex conjugates. -/
 theorem Hminus_eq_conj_Hplus (k : ℝ) :
-    Hminus k = conj (Hplus k) := by
+    Hminus k = Complex.conj (Hplus k) := by
   unfold Hminus Hplus
   rw [map_div, map_pow, ← Complex.Gamma_conj]
   congr 2 <;> simp
@@ -43,7 +43,7 @@ theorem Hminus_eq_conj_Hplus (k : ℝ) :
 theorem norm_Hminus_eq_norm_Hplus (k : ℝ) :
     ‖Hminus k‖ = ‖Hplus k‖ := by
   rw [Hminus_eq_conj_Hplus]
-  exact norm_conj _
+  simp
 
 /-- **Exact normalized Gamma factorization** of the `sech^2` spectral multiplier. -/
 theorem Hplus_mul_Hminus (k : ℝ) :
@@ -68,7 +68,8 @@ theorem Hplus_mul_Hminus (k : ℝ) :
           (Real.pi : ℂ) ^ 2) := by rw [href]
     _ = ((1 / (Real.cosh (k / 2)) ^ 2 : ℝ) : ℂ) := by
       have hcosh : Real.cosh (k / 2) ≠ 0 := ne_of_gt (Real.cosh_pos _)
-      push_cast
+      apply Complex.ofReal_injective
+      norm_cast
       field_simp [Real.pi_ne_zero, hcosh]
 
 /-- The upper real-axis Gamma factor never vanishes.  This follows directly from
@@ -85,7 +86,7 @@ theorem Hplus_ne_zero (k : ℝ) : Hplus k ≠ 0 := by
 /-- The lower real-axis Gamma factor never vanishes. -/
 theorem Hminus_ne_zero (k : ℝ) : Hminus k ≠ 0 := by
   rw [Hminus_eq_conj_Hplus]
-  exact map_ne_zero_of_injective Complex.conj_injective (Hplus_ne_zero k)
+  simpa using Hplus_ne_zero k
 
 /-- The real-axis quotient is a pure phase: it has exactly unit modulus.
 This is a real-axis statement only and does not assert a Hardy-space inner factor. -/
