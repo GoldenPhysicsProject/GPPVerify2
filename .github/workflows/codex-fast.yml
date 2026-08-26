@@ -90,6 +90,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxSpecialFunctionRemainder
 
+      - name: Scalar-box special-function remainder vanishing
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxSpecialRemainderVanishing
+
       - name: Adjacent-MHV bubble subtraction algebra
         if: always()
         run: lake build GppVerify.CelestialHolography.FourPointMHVBubbleSubtractionAlgebra
@@ -157,6 +161,10 @@ jobs:
       - name: Strict zeta Gibbs thermodynamics
         if: always()
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
+
+      - name: Zeta Gibbs entropy and free energy
+        if: always()
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsFreeEnergy
 
       - name: Massive-vector 5D Ward reconstruction
         if: always()
