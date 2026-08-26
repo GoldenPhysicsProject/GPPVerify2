@@ -118,6 +118,23 @@ theorem neg_entropyBetaDerivative_sq_div_heatCapacity_eq_variance
   rw [neg_sq, entropyBetaDerivative_sq_eq_heatCapacity_mul_variance]
   field_simp [hC]
 
+/-- Strict positivity of the Fisher variance makes the inverse temperature itself
+recoverable from entropy loss per unit Fisher fluctuation. -/
+theorem neg_entropyBetaDerivative_div_variance_eq_beta
+    {β : ℝ} (hβ : 1 < β) :
+    (-entropyBetaDerivative β) / logEnergyVariance β = β := by
+  have hV : logEnergyVariance β ≠ 0 := ne_of_gt (logEnergyVariance_pos hβ)
+  unfold entropyBetaDerivative
+  field_simp [hV]
+
+/-- Heat capacity per unit Fisher variance is exactly the squared inverse temperature. -/
+theorem heatCapacity_div_variance_eq_beta_sq
+    {β : ℝ} (hβ : 1 < β) :
+    heatCapacity β / logEnergyVariance β = β ^ 2 := by
+  have hV : logEnergyVariance β ≠ 0 := ne_of_gt (logEnergyVariance_pos hβ)
+  unfold heatCapacity
+  field_simp [hV]
+
 end GppZetaGibbsStrictThermodynamics
 
 #print axioms GppZetaGibbsStrictThermodynamics.logEnergyVariance_pos
@@ -131,3 +148,5 @@ end GppZetaGibbsStrictThermodynamics
 #print axioms GppZetaGibbsStrictThermodynamics.heatCapacity_div_beta_sq_eq_variance
 #print axioms GppZetaGibbsStrictThermodynamics.neg_entropyBetaDerivative_div_beta_eq_variance
 #print axioms GppZetaGibbsStrictThermodynamics.neg_entropyBetaDerivative_sq_div_heatCapacity_eq_variance
+#print axioms GppZetaGibbsStrictThermodynamics.neg_entropyBetaDerivative_div_variance_eq_beta
+#print axioms GppZetaGibbsStrictThermodynamics.heatCapacity_div_variance_eq_beta_sq
