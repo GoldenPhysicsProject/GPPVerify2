@@ -70,6 +70,10 @@ jobs:
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxLogSquareRemainder
 
+      - name: Scalar-box regulator vanishing
+        if: always()
+        run: lake build GppVerify.CelestialHolography.ScalarBoxRegulatorVanishing
+
       - name: Adjacent-MHV bubble subtraction algebra
         if: always()
         run: lake build GppVerify.CelestialHolography.FourPointMHVBubbleSubtractionAlgebra
