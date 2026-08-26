@@ -23,15 +23,20 @@ theorem hasSum_shifted_recip_sq :
     HasSum
       (fun n : ℕ => (1 : ℝ) / (((n + 1 : ℕ) : ℝ) ^ 2))
       (Real.pi ^ 2 / 6) := by
-  have hz := hasSum_zeta_two
-  have hsum := hz.summable
-  have htail :
-      (∑' n : ℕ, (1 : ℝ) / (((n + 1 : ℕ) : ℝ) ^ 2)) =
-        ∑' n : ℕ, (1 : ℝ) / ((n : ℝ) ^ 2) := by
-    have hsplit := hsum.sum_add_tsum_nat_add 1
-    simpa using hsplit
-  rw [← hz.tsum_eq, ← htail]
-  exact hsum.comp_injective (fun a b h => Nat.succ.inj h)
+  let f : ℕ → ℝ := fun n => (1 : ℝ) / ((n : ℝ) ^ 2)
+  have hz : HasSum f (Real.pi ^ 2 / 6) := by
+    simpa [f] using hasSum_zeta_two
+  have hs : Summable f := hz.summable
+  have hsTail : Summable (fun n : ℕ => f (n + 1)) :=
+    (summable_nat_add_iff 1).2 hs
+  have hsplit := hs.sum_add_tsum_nat_add 1
+  have htail : (∑' n : ℕ, f (n + 1)) = Real.pi ^ 2 / 6 := by
+    rw [hz.tsum_eq] at hsplit
+    simpa [f] using hsplit
+  have hHas : HasSum (fun n : ℕ => f (n + 1)) (Real.pi ^ 2 / 6) := by
+    rw [← htail]
+    exact hsTail.hasSum
+  simpa [f] using hHas
 
 /-- Exact endpoint value of the project's local real dilogarithm series. -/
 theorem li2Series_one :
