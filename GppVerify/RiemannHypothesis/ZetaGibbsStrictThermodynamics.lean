@@ -43,6 +43,13 @@ theorem logEnergyVariance_pos {β : ℝ} (hβ : 1 < β) :
     (gibbsWeight_tsum_pos hβ)
     hw0 hw1 hx01
 
+/-- Strict positivity of the real zeta susceptibility / Fisher response on the
+honest Gibbs axis. -/
+theorem zetaVarianceResponse_re_pos {β : ℝ} (hβ : 1 < β) :
+    0 < (zetaVarianceResponse β).re := by
+  rw [zetaVarianceResponse_eq_ofReal_logEnergyVariance hβ]
+  simpa using logEnergyVariance_pos hβ
+
 /-- Strict positive heat capacity on the honest Gibbs domain. -/
 theorem heatCapacity_pos {β : ℝ} (hβ : 1 < β) :
     0 < heatCapacity β := by
@@ -57,8 +64,15 @@ theorem entropyBetaDerivative_neg {β : ℝ} (hβ : 1 < β) :
   have hβ0 : 0 < β := lt_trans (by norm_num) hβ
   exact mul_neg_of_neg_of_pos (neg_neg_of_pos hβ0) (logEnergyVariance_pos hβ)
 
+/-- Consequently the entropy response cannot vanish anywhere on the honest Gibbs domain. -/
+theorem entropyBetaDerivative_ne_zero {β : ℝ} (hβ : 1 < β) :
+    entropyBetaDerivative β ≠ 0 := by
+  exact ne_of_lt (entropyBetaDerivative_neg hβ)
+
 end GppZetaGibbsStrictThermodynamics
 
 #print axioms GppZetaGibbsStrictThermodynamics.logEnergyVariance_pos
+#print axioms GppZetaGibbsStrictThermodynamics.zetaVarianceResponse_re_pos
 #print axioms GppZetaGibbsStrictThermodynamics.heatCapacity_pos
 #print axioms GppZetaGibbsStrictThermodynamics.entropyBetaDerivative_neg
+#print axioms GppZetaGibbsStrictThermodynamics.entropyBetaDerivative_ne_zero
