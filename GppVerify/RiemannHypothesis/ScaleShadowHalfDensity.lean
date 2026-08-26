@@ -9,10 +9,10 @@ For
   chi_s(a) = exp(log(a) * (s - 1/2)),
 
 the shadow involution `s -> 1-s` negates the centered exponent. Hence it sends the
-multiplicative dilation character to its reciprocal. Together with
-`GppScaleMass.critical_line_iff_dilation_unitary`, this is the exact algebraic skeleton
-behind the principal-series statement: on the unitary locus the shadow is the inverse
-character, and therefore the Hermitian conjugate character.
+multiplicative dilation character to its reciprocal. Together with the exact
+critical-line unitarity statements from `ScaleMassDiagnostic`, this is the algebraic
+skeleton behind the principal-series statement: on the unitary locus the shadow is the
+inverse character, and therefore the Hermitian conjugate character.
 
 No zeta-zero statement is used or implied.
 -/
@@ -84,11 +84,13 @@ of the original character. -/
 theorem dilationCharacter_shadow_eq_conj {s : ℂ} (hs : s.re = 1 / 2) (a : ℝ) :
     dilationCharacter (1 - s) a = (starRingEnd ℂ) (dilationCharacter s a) := by
   rw [dilationCharacter_shadow_eq_inv]
-  have hunit := (critical_line_iff_dilation_unitary s).1 hs a
+  have hunit : ‖dilationCharacter s a‖ = 1 :=
+    critical_line_dilation_unitary hs a
   exact inv_eq_conj_of_norm_one hunit
 
 /-- Exact principal-series package: the critical line is equivalent to unitarity of the
-half-density dilation character, while shadow acts there as Hermitian conjugation. -/
+half-density dilation character at every real scale, while shadow acts there as Hermitian
+conjugation.  The reverse implication uses the nontrivial positive scale `a = 2`. -/
 theorem critical_line_iff_unitary_with_shadow (s : ℂ) :
     s.re = 1 / 2 ↔
       (∀ a : ℝ, ‖dilationCharacter s a‖ = 1) ∧
@@ -97,10 +99,12 @@ theorem critical_line_iff_unitary_with_shadow (s : ℂ) :
   constructor
   · intro hs
     constructor
-    · exact (critical_line_iff_dilation_unitary s).1 hs
+    · exact fun a => critical_line_dilation_unitary hs a
     · exact fun a => dilationCharacter_shadow_eq_conj hs a
   · rintro ⟨hunit, _⟩
-    exact (critical_line_iff_dilation_unitary s).2 hunit
+    have htwo : ‖dilationCharacter s 2‖ = 1 := hunit 2
+    exact critical_line_of_dilation_unitary (by norm_num : (0 : ℝ) < 2)
+      (by norm_num : (2 : ℝ) ≠ 1) htwo
 
 end GppScaleShadow
 
