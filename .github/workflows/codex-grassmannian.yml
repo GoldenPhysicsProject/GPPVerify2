@@ -43,3 +43,6 @@ jobs:
 
       - name: Projective Plucker covariance
         run: lake build GppVerify.CelestialHolography.GrassmannianPluckerProjective
+
+      - name: Antiunitary googly exchange and Plucker quadric
+        run: lake build GppVerify.CelestialHolography.GooglyAntiunitaryExchange
