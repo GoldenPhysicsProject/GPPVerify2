@@ -48,8 +48,21 @@ theorem pt_reverses_helicity_numerator {n : ℕ} (J p : Fin n → ℝ) :
   intro i hi
   ring
 
+/-- For a nonzero helicity value, a sign-reversing operation and a
+helicity-preserving operation cannot agree.  This is the abstract no-go behind
+the statement that the celestial shadow helicity flip cannot be pure time
+reversal on a nonzero-helicity massless state. -/
+theorem nonzero_flip_ne_preserve {h : ℝ} (hh : h ≠ 0) : -h ≠ h := by
+  intro heq
+  apply hh
+  linarith
+
+/-- In particular the graviton helicity labels are genuinely exchanged. -/
+theorem graviton_flip_nontrivial : (-2 : ℝ) ≠ 2 := by norm_num
+
 end GppDiscreteSymmetryHelicity
 
 #print axioms GppDiscreteSymmetryHelicity.time_reversal_preserves_helicity_numerator
 #print axioms GppDiscreteSymmetryHelicity.parity_reverses_helicity_numerator
 #print axioms GppDiscreteSymmetryHelicity.pt_reverses_helicity_numerator
+#print axioms GppDiscreteSymmetryHelicity.nonzero_flip_ne_preserve
