@@ -1,4 +1,5 @@
 import GppVerify.RiemannHypothesis.GlobalVonMangoldtBridge
+import GppVerify.RiemannHypothesis.ConvolutionSquarePositive
 import Mathlib.Analysis.SpecialFunctions.Complex.Log
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
 import Mathlib.Tactic
@@ -8,6 +9,9 @@ import Mathlib.Tactic
 
 This file simplifies the real part of each absolutely-convergent von-Mangoldt
 L-series term on `s = a + i t` to the expected exponential-decay cosine kernel.
+It also records the exact finite positive-type layer: each arithmetic cosine mode
+is positive type and therefore every finite collection of modes is positive type.
+The infinite `tsum` passage is deliberately kept separate.
 -/
 
 namespace GppVonMangoldtCosine
@@ -15,6 +19,7 @@ namespace GppVonMangoldtCosine
 open Complex LSeries
 open ArithmeticFunction
 open GppGlobalVonMangoldt
+open GppHaarPositivityWeil
 
 /-- Real part of the negative complex power of a positive integer base. -/
 theorem natCast_neg_cpow_re
@@ -84,8 +89,110 @@ theorem neg_zeta_logDeriv_re_eq_vonMangoldt_cosine_tsum
   · simp
   · exact vonMangoldt_term_re_eq_exp_cos n hn a t
 
+/-- A pure cosine frequency is positive type.  Its Gram matrix splits into the sum
+of the cosine and sine Gram squares by `cos(A-B)`. -/
+theorem cosine_frequency_positiveType (ω : ℝ) :
+    PositiveType (fun t : ℝ => Real.cos (ω * t)) := by
+  intro n x c
+  rw [Complex.re_sum]
+  have hterm : ∀ i : Fin n,
+      (∑ j : Fin n, (starRingEnd ℂ) (c i) * c j *
+        ((Real.cos (ω * (x i - x j)) : ℝ) : ℂ)).re =
+      ∑ j : Fin n, ((starRingEnd ℂ) (c i) * c j).re *
+        Real.cos (ω * (x i - x j)) := by
+    intro i
+    rw [Complex.re_sum]
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [mul_ofReal_re]
+  simp only [hterm]
+  have hsplit : ∀ i j : Fin n,
+      ((starRingEnd ℂ) (c i) * c j).re * Real.cos (ω * (x i - x j)) =
+        ((starRingEnd ℂ) (c i) * c j).re *
+          (Real.cos (ω * x i) * Real.cos (ω * x j)) +
+        ((starRingEnd ℂ) (c i) * c j).re *
+          (Real.sin (ω * x i) * Real.sin (ω * x j)) := by
+    intro i j
+    rw [mul_sub, Real.cos_sub]
+    ring
+  simp_rw [hsplit, Finset.sum_add_distrib]
+  rw [Finset.sum_add_distrib]
+  exact add_nonneg
+    (gram_square_nonneg c (fun i => Real.cos (ω * x i)))
+    (gram_square_nonneg c (fun i => Real.sin (ω * x i)))
+
+/-- Positive type is preserved by multiplication by a nonnegative real scalar. -/
+theorem positiveType_nonneg_scalar {f : ℝ → ℝ}
+    (hf : PositiveType f) {r : ℝ} (hr : 0 ≤ r) :
+    PositiveType (fun t => r * f t) := by
+  intro n x c
+  have h := hf n x c
+  let S : ℂ := ∑ i : Fin n, ∑ j : Fin n,
+    (starRingEnd ℂ (c i)) * c j * (f (x i - x j) : ℂ)
+  have hS : 0 ≤ S.re := by
+    simpa [S] using h
+  have heq :
+      (∑ i : Fin n, ∑ j : Fin n,
+        (starRingEnd ℂ (c i)) * c j * (((r * f (x i - x j)) : ℝ) : ℂ)) =
+      (r : ℂ) * S := by
+    dsimp [S]
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro j hj
+    push_cast
+    ring
+  rw [heq]
+  simpa [Complex.mul_re] using mul_nonneg hr hS
+
+/-- Every individual von-Mangoldt cosine mode is positive type, for every real radial
+parameter `a`.  No convergence or critical-strip statement is involved here. -/
+theorem vonMangoldt_mode_positiveType (a : ℝ) (n : ℕ) :
+    PositiveType (fun t : ℝ =>
+      ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n * a) *
+        Real.cos (Real.log n * t)) := by
+  have hc : 0 ≤ ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n * a) :=
+    mul_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.exp_pos _).le
+  simpa [mul_assoc] using
+    positiveType_nonneg_scalar (cosine_frequency_positiveType (Real.log n)) hc
+
+/-- Finite sums preserve positive type. -/
+theorem positiveType_finset_sum_modes
+    {ι : Type*} [DecidableEq ι] (S : Finset ι) (f : ι → ℝ → ℝ)
+    (hf : ∀ i ∈ S, PositiveType (f i)) :
+    PositiveType (fun t => ∑ i in S, f i t) := by
+  classical
+  induction S using Finset.induction_on with
+  | empty =>
+      intro n x c
+      simp
+  | @insert a S ha ih =>
+      have haPT : PositiveType (f a) := hf a (by simp)
+      have hSPT : PositiveType (fun t => ∑ i in S, f i t) := by
+        apply ih
+        intro i hi
+        exact hf i (by simp [hi])
+      intro n x c
+      have h1 := haPT n x c
+      have h2 := hSPT n x c
+      simpa [ha, Complex.re_add, Finset.sum_add_distrib, add_mul, mul_add] using add_nonneg h1 h2
+
+/-- Every finite truncation of the global von-Mangoldt cosine response is positive type. -/
+theorem finite_vonMangoldt_cosine_positiveType (a : ℝ) (S : Finset ℕ) :
+    PositiveType (fun t : ℝ =>
+      ∑ n in S, ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n * a) *
+        Real.cos (Real.log n * t)) := by
+  apply positiveType_finset_sum_modes S
+  intro n hn
+  exact vonMangoldt_mode_positiveType a n
+
 end GppVonMangoldtCosine
 
 #print axioms GppVonMangoldtCosine.natCast_neg_cpow_re
 #print axioms GppVonMangoldtCosine.vonMangoldt_term_re_eq_exp_cos
 #print axioms GppVonMangoldtCosine.neg_zeta_logDeriv_re_eq_vonMangoldt_cosine_tsum
+#print axioms GppVonMangoldtCosine.cosine_frequency_positiveType
+#print axioms GppVonMangoldtCosine.vonMangoldt_mode_positiveType
+#print axioms GppVonMangoldtCosine.finite_vonMangoldt_cosine_positiveType
