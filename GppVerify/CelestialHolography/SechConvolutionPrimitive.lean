@@ -47,7 +47,11 @@ theorem hasDerivAt_log_cosh_pi_shift (lam x : ℝ) :
   have hlin : HasDerivAt (fun y : ℝ => Real.pi * (lam - y)) (-Real.pi) x := by
     convert (hasDerivAt_const x Real.pi).mul hsub using 1 <;> ring
   have hc : Real.cosh (Real.pi * (lam - x)) ≠ 0 := (Real.cosh_pos _).ne'
-  have h := ((Real.hasDerivAt_cosh (Real.pi * (lam - x))).comp x hlin).log hc
+  have hcosh : HasDerivAt
+      (fun y : ℝ => Real.cosh (Real.pi * (lam - y)))
+      (Real.sinh (Real.pi * (lam - x)) * (-Real.pi)) x :=
+    (Real.hasDerivAt_cosh (Real.pi * (lam - x))).comp x hlin
+  have h := hcosh.log hc
   convert h using 1
   field_simp [hc]
   ring
@@ -68,9 +72,13 @@ theorem hasDerivAt_logCoshDifference (lam x : ℝ) :
   have hx : Real.cosh (Real.pi * x) ≠ 0 := (Real.cosh_pos _).ne'
   have hshift : Real.cosh (Real.pi * (lam - x)) ≠ 0 := (Real.cosh_pos _).ne'
   have hk := pi_shift_kernel_identity x lam hx hshift
-  convert h using 1
-  · rfl
-  · rw [show
+  have hcoef :
+      Real.pi * (Real.sinh (Real.pi * x) / Real.cosh (Real.pi * x)) -
+          (-Real.pi *
+            (Real.sinh (Real.pi * (lam - x)) / Real.cosh (Real.pi * (lam - x)))) =
+        Real.pi * Real.sinh (Real.pi * lam) /
+          (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x))) := by
+    rw [show
       Real.pi * (Real.sinh (Real.pi * x) / Real.cosh (Real.pi * x)) -
           (-Real.pi *
             (Real.sinh (Real.pi * (lam - x)) / Real.cosh (Real.pi * (lam - x)))) =
@@ -79,6 +87,8 @@ theorem hasDerivAt_logCoshDifference (lam x : ℝ) :
             Real.sinh (Real.pi * (lam - x)) / Real.cosh (Real.pi * (lam - x))) by ring]
     rw [hk]
     ring
+  rw [hcoef] at h
+  simpa [logCoshDifference] using h
 
 end GppSechConvolutionPrimitive
 
