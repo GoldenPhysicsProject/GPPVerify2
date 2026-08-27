@@ -26,10 +26,17 @@ theorem natCast_neg_cpow_re
     Complex.natCast_log.symm
   rw [hlog]
   rw [Complex.exp_re]
-  change
-    Real.exp (-a * Real.log n) * Real.cos (-t * Real.log n) =
-      Real.exp (-Real.log n * a) * Real.cos (Real.log n * t)
-  rw [Real.cos_neg]
+  have hre :
+      (((Real.log n : ℂ) * -((a : ℂ) + (t : ℂ) * Complex.I)).re) =
+        -Real.log n * a := by
+    simp [Complex.mul_re]
+    ring
+  have him :
+      (((Real.log n : ℂ) * -((a : ℂ) + (t : ℂ) * Complex.I)).im) =
+        -Real.log n * t := by
+    simp [Complex.mul_im]
+    ring
+  rw [hre, him, Real.cos_neg]
   ring_nf
 
 /-- Each nonzero-index von-Mangoldt term has the expected cosine real part. -/
