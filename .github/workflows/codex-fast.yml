@@ -197,3 +197,19 @@ jobs:
       - name: Massive-vector 5D Ward reconstruction
         if: always()
         run: lake build GppVerify.CelestialHolography.MassiveVectorWardReconstruction
+
+      - name: Celestial shadow helicity reversal
+        if: always()
+        run: lake build GppVerify.CelestialHolography.CelestialShadowHelicity
+
+      - name: Discrete P T helicity algebra
+        if: always()
+        run: lake build GppVerify.CelestialHolography.DiscreteSymmetryHelicity
+
+      - name: Actual Gr24 subspace model
+        if: always()
+        run: lake build GppVerify.CelestialHolography.GrassmannianGr24
+
+      - name: Twistor googly real shadow interface
+        if: always()
+        run: lake build GppVerify.CelestialHolography.TwistorGoogly
