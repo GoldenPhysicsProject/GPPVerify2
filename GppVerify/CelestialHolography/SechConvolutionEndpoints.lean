@@ -96,7 +96,6 @@ theorem logCoshDifference_tendsto_atTop (lam : ℝ) :
 theorem logCoshDifference_reflect (lam x : ℝ) :
     -logCoshDifference lam (lam - x) = logCoshDifference lam x := by
   simp [logCoshDifference]
-  ring
 
 /-- **Left endpoint of the log-cosh primitive.** -/
 theorem logCoshDifference_tendsto_atBot (lam : ℝ) :
@@ -107,7 +106,10 @@ theorem logCoshDifference_tendsto_atBot (lam : ℝ) :
   have hmap : Tendsto (fun x : ℝ => lam - x) atBot atTop := by
     simpa [sub_eq_add_neg, add_comm] using hmap1
   have hright := (logCoshDifference_tendsto_atTop lam).comp hmap
-  have hneg := hright.neg
+  have hneg :
+      Tendsto (fun x : ℝ => -logCoshDifference lam (lam - x))
+        atBot (nhds (-Real.pi * lam)) := by
+    simpa only [Function.comp_apply] using hright.neg
   exact hneg.congr' (Filter.Eventually.of_forall fun x => logCoshDifference_reflect lam x)
 
 end GppSechConvolutionEndpoints
