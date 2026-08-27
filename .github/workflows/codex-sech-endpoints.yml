@@ -33,3 +33,5 @@ jobs:
         run: lake exe cache get
       - name: Sech convolution endpoint limits
         run: lake build GppVerify.CelestialHolography.SechConvolutionEndpoints
+      - name: Exact nonzero sech convolution closed form
+        run: lake build GppVerify.CelestialHolography.SechConvolutionClosedForm
