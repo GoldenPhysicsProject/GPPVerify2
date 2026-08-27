@@ -6,9 +6,10 @@ import Mathlib.Tactic
 # Endpoint limits for the shifted sech-convolution primitive
 
 This file converts the quantitative remainder bounds from
-`SechConvolutionPrimitive` into genuine endpoint limits.  The right endpoint is
-proved first; the left endpoint is its mirrored companion and is kept separate so
-CI can discriminate the filter algebra cleanly.
+`SechConvolutionPrimitive` into genuine endpoint limits.  Both endpoints are now
+obtained without an improper-integral assumption: the right endpoint follows from
+the exponentially small remainders, and the left endpoint follows by the exact
+reflection `x ↦ lambda - x`.
 -/
 
 namespace GppSechConvolutionEndpoints
@@ -91,8 +92,27 @@ theorem logCoshDifference_tendsto_atTop (lam : ℝ) :
   have hadd := hzero.add_const (Real.pi * lam)
   simpa using hadd
 
+/-- Exact reflection of the primitive about `x = lambda/2`. -/
+theorem logCoshDifference_reflect (lam x : ℝ) :
+    -logCoshDifference lam (lam - x) = logCoshDifference lam x := by
+  simp [logCoshDifference]
+  ring
+
+/-- **Left endpoint of the log-cosh primitive.** -/
+theorem logCoshDifference_tendsto_atBot (lam : ℝ) :
+    Tendsto (logCoshDifference lam) atBot (nhds (-Real.pi * lam)) := by
+  have hmap0 : Tendsto (fun x : ℝ => -x) atBot atTop := tendsto_neg_atBot_atTop
+  have hmap1 : Tendsto (fun x : ℝ => -x + lam) atBot atTop :=
+    tendsto_atTop_add_const_right _ lam hmap0
+  have hmap : Tendsto (fun x : ℝ => lam - x) atBot atTop := by
+    simpa [sub_eq_add_neg, add_comm] using hmap1
+  have hright := (logCoshDifference_tendsto_atTop lam).comp hmap
+  have hneg := hright.neg
+  exact hneg.congr' (Filter.Eventually.of_forall fun x => logCoshDifference_reflect lam x)
+
 end GppSechConvolutionEndpoints
 
 #print axioms GppSechConvolutionEndpoints.logCoshRemainder_pi_mul_tendsto_atTop
 #print axioms GppSechConvolutionEndpoints.logCoshRemainder_pi_shift_tendsto_atTop
 #print axioms GppSechConvolutionEndpoints.logCoshDifference_tendsto_atTop
+#print axioms GppSechConvolutionEndpoints.logCoshDifference_tendsto_atBot
