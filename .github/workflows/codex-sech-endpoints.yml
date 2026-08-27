@@ -37,3 +37,5 @@ jobs:
         run: lake build GppVerify.CelestialHolography.SechConvolutionClosedForm
       - name: Wiener-Hopf normalization of sech convolution
         run: lake build GppVerify.CelestialHolography.SechConvolutionWienerHopf
+      - name: Zero-shift and all-real sech convolution normalization
+        run: lake build GppVerify.CelestialHolography.SechConvolutionZeroShift
