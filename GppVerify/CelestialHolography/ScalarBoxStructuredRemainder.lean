@@ -45,7 +45,8 @@ theorem abs_core_remainder_le
     rw [abs_mul]
     exact mul_le_mul hda hdt (abs_nonneg _) hA0
   have hsq : |da| ^ 2 ≤ A ^ 2 := by
-    nlinarith [sq_nonneg (A - |da|), sq_nonneg (A + |da|)]
+    rw [sq_le_sq]
+    simpa [abs_of_nonneg hA0] using hda
   have h4 : |(1 / 2 : ℝ) * da ^ 2| ≤ (1 / 2 : ℝ) * A ^ 2 := by
     rw [abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2), abs_pow]
     exact mul_le_mul_of_nonneg_left hsq (by norm_num)
