@@ -43,8 +43,14 @@ theorem logMul_logMul_term_re_eq_cubicSummand
   · rw [LSeries.term_of_ne_zero hn]
     rw [div_eq_mul_inv, ← Complex.cpow_neg]
     rw [Complex.mul_re]
-    simp [LSeries.logMul, vonMangoldtComplex, Complex.natCast_log,
-      natCast_neg_cpow_re n hn β 0, cubicSummand]
+    have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) :=
+      Complex.natCast_log.symm
+    rw [hlog]
+    simp only [LSeries.logMul, vonMangoldtComplex,
+      Complex.ofReal_re, Complex.ofReal_im, zero_mul, mul_zero,
+      sub_zero, zero_pow, pow_two]
+    rw [natCast_neg_cpow_re n hn β 0]
+    simp only [mul_zero, Real.cos_zero, mul_one, cubicSummand]
     ring
 
 /-- Absolute convergence of the real cubic von Mangoldt series for `β > 1`. -/
@@ -80,7 +86,7 @@ theorem cubicSummand_two_pos (β : ℝ) : 0 < cubicSummand β 2 := by
 /-- **Strict cubic positivity** in the honest Dirichlet-series half-plane. -/
 theorem tsum_cubicSummand_pos {β : ℝ} (hβ : 1 < β) :
     0 < ∑' n : ℕ, cubicSummand β n := by
-  exact tsum_pos (summable_cubicSummand hβ)
+  exact (summable_cubicSummand hβ).tsum_pos
     (cubicSummand_nonneg β) 2 (cubicSummand_two_pos β)
 
 /-- The twice-logarithm-weighted von Mangoldt L-series therefore has strictly
@@ -94,7 +100,15 @@ theorem logMul_logMul_vonMangoldt_re_pos {β : ℝ} (hβ : 1 < β) :
     (fun n : ℕ =>
       LSeries.term
         (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ) n) at hs
-  rw [Complex.reCLM.map_tsum hs]
+  have hmap :
+      (∑' n : ℕ,
+        LSeries.term
+          (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ) n).re =
+      ∑' n : ℕ,
+        (LSeries.term
+          (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ) n).re := by
+    simpa using (Complex.reCLM.map_tsum hs)
+  rw [hmap]
   have heq :
       (∑' n : ℕ,
         (LSeries.term
