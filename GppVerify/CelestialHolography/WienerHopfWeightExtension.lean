@@ -73,7 +73,7 @@ theorem continuousAt_sinhQuotientExtension :
       simp [sinhQuotientExtension]
     · simp [sinhQuotientExtension, hx]
   rw [hupdate]
-  exact h
+  simpa using h
 
 /-- The reciprocal of the extended `sinh x / x` quotient is continuous at zero. -/
 theorem continuousAt_inv_sinhQuotientExtension :
@@ -106,8 +106,9 @@ theorem continuousAt_extendedWienerHopfWeight :
       fun lam : ℝ => (sinhQuotientExtension (Real.pi * lam))⁻¹ by
     funext lam
     exact extendedWienerHopfWeight_eq_inv_sinhQuotient lam]
-  exact continuousAt_inv_sinhQuotientExtension.comp
-    (continuousAt_const.mul continuousAt_id)
+  have hmul : ContinuousAt (fun lam : ℝ => Real.pi * lam) 0 := by
+    fun_prop
+  exact continuousAt_inv_sinhQuotientExtension.comp_of_eq hmul (by simp)
 
 end GppWienerHopfWeightExtension
 
