@@ -45,6 +45,9 @@ jobs:
       - name: Gamma residue at zero
         if: always()
         run: lake build GppVerify.CelestialHolography.GammaResidueAtZero
+      - name: Raised-box pointwise simplex majorant algebra
+        if: always()
+        run: lake build GppVerify.CelestialHolography.RaisedBoxSimplexMajorantAlgebra
       - name: Raised-box residue assembly
         if: always()
         run: lake build GppVerify.CelestialHolography.RaisedBoxResidueAssembly
