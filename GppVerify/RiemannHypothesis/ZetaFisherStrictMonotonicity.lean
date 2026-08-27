@@ -44,8 +44,11 @@ theorem logMul_term_re_eq_fisherSummand (n : ℕ) (β : ℝ) :
     rw [hlog]
     simp only [Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
       zero_mul, mul_zero, add_zero, sub_zero]
-    have hpow := natCast_neg_cpow_re n hn β 0
-    simp only [mul_zero, add_zero, Real.cos_zero, mul_one] at hpow
+    have hpow0 := natCast_neg_cpow_re n hn β 0
+    simp only [mul_zero, add_zero, Real.cos_zero, mul_one] at hpow0
+    have hpow : (((n : ℂ) ^ (-(β : ℂ))).re) =
+        Real.exp (-Real.log n * β) := by
+      simpa using hpow0
     rw [hpow]
     unfold fisherSummand
     ring
