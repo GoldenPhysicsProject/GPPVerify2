@@ -69,6 +69,9 @@ jobs:
       - name: Codex scalar-box real inversion kernel check
         run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogInversionKernel
 
+      - name: Codex sech-convolution primitive check
+        run: lake build GppVerify.CelestialHolography.SechConvolutionPrimitive
+
       - name: Codex prime Hankel theorem check
         run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelGram.lean
 
