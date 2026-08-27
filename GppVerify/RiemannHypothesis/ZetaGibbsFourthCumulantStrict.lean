@@ -151,7 +151,11 @@ theorem logMul_three_vonMangoldt_eq_zetaFourthCumulantResponse
   have hvm := iteratedDeriv_three_negZetaLogDeriv_eq_neg_logMul_three hs
   have hz := iteratedDeriv_three_negZetaLogDeriv_eq_neg_fourthResponseGeneral hs
   rw [fourthResponseGeneral_eq_zetaFourthCumulantResponse] at hz
-  linarith
+  have hneg :
+      -LSeries
+          (LSeries.logMul (LSeries.logMul (LSeries.logMul vonMangoldtComplex)))
+          (β : ℂ) = -zetaFourthCumulantResponse β := hvm.symm.trans hz
+  exact neg_injective hneg
 
 /-- The genuine fourth zeta-Gibbs cumulant is strictly positive. -/
 theorem logEnergyFourthCumulant_pos
