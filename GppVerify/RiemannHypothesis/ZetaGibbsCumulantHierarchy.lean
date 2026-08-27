@@ -1,5 +1,6 @@
 import GppVerify.RiemannHypothesis.GibbsCumulantDifferentialAlgebra
 import GppVerify.RiemannHypothesis.ZetaGibbsFourthCumulant
+import GppVerify.RiemannHypothesis.ZetaGibbsThirdCumulantDerivative
 import Mathlib.Analysis.Complex.RealDeriv
 import Mathlib.Tactic
 
@@ -19,7 +20,10 @@ specializes to the genuine zeta Gibbs cumulants:
 
   kappa_3'(beta) = -kappa_4(beta).
 
-No analytic continuation of this identity outside `beta > 1` is asserted.
+Combined with the independently proved strict decrease of `kappa_3`, this also
+proves `kappa_4(beta) > 0` throughout the honest Gibbs half-line.
+
+No analytic continuation of these identities or signs outside `beta > 1` is asserted.
 -/
 
 namespace GppZetaGibbsCumulantHierarchy
@@ -197,6 +201,15 @@ theorem deriv_logEnergyThirdCumulant_eq_neg_fourth
     deriv logEnergyThirdCumulant β = -logEnergyFourthCumulant β :=
   (hasDerivAt_logEnergyThirdCumulant_eq_neg_fourth hβ).deriv
 
+/-- **Strict fourth-cumulant positivity** on the honest zeta Gibbs domain. -/
+theorem logEnergyFourthCumulant_pos
+    {β : ℝ} (hβ : 1 < β) :
+    0 < logEnergyFourthCumulant β := by
+  have hneg :=
+    GppZetaGibbsThirdCumulantDerivative.deriv_logEnergyThirdCumulant_neg hβ
+  rw [deriv_logEnergyThirdCumulant_eq_neg_fourth hβ] at hneg
+  linarith
+
 end GppZetaGibbsCumulantHierarchy
 
 #print axioms GppZetaGibbsCumulantHierarchy.hasDerivAt_Z
@@ -205,3 +218,4 @@ end GppZetaGibbsCumulantHierarchy
 #print axioms GppZetaGibbsCumulantHierarchy.hasDerivAt_M3
 #print axioms GppZetaGibbsCumulantHierarchy.hasDerivAt_logEnergyThirdCumulant_eq_neg_fourth
 #print axioms GppZetaGibbsCumulantHierarchy.deriv_logEnergyThirdCumulant_eq_neg_fourth
+#print axioms GppZetaGibbsCumulantHierarchy.logEnergyFourthCumulant_pos
