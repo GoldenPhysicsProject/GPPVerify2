@@ -47,7 +47,8 @@ theorem hasDerivAt_zetaEntropy
         entropyBetaDerivative β := by
     unfold entropyBetaDerivative
     ring
-  simpa only [zetaEntropy, hcoef] using hS
+  rw [← hcoef]
+  simpa only [zetaEntropy] using hS
 
 /-- Consequently the zeta Gibbs entropy is strictly decreasing with inverse temperature
 throughout the honest Gibbs domain. -/
