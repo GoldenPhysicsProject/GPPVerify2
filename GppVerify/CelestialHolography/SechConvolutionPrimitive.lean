@@ -47,10 +47,11 @@ theorem hasDerivAt_log_cosh_pi_shift (lam x : ℝ) :
   have hlin : HasDerivAt (fun y : ℝ => Real.pi * (lam - y)) (-Real.pi) x := by
     convert (hasDerivAt_const x Real.pi).mul hsub using 1 <;> ring
   have hc : Real.cosh (Real.pi * (lam - x)) ≠ 0 := (Real.cosh_pos _).ne'
+  have hcosh0 := (Real.hasDerivAt_cosh (Real.pi * (lam - x))).comp x hlin
   have hcosh : HasDerivAt
       (fun y : ℝ => Real.cosh (Real.pi * (lam - y)))
-      (Real.sinh (Real.pi * (lam - x)) * (-Real.pi)) x :=
-    (Real.hasDerivAt_cosh (Real.pi * (lam - x))).comp x hlin
+      (Real.sinh (Real.pi * (lam - x)) * (-Real.pi)) x := by
+    simpa only [Function.comp_apply] using hcosh0
   have h := hcosh.log hc
   convert h using 1
   field_simp [hc]
