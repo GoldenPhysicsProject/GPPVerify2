@@ -27,7 +27,6 @@ theorem abs_inv_kappa_sub_one_le
   have habs : |1 / κ - 1| = (κ - 1) / κ := by
     rw [abs_of_nonpos (sub_nonpos.mpr hinvle)]
     field_simp [hκpos.ne']
-    ring
   rw [habs]
   exact (div_le_self hdiff0 hκ).trans hκdiff
 
@@ -45,25 +44,28 @@ theorem kappa_sub_one_le_two_mul_m_div_U
     (hκsq : κ ^ 2 = 1 + 4 * m * (S - m) / (S * U)) :
     κ - 1 ≤ 2 * m / U := by
   have hSU : 0 < S * U := mul_pos hS hU
-  have hSm : 0 ≤ S - m := by linarith
   have hsqdiff : κ ^ 2 - 1 = 4 * m * (S - m) / (S * U) := by
     rw [hκsq]
     ring
   have hrhsle : 4 * m * (S - m) / (S * U) ≤ 4 * m / U := by
-    apply (div_le_iff₀ hSU).2
-    field_simp [hU.ne']
-    nlinarith
+    rw [div_le_iff₀ hSU]
+    have hright : (4 * m / U) * (S * U) = 4 * m * S := by
+      field_simp [hU.ne']
+      ring
+    rw [hright]
+    nlinarith [sq_nonneg m]
   have hprodlo : 2 * (κ - 1) ≤ (κ - 1) * (κ + 1) := by
     have hk0 : 0 ≤ κ - 1 := by linarith
     have hkplus : 2 ≤ κ + 1 := by linarith
-    exact mul_le_mul_of_nonneg_left hkplus hk0
+    simpa [mul_comm] using mul_le_mul_of_nonneg_left hkplus hk0
   have hprodhi : (κ - 1) * (κ + 1) ≤ 4 * m / U := by
     calc
       (κ - 1) * (κ + 1) = κ ^ 2 - 1 := by ring
       _ = 4 * m * (S - m) / (S * U) := hsqdiff
       _ ≤ 4 * m / U := hrhsle
   have htwo : 2 * (κ - 1) ≤ 4 * m / U := hprodlo.trans hprodhi
-  linarith
+  have hhalf := (div_le_div_iff_of_pos_right (show (0 : ℝ) < 2 by norm_num)).2 htwo
+  convert hhalf using 1 <;> ring
 
 /-- Exact decomposition of the prefactor-corrected remainder. -/
 theorem prefactor_remainder_identity
