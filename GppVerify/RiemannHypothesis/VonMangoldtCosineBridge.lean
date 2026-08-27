@@ -91,15 +91,15 @@ theorem neg_zeta_logDeriv_re_eq_vonMangoldt_cosine_tsum
 
 /-- A pure cosine frequency is positive type.  Its Gram matrix splits into the sum
 of the cosine and sine Gram squares by `cos(A-B)`. -/
-theorem cosine_frequency_positiveType (ω : ℝ) :
-    PositiveType (fun t : ℝ => Real.cos (ω * t)) := by
+theorem cosine_frequency_positiveType (freq : ℝ) :
+    PositiveType (fun t : ℝ => Real.cos (freq * t)) := by
   intro n x c
   rw [Complex.re_sum]
   have hterm : ∀ i : Fin n,
       (∑ j : Fin n, (starRingEnd ℂ) (c i) * c j *
-        ((Real.cos (ω * (x i - x j)) : ℝ) : ℂ)).re =
+        ((Real.cos (freq * (x i - x j)) : ℝ) : ℂ)).re =
       ∑ j : Fin n, ((starRingEnd ℂ) (c i) * c j).re *
-        Real.cos (ω * (x i - x j)) := by
+        Real.cos (freq * (x i - x j)) := by
     intro i
     rw [Complex.re_sum]
     apply Finset.sum_congr rfl
@@ -107,19 +107,19 @@ theorem cosine_frequency_positiveType (ω : ℝ) :
     rw [mul_ofReal_re]
   simp only [hterm]
   have hsplit : ∀ i j : Fin n,
-      ((starRingEnd ℂ) (c i) * c j).re * Real.cos (ω * (x i - x j)) =
+      ((starRingEnd ℂ) (c i) * c j).re * Real.cos (freq * (x i - x j)) =
         ((starRingEnd ℂ) (c i) * c j).re *
-          (Real.cos (ω * x i) * Real.cos (ω * x j)) +
+          (Real.cos (freq * x i) * Real.cos (freq * x j)) +
         ((starRingEnd ℂ) (c i) * c j).re *
-          (Real.sin (ω * x i) * Real.sin (ω * x j)) := by
+          (Real.sin (freq * x i) * Real.sin (freq * x j)) := by
     intro i j
     rw [mul_sub, Real.cos_sub]
     ring
   simp_rw [hsplit, Finset.sum_add_distrib]
   rw [Finset.sum_add_distrib]
   exact add_nonneg
-    (gram_square_nonneg c (fun i => Real.cos (ω * x i)))
-    (gram_square_nonneg c (fun i => Real.sin (ω * x i)))
+    (gram_square_nonneg c (fun i => Real.cos (freq * x i)))
+    (gram_square_nonneg c (fun i => Real.sin (freq * x i)))
 
 /-- Positive type is preserved by multiplication by a nonnegative real scalar. -/
 theorem positiveType_nonneg_scalar {f : ℝ → ℝ}
@@ -177,7 +177,7 @@ theorem positiveType_finset_sum_modes
       intro n x c
       have h1 := haPT n x c
       have h2 := hSPT n x c
-      simpa [ha, Complex.re_add, Finset.sum_add_distrib, add_mul, mul_add] using add_nonneg h1 h2
+      simpa [ha, Finset.sum_add_distrib, add_mul, mul_add] using add_nonneg h1 h2
 
 /-- Every finite truncation of the global von-Mangoldt cosine response is positive type. -/
 theorem finite_vonMangoldt_cosine_positiveType (a : ℝ) (S : Finset ℕ) :
