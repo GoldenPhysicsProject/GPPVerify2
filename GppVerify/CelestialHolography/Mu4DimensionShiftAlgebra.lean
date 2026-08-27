@@ -13,6 +13,8 @@ limit. The analytic Feynman-integral residue itself is not encoded here.
 
 namespace GppMu4DimensionShift
 
+open Filter
+
 /-- Exact Gamma-recursion polynomial appearing in the `mu^4` dimension shift. -/
 def shiftFactor (ε : ℝ) : ℝ := -ε * (1 - ε)
 
@@ -39,6 +41,25 @@ theorem shiftFactor_mul_of_scaledIntegral {ε I r : ℝ} (h : ε * I = r) :
     shiftFactor ε * I = -(1 - ε) * r := by
   rw [shiftFactor_mul_eq_scaledResidue, h]
 
+/-- **Limit-transfer form of the dimension shift.** On any filter along which
+`ε -> 0`, if the scaled raised-dimensional integral satisfies `ε I(ε) -> 1/6`,
+then the `mu^4` dimension-shift product tends to the finite rational value `-1/6`.
+Thus the analytic amplitude input is exactly the residue limit, not a full Laurent
+expansion. -/
+theorem tendsto_shiftFactor_mul_of_scaledResidue
+    {I : ℝ → ℝ} {l : Filter ℝ}
+    (hε : Tendsto (fun ε : ℝ => ε) l (nhds 0))
+    (hres : Tendsto (fun ε : ℝ => ε * I ε) l (nhds (1 / 6 : ℝ))) :
+    Tendsto (fun ε : ℝ => shiftFactor ε * I ε) l (nhds (-(1 / 6 : ℝ))) := by
+  have hfac : Tendsto (fun ε : ℝ => -(1 - ε)) l (nhds (-1)) := by
+    have hone : Tendsto (fun _ : ℝ => (1 : ℝ)) l (nhds 1) := tendsto_const_nhds
+    simpa using (hone.sub hε).neg
+  have hmul := hfac.mul hres
+  convert hmul using 1
+  · funext ε
+    exact shiftFactor_mul_eq_scaledResidue ε (I ε)
+  · ring
+
 /-- The finite residue tends algebraically to `-1/6`; at the exact endpoint this
 is simply the value of the regularized closed expression. -/
 theorem regularizedResidue_at_zero :
@@ -55,4 +76,5 @@ end GppMu4DimensionShift
 #print axioms GppMu4DimensionShift.shiftFactor_mul_boxPole
 #print axioms GppMu4DimensionShift.shiftFactor_mul_eq_scaledResidue
 #print axioms GppMu4DimensionShift.shiftFactor_mul_of_scaledIntegral
+#print axioms GppMu4DimensionShift.tendsto_shiftFactor_mul_of_scaledResidue
 #print axioms GppMu4DimensionShift.regularizedResidue_error
