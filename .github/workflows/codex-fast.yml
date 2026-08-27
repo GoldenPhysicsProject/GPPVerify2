@@ -213,3 +213,7 @@ jobs:
       - name: Twistor googly real shadow interface
         if: always()
         run: lake build GppVerify.CelestialHolography.TwistorGoogly
+
+      - name: Antiunitary googly SD-ASD exchange
+        if: always()
+        run: lake build GppVerify.CelestialHolography.GooglyAntiunitaryExchange
