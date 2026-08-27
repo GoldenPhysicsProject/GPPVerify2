@@ -74,13 +74,20 @@ theorem summable_quarticSummand {β : ℝ} (hβ : 1 < β) :
   rw [hcoeff] at hre
   exact hre.congr (fun n => logMul_three_term_re_eq_quarticSummand n β)
 
-/-- Every quartic arithmetic term is nonnegative. -/
+/-- Every quartic arithmetic term is nonnegative.  The only natural numbers
+with potentially negative `log n` are `0` and `1`, where von Mangoldt vanishes;
+for `n ≥ 2`, `log n ≥ 0`. -/
 theorem quarticSummand_nonneg (β : ℝ) (n : ℕ) :
     0 ≤ quarticSummand β n := by
-  unfold quarticSummand
-  exact mul_nonneg
-    (mul_nonneg ArithmeticFunction.vonMangoldt_nonneg (pow_nonneg (Real.log n) 3))
-    (Real.exp_pos _).le
+  by_cases hn : n ≤ 1
+  · interval_cases n <;> simp [quarticSummand]
+  · have hn2 : 2 ≤ n := by omega
+    have hlog : 0 ≤ Real.log (n : ℝ) :=
+      Real.log_nonneg (by exact_mod_cast (show 1 ≤ n by omega))
+    unfold quarticSummand
+    exact mul_nonneg
+      (mul_nonneg ArithmeticFunction.vonMangoldt_nonneg (pow_nonneg hlog 3))
+      (Real.exp_pos _).le
 
 /-- The `n=2` term is strictly positive. -/
 theorem quarticSummand_two_pos (β : ℝ) : 0 < quarticSummand β 2 := by
