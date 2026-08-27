@@ -87,6 +87,20 @@ theorem iteratedDeriv_three_riemannZeta_eq_neg_logCubeMomentLSeries {s : ℂ} (h
   rw [iteratedDeriv_riemannZeta_eq_logMomentLSeries 3 hs]
   norm_num [Function.iterate_succ_apply]
 
+/-- Fourth derivative: four logarithmic insertions, with positive sign.  This is
+the raw fourth-moment input for the next genuine Gibbs cumulant
+`κ₄ = μ₄ - 3 μ₂²`. -/
+theorem iteratedDeriv_four_riemannZeta_eq_logFourthMomentLSeries
+    {s : ℂ} (hs : 1 < s.re) :
+    iteratedDeriv 4 riemannZeta s =
+      LSeries
+        (LSeries.logMul
+          (LSeries.logMul
+            (LSeries.logMul
+              (LSeries.logMul (fun _ : ℕ => (1 : ℂ)))))) s := by
+  rw [iteratedDeriv_riemannZeta_eq_logMomentLSeries 4 hs]
+  norm_num [Function.iterate_succ_apply]
+
 end GppZetaGibbsMoments
 
 #print axioms GppZetaGibbsMoments.riemannZeta_eq_LSeries_one
@@ -94,3 +108,4 @@ end GppZetaGibbsMoments
 #print axioms GppZetaGibbsMoments.deriv_riemannZeta_eq_neg_logMomentLSeries
 #print axioms GppZetaGibbsMoments.iteratedDeriv_two_riemannZeta_eq_logSqMomentLSeries
 #print axioms GppZetaGibbsMoments.iteratedDeriv_three_riemannZeta_eq_neg_logCubeMomentLSeries
+#print axioms GppZetaGibbsMoments.iteratedDeriv_four_riemannZeta_eq_logFourthMomentLSeries
