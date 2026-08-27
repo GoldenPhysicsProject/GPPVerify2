@@ -20,8 +20,10 @@ open GppScalarBoxLogSquareRemainder
 /-- `m log m -> 0` from the physical side `m -> 0+`. -/
 theorem tendsto_mul_log_nhdsGT_zero :
     Tendsto (fun m : ℝ => m * Real.log m) (𝓝[>] 0) (𝓝 0) := by
+  have hcont : ContinuousAt (fun m : ℝ => m * Real.log m) 0 :=
+    Real.continuous_mul_log.continuousAt
   have h : Tendsto (fun m : ℝ => m * Real.log m) (𝓝 0) (𝓝 0) := by
-    simpa using Real.continuous_mul_log.continuousAt
+    simpa only [ContinuousAt, Real.log_zero, mul_zero] using hcont
   exact h.mono_left inf_le_left
 
 /-- The absolute logarithmic regulator term also vanishes. -/
@@ -43,8 +45,11 @@ theorem tendsto_mul_log_sq_nhdsGT_zero :
   have hhalf :
       Tendsto (fun m : ℝ => Real.log m * m ^ (1 / 2 : ℝ)) (𝓝[>] 0) (𝓝 0) := by
     exact tendsto_log_mul_rpow_nhdsGT_zero (by norm_num)
-  have hsq := hhalf.pow 2
-  apply hsq.congr'
+  have hsq :
+      Tendsto (fun m : ℝ => (Real.log m * m ^ (1 / 2 : ℝ)) ^ 2)
+        (𝓝[>] 0) (𝓝 0) := by
+    simpa using hhalf.pow 2
+  refine hsq.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with m hm
   have hm0 : 0 ≤ m := hm.le
   have hrpow : (m ^ (1 / 2 : ℝ)) ^ (2 : ℕ) = m := by
@@ -63,8 +68,10 @@ theorem tendsto_mul_log_div_const_nhdsGT_zero
   have hconst :
       Tendsto (fun m : ℝ => m * Real.log C) (𝓝[>] 0) (𝓝 0) := by
     simpa using hm.mul_const (Real.log C)
-  have hdiff := tendsto_mul_log_nhdsGT_zero.sub hconst
-  apply hdiff.congr'
+  have hdiff :
+      Tendsto (fun m : ℝ => m * Real.log m - m * Real.log C) (𝓝[>] 0) (𝓝 0) := by
+    simpa using tendsto_mul_log_nhdsGT_zero.sub hconst
+  refine hdiff.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with m hmpos
   rw [Real.log_div hmpos.ne' hC.ne']
   ring
@@ -73,8 +80,10 @@ theorem tendsto_mul_log_div_const_nhdsGT_zero
 theorem tendsto_mul_abs_log_div_const_nhdsGT_zero
     {C : ℝ} (hC : 0 < C) :
     Tendsto (fun m : ℝ => m * |Real.log (m / C)|) (𝓝[>] 0) (𝓝 0) := by
-  have h := (tendsto_mul_log_div_const_nhdsGT_zero hC).abs
-  apply h.congr'
+  have h :
+      Tendsto (fun m : ℝ => |m * Real.log (m / C)|) (𝓝[>] 0) (𝓝 0) := by
+    simpa using (tendsto_mul_log_div_const_nhdsGT_zero hC).abs
+  refine h.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with m hmpos
   rw [abs_mul, abs_of_pos hmpos]
 
@@ -84,8 +93,10 @@ theorem tendsto_sq_mul_abs_log_div_const_nhdsGT_zero
     Tendsto (fun m : ℝ => m ^ 2 * |Real.log (m / C)|) (𝓝[>] 0) (𝓝 0) := by
   have hm : Tendsto (fun m : ℝ => m) (𝓝[>] 0) (𝓝 0) := by
     exact (continuousAt_id.tendsto).mono_left inf_le_left
-  have h := hm.mul (tendsto_mul_abs_log_div_const_nhdsGT_zero hC)
-  apply h.congr'
+  have h :
+      Tendsto (fun m : ℝ => m * (m * |Real.log (m / C)|)) (𝓝[>] 0) (𝓝 0) := by
+    simpa using hm.mul (tendsto_mul_abs_log_div_const_nhdsGT_zero hC)
+  refine h.congr' ?_
   filter_upwards with m
   ring
 
@@ -116,12 +127,23 @@ theorem tendsto_poly_error_log_square_majorant
       Tendsto
         (fun m : ℝ => (A * m + B * m ^ 2) * |Real.log (m / C)|)
         (𝓝[>] 0) (𝓝 0) := by
-    have h := (hmlog.const_mul A).add (hm2log.const_mul B)
-    apply h.congr'
+    have h :
+        Tendsto
+          (fun m : ℝ => A * (m * |Real.log (m / C)|) +
+            B * (m ^ 2 * |Real.log (m / C)|))
+          (𝓝[>] 0) (𝓝 0) := by
+      simpa using (hmlog.const_mul A).add (hm2log.const_mul B)
+    refine h.congr' ?_
     filter_upwards with m
     ring
-  have hmain := (hElog.const_mul 2).add (hE.mul hE)
-  apply hmain.congr'
+  have hmain :
+      Tendsto
+        (fun m : ℝ =>
+          2 * ((A * m + B * m ^ 2) * |Real.log (m / C)|) +
+            (A * m + B * m ^ 2) * (A * m + B * m ^ 2))
+        (𝓝[>] 0) (𝓝 0) := by
+    simpa using (hElog.const_mul 2).add (hE.mul hE)
+  refine hmain.congr' ?_
   filter_upwards with m
   ring
 
@@ -156,7 +178,7 @@ theorem tendsto_lower_log_square_majorant
       (𝓝[>] 0) (𝓝 0) := by
   let A : ℝ := (289 / 192 : ℝ) * (1 / S + (33 / 16 : ℝ) * (1 / U))
   have h := tendsto_poly_error_log_square_majorant (C := U) (A := A) (B := 0) hU
-  apply h.congr'
+  refine h.congr' ?_
   filter_upwards with m
   rw [lowerLogError_regulator_polynomial hS.ne' hU.ne']
   simp [A]
@@ -172,10 +194,9 @@ theorem tendsto_pole_log_square_majorant
   let A : ℝ := (103 / 17 : ℝ) * (1 / U) + (4 / 3 : ℝ) * (1 / S)
   let B : ℝ := 4 / (3 * S * U)
   have h := tendsto_poly_error_log_square_majorant (C := S) (A := A) (B := B) hS
-  apply h.congr'
+  refine h.congr' ?_
   filter_upwards with m
   rw [poleLogError_regulator_polynomial hS.ne' hU.ne']
-  rfl
 
 end GppScalarBoxRegulatorVanishing
 
