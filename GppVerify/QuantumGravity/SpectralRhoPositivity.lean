@@ -53,10 +53,13 @@ theorem rhoGamma_re_pos (k : ℕ) (x : ℝ) :
     rcases lt_or_gt_of_ne hx0 with hx | hx
     · have hsinh : Real.sinh (Real.pi * x) < 0 :=
         Real.sinh_neg_iff.mpr (mul_neg_of_pos_of_neg Real.pi_pos hx)
-      exact div_pos_of_neg_of_neg
-        (mul_neg_of_pos_of_neg (mul_pos hpow hpoly) hx |> by
-          simpa [mul_assoc, mul_left_comm, mul_comm])
-        (mul_neg_of_pos_of_neg hfact hsinh)
+      have hnum :
+          (2 : ℝ) ^ (2 * k + 1) * x * chamberPoly k x < 0 := by
+        positivity
+      have hden :
+          (((2 * k + 1).factorial : ℕ) : ℝ) * Real.sinh (Real.pi * x) < 0 := by
+        positivity
+      exact div_pos_of_neg_of_neg hnum hden
     · have hsinh : 0 < Real.sinh (Real.pi * x) :=
         Real.sinh_pos_iff.mpr (mul_pos Real.pi_pos hx)
       positivity
