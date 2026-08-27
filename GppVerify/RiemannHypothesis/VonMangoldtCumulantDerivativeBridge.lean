@@ -46,8 +46,10 @@ theorem iteratedDeriv_two_negZetaLogDeriv_eq_logMul_logMul
       (negZetaLogDeriv_eqOn_vonMangoldtLSeries.iteratedDeriv_of_isOpen
         isOpen_zetaHalfPlane 2) hs
   rw [heq]
-  have habs : LSeries.abscissaOfAbsConv vonMangoldtComplex < s.re :=
-    lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one hs
+  have hsE : (1 : EReal) < (s.re : EReal) := by
+    exact_mod_cast hs
+  have habs : LSeries.abscissaOfAbsConv vonMangoldtComplex < (s.re : EReal) :=
+    lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one hsE
   have hderiv := LSeries_iteratedDeriv 2 habs
   simpa [Function.iterate_succ_apply] using hderiv
 
