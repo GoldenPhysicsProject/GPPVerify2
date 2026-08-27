@@ -104,6 +104,25 @@ theorem rhoGamma_eq_mehlerFock_chamber (k : ℕ) (x : ℝ) (hx : x ≠ 0) :
   field_simp [hfact, hsinh]
   ring
 
+/-- **Unified all-real chamber formula.** The only distinction between `x=0` and
+`x≠0` is the removable value of the hyperbolic quotient; the Gamma-family itself
+is represented exactly on all of `ℝ` by this piecewise closed form. -/
+theorem rhoGamma_eq_mehlerFock_chamber_all (k : ℕ) (x : ℝ) :
+    rhoGamma k x =
+      if x = 0 then
+        ((((2 : ℝ) ^ (2 * k + 1) * ((((k.factorial : ℕ) : ℝ)) ^ 2) /
+            ((((2 * k + 1).factorial : ℕ) : ℝ) * Real.pi) : ℝ) : ℂ)
+      else
+        ((((2 : ℝ) ^ (2 * k + 1) * x * chamberPoly k x /
+            ((((2 * k + 1).factorial : ℕ) : ℝ) *
+              Real.sinh (Real.pi * x)) : ℝ) : ℂ) := by
+  by_cases hx : x = 0
+  · subst x
+    simp only [if_pos rfl]
+    exact rhoGamma_at_zero k
+  · simp only [if_neg hx]
+    exact rhoGamma_eq_mehlerFock_chamber k x hx
+
 end GppSpectralRhoMehlerFock
 
 #print axioms GppSpectralRhoMehlerFock.rhoGamma_zero_eq_mehlerFock
@@ -111,3 +130,4 @@ end GppSpectralRhoMehlerFock
 #print axioms GppSpectralRhoMehlerFock.chamberPoly_at_zero
 #print axioms GppSpectralRhoMehlerFock.rhoGamma_at_zero
 #print axioms GppSpectralRhoMehlerFock.rhoGamma_eq_mehlerFock_chamber
+#print axioms GppSpectralRhoMehlerFock.rhoGamma_eq_mehlerFock_chamber_all
