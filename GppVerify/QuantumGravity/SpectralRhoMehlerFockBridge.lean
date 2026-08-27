@@ -23,10 +23,9 @@ and every higher chamber member therefore has the explicit form
     = 2^(2k+1) * x * prod_{j=1}^k (j^2+x^2)
       / ((2k+1)! * sinh(pi*x)).
 
-The exclusion `x != 0` is mathematically honest: the raw quotient `x/sinh(pi*x)` is
-`0/0` at the origin in Lean, whereas the Gamma definition has the correct continuous
-extension there.  No Fourier transform, convolution theorem, or normalization integral
-is used.
+At the removable singularity itself the Gamma definition gives the exact value
+`rhoGamma 0 0 = 2/pi`, matching the continuous extension of the displayed quotient.
+No Fourier transform, convolution theorem, or normalization integral is used.
 -/
 
 namespace GppSpectralRhoMehlerFock
@@ -48,6 +47,12 @@ theorem rhoGamma_zero_eq_mehlerFock (x : ℝ) (hx : x ≠ 0) :
   rw [hgamma]
   push_cast
   field_simp [Real.pi_ne_zero, hsinh]
+
+/-- Exact value at the removable singularity of the base Mehler--Fock quotient. -/
+theorem rhoGamma_zero_zero :
+    rhoGamma 0 0 = (((2 / Real.pi : ℝ)) : ℂ) := by
+  unfold rhoGamma GppSpectralGammaPair.gammaPair
+  norm_num
 
 /-- **All-order explicit Mehler--Fock chamber formula** away from the removable
 singularity at `x=0`. -/
@@ -71,4 +76,5 @@ theorem rhoGamma_eq_mehlerFock_chamber (k : ℕ) (x : ℝ) (hx : x ≠ 0) :
 end GppSpectralRhoMehlerFock
 
 #print axioms GppSpectralRhoMehlerFock.rhoGamma_zero_eq_mehlerFock
+#print axioms GppSpectralRhoMehlerFock.rhoGamma_zero_zero
 #print axioms GppSpectralRhoMehlerFock.rhoGamma_eq_mehlerFock_chamber
