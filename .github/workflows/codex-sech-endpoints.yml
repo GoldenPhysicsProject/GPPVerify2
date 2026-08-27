@@ -35,3 +35,5 @@ jobs:
         run: lake build GppVerify.CelestialHolography.SechConvolutionEndpoints
       - name: Exact nonzero sech convolution closed form
         run: lake build GppVerify.CelestialHolography.SechConvolutionClosedForm
+      - name: Wiener-Hopf normalization of sech convolution
+        run: lake build GppVerify.CelestialHolography.SechConvolutionWienerHopf
