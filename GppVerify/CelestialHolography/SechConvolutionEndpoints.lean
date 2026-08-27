@@ -1,6 +1,7 @@
 import GppVerify.CelestialHolography.SechConvolutionPrimitive
 import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Tactic
 
 /-!
@@ -12,10 +13,9 @@ obtained without an improper-integral assumption: the right endpoint follows
 from the exponentially small remainders, and the left endpoint follows by the
 exact reflection `x ↦ lambda - x`.
 
-It also closes the finite-interval calculus layer.  The scaled shifted-sech
-kernel is continuous and its interval integral is exactly the jump of the
-log-cosh primitive.  The only remaining analytic step for the whole-line
-convolution is passage to the two improper endpoints.
+It also closes the finite-interval calculus layer and the scaled whole-line
+improper integral. The unscaled self-convolution follows by extracting the fixed
+factor `pi*sinh(pi*lambda)` away from `lambda = 0`.
 -/
 
 namespace GppSechConvolutionEndpoints
@@ -155,6 +155,103 @@ theorem integral_scaled_sech_kernel_eq_logCoshDifference_sub
     exact hasDerivAt_logCoshDifference lam x
   · exact (continuous_scaled_sech_kernel lam).intervalIntegrable a b
 
+/-- Reflection through the origin preserves the scaled-kernel derivative after also
+negating the primitive. This is the device used to turn the left improper tail into
+Mathlib's right-half-line FTC theorem. -/
+theorem hasDerivAt_neg_logCoshDifference_neg (lam x : ℝ) :
+    HasDerivAt (fun y : ℝ => -logCoshDifference lam (-y))
+      (Real.pi * Real.sinh (Real.pi * lam) /
+        (Real.cosh (Real.pi * (-x)) * Real.cosh (Real.pi * (lam - (-x))))) x := by
+  have hcomp := HasDerivAt.scomp x (hasDerivAt_logCoshDifference lam (-x)) (hasDerivAt_neg' x)
+  convert hcomp.neg using 1 <;> ring
+
+/-- The reflected primitive has the same `+∞` limit `pi*lambda` as the original
+primitive. -/
+theorem neg_logCoshDifference_neg_tendsto_atTop (lam : ℝ) :
+    Tendsto (fun x : ℝ => -logCoshDifference lam (-x)) atTop (nhds (Real.pi * lam)) := by
+  have h := (logCoshDifference_tendsto_atBot lam).comp tendsto_neg_atTop_atBot
+  convert h.neg using 1 <;> ring
+
+/-- The scaled shifted-sech kernel is integrable on the whole real line. The proof
+uses its fixed sign and the finite endpoint limits of the primitive rather than an
+independent exponential majorant. -/
+theorem integrable_scaled_sech_kernel (lam : ℝ) :
+    Integrable (fun x : ℝ =>
+      Real.pi * Real.sinh (Real.pi * lam) /
+        (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x)))) := by
+  rcases lt_trichotomy lam 0 with hneg | rfl | hpos
+  · have hsinh : Real.sinh (Real.pi * lam) < 0 :=
+      Real.sinh_neg_iff.mpr (mul_neg_of_pos_of_neg Real.pi_pos hneg)
+    have hkernel_nonpos : ∀ x : ℝ,
+        Real.pi * Real.sinh (Real.pi * lam) /
+            (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x))) ≤ 0 := by
+      intro x
+      exact le_of_lt (div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg Real.pi_pos hsinh)
+        (mul_pos (Real.cosh_pos _) (Real.cosh_pos _)))
+    have hright : IntegrableOn (fun x : ℝ =>
+        Real.pi * Real.sinh (Real.pi * lam) /
+          (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x)))) (Set.Ioi 0) :=
+      integrableOn_Ioi_deriv_of_nonpos'
+        (fun x _ => hasDerivAt_logCoshDifference lam x)
+        (fun x _ => hkernel_nonpos x)
+        (logCoshDifference_tendsto_atTop lam)
+    have hreflect : IntegrableOn (fun x : ℝ =>
+        Real.pi * Real.sinh (Real.pi * lam) /
+          (Real.cosh (Real.pi * (-x)) * Real.cosh (Real.pi * (lam - (-x))))) (Set.Ioi 0) :=
+      integrableOn_Ioi_deriv_of_nonpos'
+        (fun x _ => hasDerivAt_neg_logCoshDifference_neg lam x)
+        (fun x _ => hkernel_nonpos (-x))
+        (neg_logCoshDifference_neg_tendsto_atTop lam)
+    rw [← integrableOn_univ, ← @Set.Iio_union_Ici _ _ (0 : ℝ), integrableOn_union,
+      integrableOn_Ici_iff_integrableOn_Ioi]
+    refine ⟨?_, hright⟩
+    rw [← (Measure.measurePreserving_neg (volume : Measure ℝ)).integrableOn_comp_preimage
+      (Homeomorph.neg ℝ).measurableEmbedding]
+    simpa [Function.comp_def] using hreflect
+  · simp
+  · have hsinh : 0 < Real.sinh (Real.pi * lam) :=
+      Real.sinh_pos_iff.mpr (mul_pos Real.pi_pos hpos)
+    have hkernel_nonneg : ∀ x : ℝ, 0 ≤
+        Real.pi * Real.sinh (Real.pi * lam) /
+            (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x))) := by
+      intro x
+      exact le_of_lt (div_pos (mul_pos Real.pi_pos hsinh)
+        (mul_pos (Real.cosh_pos _) (Real.cosh_pos _)))
+    have hright : IntegrableOn (fun x : ℝ =>
+        Real.pi * Real.sinh (Real.pi * lam) /
+          (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x)))) (Set.Ioi 0) :=
+      integrableOn_Ioi_deriv_of_nonneg'
+        (fun x _ => hasDerivAt_logCoshDifference lam x)
+        (fun x _ => hkernel_nonneg x)
+        (logCoshDifference_tendsto_atTop lam)
+    have hreflect : IntegrableOn (fun x : ℝ =>
+        Real.pi * Real.sinh (Real.pi * lam) /
+          (Real.cosh (Real.pi * (-x)) * Real.cosh (Real.pi * (lam - (-x))))) (Set.Ioi 0) :=
+      integrableOn_Ioi_deriv_of_nonneg'
+        (fun x _ => hasDerivAt_neg_logCoshDifference_neg lam x)
+        (fun x _ => hkernel_nonneg (-x))
+        (neg_logCoshDifference_neg_tendsto_atTop lam)
+    rw [← integrableOn_univ, ← @Set.Iio_union_Ici _ _ (0 : ℝ), integrableOn_union,
+      integrableOn_Ici_iff_integrableOn_Ioi]
+    refine ⟨?_, hright⟩
+    rw [← (Measure.measurePreserving_neg (volume : Measure ℝ)).integrableOn_comp_preimage
+      (Homeomorph.neg ℝ).measurableEmbedding]
+    simpa [Function.comp_def] using hreflect
+
+/-- **Scaled whole-line shifted-sech convolution.** The improper integral is exactly
+the endpoint jump of the certified primitive. -/
+theorem integral_scaled_sech_kernel_eq_two_pi_mul (lam : ℝ) :
+    (∫ x : ℝ,
+      Real.pi * Real.sinh (Real.pi * lam) /
+        (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x)))) =
+      2 * Real.pi * lam := by
+  have h := integral_of_hasDerivAt_of_tendsto
+    (fun x => hasDerivAt_logCoshDifference lam x)
+    (integrable_scaled_sech_kernel lam)
+    (logCoshDifference_tendsto_atBot lam)
+    (logCoshDifference_tendsto_atTop lam)
+  convert h using 1 <;> ring
+
 end GppSechConvolutionEndpoints
 
 #print axioms GppSechConvolutionEndpoints.logCoshRemainder_pi_mul_tendsto_atTop
@@ -163,3 +260,6 @@ end GppSechConvolutionEndpoints
 #print axioms GppSechConvolutionEndpoints.logCoshDifference_tendsto_atBot
 #print axioms GppSechConvolutionEndpoints.continuous_scaled_sech_kernel
 #print axioms GppSechConvolutionEndpoints.integral_scaled_sech_kernel_eq_logCoshDifference_sub
+#print axioms GppSechConvolutionEndpoints.hasDerivAt_neg_logCoshDifference_neg
+#print axioms GppSechConvolutionEndpoints.integrable_scaled_sech_kernel
+#print axioms GppSechConvolutionEndpoints.integral_scaled_sech_kernel_eq_two_pi_mul
