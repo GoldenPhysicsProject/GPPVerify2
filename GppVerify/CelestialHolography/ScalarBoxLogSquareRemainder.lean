@@ -19,11 +19,11 @@ final `m log^2 m -> 0` regulator remainder.
 namespace GppScalarBoxLogSquareRemainder
 
 /-- Certified lower-endpoint logarithmic error scale. -/
-def lowerLogError (δ η : ℝ) : ℝ :=
+noncomputable def lowerLogError (δ η : ℝ) : ℝ :=
   (289 / 192 : ℝ) * (η + (33 / 64 : ℝ) * δ)
 
 /-- Certified pole-endpoint logarithmic error scale. -/
-def poleLogError (δ η : ℝ) : ℝ :=
+noncomputable def poleLogError (δ η : ℝ) : ℝ :=
   (103 / 68 : ℝ) * δ + (1 / 3 : ℝ) * (δ * η) + (4 / 3 : ℝ) * η
 
 /-- Both certified error scales are nonnegative on the physical chamber. -/
