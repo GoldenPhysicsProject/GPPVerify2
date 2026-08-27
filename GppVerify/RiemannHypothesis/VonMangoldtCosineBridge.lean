@@ -24,10 +24,9 @@ theorem natCast_neg_cpow_re
   rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hn)]
   have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) :=
     Complex.natCast_log.symm
-  rw [hlog]
   rw [Complex.exp_re]
-  simp [Real.cos_neg]
-  ring
+  simp [hlog, Real.cos_neg]
+  ring_nf
 
 /-- Each nonzero-index von-Mangoldt term has the expected cosine real part. -/
 theorem vonMangoldt_term_re_eq_exp_cos
@@ -44,7 +43,8 @@ theorem vonMangoldt_term_re_eq_exp_cos
       ArithmeticFunction.vonMangoldt n *
         Real.exp (-Real.log n * a) * Real.cos (Real.log n * t)
   rw [Complex.mul_re]
-  simp [natCast_neg_cpow_re n hn a t]
+  simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
+  rw [natCast_neg_cpow_re n hn a t]
   ring
 
 /-- The zero-index term vanishes. -/
