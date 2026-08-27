@@ -32,9 +32,9 @@ theorem ambient_finrank : finrank ℂ Ambient = 4 := by
 /-- Orthogonal complement sends a point of `Gr(2,4)` to another point of
 `Gr(2,4)`. -/
 noncomputable def complement (K : Gr24) : Gr24 := by
-  let Kperp : Submodule ℂ Ambient := K.1ᗮ
+  let Kperp : Submodule ℂ Ambient := Submodule.orthogonal (𝕜 := ℂ) (E := Ambient) K.1
   refine ⟨Kperp, ?_⟩
-  have h := Submodule.finrank_add_finrank_orthogonal K.1
+  have h := Submodule.finrank_add_finrank_orthogonal (𝕜 := ℂ) (E := Ambient) K.1
   change finrank ℂ Kperp = 2
   dsimp [Kperp]
   rw [K.2, ambient_finrank] at h
@@ -43,8 +43,10 @@ noncomputable def complement (K : Gr24) : Gr24 := by
 /-- Orthogonal complement is an involution on the actual `Gr24` type. -/
 theorem complement_involutive (K : Gr24) : complement (complement K) = K := by
   apply Subtype.ext
-  change K.1ᗮᗮ = K.1
-  exact Submodule.orthogonal_orthogonal K.1
+  change
+    Submodule.orthogonal (𝕜 := ℂ) (E := Ambient)
+      (Submodule.orthogonal (𝕜 := ℂ) (E := Ambient) K.1) = K.1
+  exact Submodule.orthogonal_orthogonal (𝕜 := ℂ) (E := Ambient) K.1
 
 /-- Hence the complement map is bijective. -/
 theorem complement_bijective : Function.Bijective complement := by
