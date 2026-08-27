@@ -1,5 +1,6 @@
 import GppVerify.RiemannHypothesis.VonMangoldtCumulantDerivativeBridge
 import GppVerify.RiemannHypothesis.ZetaGibbsFisher
+import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.Analysis.Calculus.FDeriv.Analytic
 import Mathlib.Analysis.Calculus.Deriv.Inv
 import Mathlib.Tactic
@@ -41,8 +42,14 @@ theorem zetaHalfPlane_subset_compl_one :
 
 /-- Zeta is analytic throughout the honest Gibbs half-plane. -/
 theorem analyticOnNhd_riemannZeta_zetaHalfPlane :
-    AnalyticOnNhd ℂ riemannZeta zetaHalfPlane :=
-  analyticOn_riemannZeta.mono zetaHalfPlane_subset_compl_one
+    AnalyticOnNhd ℂ riemannZeta zetaHalfPlane := by
+  intro s hs
+  have hdiff : DifferentiableOn ℂ riemannZeta zetaHalfPlane := by
+    intro z hz
+    have hz1 : z ≠ 1 := by
+      simpa using zetaHalfPlane_subset_compl_one hz
+    exact (differentiableAt_riemannZeta hz1).differentiableWithinAt
+  exact hdiff.analyticAt (isOpen_zetaHalfPlane.mem_nhds hs)
 
 /-- First derivative of the negative logarithmic derivative, written as an explicit
 quotient. -/
@@ -61,8 +68,12 @@ theorem deriv_negZetaLogDeriv_eq_firstResponse
   have h1 : HasDerivAt (deriv riemannZeta) (deriv (deriv riemannZeta) s) s :=
     (analyticOnNhd_riemannZeta_zetaHalfPlane.deriv s hsset).differentiableAt.hasDerivAt
   have hne : riemannZeta s ≠ 0 := riemannZeta_ne_zero_right_half_plane hs
-  have h := (h1.div h0 hne).neg
-  simpa [negZetaLogDeriv, firstResponse] using h.deriv
+  have hbase := h1.div h0 hne
+  have hneg : HasDerivAt negZetaLogDeriv
+      (-((deriv (deriv riemannZeta) s * riemannZeta s -
+          deriv riemannZeta s * deriv riemannZeta s) / riemannZeta s ^ 2)) s := by
+    convert hbase.neg using 1 <;> simp [negZetaLogDeriv] <;> field_simp [hne] <;> ring
+  simpa [firstResponse] using hneg.deriv
 
 /-- The first derivative identity holds on the whole open half-plane. -/
 theorem deriv_negZetaLogDeriv_eqOn_firstResponse :
@@ -88,8 +99,6 @@ theorem deriv_firstResponse_eq_thirdLogResponse
       (deriv (deriv (deriv riemannZeta)) s) s :=
     (analyticOnNhd_riemannZeta_zetaHalfPlane.deriv.deriv s hsset).differentiableAt.hasDerivAt
   have hne : riemannZeta s ≠ 0 := riemannZeta_ne_zero_right_half_plane hs
-  have hnum := (h1.mul h0).sub (h0.mul h0)
-  -- Rebuild the numerator with the correct functions: f'' f - (f')^2.
   have hnum' : HasDerivAt
       (fun z => deriv (deriv riemannZeta) z * riemannZeta z -
         deriv riemannZeta z * deriv riemannZeta z)
@@ -101,9 +110,9 @@ theorem deriv_firstResponse_eq_thirdLogResponse
   have hden : HasDerivAt (fun z => riemannZeta z ^ 2)
       (2 * riemannZeta s * deriv riemannZeta s) s := by
     convert h0.pow 2 using 1 <;> ring
-  have hquot := (hnum'.div hden (pow_ne_zero 2 hne)).neg
-  have hd : deriv firstResponse s =
-      -((((deriv (deriv (deriv riemannZeta)) s * riemannZeta s +
+  have hbase := hnum'.div hden (pow_ne_zero 2 hne)
+  have hneg : HasDerivAt firstResponse
+      (-((((deriv (deriv (deriv riemannZeta)) s * riemannZeta s +
               deriv (deriv riemannZeta) s * deriv riemannZeta s) -
             (deriv (deriv riemannZeta) s * deriv riemannZeta s +
               deriv riemannZeta s * deriv (deriv riemannZeta) s)) *
@@ -111,8 +120,9 @@ theorem deriv_firstResponse_eq_thirdLogResponse
           (deriv (deriv riemannZeta) s * riemannZeta s -
             deriv riemannZeta s * deriv riemannZeta s) *
             (2 * riemannZeta s * deriv riemannZeta s)) /
-        (riemannZeta s ^ 2) ^ 2) := by
-    simpa [firstResponse] using hquot.deriv
+        (riemannZeta s ^ 2) ^ 2)) s := by
+    convert hbase.neg using 1 <;> simp [firstResponse] <;> field_simp [hne] <;> ring
+  have hd := hneg.deriv
   rw [hd]
   field_simp [hne]
   ring
