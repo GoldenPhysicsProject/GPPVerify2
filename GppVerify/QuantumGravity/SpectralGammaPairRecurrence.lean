@@ -14,8 +14,9 @@ one-step Gamma recurrence.  This file proves, for every real `a>0`,
   Gamma(a+1+i x) Gamma(a+1-i x)
     = (a^2+x^2) Gamma(a+i x) Gamma(a-i x).
 
-This is the exact algebraic engine behind the product
-`prod_{j=1}^{m-1} (j^2+x^2)` in the normalized convolution densities.
+It also records the exact spectral reflection symmetry `x -> -x`: the two Gamma
+factors simply exchange places, so the pair is an even function of the principal-series
+spectral parameter.
 -/
 
 namespace GppSpectralGammaPair
@@ -26,6 +27,20 @@ open Complex
 noncomputable def gammaPair (a x : ℝ) : ℂ :=
   Complex.Gamma ((a : ℂ) + (x : ℂ) * I) *
     Complex.Gamma ((a : ℂ) - (x : ℂ) * I)
+
+/-- The conjugate Gamma pair is exactly even in the spectral height. -/
+theorem gammaPair_neg (a x : ℝ) : gammaPair a (-x) = gammaPair a x := by
+  unfold gammaPair
+  have hp : ((a : ℂ) + ((-x : ℝ) : ℂ) * I) =
+      ((a : ℂ) - (x : ℂ) * I) := by
+    push_cast
+    ring
+  have hm : ((a : ℂ) - ((-x : ℝ) : ℂ) * I) =
+      ((a : ℂ) + (x : ℂ) * I) := by
+    push_cast
+    ring
+  rw [hp, hm]
+  ring
 
 /-- The conjugate Gamma pair gains exactly the quadratic factor `a^2+x^2` under `a -> a+1`. -/
 theorem gammaPair_add_one {a : ℝ} (ha : 0 < a) (x : ℝ) :
@@ -70,5 +85,6 @@ theorem gammaPair_nat_succ (m : ℕ) (x : ℝ) :
 
 end GppSpectralGammaPair
 
+#print axioms GppSpectralGammaPair.gammaPair_neg
 #print axioms GppSpectralGammaPair.gammaPair_add_one
 #print axioms GppSpectralGammaPair.gammaPair_nat_succ
