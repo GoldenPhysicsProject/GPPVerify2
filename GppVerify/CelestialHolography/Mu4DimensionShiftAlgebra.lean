@@ -5,7 +5,7 @@ import Mathlib.Tactic
 
 Discovery2 identifies the scalar-integral relation
 `I4^(4-2ε)[mu^4] = -ε(1-ε) I4^(8-2ε)` and the universal raised-box
-pole `I4^(8-2ε) = 1/(6ε) + O(1)` in the stated normalization.
+pole residue `ε * I4^(8-2ε) -> 1/6` in the stated normalization.
 
 This file formalizes the exact algebraic cancellation underlying the finite `-1/6`
 limit. The analytic Feynman-integral residue itself is not encoded here.
@@ -24,6 +24,21 @@ theorem shiftFactor_mul_boxPole {ε : ℝ} (hε : ε ≠ 0) :
   field_simp [hε]
   ring
 
+/-- The dimension-shift product depends only on the *scaled* raised-box integral
+`ε * I`.  Consequently the analytic input needed for the finite rational term is
+the residue limit `ε * I(ε) -> 1/6`; a full Laurent estimate
+`I(ε) = 1/(6ε) + O(1)` is stronger than necessary for this cancellation. -/
+theorem shiftFactor_mul_eq_scaledResidue (ε I : ℝ) :
+    shiftFactor ε * I = -(1 - ε) * (ε * I) := by
+  unfold shiftFactor
+  ring
+
+/-- Pointwise version of the residue reduction: once `ε * I = r` is known, the
+whole dimension-shift product is exactly `-(1-ε) r`. -/
+theorem shiftFactor_mul_of_scaledIntegral {ε I r : ℝ} (h : ε * I = r) :
+    shiftFactor ε * I = -(1 - ε) * r := by
+  rw [shiftFactor_mul_eq_scaledResidue, h]
+
 /-- The finite residue tends algebraically to `-1/6`; at the exact endpoint this
 is simply the value of the regularized closed expression. -/
 theorem regularizedResidue_at_zero :
@@ -38,4 +53,6 @@ theorem regularizedResidue_error (ε : ℝ) :
 end GppMu4DimensionShift
 
 #print axioms GppMu4DimensionShift.shiftFactor_mul_boxPole
+#print axioms GppMu4DimensionShift.shiftFactor_mul_eq_scaledResidue
+#print axioms GppMu4DimensionShift.shiftFactor_mul_of_scaledIntegral
 #print axioms GppMu4DimensionShift.regularizedResidue_error
