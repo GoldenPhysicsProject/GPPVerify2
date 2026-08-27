@@ -27,14 +27,10 @@ theorem tendsto_specialRemainderMajorant_regulator
     exact (continuousAt_id.tendsto).mono_left inf_le_left
   have hρ : Tendsto (fun m : ℝ => m / U) (𝓝[>] 0) (𝓝 0) := by
     have h := hm.mul_const (1 / U)
-    apply h.congr'
-    filter_upwards with m
-    field_simp [hU.ne']
+    simpa [div_eq_mul_inv] using h
   have hη : Tendsto (fun m : ℝ => m / S) (𝓝[>] 0) (𝓝 0) := by
     have h := hm.mul_const (1 / S)
-    apply h.congr'
-    filter_upwards with m
-    field_simp [hS.ne']
+    simpa [div_eq_mul_inv] using h
   have hρ2 : Tendsto (fun m : ℝ => (m / U) ^ 2) (𝓝[>] 0) (𝓝 0) := by
     simpa using hρ.pow 2
   have hρ3 : Tendsto (fun m : ℝ => (m / U) ^ 3) (𝓝[>] 0) (𝓝 0) := by
@@ -44,10 +40,11 @@ theorem tendsto_specialRemainderMajorant_regulator
         (𝓝[>] 0) (𝓝 0) := by
     have hbase := tendsto_sq_mul_abs_log_div_const_nhdsGT_zero hU
     have h := hbase.const_mul (1 / U ^ 2)
-    apply h.congr'
-    filter_upwards with m
-    field_simp [hU.ne']
-    ring
+    convert h using 1
+    · funext m
+      field_simp [hU.ne']
+      ring
+    · norm_num
   have htail :
       Tendsto
         (fun m : ℝ =>
@@ -55,18 +52,17 @@ theorem tendsto_specialRemainderMajorant_regulator
             (|Real.log (m / U)| + (81 / 32 : ℝ) * (m / U)))
         (𝓝[>] 0) (𝓝 0) := by
     have h := hρ2log.add (hρ3.const_mul (81 / 32 : ℝ))
-    apply h.congr'
-    filter_upwards with m
-    ring
+    convert h using 1 <;> ring
   have htotal :=
     (hη.const_mul (48 / 19 : ℝ)).add
       ((hρ.const_mul (232 / 105 : ℝ)).add
         ((hρ2.const_mul ((648 / 289 : ℝ) + (9 / 8 : ℝ))).add
           (htail.const_mul (486 / 289 : ℝ))))
-  apply htotal.congr'
-  filter_upwards with m
-  unfold specialRemainderMajorant
-  ring
+  convert htotal using 1
+  · funext m
+    unfold specialRemainderMajorant
+    ring
+  · norm_num
 
 end GppScalarBoxSpecialRemainderVanishing
 
