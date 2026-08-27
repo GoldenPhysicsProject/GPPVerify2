@@ -58,8 +58,25 @@ middle dimension: it is literally an endomorphism of `Gr(2,4)`. -/
 theorem complement_is_self_map (K : Gr24) : complement K ∈ Set.univ := by
   trivial
 
+/-- **Grassmannian shadow.**  In the middle-dimensional twistor Grassmannian
+`Gr(2,4)`, the geometric shadow operation is the orthogonal-complement
+involution.  This name is the interface used by the celestial/twistor chain. -/
+noncomputable def shadow : Gr24 → Gr24 := complement
+
+@[simp] theorem shadow_eq_complement (K : Gr24) : shadow K = complement K := rfl
+
+/-- Shadow squares to the identity on the actual Grassmannian. -/
+@[simp] theorem shadow_involutive (K : Gr24) : shadow (shadow K) = K := by
+  exact complement_involutive K
+
+/-- The Grassmannian shadow is bijective, with itself as inverse. -/
+theorem shadow_bijective : Function.Bijective shadow := by
+  simpa [shadow] using complement_bijective
+
 end GppGrassmannianGr24
 
 #print axioms GppGrassmannianGr24.ambient_finrank
 #print axioms GppGrassmannianGr24.complement_involutive
 #print axioms GppGrassmannianGr24.complement_bijective
+#print axioms GppGrassmannianGr24.shadow_involutive
+#print axioms GppGrassmannianGr24.shadow_bijective
