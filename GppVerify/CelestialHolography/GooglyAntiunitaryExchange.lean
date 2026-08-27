@@ -30,6 +30,14 @@ def googlyExchange (v : Fin 6 → ℂ) : Fin 6 → ℂ
   | 4 => -Complex.conj (v 4)
   | 5 => -Complex.conj (v 5)
 
+/-- The googly exchange is conjugate-linear with respect to the common Plücker
+scale.  This is the key compatibility needed for projective descent: multiplying a
+bivector by `c` multiplies its googly image by `conj c`. -/
+theorem googlyExchange_smul (c : ℂ) (v : Fin 6 → ℂ) :
+    googlyExchange (c • v) = Complex.conj c • googlyExchange v := by
+  ext i
+  fin_cases i <;> simp [googlyExchange, Pi.smul_apply]
+
 /-- The googly exchange is an involution. -/
 theorem googlyExchange_involutive (v : Fin 6 → ℂ) :
     googlyExchange (googlyExchange v) = v := by
@@ -112,6 +120,7 @@ theorem googlyExchange_pluckerVector_quadric_zero (v1 v2 : Fin 4 → ℂ) :
 
 end GppGooglyAntiunitaryExchange
 
+#print axioms GppGooglyAntiunitaryExchange.googlyExchange_smul
 #print axioms GppGooglyAntiunitaryExchange.googlyExchange_involutive
 #print axioms GppGooglyAntiunitaryExchange.googlyExchange_normSq
 #print axioms GppGooglyAntiunitaryExchange.hodgeStar_googlyExchange_anticommute
