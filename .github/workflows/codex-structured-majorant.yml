@@ -42,6 +42,9 @@ jobs:
       - name: Structured physical scalar-box convergence
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxStructuredPhysicalConvergence
+      - name: Gamma residue at zero
+        if: always()
+        run: lake build GppVerify.CelestialHolography.GammaResidueAtZero
       - name: Raised-box residue assembly
         if: always()
         run: lake build GppVerify.CelestialHolography.RaisedBoxResidueAssembly
