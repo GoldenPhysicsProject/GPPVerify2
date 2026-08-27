@@ -95,7 +95,9 @@ theorem scaledTanh_tendsto_atBot :
     simpa using hcomp.neg
   have heq : (fun x : ℝ => -scaledTanh (-x)) = scaledTanh := by
     funext x
-    simp [scaledTanh]
+    rw [scaledTanh, scaledTanh]
+    rw [show Real.pi * (-x) = -(Real.pi * x) by ring, Real.tanh_neg]
+    ring
   rw [← heq]
   simpa only [neg_div] using hneg
 
