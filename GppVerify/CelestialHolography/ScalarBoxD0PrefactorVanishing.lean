@@ -44,16 +44,19 @@ theorem tendsto_mul_scalarBoxD0_nhdsGT_zero (S U : ℝ) :
   have hconst := hm.const_mul
     (Real.log U * Real.log S + (1 / 2 : ℝ) * (Real.log U) ^ 2 - Real.pi ^ 2 / 6)
   have h := (h1.add h2).add hconst
-  apply h.congr'
-  filter_upwards with m
-  unfold scalarBoxD0
-  ring
+  convert h using 1
+  · funext m
+    unfold scalarBoxD0
+    ring
+  · norm_num
 
 /-- Absolute-value form of the massless-core vanishing. -/
 theorem tendsto_mul_abs_scalarBoxD0_nhdsGT_zero (S U : ℝ) :
     Tendsto (fun m : ℝ => m * |scalarBoxD0 S U m|) (𝓝[>] 0) (𝓝 0) := by
-  have h := (tendsto_mul_scalarBoxD0_nhdsGT_zero S U).abs
-  apply h.congr'
+  have h0 :
+      Tendsto (fun m : ℝ => |m * scalarBoxD0 S U m|) (𝓝[>] 0) (𝓝 0) := by
+    simpa using (tendsto_mul_scalarBoxD0_nhdsGT_zero S U).abs
+  apply h0.congr'
   filter_upwards [self_mem_nhdsWithin] with m hm
   rw [abs_mul, abs_of_pos hm]
 
@@ -64,9 +67,13 @@ theorem tendsto_delta_half_mul_abs_scalarBoxD0_nhdsGT_zero
     Tendsto
       (fun m : ℝ => ((4 * m / U) / 2) * |scalarBoxD0 S U m|)
       (𝓝[>] 0) (𝓝 0) := by
-  have h := (tendsto_mul_abs_scalarBoxD0_nhdsGT_zero S U).const_mul (2 / U)
-  apply h.congr'
-  filter_upwards with m
+  have h0 := (tendsto_mul_abs_scalarBoxD0_nhdsGT_zero S U).const_mul (2 / U)
+  have h : Tendsto
+      (fun m : ℝ => (2 / U) * (m * |scalarBoxD0 S U m|))
+      (𝓝[>] 0) (𝓝 0) := by
+    simpa using h0
+  convert h using 1
+  funext m
   field_simp [hU.ne']
   ring
 
