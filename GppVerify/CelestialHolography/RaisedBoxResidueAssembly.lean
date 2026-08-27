@@ -1,33 +1,34 @@
 import GppVerify.CelestialHolography.Mu4DimensionShiftAlgebra
+import GppVerify.CelestialHolography.GammaResidueAtZero
 import Mathlib.Topology.Algebra.Order.Field
 import Mathlib.Tactic
 
 /-!
 # Raised-box residue assembly
 
-For the dimension-shifted four-dimensional scalar box, the only analytic input
-needed for the finite `mu^4` rational term is the scaled residue
+For the dimension-shifted four-dimensional scalar box, the only remaining analytic input
+needed for the finite `mu^4` rational term is the simplex moment
 
-  eps * I8(eps) -> 1/6.
-
-A Feynman-parameter derivation naturally factors the raised-dimensional integral as
-
-  I8(eps) = Gamma(eps) * simplexMoment(eps),
-
-with the two elementary limits
-
-  eps * Gamma(eps) -> 1,
   simplexMoment(eps) -> 1/6.
 
-This file formalizes that assembly and then feeds the resulting scaled residue into
-the already-proved `mu^4` dimension-shift limit.  The two analytic limits themselves
-remain separate targets; no Feynman-integral residue is assumed globally.
+A Feynman-parameter derivation factors the raised-dimensional integral as
+
+  I8(eps) = Gamma(eps) * simplexMoment(eps).
+
+`GammaResidueAtZero.lean` now proves the other formerly-open input
+
+  eps * Gamma(eps) -> 1
+
+on the punctured real neighborhood of zero.  This file keeps a generic assembly theorem
+and then specializes it to the genuine real Gamma factor.  No Feynman-parameter
+factorization or simplex dominated-convergence theorem is asserted here.
 -/
 
 namespace GppRaisedBoxResidueAssembly
 
-open Filter
+open Filter Set
 open GppMu4DimensionShift
+open GppGammaResidueAtZero
 
 /-- Product assembly for the scaled raised-box residue. -/
 theorem tendsto_scaledRaisedBox_of_gamma_simplex
@@ -56,6 +57,19 @@ theorem tendsto_scaledRaisedBox_of_factorization
   funext ε
   rw [hI ε]
 
+/-- **Real-Gamma specialization.** Once the actual raised box is represented as
+`Gamma(eps) * simplexMoment(eps)`, the Gamma-pole part is no longer a hypothesis:
+only the simplex-volume limit remains. -/
+theorem tendsto_scaledRaisedBox_realGamma_of_simplex
+    {I simplexMoment : ℝ → ℝ}
+    (hI : ∀ ε, I ε = Real.Gamma ε * simplexMoment ε)
+    (hsimplex : Tendsto simplexMoment
+      (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (1 / 6 : ℝ))) :
+    Tendsto (fun ε : ℝ => ε * I ε)
+      (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (1 / 6 : ℝ)) := by
+  exact tendsto_scaledRaisedBox_of_factorization hI
+    tendsto_mul_realGamma_zero hsimplex
+
 /-- **Complete algebraic route to the finite `mu^4` rational term.** Once the
 Feynman-parameter factorization, Gamma residue, and simplex-volume limit are
 available, the dimension-shifted product tends to `-1/6`. -/
@@ -69,8 +83,23 @@ theorem tendsto_mu4_rational_of_gamma_simplex
   apply tendsto_shiftFactor_mul_of_scaledResidue hε
   exact tendsto_scaledRaisedBox_of_factorization hI hgamma hsimplex
 
+/-- **Real-Gamma `mu^4` closure.** On the punctured real regulator neighborhood,
+the sole remaining analytic hypothesis is the simplex moment tending to `1/6`. -/
+theorem tendsto_mu4_rational_realGamma_of_simplex
+    {I simplexMoment : ℝ → ℝ}
+    (hI : ∀ ε, I ε = Real.Gamma ε * simplexMoment ε)
+    (hsimplex : Tendsto simplexMoment
+      (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (1 / 6 : ℝ))) :
+    Tendsto (fun ε : ℝ => shiftFactor ε * I ε)
+      (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (-(1 / 6 : ℝ))) := by
+  apply tendsto_shiftFactor_mul_of_scaledResidue
+    (tendsto_nhdsWithin_of_tendsto_nhds tendsto_id)
+  exact tendsto_scaledRaisedBox_realGamma_of_simplex hI hsimplex
+
 end GppRaisedBoxResidueAssembly
 
 #print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_of_gamma_simplex
 #print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_of_factorization
+#print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_realGamma_of_simplex
 #print axioms GppRaisedBoxResidueAssembly.tendsto_mu4_rational_of_gamma_simplex
+#print axioms GppRaisedBoxResidueAssembly.tendsto_mu4_rational_realGamma_of_simplex
