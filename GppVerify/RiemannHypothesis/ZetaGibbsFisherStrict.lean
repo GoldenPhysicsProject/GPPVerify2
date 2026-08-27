@@ -15,8 +15,10 @@ namespace GppZetaGibbsFisherStrict
 open Complex LSeries
 open GppGlobalVonMangoldt
 open GppZetaGibbsFisher
+open GppZetaGibbsMoments
 open GppZetaThirdCumulantStrict
 open GppVonMangoldtCumulantDerivativeBridge
+open GppVonMangoldtCumulantSummability
 open GppZetaFisherStrictMonotonicity
 open scoped LSeries.notation ArithmeticFunction Topology
 
