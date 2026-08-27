@@ -1,0 +1,65 @@
+import GppVerify.CelestialHolography.GrassmannianSelfDuality
+import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Tactic
+
+/-!
+# A genuine set-level model of Gr(2,4)
+
+We model `Gr(2,4)` as the type of two-dimensional complex linear subspaces of
+`C^4 = Fin 4 -> C`.  This is not yet the full complex manifold / compact
+homogeneous-space structure, but it is an actual Grassmannian object rather than
+a numerical surrogate.
+
+The orthogonal-complement map is then a genuine self-map of this type and an
+involution.  This is the precise geometric Z2 used by the later shadow/googly
+construction.
+-/
+
+namespace GppGrassmannianGr24
+
+open Module
+
+/-- Ambient twistor vector space `C^4`. -/
+abbrev Ambient := Fin 4 → ℂ
+
+/-- `Gr(2,4)` as the type of 2-dimensional complex subspaces of `C^4`. -/
+def Gr24 := {K : Submodule ℂ Ambient // finrank ℂ K = 2}
+
+/-- The ambient complex dimension is four. -/
+theorem ambient_finrank : finrank ℂ Ambient = 4 := by
+  simp [Ambient]
+
+/-- Orthogonal complement sends a point of `Gr(2,4)` to another point of
+`Gr(2,4)`. -/
+noncomputable def complement (K : Gr24) : Gr24 := by
+  refine ⟨K.1ᗮ, ?_⟩
+  have h := GppCelestialHolography.grassmannian_orthogonal_dim K.1
+  rw [K.2, ambient_finrank] at h
+  norm_num at h ⊢
+  exact h
+
+/-- Orthogonal complement is an involution on the actual `Gr24` type. -/
+theorem complement_involutive (K : Gr24) : complement (complement K) = K := by
+  apply Subtype.ext
+  exact GppCelestialHolography.grassmannian_orthogonal_involutive K.1
+
+/-- Hence the complement map is bijective. -/
+theorem complement_bijective : Function.Bijective complement := by
+  constructor
+  · intro A B h
+    have h' := congrArg complement h
+    simpa [complement_involutive] using h'
+  · intro K
+    refine ⟨complement K, ?_⟩
+    exact complement_involutive K
+
+/-- The complement operation has no need for an external dual Grassmannian in
+middle dimension: it is literally an endomorphism of `Gr(2,4)`. -/
+theorem complement_is_self_map (K : Gr24) : complement K ∈ Set.univ := by
+  trivial
+
+end GppGrassmannianGr24
+
+#print axioms GppGrassmannianGr24.ambient_finrank
+#print axioms GppGrassmannianGr24.complement_involutive
+#print axioms GppGrassmannianGr24.complement_bijective
