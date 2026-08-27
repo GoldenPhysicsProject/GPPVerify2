@@ -82,7 +82,7 @@ theorem hasDerivAt_logEnergyVariance
   have hcoef :
       (-(LSeries (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ))).re =
         -logEnergyThirdCumulant β := by
-    rw [map_neg]
+    simp only [Complex.neg_re]
     rw [logMul_logMul_vonMangoldt_re_eq_thirdCumulant hβ]
   rw [hcoef] at hr
   have heq :
