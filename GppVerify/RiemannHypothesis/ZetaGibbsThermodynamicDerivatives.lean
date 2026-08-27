@@ -105,6 +105,7 @@ theorem hasDerivAt_zetaLogPartition
       deriv riemannZeta (β : ℂ) = -(M1 β : ℂ) := by
     rw [deriv_riemannZeta_eq_neg_logMomentLSeries hs]
     rw [LSeries_logMul_one_eq_ofReal_firstMoment hβ]
+    simp [M1]
   have hpart : zetaPartition β = Z β := zetaPartition_eq_Z hβ
   have hmean : zetaMeanEnergy β = M1 β / Z β := zetaMeanEnergy_eq_M1_div_Z hβ
   have hcoef :
