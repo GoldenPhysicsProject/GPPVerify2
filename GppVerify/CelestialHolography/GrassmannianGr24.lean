@@ -6,9 +6,9 @@ import Mathlib.Tactic
 # A genuine set-level model of Gr(2,4)
 
 We model `Gr(2,4)` as the type of two-dimensional complex linear subspaces of
-`C^4 = Fin 4 -> C`.  This is not yet the full complex manifold / compact
-homogeneous-space structure, but it is an actual Grassmannian object rather than
-a numerical surrogate.
+the standard Hermitian Euclidean space `C^4 = EuclideanSpace C (Fin 4)`.
+This is not yet the full complex manifold / compact homogeneous-space structure,
+but it is an actual Grassmannian object rather than a numerical surrogate.
 
 The orthogonal-complement map is then a genuine self-map of this type and an
 involution.  This is the precise geometric Z2 used by the later shadow/googly
@@ -19,8 +19,11 @@ namespace GppGrassmannianGr24
 
 open Module
 
-/-- Ambient twistor vector space `C^4`. -/
-abbrev Ambient := Fin 4 → ℂ
+/-- Ambient twistor vector space `C^4`, equipped with its standard Hermitian
+`L^2` inner product.  Using `EuclideanSpace` rather than the raw function type
+is essential: the raw `Fin 4 → C` type carries the sup norm, while orthogonal
+complement requires the compatible Hilbert-space norm. -/
+abbrev Ambient := EuclideanSpace ℂ (Fin 4)
 
 /-- `Gr(2,4)` as the type of 2-dimensional complex subspaces of `C^4`. -/
 def Gr24 := {K : Submodule ℂ Ambient // finrank ℂ K = 2}
