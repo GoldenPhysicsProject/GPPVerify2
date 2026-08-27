@@ -57,7 +57,8 @@ theorem log_cosh_eq_abs_sub_log_two_add_remainder (y : ℝ) :
 theorem logCoshRemainder_nonneg (y : ℝ) : 0 ≤ logCoshRemainder y := by
   unfold logCoshRemainder
   apply Real.log_nonneg
-  positivity
+  have hexp : 0 ≤ Real.exp (-2 * |y|) := (Real.exp_pos _).le
+  linarith
 
 /-- The correction is bounded by its exponentially small argument. -/
 theorem logCoshRemainder_le_exp (y : ℝ) :
