@@ -24,8 +24,12 @@ theorem natCast_neg_cpow_re
   rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hn)]
   have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) :=
     Complex.natCast_log.symm
+  rw [hlog]
   rw [Complex.exp_re]
-  simp [hlog, Real.cos_neg]
+  change
+    Real.exp (-a * Real.log n) * Real.cos (-t * Real.log n) =
+      Real.exp (-Real.log n * a) * Real.cos (Real.log n * t)
+  rw [Real.cos_neg]
   ring_nf
 
 /-- Each nonzero-index von-Mangoldt term has the expected cosine real part. -/
