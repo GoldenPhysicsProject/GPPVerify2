@@ -42,6 +42,7 @@ theorem plucker_sl2_invariant
     (v1 v2 : Fin 4 → ℂ) (i j : Fin 4) :
     let w := frameChange a b c d v1 v2
     plucker w.1 w.2 i j = plucker v1 v2 i j := by
+  dsimp only
   rw [plucker_frameChange]
   simp [hdet]
 
@@ -95,10 +96,10 @@ theorem googlyExchange_preserves_projective_equivalence
     {v w : Fin 6 → ℂ} (h : ProjectivelyEquivalent v w) :
     ProjectivelyEquivalent (googlyExchange v) (googlyExchange w) := by
   rcases h with ⟨c, hc, rfl⟩
-  refine ⟨Complex.conj c, ?_, ?_⟩
+  refine ⟨star c, ?_, ?_⟩
   · intro hz
     apply hc
-    have hz' := congrArg Complex.conj hz
+    have hz' := congrArg star hz
     simpa using hz'
   · exact googlyExchange_smul c v
 
