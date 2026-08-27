@@ -38,7 +38,8 @@ theorem B_eq_unit_centered
       ((1 + δ) * poleD2 x * poleD3 R * (1 - η)) := by
   rw [hB]
   unfold poleN poleD2 poleD3
-  ring_nf
+  simp only [div_eq_mul_inv, mul_inv]
+  ring
 
 /-- If `R²=1/(1+δ)` and `0≤R≤1`, then the endpoint defect satisfies
 `1-R≤δ/2`. -/
@@ -130,15 +131,17 @@ theorem abs_log_poleD2_le
   have hdef : 1 - poleD2 x ≤ (8 / 31 : ℝ) * (δ * η) := by
     unfold poleD2
     nlinarith
+  have hscaled :
+      (32 / 31 : ℝ) * (1 - poleD2 x) ≤
+        (32 / 31 : ℝ) * ((8 / 31 : ℝ) * (δ * η)) :=
+    mul_le_mul_of_nonneg_left hdef (by norm_num)
   calc
     |Real.log (poleD2 x)| ≤ (1 - poleD2 x) / (31 / 32 : ℝ) := hlog
+    _ = (32 / 31 : ℝ) * (1 - poleD2 x) := by ring
+    _ ≤ (32 / 31 : ℝ) * ((8 / 31 : ℝ) * (δ * η)) := hscaled
     _ ≤ (1 / 3 : ℝ) * (δ * η) := by
-      have hnon : (0 : ℝ) ≤ 32 / 31 := by norm_num
-      have hm := mul_le_mul_of_nonneg_left hdef hnon
-      convert hm using 1 <;> ring_nf
-      · norm_num
-      · have hp : 0 ≤ δ * η := mul_nonneg hδ0 hη0
-        nlinarith
+      have hp : 0 ≤ δ * η := mul_nonneg hδ0 hη0
+      nlinarith
 
 /-- The endpoint factor `D₃` contributes at most `(9/34)δ`. -/
 theorem abs_log_poleD3_le
