@@ -35,6 +35,8 @@ jobs:
         run: lake exe cache get
       - name: Zeta Gibbs second-to-third cumulant derivative
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsCumulantDerivative
+      - name: Zeta Gibbs fourth cumulant
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsFourthCumulant
       - name: Zeta Gibbs differential entropy law
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsEntropyDerivative
       - name: Zeta Gibbs differential Legendre law
