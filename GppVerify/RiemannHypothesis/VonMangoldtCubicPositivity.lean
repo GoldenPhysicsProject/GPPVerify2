@@ -1,6 +1,5 @@
 import GppVerify.RiemannHypothesis.VonMangoldtCumulantSummability
 import GppVerify.RiemannHypothesis.VonMangoldtCosineBridge
-import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 import Mathlib.Tactic
 
 /-!
