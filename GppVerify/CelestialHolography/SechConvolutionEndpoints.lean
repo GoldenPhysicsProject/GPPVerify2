@@ -163,7 +163,7 @@ theorem hasDerivAt_neg_logCoshDifference_neg (lam x : ℝ) :
       (Real.pi * Real.sinh (Real.pi * lam) /
         (Real.cosh (Real.pi * (-x)) * Real.cosh (Real.pi * (lam - (-x))))) x := by
   have hcomp := HasDerivAt.scomp x (hasDerivAt_logCoshDifference lam (-x)) (hasDerivAt_neg' x)
-  convert hcomp.neg using 1 <;> ring
+  simpa [Function.comp_def] using hcomp.neg
 
 /-- The reflected primitive has the same `+∞` limit `pi*lambda` as the original
 primitive. -/
