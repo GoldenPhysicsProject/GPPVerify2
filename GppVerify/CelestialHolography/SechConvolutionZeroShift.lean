@@ -78,16 +78,26 @@ theorem hasDerivAt_scaledTanh (x : ℝ) :
 /-- Right endpoint of the scaled primitive. -/
 theorem scaledTanh_tendsto_atTop :
     Tendsto scaledTanh atTop (nhds (1 / Real.pi)) := by
-  have h := tendsto_tanh_atTop.div
+  have hpi : Tendsto (fun x : ℝ => Real.pi * x) atTop atTop :=
+    Tendsto.const_mul_atTop Real.pi_pos tendsto_id
+  have ht : Tendsto (fun x : ℝ => Real.tanh (Real.pi * x)) atTop (nhds 1) :=
+    tendsto_tanh_atTop.comp hpi
+  have h := ht.div
     (tendsto_const_nhds (x := Real.pi) (f := (atTop : Filter ℝ))) Real.pi_ne_zero
   simpa [scaledTanh] using h
 
 /-- Left endpoint of the scaled primitive. -/
 theorem scaledTanh_tendsto_atBot :
     Tendsto scaledTanh atBot (nhds (-1 / Real.pi)) := by
-  have h := tendsto_tanh_atBot.div
-    (tendsto_const_nhds (x := Real.pi) (f := (atBot : Filter ℝ))) Real.pi_ne_zero
-  simpa [scaledTanh] using h
+  have hcomp := scaledTanh_tendsto_atTop.comp tendsto_neg_atBot_atTop
+  have hneg : Tendsto (fun x : ℝ => -scaledTanh (-x)) atBot
+      (nhds (-(1 / Real.pi))) := by
+    simpa using hcomp.neg
+  have heq : (fun x : ℝ => -scaledTanh (-x)) = scaledTanh := by
+    funext x
+    simp [scaledTanh]
+  rw [← heq]
+  simpa only [neg_div] using hneg
 
 /-- The zero-shift kernel is integrable on the whole line. -/
 theorem integrable_zero_shift_kernel :
@@ -128,11 +138,10 @@ theorem integral_sech_convolution_zero :
       1 / (Real.cosh (Real.pi * x) *
         Real.cosh (Real.pi * ((0 : ℝ) - x)))) = 2 / Real.pi := by
   convert integral_zero_shift_kernel_eq_two_div_pi using 1
-  · apply MeasureTheory.integral_congr_ae
-    filter_upwards [] with x
-    rw [Real.cosh_neg]
-    ring_nf
-  · rfl
+  apply MeasureTheory.integral_congr_ae
+  filter_upwards [] with x
+  rw [show Real.pi * ((0 : ℝ) - x) = -(Real.pi * x) by ring,
+    Real.cosh_neg, pow_two]
 
 /-- **All-real Wiener-Hopf normalization.**  The exact sech self-convolution is
 `(2/pi) * extendedWienerHopfWeight lambda`, including the removable origin. -/
@@ -145,7 +154,7 @@ theorem integral_sech_convolution_eq_extended_weight (lam : ℝ) :
     rw [integral_sech_convolution_zero, extendedWienerHopfWeight_zero]
     ring
   · rw [GppSechConvolutionWienerHopf.integral_sech_convolution_eq_wienerHopfWeight hlam,
-      extendedWienerHopfWeight_eq_of_ne_zero hlam]
+      extendedWienerHopfWeight_eq hlam]
 
 end GppSechConvolutionZeroShift
 
