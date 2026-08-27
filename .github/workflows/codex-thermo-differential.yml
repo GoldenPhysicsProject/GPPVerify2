@@ -37,3 +37,5 @@ jobs:
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsEntropyDerivative
       - name: Zeta Gibbs differential Legendre law
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsLegendreDifferential
+      - name: Zeta Gibbs second-to-third cumulant derivative
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsCumulantDerivative
