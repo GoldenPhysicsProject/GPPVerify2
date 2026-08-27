@@ -38,4 +38,11 @@ jobs:
       - name: Wiener-Hopf normalization of sech convolution
         run: lake build GppVerify.CelestialHolography.SechConvolutionWienerHopf
       - name: Zero-shift and all-real sech convolution normalization
-        run: lake build GppVerify.CelestialHolography.SechConvolutionZeroShift
+        run: set -o pipefail && lake build GppVerify.CelestialHolography.SechConvolutionZeroShift 2>&1 | tee /tmp/sech-zero.log
+      - name: Upload zero-shift diagnostic
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: sech-zero-diagnostic
+          path: /tmp/sech-zero.log
+          if-no-files-found: error
