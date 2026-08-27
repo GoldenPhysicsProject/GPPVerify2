@@ -43,11 +43,11 @@ theorem logMul_logMul_term_re_eq_cubicSummand
   · rw [LSeries.term_of_ne_zero hn]
     rw [div_eq_mul_inv, ← Complex.cpow_neg]
     rw [Complex.mul_re]
+    simp only [LSeries.logMul, vonMangoldtComplex]
     have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) :=
       Complex.natCast_log.symm
     rw [hlog]
-    simp only [LSeries.logMul, vonMangoldtComplex,
-      Complex.ofReal_re, Complex.ofReal_im, zero_mul, mul_zero,
+    simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, mul_zero,
       sub_zero, zero_pow, pow_two]
     rw [natCast_neg_cpow_re n hn β 0]
     simp only [mul_zero, Real.cos_zero, mul_one, cubicSummand]
