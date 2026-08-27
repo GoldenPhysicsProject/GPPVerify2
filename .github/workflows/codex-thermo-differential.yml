@@ -34,6 +34,6 @@ jobs:
       - name: Get Mathlib cache
         run: lake exe cache get
       - name: Zeta Gibbs differential entropy law
-        run: lake env lean GppVerify/RiemannHypothesis/ZetaGibbsEntropyDerivative.lean
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsEntropyDerivative
       - name: Zeta Gibbs differential Legendre law
-        run: lake env lean GppVerify/RiemannHypothesis/ZetaGibbsLegendreDifferential.lean
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsLegendreDifferential
