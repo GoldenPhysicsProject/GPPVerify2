@@ -125,7 +125,21 @@ theorem continuous_scaled_sech_kernel (lam : ℝ) :
     Continuous (fun x : ℝ =>
       Real.pi * Real.sinh (Real.pi * lam) /
         (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x)))) := by
-  fun_prop
+  have hx : Continuous (fun x : ℝ => Real.pi * x) :=
+    continuous_const.mul continuous_id
+  have hshift : Continuous (fun x : ℝ => Real.pi * (lam - x)) :=
+    continuous_const.mul (continuous_const.sub continuous_id)
+  have hc1 : Continuous (fun x : ℝ => Real.cosh (Real.pi * x)) :=
+    Real.continuous_cosh.comp hx
+  have hc2 : Continuous (fun x : ℝ => Real.cosh (Real.pi * (lam - x))) :=
+    Real.continuous_cosh.comp hshift
+  have hden : Continuous (fun x : ℝ =>
+      Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x))) := hc1.mul hc2
+  have hne : ∀ x : ℝ,
+      Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x)) ≠ 0 := by
+    intro x
+    exact mul_ne_zero (Real.cosh_pos _).ne' (Real.cosh_pos _).ne'
+  exact continuous_const.div hden hne
 
 /-- **Finite-interval shifted sech convolution identity.**  Before any
 improper-limit passage, the scaled kernel integrates exactly to the jump of the
