@@ -14,8 +14,8 @@ The exact normalization ratio combines with the Gamma-pair recurrence to give
   rhoGamma (k+1) x
     = 2 ((k+1)^2+x^2)/((k+1)(2k+3)) * rhoGamma k x.
 
-This is the Lean algebraic spine of the discovery-level convolution hierarchy.
-No Fourier-transform or normalization integral is assumed here.
+The conjugate Gamma-pair symmetry also makes every normalized chamber weight exactly
+even under `x -> -x`.
 -/
 
 namespace GppSpectralRho
@@ -28,6 +28,13 @@ noncomputable def rhoGamma (k : ℕ) (x : ℝ) : ℂ :=
   (((2 : ℝ) ^ (2 * k + 1) /
       (Real.pi * ((2 * k + 1).factorial : ℝ)) : ℝ) : ℂ) *
     gammaPair ((k : ℝ) + 1) x
+
+/-- Every normalized Gamma/Mehler--Fock chamber weight is exactly even in the
+principal-series spectral parameter. -/
+theorem rhoGamma_neg (k : ℕ) (x : ℝ) :
+    rhoGamma k (-x) = rhoGamma k x := by
+  unfold rhoGamma
+  rw [gammaPair_neg]
 
 /-- Exact one-step normalized recurrence for the Gamma-family spectral weights. -/
 theorem rhoGamma_succ (k : ℕ) (x : ℝ) :
@@ -58,4 +65,5 @@ theorem rhoGamma_succ (k : ℕ) (x : ℝ) :
 
 end GppSpectralRho
 
+#print axioms GppSpectralRho.rhoGamma_neg
 #print axioms GppSpectralRho.rhoGamma_succ
