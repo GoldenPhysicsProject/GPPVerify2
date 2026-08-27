@@ -116,7 +116,6 @@ theorem cosine_frequency_positiveType (freq : ℝ) :
     rw [mul_sub, Real.cos_sub]
     ring
   simp_rw [hsplit, Finset.sum_add_distrib]
-  rw [Finset.sum_add_distrib]
   exact add_nonneg
     (gram_square_nonneg c (fun i => Real.cos (freq * x i)))
     (gram_square_nonneg c (fun i => Real.sin (freq * x i)))
