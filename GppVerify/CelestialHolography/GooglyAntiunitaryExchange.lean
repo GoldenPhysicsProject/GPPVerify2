@@ -67,6 +67,49 @@ theorem googlyExchange_antiSelfDual_to_selfDual
   ext i
   fin_cases i <;> simp [googlyExchange]
 
+/-- The Plücker quadratic form in the basis
+`(p01,p02,p03,p12,p13,p23)`.  Its zero locus is the affine cone over the
+Plücker quadric containing the decomposable bivectors of `Gr(2,4)`. -/
+def pluckerQuadric (v : Fin 6 → ℂ) : ℂ :=
+  v 0 * v 5 - v 1 * v 4 + v 2 * v 3
+
+/-- Orientation-reversing conjugation sends the Plücker quadratic form to the
+negative complex conjugate of itself.  In particular its zero locus is preserved. -/
+theorem googlyExchange_pluckerQuadric (v : Fin 6 → ℂ) :
+    pluckerQuadric (googlyExchange v) = -Complex.conj (pluckerQuadric v) := by
+  simp [pluckerQuadric, googlyExchange]
+  ring
+
+/-- Hence the antiunitary googly exchange preserves the Plücker quadric. -/
+theorem googlyExchange_preserves_plucker_quadric
+    {v : Fin 6 → ℂ} (hv : pluckerQuadric v = 0) :
+    pluckerQuadric (googlyExchange v) = 0 := by
+  rw [googlyExchange_pluckerQuadric, hv]
+  simp
+
+/-- Plücker coordinates of an actual two-frame, packaged in the same six-coordinate
+basis used by `hodgeStar` and `googlyExchange`. -/
+def pluckerVector (v1 v2 : Fin 4 → ℂ) : Fin 6 → ℂ
+  | 0 => plucker v1 v2 0 1
+  | 1 => plucker v1 v2 0 2
+  | 2 => plucker v1 v2 0 3
+  | 3 => plucker v1 v2 1 2
+  | 4 => plucker v1 v2 1 3
+  | 5 => plucker v1 v2 2 3
+
+/-- Every actual two-frame lands on the Plücker quadric. -/
+theorem pluckerVector_quadric_zero (v1 v2 : Fin 4 → ℂ) :
+    pluckerQuadric (pluckerVector v1 v2) = 0 := by
+  simpa [pluckerQuadric, pluckerVector] using plucker_relation v1 v2
+
+/-- **Googly exchange preserves decomposability at the Plücker-polynomial level.**
+For every actual two-frame in `ℂ⁴`, its antiunitary orientation-reversed conjugate
+still lies on the Plücker quadric.  This is the exact algebraic bridge needed before
+constructing the corresponding map on projective `Gr(2,4)` itself. -/
+theorem googlyExchange_pluckerVector_quadric_zero (v1 v2 : Fin 4 → ℂ) :
+    pluckerQuadric (googlyExchange (pluckerVector v1 v2)) = 0 := by
+  exact googlyExchange_preserves_plucker_quadric (pluckerVector_quadric_zero v1 v2)
+
 end GppGooglyAntiunitaryExchange
 
 #print axioms GppGooglyAntiunitaryExchange.googlyExchange_involutive
@@ -74,3 +117,7 @@ end GppGooglyAntiunitaryExchange
 #print axioms GppGooglyAntiunitaryExchange.hodgeStar_googlyExchange_anticommute
 #print axioms GppGooglyAntiunitaryExchange.googlyExchange_selfDual_to_antiSelfDual
 #print axioms GppGooglyAntiunitaryExchange.googlyExchange_antiSelfDual_to_selfDual
+#print axioms GppGooglyAntiunitaryExchange.googlyExchange_pluckerQuadric
+#print axioms GppGooglyAntiunitaryExchange.googlyExchange_preserves_plucker_quadric
+#print axioms GppGooglyAntiunitaryExchange.pluckerVector_quadric_zero
+#print axioms GppGooglyAntiunitaryExchange.googlyExchange_pluckerVector_quadric_zero
