@@ -45,11 +45,17 @@ theorem integral_sech_convolution_eq
   have hscaled' : c * (∫ x : ℝ, f x) = 2 * Real.pi * lam := by
     rw [← hfactor]
     simpa [c, f, div_eq_mul_inv, mul_assoc] using hscaled
-  have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
-  dsimp [f] at hscaled' ⊢
-  dsimp [c] at hscaled'
-  field_simp [hsinh, hpi] at hscaled' ⊢
-  nlinarith [hscaled']
+  have hcancelpi :
+      Real.sinh (Real.pi * lam) * (∫ x : ℝ, f x) = 2 * lam := by
+    apply mul_left_cancel₀ Real.pi_ne_zero
+    calc
+      Real.pi * (Real.sinh (Real.pi * lam) * (∫ x : ℝ, f x)) =
+          c * (∫ x : ℝ, f x) := by simp [c, mul_assoc]
+      _ = 2 * Real.pi * lam := hscaled'
+      _ = Real.pi * (2 * lam) := by ring
+  apply (eq_div_iff hsinh).2
+  dsimp [f] at hcancelpi ⊢
+  simpa [mul_comm] using hcancelpi
 
 end GppSechConvolutionClosedForm
 
