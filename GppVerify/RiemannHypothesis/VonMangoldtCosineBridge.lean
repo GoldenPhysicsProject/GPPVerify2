@@ -29,18 +29,19 @@ theorem natCast_neg_cpow_re
   have hre :
       (((Real.log n : ℂ) * -((a : ℂ) + (t : ℂ) * Complex.I)).re) =
         -Real.log n * a := by
-    change Real.log n * (-a) - 0 * (-t) = -Real.log n * a
+    rw [Complex.mul_re]
+    norm_num
     ring
   have him :
       (((Real.log n : ℂ) * -((a : ℂ) + (t : ℂ) * Complex.I)).im) =
         -Real.log n * t := by
-    change Real.log n * (-t) + 0 * (-a) = -Real.log n * t
+    rw [Complex.mul_im]
+    norm_num
     ring
   rw [hre, him]
   have hcos : Real.cos (-Real.log n * t) = Real.cos (Real.log n * t) := by
     rw [show -Real.log n * t = -(Real.log n * t) by ring, Real.cos_neg]
   rw [hcos]
-  ring_nf
 
 /-- Each nonzero-index von-Mangoldt term has the expected cosine real part. -/
 theorem vonMangoldt_term_re_eq_exp_cos
