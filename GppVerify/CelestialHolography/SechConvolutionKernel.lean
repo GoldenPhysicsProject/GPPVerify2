@@ -39,32 +39,32 @@ theorem reciprocal_cosh_product_eq_tanh_sum_div
 /-- Specialized kernel identity for `A = pi*x`, `B = pi*(lambda-x)`.
 It is the algebraic heart of the elementary self-convolution proof. -/
 theorem pi_shift_kernel_identity
-    (x λ : ℝ)
+    (x lam : ℝ)
     (hx : Real.cosh (Real.pi * x) ≠ 0)
-    (hshift : Real.cosh (Real.pi * (λ - x)) ≠ 0) :
+    (hshift : Real.cosh (Real.pi * (lam - x)) ≠ 0) :
     Real.sinh (Real.pi * x) / Real.cosh (Real.pi * x) +
-      Real.sinh (Real.pi * (λ - x)) / Real.cosh (Real.pi * (λ - x)) =
-      Real.sinh (Real.pi * λ) /
-        (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (λ - x))) := by
+      Real.sinh (Real.pi * (lam - x)) / Real.cosh (Real.pi * (lam - x)) =
+      Real.sinh (Real.pi * lam) /
+        (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x))) := by
   have h := reciprocal_cosh_product_identity
-    (Real.pi * x) (Real.pi * (λ - x)) hx hshift
+    (Real.pi * x) (Real.pi * (lam - x)) hx hshift
   convert h using 1 <;> ring
 
 /-- Derivative-ready specialized solved form.  For `lambda != 0`, the convolution
 integrand is exactly a sum of two tanh kernels divided by `sinh(pi*lambda)`. -/
 theorem pi_shift_reciprocal_product_eq_tanh_sum_div
-    (x λ : ℝ) (hλ : λ ≠ 0) :
-    1 / (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (λ - x))) =
+    (x lam : ℝ) (hlam : lam ≠ 0) :
+    1 / (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x))) =
       (Real.sinh (Real.pi * x) / Real.cosh (Real.pi * x) +
-        Real.sinh (Real.pi * (λ - x)) / Real.cosh (Real.pi * (λ - x))) /
-        Real.sinh (Real.pi * λ) := by
+        Real.sinh (Real.pi * (lam - x)) / Real.cosh (Real.pi * (lam - x))) /
+        Real.sinh (Real.pi * lam) := by
   have hx : Real.cosh (Real.pi * x) ≠ 0 := ne_of_gt (Real.cosh_pos _)
-  have hshift : Real.cosh (Real.pi * (λ - x)) ≠ 0 := ne_of_gt (Real.cosh_pos _)
-  have hpiλ : Real.pi * λ ≠ 0 := mul_ne_zero Real.pi_ne_zero hλ
-  have hsinh : Real.sinh (Real.pi * λ) ≠ 0 :=
-    (Real.sinh_ne_zero).2 hpiλ
+  have hshift : Real.cosh (Real.pi * (lam - x)) ≠ 0 := ne_of_gt (Real.cosh_pos _)
+  have hpilam : Real.pi * lam ≠ 0 := mul_ne_zero Real.pi_ne_zero hlam
+  have hsinh : Real.sinh (Real.pi * lam) ≠ 0 :=
+    (Real.sinh_ne_zero).2 hpilam
   have h := reciprocal_cosh_product_eq_tanh_sum_div
-    (Real.pi * x) (Real.pi * (λ - x)) hx hshift (by
+    (Real.pi * x) (Real.pi * (lam - x)) hx hshift (by
       convert hsinh using 1 <;> ring)
   convert h using 1 <;> ring
 
