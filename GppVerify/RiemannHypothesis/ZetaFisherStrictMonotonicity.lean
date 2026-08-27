@@ -39,8 +39,15 @@ theorem logMul_term_re_eq_fisherSummand (n : ℕ) (β : ℝ) :
   · rw [LSeries.term_of_ne_zero hn]
     rw [div_eq_mul_inv, ← Complex.cpow_neg]
     rw [Complex.mul_re]
-    simp [LSeries.logMul, vonMangoldtComplex, Complex.natCast_log,
-      natCast_neg_cpow_re n hn β 0, fisherSummand]
+    simp only [LSeries.logMul, vonMangoldtComplex]
+    have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) := Complex.natCast_log.symm
+    rw [hlog]
+    simp only [Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+      zero_mul, mul_zero, add_zero, sub_zero]
+    have hpow := natCast_neg_cpow_re n hn β 0
+    simp only [mul_zero, add_zero, Real.cos_zero, mul_one] at hpow
+    rw [hpow]
+    unfold fisherSummand
     ring
 
 /-- Absolute convergence of the arithmetic Fisher series for `β>1`. -/
@@ -61,7 +68,9 @@ theorem fisherSummand_nonneg (β : ℝ) (n : ℕ) : 0 ≤ fisherSummand β n := 
     rcases n with _ | n
     · simp
     · exact Real.log_nonneg (by exact_mod_cast Nat.succ_le_succ (Nat.zero_le n))
-  positivity
+  exact mul_nonneg
+    (mul_nonneg ArithmeticFunction.vonMangoldt_nonneg hlog)
+    (Real.exp_pos _).le
 
 /-- Raising inverse temperature weakly decreases each arithmetic Fisher mode. -/
 theorem fisherSummand_antitone_pair
@@ -88,7 +97,7 @@ theorem fisherSummand_two_strict
   have hexp : Real.exp (-Real.log 2 * γ) < Real.exp (-Real.log 2 * β) := by
     apply Real.exp_lt_exp.mpr
     nlinarith
-  positivity
+  exact mul_lt_mul_of_pos_left hexp (mul_pos hlog hlog)
 
 /-- **Strict arithmetic Fisher monotonicity**. -/
 theorem fisher_tsum_strictAnti
@@ -111,6 +120,9 @@ theorem logMul_vonMangoldt_re_eq_fisher_tsum
   have hs := summable_logMul_vonMangoldt hβ
   change Summable
     (fun n : ℕ => LSeries.term (LSeries.logMul vonMangoldtComplex) (β : ℂ) n) at hs
+  change Complex.reCLM
+      (∑' n : ℕ, LSeries.term (LSeries.logMul vonMangoldtComplex) (β : ℂ) n) =
+    ∑' n : ℕ, fisherSummand β n
   rw [Complex.reCLM.map_tsum hs]
   apply tsum_congr
   intro n
