@@ -37,6 +37,8 @@ jobs:
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsCumulantDerivative
       - name: Zeta Gibbs fourth cumulant
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsFourthCumulant
+      - name: Abstract cumulant differential algebra
+        run: lake build GppVerify.RiemannHypothesis.GibbsCumulantDifferentialAlgebra
       - name: Quartic von Mangoldt positivity
         run: lake build GppVerify.RiemannHypothesis.VonMangoldtQuarticPositivity
       - name: Strict third Gibbs cumulant derivative
