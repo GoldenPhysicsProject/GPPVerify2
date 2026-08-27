@@ -1,109 +1,103 @@
+import GppVerify.CelestialHolography.CelestialShadowHelicity
 import Mathlib.Topology.Algebra.Module.Basic
 import Mathlib.Data.Nat.Choose.Basic
 
 /-!
-# Twistor Theory and the Googly Problem Resolution
+# Twistor Theory and the Googly Problem
 
-Source: twistor_googly_dtoupin_v81.tex
-"Twistor Theory and the Resolution of the Googly Problem via Haar Measure Self-Duality on Gr(2,4)"
+Source: twistor_googly_dtoupin_v81.tex and later focused twistor/shadow papers.
 
-## Key results
-
-### Proved clean (pure algebra/combinatorics):
-- Plücker embedding rank: ∧²ℂ⁴ has rank 6
-- Betti numbers of Gr(2,4): (1,0,1,0,2,0,1,0,1)
-- Schubert cell count: 6 cells
-
-### Axioms (twistor geometry not in Mathlib 4.19.0):
-- Penrose-Ward correspondence
-- Googly cohomology H¹(PT, O(-4))
-- ASD/SD sector decomposition
-- T-image identification: SD = T(ASD)
+The representation-theoretic shadow/helicity bridge is now proved below by importing
+`CelestialShadowHelicity`.  The genuinely twistor-geometric Penrose--Ward and sheaf
+cohomology identifications remain explicit infrastructure gaps rather than being
+mistaken for consequences of elementary algebra.
 -/
 
 namespace GppTwistorGoogly
 
 /-! ## Basic dimension counts (proved) -/
 
-/-- ∧²ℂ⁴ has dimension 6 = C(4,2) -/
+/-- ∧²ℂ⁴ has dimension 6 = C(4,2). -/
 theorem exterior_two_dim : Nat.choose 4 2 = 6 := by native_decide
 
-/-- Grassmannian Gr(2,4) has complex dimension 2*(4-2) = 4 -/
+/-- Grassmannian Gr(2,4) has complex dimension 2*(4-2) = 4. -/
 theorem gr24_complex_dim : 2 * (4 - 2) = (4 : ℕ) := by norm_num
 
-/-- The Grassmannian Gr(2,4) lives in P⁵ = P(∧²ℂ⁴) -/
+/-- The Grassmannian Gr(2,4) lives in P⁵ = P(∧²ℂ⁴). -/
 theorem plucker_ambient_dim : Nat.choose 4 2 - 1 = 5 := by native_decide
 
-/-- Schubert cell count: C(4,2) = 6 Schubert cells in Gr(2,4) -/
+/-- Schubert cell count: C(4,2) = 6 Schubert cells in Gr(2,4). -/
 theorem schubert_cell_count : Nat.choose 4 2 = 6 := by native_decide
 
-/-- Schubert cell dimensions: 0+1+2+2+3+4 = 12 (equals complex dimension × something) -/
+/-- Schubert cell dimensions sum to 12. -/
 theorem schubert_dim_sum : 0 + 1 + 2 + 2 + 3 + 4 = (12 : ℕ) := by norm_num
 
-/-! ## Twistor geometry axioms -/
+/-! ## Twistor geometry still to be formalized -/
 
-/-- Penrose correspondence: non-null twistors ↔ lines in P³ (twistor lines = null rays) -/
+/-- Penrose correspondence placeholder.  The needed projective/holomorphic geometry
+is not yet constructed in this repository. -/
 theorem penrose_correspondence : True := trivial
--- SOURCE: twistor_googly_dtoupin_v81.tex, thm:penrose-correspondence
--- MATHLIB GAP: Complex manifold theory / projective spaces over ℂ not formalized
--- to the level needed for the Penrose-Ward transform.
 
-/-- Penrose-Ward transform: instantons on S⁴ ↔ holomorphic bundles on CP³ -/
+/-- Penrose--Ward transform placeholder. -/
 theorem penrose_ward_transform : True := trivial
--- SOURCE: twistor_googly_dtoupin_v81.tex
--- MATHLIB GAP: Holomorphic vector bundles, Yang-Mills instantons not in Mathlib.
 
-/-- ASD sector: H¹(PT, O(-4)) = space of ASD Yang-Mills fields -/
+/-- ASD twistor-cohomology identification placeholder. -/
 theorem asd_cohomology : True := trivial
--- SOURCE: twistor_googly_dtoupin_v81.tex, prop:cohomology
--- MATHLIB GAP: Sheaf cohomology on complex manifolds not in Mathlib 4.19.0.
 
-/-- SD sector: H¹(PT*, O(-4)) = space of SD Yang-Mills fields (googly space) -/
+/-- SD twistor-cohomology identification placeholder. -/
 theorem sd_cohomology : True := trivial
--- SOURCE: twistor_googly_dtoupin_v81.tex, prop:cohomology
 
-/-- Googly map: Haar self-duality on Gr(2,4) interchanges ASD and SD -/
+/-- The geometric map between the two cohomology groups is still open. -/
 theorem googly_map_on_cohomology : True := trivial
--- SOURCE: twistor_googly_dtoupin_v81.tex, prop:cohomology
--- This is the mathematical content of the "googly problem resolution":
--- the Haar measure self-duality under inversion on Gr(2,4) provides
--- the map between ASD and SD that was missing in Penrose's original construction.
--- MATHLIB GAP: Combines penrose_ward_transform + haar_self_duality.
 
-/-- Googly resolution: SD sector = T-image of ASD sector -/
+/-- Identifying that geometric map specifically with time reversal remains open. -/
 theorem googly_resolution_T_image : True := trivial
--- SOURCE: twistor_googly_dtoupin_v81.tex, main theorem
--- The googly map is identified with T (time reversal) via the Haar inversion J.
--- MATHLIB GAP: Requires all of the above plus T-reversal formalism.
 
-/-! ## Connection to shadow transform -/
+/-! ## Exact celestial shadow / helicity content -/
 
-/-- Shadow transform Δ ↔ 2-Δ is the Grassmannian involution under Δ=2s -/
-theorem shadow_as_grassmannian_involution :
-    ∀ (Δ : ℤ), 2 - Δ = 2 - Δ := fun _ => rfl
+open GppCelestialShadowHelicity
 
-/-- The googly map in twistor space corresponds to shadow reflection in CFT -/
-theorem googly_is_shadow : True := trivial
--- SOURCE: twistor_googly_dtoupin_v81.tex
--- The ONON identification: googly = shadow = T-reversal = Haar inversion J.
+/-- The exact representation-theoretic core of the googly/shadow proposal:
+for any celestial conformal dimension, shadow exchanges the two graviton helicity
+labels `+2` and `-2`.  This is stronger than merely observing `Delta ↦ 2-Delta`;
+it uses the full weight transformation `(h,hbar) ↦ (1-h,1-hbar)`, hence
+`J ↦ -J`. -/
+theorem googly_is_shadow_at_helicity (Delta : ℂ) :
+    Weights.spin (Weights.shadow (Weights.ofDeltaSpin Delta 2)) = -2 ∧
+    Weights.spin (Weights.shadow (Weights.ofDeltaSpin Delta (-2))) = 2 := by
+  constructor
+  · exact Weights.graviton_plus_to_minus Delta
+  · exact Weights.graviton_minus_to_plus Delta
 
-/-! ## Holography -/
+/-- For arbitrary celestial spin, shadow reverses the spin label while reflecting
+conformal dimension. -/
+theorem shadow_dimension_spin_pair (Delta J : ℂ) :
+    Weights.shadow (Weights.ofDeltaSpin Delta J) =
+      Weights.ofDeltaSpin (2 - Delta) (-J) :=
+  Weights.shadow_ofDeltaSpin Delta J
 
-/-- Celestial holography: Yang-Mills in bulk ↔ CFT on celestial sphere -/
+/-- On the scalar principal-series axis the dimension reflection is complex
+conjugation.  Combined with `shadow_dimension_spin_pair`, this is the precise
+Hermitian-shadow structure used in the celestial representation theory. -/
+theorem principal_series_shadow_is_conjugate_dimension (nu : ℝ) :
+    let Delta : ℂ := 1 + Complex.I * nu
+    Weights.delta (Weights.shadow (Weights.ofDeltaSpin Delta 0)) =
+      starRingEnd ℂ Delta :=
+  Weights.principal_series_shadow_delta nu
+
+/-! ## Holographic/cut statements still requiring analytic QFT infrastructure -/
+
+/-- Full bulk/celestial dictionary placeholder. -/
 theorem celestial_holography : True := trivial
--- SOURCE: Multiple papers; the holographic dictionary is the core of ONON.
--- MATHLIB GAP: Full holographic renormalization group not formalized.
 
-/-- The shadow discontinuity formula gives the one-loop integrand -/
+/-- Full shadow-discontinuity = loop-integrand theorem placeholder. -/
 theorem shadow_discontinuity_one_loop : True := trivial
--- SOURCE: shadow_discontinuity_paper_v13.tex, thm:shadow-disc
--- MATHLIB GAP: Loop amplitude integrals in celestial coordinates.
 
-/-- Cut-shadow correspondence: unitarity cuts = shadow discontinuities -/
+/-- Full Cutkosky/shadow equivalence placeholder. -/
 theorem cut_shadow_correspondence : True := trivial
--- SOURCE: shadow_discontinuity_paper_v13.tex, lem:cut-shadow
--- MATHLIB GAP: Optical theorem / unitarity in QFT not formalized.
-
-theorem twistor_googly_summary : True := trivial
 
 end GppTwistorGoogly
+
+#print axioms GppTwistorGoogly.googly_is_shadow_at_helicity
+#print axioms GppTwistorGoogly.shadow_dimension_spin_pair
+#print axioms GppTwistorGoogly.principal_series_shadow_is_conjugate_dimension
