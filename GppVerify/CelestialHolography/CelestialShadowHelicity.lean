@@ -44,36 +44,38 @@ theorem shadow_involutive (w : Weights) : shadow (shadow w) = w := by
 /-- Shadow reflects conformal dimension about one: `Delta ↦ 2-Delta`. -/
 theorem delta_shadow (w : Weights) :
     delta (shadow w) = 2 - delta w := by
-  simp [delta, shadow]
+  unfold delta shadow
   ring
 
 /-- Shadow reverses celestial spin exactly: `J ↦ -J`. -/
 theorem spin_shadow (w : Weights) :
     spin (shadow w) = -spin w := by
-  simp [spin, shadow]
+  unfold spin shadow
   ring
 
 /-- A weight pair reconstructed from dimension and spin. -/
-def ofDeltaSpin (Delta J : ℂ) : Weights :=
+noncomputable def ofDeltaSpin (Delta J : ℂ) : Weights :=
   ⟨(Delta + J) / 2, (Delta - J) / 2⟩
 
 @[simp] theorem delta_ofDeltaSpin (Delta J : ℂ) :
     delta (ofDeltaSpin Delta J) = Delta := by
-  simp [delta, ofDeltaSpin]
+  unfold delta ofDeltaSpin
+  dsimp
   ring
 
 @[simp] theorem spin_ofDeltaSpin (Delta J : ℂ) :
     spin (ofDeltaSpin Delta J) = J := by
-  simp [spin, ofDeltaSpin]
+  unfold spin ofDeltaSpin
+  dsimp
   ring
 
 /-- In `(Delta,J)` variables the shadow transform is exactly
 `(Delta,J) ↦ (2-Delta,-J)`. -/
 theorem shadow_ofDeltaSpin (Delta J : ℂ) :
     shadow (ofDeltaSpin Delta J) = ofDeltaSpin (2 - Delta) (-J) := by
-  apply Weights.ext <;>
-    simp [shadow, ofDeltaSpin] <;>
-    ring
+  change Weights.mk (1 - (Delta + J) / 2) (1 - (Delta - J) / 2) =
+    Weights.mk (((2 - Delta) + (-J)) / 2) (((2 - Delta) - (-J)) / 2)
+  congr 1 <;> ring
 
 /-- On the principal series `Delta = 1+i nu`, the dimension part of shadow is
 ordinary complex conjugation. -/
