@@ -39,8 +39,8 @@ jobs:
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsFourthCumulant
       - name: Quartic von Mangoldt positivity
         run: lake build GppVerify.RiemannHypothesis.VonMangoldtQuarticPositivity
-      - name: Strict fourth Gibbs cumulant bridge
-        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsFourthCumulantStrict
+      - name: Strict third Gibbs cumulant derivative
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsThirdCumulantDerivative
       - name: Zeta Gibbs differential entropy law
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsEntropyDerivative
       - name: Zeta Gibbs differential Legendre law
