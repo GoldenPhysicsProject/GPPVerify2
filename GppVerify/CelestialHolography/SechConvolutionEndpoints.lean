@@ -1,21 +1,28 @@
 import GppVerify.CelestialHolography.SechConvolutionPrimitive
 import Mathlib.Analysis.SpecificLimits.Normed
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import Mathlib.Tactic
 
 /-!
-# Endpoint limits for the shifted sech-convolution primitive
+# Endpoint limits and finite-interval FTC for the shifted sech convolution
 
 This file converts the quantitative remainder bounds from
-`SechConvolutionPrimitive` into genuine endpoint limits.  Both endpoints are now
-obtained without an improper-integral assumption: the right endpoint follows from
-the exponentially small remainders, and the left endpoint follows by the exact
-reflection `x ↦ lambda - x`.
+`SechConvolutionPrimitive` into genuine endpoint limits. Both endpoints are
+obtained without an improper-integral assumption: the right endpoint follows
+from the exponentially small remainders, and the left endpoint follows by the
+exact reflection `x ↦ lambda - x`.
+
+It also closes the finite-interval calculus layer.  The scaled shifted-sech
+kernel is continuous and its interval integral is exactly the jump of the
+log-cosh primitive.  The only remaining analytic step for the whole-line
+convolution is passage to the two improper endpoints.
 -/
 
 namespace GppSechConvolutionEndpoints
 
-open Filter
+open Filter MeasureTheory
 open GppSechConvolutionPrimitive
+open scoped Interval
 
 /-- The first log-cosh remainder vanishes as `x → +∞`. -/
 theorem logCoshRemainder_pi_mul_tendsto_atTop :
@@ -112,9 +119,33 @@ theorem logCoshDifference_tendsto_atBot (lam : ℝ) :
     convert hright.neg using 1 <;> ring
   exact hneg.congr' (Filter.Eventually.of_forall fun x => logCoshDifference_reflect lam x)
 
+/-- The derivative kernel from `hasDerivAt_logCoshDifference` is continuous on
+all of `ℝ`; both cosh factors are strictly positive. -/
+theorem continuous_scaled_sech_kernel (lam : ℝ) :
+    Continuous (fun x : ℝ =>
+      Real.pi * Real.sinh (Real.pi * lam) /
+        (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x)))) := by
+  fun_prop
+
+/-- **Finite-interval shifted sech convolution identity.**  Before any
+improper-limit passage, the scaled kernel integrates exactly to the jump of the
+log-cosh primitive. -/
+theorem integral_scaled_sech_kernel_eq_logCoshDifference_sub
+    (lam a b : ℝ) :
+    (∫ x in a..b,
+      Real.pi * Real.sinh (Real.pi * lam) /
+        (Real.cosh (Real.pi * x) * Real.cosh (Real.pi * (lam - x)))) =
+      logCoshDifference lam b - logCoshDifference lam a := by
+  apply intervalIntegral.integral_eq_sub_of_hasDerivAt
+  · intro x hx
+    exact hasDerivAt_logCoshDifference lam x
+  · exact (continuous_scaled_sech_kernel lam).intervalIntegrable a b
+
 end GppSechConvolutionEndpoints
 
 #print axioms GppSechConvolutionEndpoints.logCoshRemainder_pi_mul_tendsto_atTop
 #print axioms GppSechConvolutionEndpoints.logCoshRemainder_pi_shift_tendsto_atTop
 #print axioms GppSechConvolutionEndpoints.logCoshDifference_tendsto_atTop
 #print axioms GppSechConvolutionEndpoints.logCoshDifference_tendsto_atBot
+#print axioms GppSechConvolutionEndpoints.continuous_scaled_sech_kernel
+#print axioms GppSechConvolutionEndpoints.integral_scaled_sech_kernel_eq_logCoshDifference_sub
