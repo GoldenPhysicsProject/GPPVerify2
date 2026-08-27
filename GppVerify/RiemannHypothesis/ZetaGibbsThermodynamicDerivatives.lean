@@ -65,6 +65,28 @@ theorem riemannZeta_eq_ofReal_zetaPartition
   rw [hz]
   simp
 
+/-- The mean energy is the normalized first logarithmic moment. -/
+theorem zetaMeanEnergy_eq_M1_div_Z
+    {β : ℝ} (hβ : 1 < β) :
+    zetaMeanEnergy β = M1 β / Z β := by
+  have hs : 1 < ((β : ℂ).re) := by simpa using hβ
+  unfold zetaMeanEnergy negZetaLogDeriv M1 Z
+  rw [deriv_riemannZeta_eq_neg_logMomentLSeries hs]
+  rw [LSeries_logMul_one_eq_ofReal_firstMoment hβ]
+  rw [riemannZeta_eq_LSeries_one hs]
+  rw [LSeries_one_eq_ofReal_gibbsWeight_tsum hβ]
+  norm_cast
+  ring
+
+/-- The real partition function agrees with the Gibbs normalization `Z`. -/
+theorem zetaPartition_eq_Z
+    {β : ℝ} (hβ : 1 < β) :
+    zetaPartition β = Z β := by
+  have hz := riemannZeta_eq_ofReal_gibbsWeight_tsum hβ
+  unfold zetaPartition Z
+  rw [hz]
+  simp
+
 /-- The log-partition derivative is minus the mean log-energy response. -/
 theorem hasDerivAt_zetaLogPartition
     {β : ℝ} (hβ : 1 < β) :
@@ -79,18 +101,18 @@ theorem hasDerivAt_zetaLogPartition
     h0c.real_of_complex
   have hpne : zetaPartition β ≠ 0 := (zetaPartition_pos hβ).ne'
   have hlog := h0r.log hpne
-  have hz : riemannZeta (β : ℂ) = (zetaPartition β : ℂ) :=
-    riemannZeta_eq_ofReal_zetaPartition hβ
-  have hdivre :
-      (deriv riemannZeta (β : ℂ) / riemannZeta (β : ℂ)).re =
-        (deriv riemannZeta (β : ℂ)).re / zetaPartition β := by
-    rw [hz]
-    simp [div_eq_mul_inv]
+  have hder :
+      deriv riemannZeta (β : ℂ) = -(M1 β : ℂ) := by
+    rw [deriv_riemannZeta_eq_neg_logMomentLSeries hs]
+    rw [LSeries_logMul_one_eq_ofReal_firstMoment hβ]
+  have hpart : zetaPartition β = Z β := zetaPartition_eq_Z hβ
+  have hmean : zetaMeanEnergy β = M1 β / Z β := zetaMeanEnergy_eq_M1_div_Z hβ
   have hcoef :
-      (deriv riemannZeta (β : ℂ)).re / zetaPartition β =
+      (deriv riemannZeta (β : ℂ)).re / (riemannZeta (β : ℂ)).re =
         -zetaMeanEnergy β := by
-    unfold zetaMeanEnergy negZetaLogDeriv
-    rw [map_neg, hdivre]
+    rw [hder]
+    change (-M1 β) / zetaPartition β = -zetaMeanEnergy β
+    rw [hpart, hmean]
     ring
   simpa [zetaLogPartition, zetaPartition, hcoef] using hlog
 
@@ -106,7 +128,7 @@ theorem hasDerivAt_zetaMeanEnergy
       (deriv (deriv riemannZeta) (β : ℂ)) (β : ℂ) :=
     (analyticOnNhd_riemannZeta_zetaHalfPlane.deriv (β : ℂ) hsset).differentiableAt.hasDerivAt
   have hne : riemannZeta (β : ℂ) ≠ 0 :=
-    riemannZeta_ne_zero_right_half_plane hs
+    GppGlobalVonMangoldt.riemannZeta_ne_zero_right_half_plane hs
   have hdiff : DifferentiableAt ℂ negZetaLogDeriv (β : ℂ) :=
     ((h1.div h0 hne).neg).differentiableAt
   have hreal : HasDerivAt
@@ -120,5 +142,7 @@ theorem hasDerivAt_zetaMeanEnergy
 end GppZetaGibbsThermodynamicDerivatives
 
 #print axioms GppZetaGibbsThermodynamicDerivatives.zetaPartition_pos
+#print axioms GppZetaGibbsThermodynamicDerivatives.zetaMeanEnergy_eq_M1_div_Z
+#print axioms GppZetaGibbsThermodynamicDerivatives.zetaPartition_eq_Z
 #print axioms GppZetaGibbsThermodynamicDerivatives.hasDerivAt_zetaLogPartition
 #print axioms GppZetaGibbsThermodynamicDerivatives.hasDerivAt_zetaMeanEnergy
