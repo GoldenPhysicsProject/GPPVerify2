@@ -48,8 +48,11 @@ theorem zetaVarianceResponse_eq_logMul_vonMangoldt
       (negZetaLogDeriv_eqOn_vonMangoldtLSeries.iteratedDeriv_of_isOpen
         isOpen_zetaHalfPlane 1) hs
     simpa [iteratedDeriv_one] using hiter
-  have habs : LSeries.abscissaOfAbsConv vonMangoldtComplex < ((β : ℂ).re) :=
-    lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one hs
+  have hsE : (1 : EReal) < (((β : ℂ).re : ℝ) : EReal) := by
+    exact_mod_cast hs
+  have habs :
+      LSeries.abscissaOfAbsConv vonMangoldtComplex < (((β : ℂ).re : ℝ) : EReal) :=
+    lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one hsE
   rw [deriv_negZetaLogDeriv_eq_neg_zetaVarianceResponse hβ] at heq
   rw [LSeries_deriv habs] at heq
   exact neg_injective heq
