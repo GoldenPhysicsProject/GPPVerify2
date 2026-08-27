@@ -32,23 +32,26 @@ theorem ambient_finrank : finrank ℂ Ambient = 4 := by
 /-- Orthogonal complement sends a point of `Gr(2,4)` to another point of
 `Gr(2,4)`. -/
 noncomputable def complement (K : Gr24) : Gr24 := by
-  refine ⟨K.1ᗮ, ?_⟩
-  have h := GppCelestialHolography.grassmannian_orthogonal_dim K.1
+  let Kperp : Submodule ℂ Ambient := K.1ᗮ
+  refine ⟨Kperp, ?_⟩
+  have h := Submodule.finrank_add_finrank_orthogonal K.1
+  change finrank ℂ Kperp = 2
+  dsimp [Kperp]
   rw [K.2, ambient_finrank] at h
-  norm_num at h ⊢
-  exact h
+  omega
 
 /-- Orthogonal complement is an involution on the actual `Gr24` type. -/
 theorem complement_involutive (K : Gr24) : complement (complement K) = K := by
   apply Subtype.ext
-  exact GppCelestialHolography.grassmannian_orthogonal_involutive K.1
+  change K.1ᗮᗮ = K.1
+  exact Submodule.orthogonal_orthogonal K.1
 
 /-- Hence the complement map is bijective. -/
 theorem complement_bijective : Function.Bijective complement := by
   constructor
   · intro A B h
     have h' := congrArg complement h
-    simpa [complement_involutive] using h'
+    simpa only [complement_involutive] using h'
   · intro K
     refine ⟨complement K, ?_⟩
     exact complement_involutive K
