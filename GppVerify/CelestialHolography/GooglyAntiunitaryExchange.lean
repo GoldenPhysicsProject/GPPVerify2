@@ -23,18 +23,18 @@ open GppHolographicChain
 `(e12,e13,e14,e23,e24,e34)` of `∧²ℂ⁴`.  The first three coordinates are conjugated;
 the last three are conjugated and sign-reversed. -/
 def googlyExchange (v : Fin 6 → ℂ) : Fin 6 → ℂ
-  | 0 => Complex.conj (v 0)
-  | 1 => Complex.conj (v 1)
-  | 2 => Complex.conj (v 2)
-  | 3 => -Complex.conj (v 3)
-  | 4 => -Complex.conj (v 4)
-  | 5 => -Complex.conj (v 5)
+  | 0 => star (v 0)
+  | 1 => star (v 1)
+  | 2 => star (v 2)
+  | 3 => -star (v 3)
+  | 4 => -star (v 4)
+  | 5 => -star (v 5)
 
 /-- The googly exchange is conjugate-linear with respect to the common Plücker
 scale.  This is the key compatibility needed for projective descent: multiplying a
-bivector by `c` multiplies its googly image by `conj c`. -/
+bivector by `c` multiplies its googly image by `star c`. -/
 theorem googlyExchange_smul (c : ℂ) (v : Fin 6 → ℂ) :
-    googlyExchange (c • v) = Complex.conj c • googlyExchange v := by
+    googlyExchange (c • v) = star c • googlyExchange v := by
   ext i
   fin_cases i <;> simp [googlyExchange, Pi.smul_apply]
 
@@ -47,7 +47,7 @@ theorem googlyExchange_involutive (v : Fin 6 → ℂ) :
 /-- The googly exchange preserves the coordinatewise Hermitian norm density. -/
 theorem googlyExchange_normSq (v : Fin 6 → ℂ) (i : Fin 6) :
     Complex.normSq (googlyExchange v i) = Complex.normSq (v i) := by
-  fin_cases i <;> simp [googlyExchange, Complex.normSq_conj]
+  fin_cases i <;> simp [googlyExchange]
 
 /-- The key googly relation: orientation-reversing conjugation anti-commutes with
 Hodge star.  Consequently it exchanges the `+1` and `-1` Hodge eigenspaces. -/
@@ -84,7 +84,7 @@ def pluckerQuadric (v : Fin 6 → ℂ) : ℂ :=
 /-- Orientation-reversing conjugation sends the Plücker quadratic form to the
 negative complex conjugate of itself.  In particular its zero locus is preserved. -/
 theorem googlyExchange_pluckerQuadric (v : Fin 6 → ℂ) :
-    pluckerQuadric (googlyExchange v) = -Complex.conj (pluckerQuadric v) := by
+    pluckerQuadric (googlyExchange v) = -star (pluckerQuadric v) := by
   simp [pluckerQuadric, googlyExchange]
   ring
 
