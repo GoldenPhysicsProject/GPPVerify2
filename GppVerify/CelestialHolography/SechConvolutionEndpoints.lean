@@ -109,7 +109,7 @@ theorem logCoshDifference_tendsto_atBot (lam : ℝ) :
   have hneg :
       Tendsto (fun x : ℝ => -logCoshDifference lam (lam - x))
         atBot (nhds (-Real.pi * lam)) := by
-    simpa only [Function.comp_apply] using hright.neg
+    convert hright.neg using 1 <;> ring
   exact hneg.congr' (Filter.Eventually.of_forall fun x => logCoshDifference_reflect lam x)
 
 end GppSechConvolutionEndpoints
