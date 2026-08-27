@@ -49,8 +49,11 @@ theorem logMul_logMul_term_re_eq_cubicSummand
     rw [hlog]
     simp only [Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
       zero_mul, mul_zero, add_zero, sub_zero]
-    have hpow := natCast_neg_cpow_re n hn β 0
-    simp only [mul_zero, add_zero, Real.cos_zero, mul_one] at hpow
+    have hpow0 := natCast_neg_cpow_re n hn β 0
+    simp only [mul_zero, add_zero, Real.cos_zero, mul_one] at hpow0
+    have hpow : (((n : ℂ) ^ (-(β : ℂ))).re) =
+        Real.exp (-Real.log n * β) := by
+      simpa using hpow0
     rw [hpow]
     unfold cubicSummand
     ring
@@ -95,12 +98,31 @@ theorem tsum_cubicSummand_pos {β : ℝ} (hβ : 1 < β) :
 positive real part on the real half-plane `β > 1`. -/
 theorem logMul_logMul_vonMangoldt_re_pos {β : ℝ} (hβ : 1 < β) :
     0 < (LSeries (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ)).re := by
-  rw [LSeries_eq_tsum]
-  rw [map_tsum Complex.reCLM.continuous]
-  convert tsum_cubicSummand_pos hβ using 1
-  apply tsum_congr
-  intro n
-  exact logMul_logMul_term_re_eq_cubicSummand n β
+  unfold LSeries
+  have hs := summable_logMul_logMul_vonMangoldt hβ
+  change Summable
+    (fun n : ℕ =>
+      LSeries.term
+        (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ) n) at hs
+  have hmap :
+      (∑' n : ℕ,
+        LSeries.term
+          (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ) n).re =
+      ∑' n : ℕ,
+        (LSeries.term
+          (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ) n).re := by
+    simpa using (Complex.reCLM.map_tsum hs)
+  rw [hmap]
+  have heq :
+      (∑' n : ℕ,
+        (LSeries.term
+          (LSeries.logMul (LSeries.logMul vonMangoldtComplex)) (β : ℂ) n).re) =
+        ∑' n : ℕ, cubicSummand β n := by
+    apply tsum_congr
+    intro n
+    exact logMul_logMul_term_re_eq_cubicSummand n β
+  rw [heq]
+  exact tsum_cubicSummand_pos hβ
 
 end GppVonMangoldtCubicPositivity
 
