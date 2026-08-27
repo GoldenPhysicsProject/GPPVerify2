@@ -8,9 +8,10 @@ import Mathlib.FieldTheory.Finiteness
 ## Golden Physics Project — ONON Framework Formalization
 ## Lean 4 / Mathlib v4.19.0
 
-This file formalizes `cor:three-generations-anomaly` (ONON52, cited 12×):
-*The Cayley-Dickson doubling tower ℝ → ℂ → ℍ → 𝕆 yields exactly 3 generations
-of fermions.*
+This file isolates the exact mathematical content of the proposed three-generation
+chain. The Cayley-Dickson counting statements are proved directly. The physics step
+from celestial/anomaly data to the physical generation number is exposed as explicit
+hypotheses rather than represented by vacuous `True` or `3 = 3` placeholders.
 
 ### Mathematical content
 
@@ -20,8 +21,10 @@ There are exactly 3 doublings that stay within the division algebra category.
 
 ### Physics connection (thm:link6 dependent)
 
-This requires Link 6 (open problem). All dependent theorems carry
-`sorry -- depends on thm:link6 — open problem`.
+The unconditional QFT/celestial derivation of Link 6 is not yet formalized.  The
+conditional theorem below records the exact implication needed downstream:
+if `c₂D = κ₀ c₄D`, `κ₀ > 0`, `c₂D = 0`, and the anomaly-counting input sends
+`c₄D = 0` to `n_gen = 3`, then `n_gen = 3`.
 
 ### Axioms
 
@@ -64,71 +67,73 @@ theorem nda_doubling_set_card :
 /-- After 3 doublings, 𝕆 (dim 8) is the last normed division algebra: the
     next stage's dimension, 16, is exactly `cdDim 4`, and it lies outside
     the dimension set {1,2,4,8} realized by the four Cayley-Dickson stages
-    that stay in the division-algebra category. Sedenions (dim 16) lose
-    associativity AND the division property, matching this dimension gap. -/
+    that stay in the division-algebra category. -/
 theorem sedenion_dim_outside_nda_set :
     cdDim 4 = 16 ∧ (16 : ℕ) ∉ cdStages.image cdDim := by decide
 
 theorem sedenion_not_nda : (8 : ℕ) * 2 = 16 ∧ 16 ≠ 8 := by decide
 
-/-- Under Δ = 2s, the 3 doublings correspond to the 3 roots of
-    the minimal polynomial of the shadow fixed point s = 1/2. -/
-theorem three_roots_match_three_doublings : (3 : ℕ) = 3 := rfl
-
 -- ============================================================
 -- §2  Hurwitz theorem (axiomatized — not in Mathlib 4.19.0)
 -- ============================================================
 
-/-- Hurwitz's theorem: the only normed division algebras over ℝ are
-    ℝ, ℂ, ℍ, 𝕆, of dimensions 1, 2, 4, 8 -- produced by 0, 1, 2, 3
-    Cayley-Dickson doublings respectively, and no further doubling
-    (e.g. the sedenions, dimension 16) yields a division algebra.
-    Gap: full composition-algebra theory (Hurwitz's theorem proper,
-    requiring the classification of real composition algebras) is not
-    in Mathlib 4.19.0. The finite dimension-counting content that this
-    theorem's conclusion rests on -- the stage set, its cardinality, and
-    the fact that the next stage's dimension falls outside the NDA
-    dimension set -- is proved above without axiom
-    (`cdStages_card`, `exactly_three_doublings`, `nda_dimensions_image`,
-    `sedenion_dim_outside_nda_set`); what remains axiomatized is only the
-    algebraic fact that dimensions 1,2,4,8 are exactly realized by
-    division algebras and no other dimension is.
-    Reference: Hurwitz (1898); Baez (2002) "The Octonions" §2.2. -/
+/-- Hurwitz's theorem: the only finite-dimensional normed division algebras over ℝ
+have dimensions in `{1,2,4,8}`.  The finite Cayley-Dickson dimension bookkeeping is
+proved above; the composition-algebra classification itself is not in pinned Mathlib. -/
 axiom hurwitz_division_algebra_dimensions
     (A : Type) [NormedDivisionRing A] [NormedAlgebra ℝ A] [FiniteDimensional ℝ A] :
     Module.finrank ℝ A ∈ ({1, 2, 4, 8} : Finset ℕ)
 
 -- ============================================================
--- §3  Three generations — thm:link6 dependent
+-- §3  Three generations — substantive conditional interface
 -- ============================================================
 
-/-- **Three Generations Corollary** (cor:three-generations-anomaly, cited 12×).
+/-- If a nonzero Link-6 normalization identifies the celestial central charge with
+the four-dimensional Weyl-anomaly coefficient, then vanishing celestial charge forces
+vanishing Weyl anomaly. -/
+theorem link6_zero_transfer
+    {c2 c4 kappa : ℝ}
+    (hkappa : 0 < kappa)
+    (hlink : c2 = kappa * c4)
+    (hc2 : c2 = 0) :
+    c4 = 0 := by
+  have hkappa0 : kappa ≠ 0 := ne_of_gt hkappa
+  have hprod : kappa * c4 = 0 := by
+    rw [← hlink, hc2]
+  exact (mul_eq_zero.mp hprod).resolve_left hkappa0
 
-    PROOF SKETCH (conditional on thm:link6):
-    (1) c = 0 (5 independent proofs, ONON52 Ch. 6)
-    (2) Link 6: c₂D = c₄D^Weyl  ← OPEN PROBLEM
-    (3) → c₄D^Weyl = 0
-    (4) Boyle-Turok (2021): 48 = 16×3 Weyl fermions → n_gen = 3
+/-- **Conditional three-generation theorem.**  This is the exact logical content of
+the current Link-6/anomaly proposal without pretending that the missing QFT input is
+already formalized: Link 6 plus `c₂D = 0` and an anomaly-counting theorem imply
+`n_gen = 3`. -/
+theorem three_generations
+    {nGen : ℕ} {c2 c4 kappa : ℝ}
+    (hkappa : 0 < kappa)
+    (hlink : c2 = kappa * c4)
+    (hc2 : c2 = 0)
+    (hanomaly : c4 = 0 → nGen = 3) :
+    nGen = 3 := by
+  exact hanomaly (link6_zero_transfer hkappa hlink hc2)
 
-    THIS THEOREM DEPENDS ON thm:link6 — OPEN PROBLEM. -/
-theorem three_generations : (3 : ℕ) = 3 := by
-  -- depends on thm:link6 — open problem
-  rfl
-
-/-- Anomaly cancellation with SM gauge group forces n_gen = 3.
-    THIS THEOREM DEPENDS ON thm:link6 — OPEN PROBLEM. -/
-theorem anomaly_cancellation_forces_three_generations :
-    ∀ (_ : True), True := by
-  -- depends on thm:link6 — open problem
-  intro; trivial
+/-- Anomaly cancellation forces three generations whenever the physical anomaly theorem
+identifies the cancellation condition with vanishing Weyl coefficient and proves that
+this condition fixes the generation count.  The QFT/anomaly theorem is an explicit
+hypothesis, not a theorem-shaped `True`. -/
+theorem anomaly_cancellation_forces_three_generations
+    {nGen : ℕ} {c4 : ℝ} {AnomalyCancellation : Prop}
+    (hcanc : AnomalyCancellation)
+    (hc4 : AnomalyCancellation → c4 = 0)
+    (hcount : c4 = 0 → nGen = 3) :
+    nGen = 3 := by
+  exact hcount (hc4 hcanc)
 
 end GppSM
 
--- Summary checks
-#check @GppSM.exactly_three_doublings
-#check @GppSM.nda_dimensions_image
-#check @GppSM.nda_doubling_set_card
-#check @GppSM.sedenion_dim_outside_nda_set
-#check @GppSM.hurwitz_division_algebra_dimensions
-#check @GppSM.three_generations
-#check @GppSM.anomaly_cancellation_forces_three_generations
+#print axioms GppSM.exactly_three_doublings
+#print axioms GppSM.nda_dimensions_image
+#print axioms GppSM.nda_doubling_set_card
+#print axioms GppSM.sedenion_dim_outside_nda_set
+#print axioms GppSM.hurwitz_division_algebra_dimensions
+#print axioms GppSM.link6_zero_transfer
+#print axioms GppSM.three_generations
+#print axioms GppSM.anomaly_cancellation_forces_three_generations
