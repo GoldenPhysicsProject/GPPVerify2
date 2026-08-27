@@ -60,15 +60,14 @@ theorem abs_li2Series_neg_a_div_one_sub_a_le_rho
   have hden : 0 < 1 - a := by linarith
   have hx0 : 0 ≤ a / (1 - a) := div_nonneg ha0 hden.le
   have h2a : 0 < 1 - 2 * a := by linarith
-  have h2a' : 1 - a * 2 ≠ 0 := by nlinarith
   have hx1 : a / (1 - a) < 1 := by
     apply (div_lt_iff₀ hden).2
     linarith
   have hli := abs_li2Series_neg_le_of_nonneg hx0 hx1
   have hrewrite :
       (a / (1 - a)) / (1 - a / (1 - a)) = a / (1 - 2 * a) := by
-    field_simp [hden.ne', h2a.ne', h2a']
-    ring_nf
+    field_simp [hden.ne', h2a.ne']
+    ring
   rw [hrewrite] at hli
   calc
     |li2Series (-(a / (1 - a)))| ≤ a / (1 - 2 * a) := hli
