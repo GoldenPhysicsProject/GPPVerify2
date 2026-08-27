@@ -24,24 +24,24 @@ theorem natCast_neg_cpow_re
   rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hn)]
   have hlog : Complex.log (n : ℂ) = (Real.log n : ℂ) :=
     Complex.natCast_log.symm
-  rw [hlog]
-  rw [Complex.exp_re]
+  rw [hlog, Complex.exp_re]
   have hre :
       (((Real.log n : ℂ) * -((a : ℂ) + (t : ℂ) * Complex.I)).re) =
         -Real.log n * a := by
-    rw [Complex.mul_re]
-    norm_num
+    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.neg_re, Complex.add_re, Complex.I_re, mul_zero, add_zero,
+      zero_mul, sub_zero]
     ring
   have him :
       (((Real.log n : ℂ) * -((a : ℂ) + (t : ℂ) * Complex.I)).im) =
         -Real.log n * t := by
-    rw [Complex.mul_im]
-    norm_num
+    simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.neg_re, Complex.neg_im, Complex.add_re, Complex.add_im,
+      Complex.I_re, Complex.I_im, mul_zero, zero_mul, zero_add, add_zero,
+      mul_one, sub_zero]
     ring
   rw [hre, him]
-  have hcos : Real.cos (-Real.log n * t) = Real.cos (Real.log n * t) := by
-    rw [show -Real.log n * t = -(Real.log n * t) by ring, Real.cos_neg]
-  rw [hcos]
+  rw [show -Real.log n * t = -(Real.log n * t) by ring, Real.cos_neg]
 
 /-- Each nonzero-index von-Mangoldt term has the expected cosine real part. -/
 theorem vonMangoldt_term_re_eq_exp_cos
