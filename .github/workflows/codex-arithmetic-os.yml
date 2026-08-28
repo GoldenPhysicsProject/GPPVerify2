@@ -55,6 +55,9 @@ jobs:
       - name: Prime-local arithmetic OS positivity
         run: lake build GppVerify.CelestialHolography.ArithmeticPrimeLocalOS
 
+      - name: Explicit finite prime AFT factor map
+        run: lake build GppVerify.CelestialHolography.ArithmeticPrimeFactorMap
+
       - name: Euler-log causal anomaly algebra
         run: lake build GppVerify.CelestialHolography.ArithmeticEulerLogAnomaly
 
