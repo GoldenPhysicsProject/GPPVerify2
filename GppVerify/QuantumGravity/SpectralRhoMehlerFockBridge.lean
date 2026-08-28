@@ -27,16 +27,12 @@ theorem rhoGamma_zero_eq_mehlerFock (x : ℝ) (hx : x ≠ 0) :
   have hgamma := GppGammaModulus.gamma_one_add_mul_gamma_one_sub x hx
   have hsinh : Real.sinh (Real.pi * x) ≠ 0 := by
     exact Real.sinh_ne_zero.mpr (mul_ne_zero Real.pi_ne_zero hx)
-  have hreal :
-      (2 / Real.pi) * (Real.pi * x / Real.sinh (Real.pi * x)) =
-        2 * x / Real.sinh (Real.pi * x) := by
-    field_simp [Real.pi_ne_zero, hsinh]
-    ring
   unfold rhoGamma GppSpectralGammaPair.gammaPair
   norm_num
   rw [hgamma]
-  rw [← Complex.ofReal_mul]
-  exact congrArg (fun r : ℝ => (r : ℂ)) hreal
+  push_cast
+  field_simp [Real.pi_ne_zero, hsinh]
+  ring
 
 /-- Exact value at the removable singularity of the base Mehler--Fock quotient. -/
 theorem rhoGamma_zero_zero :
