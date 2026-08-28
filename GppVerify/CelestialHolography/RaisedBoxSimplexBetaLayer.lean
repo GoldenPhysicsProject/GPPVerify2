@@ -47,6 +47,18 @@ theorem inner_scaled_beta_identity
   simpa using
     (betaIntegral_scaled (((1 - δ : ℝ) : ℂ)) (2 : ℂ) ha)
 
+/-- Exact affine simplex-slice identity. For a fixed outer coordinate `x < 1`, the
+remaining inner edge has length `1-x`, so its singular integral is precisely the
+scaled Beta factor used in the raised-box Dirichlet reduction. -/
+theorem inner_simplex_slice_beta_identity
+    {δ x : ℝ} (hx : x < 1) :
+    (∫ y in (0)..(1 - x),
+      (y : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
+        (((1 - x : ℝ) : ℂ) - y) ^ (((2 : ℂ) - 1))) =
+      ((1 - x : ℝ) : ℂ) ^ ((((1 - δ : ℝ) : ℂ) + 2 - 1)) *
+        betaIntegral (((1 - δ : ℝ) : ℂ)) 2 := by
+  exact inner_scaled_beta_identity (sub_pos.mpr hx)
+
 /-- Convergence of the inner Beta integral for `δ < 1`. -/
 theorem inner_beta_convergent {δ : ℝ} (hδ : δ < 1) :
     IntervalIntegrable
@@ -71,5 +83,6 @@ end GppRaisedBoxSimplexBetaLayer
 #print axioms GppRaisedBoxSimplexBetaLayer.one_sub_delta_re_pos
 #print axioms GppRaisedBoxSimplexBetaLayer.three_sub_delta_re_pos
 #print axioms GppRaisedBoxSimplexBetaLayer.inner_scaled_beta_identity
+#print axioms GppRaisedBoxSimplexBetaLayer.inner_simplex_slice_beta_identity
 #print axioms GppRaisedBoxSimplexBetaLayer.inner_beta_convergent
 #print axioms GppRaisedBoxSimplexBetaLayer.outer_beta_convergent
