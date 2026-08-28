@@ -55,3 +55,5 @@ jobs:
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsLegendreDifferential
       - name: Zeta Gibbs free-energy curvature
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsFreeEnergyCurvature
+      - name: Zeta Gibbs critical pole regularization
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsCriticalRegularization
