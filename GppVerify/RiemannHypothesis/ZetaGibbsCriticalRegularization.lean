@@ -20,6 +20,7 @@ zeta-specific theorem still to be supplied before any critical asymptotic is pro
 namespace GppZetaGibbsCriticalRegularization
 
 open GppZetaGibbsSummability
+open GppZetaGibbsFisher
 open GppZetaGibbsFreeEnergy
 
 /-- Pole-removed partition coordinate. -/
