@@ -44,8 +44,8 @@ theorem extendedWienerHopfWeight_eq_pi_half_rhoGamma_zero_re (x : ℝ) :
     field_simp [Real.pi_ne_zero]
   · have hrho :
         (rhoGamma 0 x).re = 2 * x / Real.sinh (Real.pi * x) := by
-      have h := congrArg Complex.re (rhoGamma_zero_eq_mehlerFock x hx)
-      simpa using h
+      rw [rhoGamma_zero_eq_mehlerFock x hx]
+      rfl
     rw [extendedWienerHopfWeight_eq hx, hrho]
     unfold wienerHopfWeight
     have hsinh : Real.sinh (Real.pi * x) ≠ 0 := by
