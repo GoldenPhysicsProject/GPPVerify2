@@ -1,46 +1,43 @@
 import GppVerify.CelestialHolography.ArithmeticOSGram
-import Mathlib.Analysis.InnerProductSpace.GramMatrix
+import Mathlib
 
 /-!
 # Arithmetic OS factorization criterion
 
-The decisive AFT step can be isolated abstractly.  If a finite reflected arithmetic
-kernel is represented as a Gram kernel
+The decisive finite-dimensional AFT step can be isolated without relying on any
+post-v4.19 Gram-matrix API.  If a reflected kernel has a genuine factorization
 
-  K(i,j) = <A_i, A_j>
+  K = Aᴴ A,
 
-in a genuine Hilbert space, then reflection positivity is automatic.  This file
-formalizes only that implication.  It does not construct the arithmetic factor map
-`A`, identify the completed prime--Archimedean kernel with such a Gram matrix, or
-prove RH.
+then it is positive semidefinite.  This is the finite matrix form of the desired
+arithmetic factor map.  The file does not construct `A` from prime--Archimedean
+data, identify the completed arithmetic kernel with `Aᴴ A`, or prove RH.
 -/
 
 namespace GppArithmeticOSFactorization
 
-open scoped InnerProductSpace ComplexConjugate
+open scoped ComplexOrder Matrix
 
-/-- Any finite Hilbert-space Gram kernel is positive semidefinite. -/
-theorem gramKernel_posSemidef
-    {ι E : Type*} [Finite ι]
-    [NormedAddCommGroup E] [InnerProductSpace ℂ E]
-    (A : ι → E) :
-    (Matrix.gram ℂ A).PosSemidef := by
-  exact Matrix.posSemidef_gram ℂ A
+/-- Every finite complex factor `A` gives a positive-semidefinite kernel `Aᴴ A`. -/
+theorem conjTranspose_mul_self_posSemidef
+    {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m]
+    (A : Matrix m n ℂ) :
+    (Aᴴ * A).PosSemidef := by
+  have hI : (1 : Matrix m m ℂ).PosSemidef := Matrix.PosSemidef.one
+  simpa using hI.conjTranspose_mul_mul_same A
 
-/-- Abstract AFT/OS factorization criterion: once a reflected kernel is identified
-with a Hilbert-space Gram matrix, OS positivity follows with no further arithmetic
-input.  Thus the hard theorem is the construction/identification of `A`, not the
-positivity of a Gram matrix after the factorization is known. -/
-theorem kernel_posSemidef_of_gram_factorization
-    {ι E : Type*} [Finite ι]
-    [NormedAddCommGroup E] [InnerProductSpace ℂ E]
-    (K : Matrix ι ι ℂ) (A : ι → E)
-    (hK : K = Matrix.gram ℂ A) :
+/-- Abstract finite AFT/OS factorization criterion.  Once the reflected arithmetic
+kernel is identified with `Aᴴ A`, OS positivity is automatic; the hard theorem is
+constructing that factorization from zero-independent arithmetic data. -/
+theorem kernel_posSemidef_of_factorization
+    {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m]
+    (K : Matrix n n ℂ) (A : Matrix m n ℂ)
+    (hK : K = Aᴴ * A) :
     K.PosSemidef := by
   rw [hK]
-  exact gramKernel_posSemidef A
+  exact conjTranspose_mul_self_posSemidef A
 
 end GppArithmeticOSFactorization
 
-#print axioms GppArithmeticOSFactorization.gramKernel_posSemidef
-#print axioms GppArithmeticOSFactorization.kernel_posSemidef_of_gram_factorization
+#print axioms GppArithmeticOSFactorization.conjTranspose_mul_self_posSemidef
+#print axioms GppArithmeticOSFactorization.kernel_posSemidef_of_factorization
