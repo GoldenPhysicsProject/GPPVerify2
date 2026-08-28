@@ -91,6 +91,20 @@ theorem celestialCompletedResponse_conj_odd_on_principal
   rw [← hshadow]
   exact celestialCompletedResponse_shadow_odd hΔ0 hΔ2 hΛ
 
+/-- The real phase-generator normalization is likewise odd under conjugation on the
+principal axis. Together with `celestialCompletedPhaseResponse_im_eq_zero`, this says
+the principal-series completed-zeta response is a real odd phase response under the
+shadow/conjugation involution, away from zeros. -/
+theorem celestialCompletedPhaseResponse_conj_odd_on_principal
+    {Δ : ℂ} (hΔre : Δ.re = 1) (hΔ0 : Δ ≠ 0) (hΔ2 : Δ ≠ 2)
+    (hΛ : GppCompletedZetaDerivative.completedRiemannZeta (Δ / 2) ≠ 0) :
+    celestialCompletedPhaseResponse Δ =
+      -celestialCompletedPhaseResponse (complexConj Δ) := by
+  have hshadow : celestialShadow Δ = complexConj Δ :=
+    GppPrincipalShadow.shadow_eq_conj_iff.mpr hΔre
+  rw [← hshadow]
+  exact celestialCompletedPhaseResponse_shadow_odd hΔ0 hΔ2 hΛ
+
 end GppCompletedZetaPrincipalSeriesResponse
 
 #print axioms GppCompletedZetaPrincipalSeriesResponse.half_argument_re_eq_half
@@ -99,3 +113,4 @@ end GppCompletedZetaPrincipalSeriesResponse
 #print axioms GppCompletedZetaPrincipalSeriesResponse.celestialCompletedResponse_shadow_odd
 #print axioms GppCompletedZetaPrincipalSeriesResponse.celestialCompletedPhaseResponse_shadow_odd
 #print axioms GppCompletedZetaPrincipalSeriesResponse.celestialCompletedResponse_conj_odd_on_principal
+#print axioms GppCompletedZetaPrincipalSeriesResponse.celestialCompletedPhaseResponse_conj_odd_on_principal
