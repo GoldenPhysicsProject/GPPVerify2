@@ -69,3 +69,6 @@ jobs:
 
       - name: Arithmetic contraction defect positivity
         run: lake build GppVerify.CelestialHolography.ArithmeticDefectPositivity
+
+      - name: Completed arithmetic defect criterion
+        run: lake build GppVerify.CelestialHolography.ArithmeticCompletedDefectCriterion
