@@ -54,3 +54,6 @@ jobs:
 
       - name: Arithmetic no-ghost inertia obstruction
         run: lake build GppVerify.CelestialHolography.ArithmeticNoGhostInertia
+
+      - name: Arithmetic no-ghost coercivity skeleton
+        run: lake build GppVerify.CelestialHolography.ArithmeticNoGhostCoercivity
