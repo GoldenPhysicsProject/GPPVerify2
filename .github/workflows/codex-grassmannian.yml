@@ -55,3 +55,6 @@ jobs:
 
       - name: Twistor-space lift of googly exchange
         run: lake build GppVerify.CelestialHolography.GooglyTwistorLift
+
+      - name: Shadow versus time-reversal helicity separation
+        run: lake build GppVerify.CelestialHolography.ShadowDiscreteSymmetrySeparation
