@@ -51,6 +51,9 @@ jobs:
       - name: Raised-box scaled Beta integral layer
         if: always()
         run: lake build GppVerify.CelestialHolography.RaisedBoxSimplexBetaLayer
+      - name: Raised-box nested simplex reduction
+        if: always()
+        run: lake build GppVerify.CelestialHolography.RaisedBoxSimplexNestedReduction
       - name: Raised-box pointwise regulator limit
         if: always()
         run: lake build GppVerify.CelestialHolography.RaisedBoxPointwiseLimit
