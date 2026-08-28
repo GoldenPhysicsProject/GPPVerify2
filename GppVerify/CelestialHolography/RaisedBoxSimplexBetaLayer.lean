@@ -59,6 +59,21 @@ theorem inner_simplex_slice_beta_identity
         betaIntegral (((1 - δ : ℝ) : ℂ)) 2 := by
   exact inner_scaled_beta_identity (sub_pos.mpr hx)
 
+/-- After the exact inner simplex slice is inserted, the remaining outer integral
+is exactly the product `B(1-δ,3-δ) B(1-δ,2)`.  This is the second Beta factor in
+the raised-box Dirichlet majorant.  The separate Fubini/endpoint theorem that
+identifies the original nested simplex integral with this reduced outer integral
+is intentionally not asserted here. -/
+theorem outer_reduced_beta_product_identity (δ : ℝ) :
+    (∫ x in (0)..1,
+      ((x : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
+        (1 - (x : ℂ)) ^ ((((3 - δ : ℝ) : ℂ) - 1))) *
+        betaIntegral (((1 - δ : ℝ) : ℂ)) 2) =
+      betaIntegral (((1 - δ : ℝ) : ℂ)) (((3 - δ : ℝ) : ℂ)) *
+        betaIntegral (((1 - δ : ℝ) : ℂ)) 2 := by
+  rw [intervalIntegral.integral_mul_const]
+  rfl
+
 /-- Convergence of the inner Beta integral for `δ < 1`. -/
 theorem inner_beta_convergent {δ : ℝ} (hδ : δ < 1) :
     IntervalIntegrable
@@ -84,5 +99,6 @@ end GppRaisedBoxSimplexBetaLayer
 #print axioms GppRaisedBoxSimplexBetaLayer.three_sub_delta_re_pos
 #print axioms GppRaisedBoxSimplexBetaLayer.inner_scaled_beta_identity
 #print axioms GppRaisedBoxSimplexBetaLayer.inner_simplex_slice_beta_identity
+#print axioms GppRaisedBoxSimplexBetaLayer.outer_reduced_beta_product_identity
 #print axioms GppRaisedBoxSimplexBetaLayer.inner_beta_convergent
 #print axioms GppRaisedBoxSimplexBetaLayer.outer_beta_convergent
