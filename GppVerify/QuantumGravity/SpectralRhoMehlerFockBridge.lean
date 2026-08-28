@@ -31,11 +31,12 @@ theorem rhoGamma_zero_eq_mehlerFock (x : ℝ) (hx : x ≠ 0) :
       (2 / Real.pi) * (Real.pi * x / Real.sinh (Real.pi * x)) =
         2 * x / Real.sinh (Real.pi * x) := by
     field_simp [Real.pi_ne_zero, hsinh]
+    ring
   unfold rhoGamma GppSpectralGammaPair.gammaPair
   norm_num
   rw [hgamma]
   rw [← Complex.ofReal_mul]
-  exact_mod_cast hreal
+  exact congrArg (fun r : ℝ => (r : ℂ)) hreal
 
 /-- Exact value at the removable singularity of the base Mehler--Fock quotient. -/
 theorem rhoGamma_zero_zero :
