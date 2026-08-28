@@ -25,13 +25,16 @@ its removable singularity at the origin. -/
 theorem rhoGamma_zero_eq_mehlerFock (x : ℝ) (hx : x ≠ 0) :
     rhoGamma 0 x = ((2 * x / Real.sinh (Real.pi * x) : ℝ) : ℂ) := by
   have hgamma := GppGammaModulus.gamma_one_add_mul_gamma_one_sub x hx
-  have hsinh : Real.sinh (Real.pi * x) ≠ 0 := by
-    exact Real.sinh_ne_zero.mpr (mul_ne_zero Real.pi_ne_zero hx)
+  have hpiC : ((Real.pi : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast Real.pi_ne_zero
+  have hsinhC : Complex.sinh (((Real.pi : ℝ) : ℂ) * (x : ℂ)) ≠ 0 := by
+    rw [← Complex.ofReal_mul, ← Complex.ofReal_sinh]
+    exact_mod_cast Real.sinh_ne_zero.mpr (mul_ne_zero Real.pi_ne_zero hx)
   unfold rhoGamma GppSpectralGammaPair.gammaPair
   norm_num
   rw [hgamma]
   push_cast
-  field_simp [Real.pi_ne_zero, hsinh]
+  field_simp [hpiC, hsinhC]
   ring
 
 /-- Exact value at the removable singularity of the base Mehler--Fock quotient. -/
