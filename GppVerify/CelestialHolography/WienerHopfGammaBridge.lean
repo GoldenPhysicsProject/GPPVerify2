@@ -45,7 +45,13 @@ theorem extendedWienerHopfWeight_eq_pi_half_rhoGamma_zero_re (x : ℝ) :
   · have hrho :
         (rhoGamma 0 x).re = 2 * x / Real.sinh (Real.pi * x) := by
       rw [rhoGamma_zero_eq_mehlerFock x hx]
-      simp
+      have hsinh_cast :
+          Complex.sinh ((Real.pi * x : ℝ) : ℂ) =
+            (Real.sinh (Real.pi * x) : ℂ) := by
+        symm
+        exact Complex.ofReal_sinh (Real.pi * x)
+      rw [hsinh_cast]
+      norm_num
     rw [extendedWienerHopfWeight_eq hx, hrho]
     unfold wienerHopfWeight
     have hsinh : Real.sinh (Real.pi * x) ≠ 0 := by
