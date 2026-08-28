@@ -81,6 +81,21 @@ theorem four_point_covariance_det_eq_vandermonde_sum
   rw [hs]
   ring
 
+/-- For nonnegative normalized four-point weights, the two-parameter Fisher
+covariance determinant is positive semidefinite for arbitrary support values. -/
+theorem four_point_covariance_det_nonneg
+    (p q r s x y z w : ℝ)
+    (hnorm : p + q + r + s = 1)
+    (hp : 0 ≤ p) (hq : 0 ≤ q) (hr : 0 ≤ r) (hs : 0 ≤ s) :
+    let m1 := p*x + q*y + r*z + s*w
+    let m2 := p*x^2 + q*y^2 + r*z^2 + s*w^2
+    let m3 := p*x^3 + q*y^3 + r*z^3 + s*w^3
+    let m4 := p*x^4 + q*y^4 + r*z^4 + s*w^4
+    0 ≤ (m2 - m1^2) * (m4 - m2^2) - (m3 - m1*m2)^2 := by
+  dsimp
+  rw [four_point_covariance_det_eq_vandermonde_sum p q r s x y z w hnorm]
+  positivity
+
 /-- A normalized four-point distribution has strictly positive Fisher determinant
 as soon as one three-point subdistribution has positive weights and distinct
 support, while the remaining weight is merely nonnegative.  No distinctness
@@ -118,4 +133,5 @@ end GppTwoParameterFisherDeterminant
 #print axioms GppTwoParameterFisherDeterminant.three_point_covariance_det_eq_vandermonde
 #print axioms GppTwoParameterFisherDeterminant.three_point_covariance_det_pos
 #print axioms GppTwoParameterFisherDeterminant.four_point_covariance_det_eq_vandermonde_sum
+#print axioms GppTwoParameterFisherDeterminant.four_point_covariance_det_nonneg
 #print axioms GppTwoParameterFisherDeterminant.four_point_covariance_det_pos_of_three
