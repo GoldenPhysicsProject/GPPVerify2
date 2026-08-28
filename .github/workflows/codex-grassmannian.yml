@@ -41,6 +41,9 @@ jobs:
       - name: Actual Gr(2,4) and shadow involution
         run: lake build GppVerify.CelestialHolography.GrassmannianGr24
 
+      - name: Exact opposite-chart Jacobian fourth-power identity
+        run: lake build GppVerify.CelestialHolography.GrassmannianChartJacobian
+
       - name: Projective Plucker covariance
         run: lake build GppVerify.CelestialHolography.GrassmannianPluckerProjective
 
