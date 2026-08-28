@@ -81,9 +81,41 @@ theorem four_point_covariance_det_eq_vandermonde_sum
   rw [hs]
   ring
 
+/-- A normalized four-point distribution has strictly positive Fisher determinant
+as soon as one three-point subdistribution has positive weights and distinct
+support, while the remaining weight is merely nonnegative.  No distinctness
+assumption on the fourth support point is required. -/
+theorem four_point_covariance_det_pos_of_three
+    (p q r s x y z w : ℝ)
+    (hnorm : p + q + r + s = 1)
+    (hp : 0 < p) (hq : 0 < q) (hr : 0 < r) (hs : 0 ≤ s)
+    (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z) :
+    let m1 := p*x + q*y + r*z + s*w
+    let m2 := p*x^2 + q*y^2 + r*z^2 + s*w^2
+    let m3 := p*x^3 + q*y^3 + r*z^3 + s*w^3
+    let m4 := p*x^4 + q*y^4 + r*z^4 + s*w^4
+    0 < (m2 - m1^2) * (m4 - m2^2) - (m3 - m1*m2)^2 := by
+  dsimp
+  rw [four_point_covariance_det_eq_vandermonde_sum p q r s x y z w hnorm]
+  have hxy2 : 0 < (x-y)^2 := by
+    rw [pow_two]
+    exact mul_self_pos.mpr (sub_ne_zero.mpr hxy)
+  have hxz2 : 0 < (x-z)^2 := by
+    rw [pow_two]
+    exact mul_self_pos.mpr (sub_ne_zero.mpr hxz)
+  have hyz2 : 0 < (y-z)^2 := by
+    rw [pow_two]
+    exact mul_self_pos.mpr (sub_ne_zero.mpr hyz)
+  have hfirst : 0 < p*q*r*(x-y)^2*(x-z)^2*(y-z)^2 := by positivity
+  have hsecond : 0 ≤ p*q*s*(x-y)^2*(x-w)^2*(y-w)^2 := by positivity
+  have hthird : 0 ≤ p*r*s*(x-z)^2*(x-w)^2*(z-w)^2 := by positivity
+  have hfourth : 0 ≤ q*r*s*(y-z)^2*(y-w)^2*(z-w)^2 := by positivity
+  linarith
+
 end GppTwoParameterFisherDeterminant
 
 #print axioms GppTwoParameterFisherDeterminant.covariance_det_eq_moment_gram_det
 #print axioms GppTwoParameterFisherDeterminant.three_point_covariance_det_eq_vandermonde
 #print axioms GppTwoParameterFisherDeterminant.three_point_covariance_det_pos
 #print axioms GppTwoParameterFisherDeterminant.four_point_covariance_det_eq_vandermonde_sum
+#print axioms GppTwoParameterFisherDeterminant.four_point_covariance_det_pos_of_three
