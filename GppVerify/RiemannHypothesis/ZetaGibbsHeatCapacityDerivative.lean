@@ -29,8 +29,10 @@ theorem hasDerivAt_heatCapacity
     {β : ℝ} (hβ : 1 < β) :
     HasDerivAt heatCapacity
       (2 * β * logEnergyVariance β - β ^ 2 * logEnergyThirdCumulant β) β := by
+  have hsq0 : HasDerivAt (fun x : ℝ => x * x) (β + β) β :=
+    (hasDerivAt_id β).mul (hasDerivAt_id β)
   have hsq : HasDerivAt (fun x : ℝ => x ^ 2) (2 * β) β := by
-    convert (hasDerivAt_id β).pow 2 using 1 <;> ring
+    convert hsq0 using 1 <;> ring
   have hvar := hasDerivAt_logEnergyVariance hβ
   unfold heatCapacity
   convert hsq.mul hvar using 1 <;> ring
