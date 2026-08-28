@@ -57,3 +57,5 @@ jobs:
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsFreeEnergyCurvature
       - name: Zeta Gibbs critical pole regularization
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsCriticalRegularization
+      - name: Generic critical-pole differential algebra
+        run: lake build GppVerify.RiemannHypothesis.CriticalPoleDifferentialAlgebra
