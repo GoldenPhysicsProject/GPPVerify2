@@ -1,5 +1,5 @@
 import GppVerify.CelestialHolography.ArithmeticOSReflection
-import Mathlib.Algebra.BigOperators.Ring
+import Mathlib.Algebra.BigOperators.Basic
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Tactic
 
