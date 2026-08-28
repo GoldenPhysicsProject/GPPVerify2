@@ -1,7 +1,4 @@
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Analysis.SpecialFunctions.Exp
-import Mathlib.Algebra.BigOperators.Basic
-import Mathlib.Tactic
+import Mathlib
 
 /-!
 # Euler logarithm and the causal prime-power anomaly
@@ -30,17 +27,17 @@ theorem repetition_cancel (p : ℝ) (m : ℕ) (hm : 0 < m) :
   field_simp
 
 /-- Gaussian heat factor associated to a logarithmic orbit length. -/
-def gaussianLength (t a : ℝ) : ℝ :=
+noncomputable def gaussianLength (t a : ℝ) : ℝ :=
   Real.exp (-(a^2) / (4 * t))
 
 /-- The `m`-th term before cancelling the Euler-logarithm repetition factor. -/
-def repeatedPrimeTerm (p t : ℝ) (m : ℕ) : ℝ :=
+noncomputable def repeatedPrimeTerm (p t : ℝ) (m : ℕ) : ℝ :=
   Real.exp (-((m : ℝ) / 2) * Real.log p) *
     ((1 / (m : ℝ)) * ((m : ℝ) * Real.log p)) *
     gaussianLength t ((m : ℝ) * Real.log p)
 
 /-- The same term in exact von-Mangoldt form. -/
-def vonMangoldtPrimePowerTerm (p t : ℝ) (m : ℕ) : ℝ :=
+noncomputable def vonMangoldtPrimePowerTerm (p t : ℝ) (m : ℕ) : ℝ :=
   Real.log p *
     Real.exp (-((m : ℝ) / 2) * Real.log p) *
     gaussianLength t ((m : ℝ) * Real.log p)
@@ -57,9 +54,9 @@ theorem repeatedPrimeTerm_eq_vonMangoldt
 finite sum with exact `log p` coefficients. -/
 theorem truncated_eulerLog_eq_vonMangoldt
     (p t : ℝ) (M : ℕ) :
-    (∑ m in Finset.range M,
+    (∑ m ∈ Finset.range M,
       repeatedPrimeTerm p t (m + 1)) =
-    ∑ m in Finset.range M,
+    ∑ m ∈ Finset.range M,
       vonMangoldtPrimePowerTerm p t (m + 1) := by
   apply Finset.sum_congr rfl
   intro m hm
