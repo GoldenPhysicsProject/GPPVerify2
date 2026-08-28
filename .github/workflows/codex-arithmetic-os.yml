@@ -57,3 +57,6 @@ jobs:
 
       - name: Arithmetic no-ghost coercivity skeleton
         run: lake build GppVerify.CelestialHolography.ArithmeticNoGhostCoercivity
+
+      - name: Arithmetic contraction defect positivity
+        run: lake build GppVerify.CelestialHolography.ArithmeticDefectPositivity
