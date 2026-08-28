@@ -37,6 +37,10 @@ jobs:
         run: lake build GppVerify.CelestialHolography.SechConvolutionClosedForm
       - name: Wiener-Hopf normalization of sech convolution
         run: lake build GppVerify.CelestialHolography.SechConvolutionWienerHopf
+      - name: Wiener-Hopf Gamma base bridge
+        run: lake build GppVerify.CelestialHolography.WienerHopfGammaBridge
+      - name: Wiener-Hopf Gamma full chamber hierarchy
+        run: lake build GppVerify.CelestialHolography.WienerHopfGammaChamberHierarchy
       - name: Zero-shift and all-real sech convolution normalization
         run: set -o pipefail && lake build GppVerify.CelestialHolography.SechConvolutionZeroShift 2>&1 | tee /tmp/sech-zero.log
       - name: Upload zero-shift diagnostic
