@@ -4,11 +4,11 @@ import Mathlib.Tactic
 # Two-parameter Fisher determinant algebra
 
 For sufficient statistics `X` and `X^2`, the 2x2 covariance determinant is exactly
-the determinant of the 3x3 moment Gram matrix of `(1,X,X^2)`.  For an exactly
-normalized three-point support it is moreover the positive weight product times
-the squared Vandermonde.  These are algebraic cores of the two-parameter prime-gas
-fluctuation geometry; the infinite Gibbs-family and measure-theoretic layers remain
-separate.
+the determinant of the 3x3 moment Gram matrix of `(1,X,X^2)`.  For exactly
+normalized finite supports with three or four points it is moreover a sum of
+positive weight products times squared Vandermondes.  These are algebraic cores
+of the two-parameter prime-gas fluctuation geometry; the infinite Gibbs-family
+and measure-theoretic layers remain separate.
 -/
 
 namespace GppTwoParameterFisherDeterminant
@@ -61,8 +61,29 @@ theorem three_point_covariance_det_pos
     exact mul_self_pos.mpr (sub_ne_zero.mpr hyz)
   positivity
 
+/-- Four-point Cauchy--Binet/Vandermonde identity.  The covariance determinant is
+the sum over all three-point minors.  This is the first nontrivial finite-support
+step beyond the minimal three-state certificate and exhibits the exact pattern
+needed for the general finite Cauchy--Binet theorem. -/
+theorem four_point_covariance_det_eq_vandermonde_sum
+    (p q r s x y z w : ℝ) (hnorm : p + q + r + s = 1) :
+    let m1 := p*x + q*y + r*z + s*w
+    let m2 := p*x^2 + q*y^2 + r*z^2 + s*w^2
+    let m3 := p*x^3 + q*y^3 + r*z^3 + s*w^3
+    let m4 := p*x^4 + q*y^4 + r*z^4 + s*w^4
+    (m2 - m1^2) * (m4 - m2^2) - (m3 - m1*m2)^2 =
+      p*q*r*(x-y)^2*(x-z)^2*(y-z)^2 +
+      p*q*s*(x-y)^2*(x-w)^2*(y-w)^2 +
+      p*r*s*(x-z)^2*(x-w)^2*(z-w)^2 +
+      q*r*s*(y-z)^2*(y-w)^2*(z-w)^2 := by
+  dsimp
+  have hs : s = 1 - p - q - r := by linarith
+  rw [hs]
+  ring
+
 end GppTwoParameterFisherDeterminant
 
 #print axioms GppTwoParameterFisherDeterminant.covariance_det_eq_moment_gram_det
 #print axioms GppTwoParameterFisherDeterminant.three_point_covariance_det_eq_vandermonde
 #print axioms GppTwoParameterFisherDeterminant.three_point_covariance_det_pos
+#print axioms GppTwoParameterFisherDeterminant.four_point_covariance_det_eq_vandermonde_sum
