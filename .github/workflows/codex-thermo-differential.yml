@@ -45,6 +45,8 @@ jobs:
         run: lake build GppVerify.RiemannHypothesis.VonMangoldtQuarticPositivity
       - name: Strict third Gibbs cumulant derivative
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsThirdCumulantDerivative
+      - name: Zeta Gibbs heat capacity derivative
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsHeatCapacityDerivative
       - name: Zeta Gibbs differential entropy law
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsEntropyDerivative
       - name: Zeta Gibbs differential Legendre law
