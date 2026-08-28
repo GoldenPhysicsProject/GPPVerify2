@@ -40,6 +40,7 @@ theorem rhoGamma_succ (k : ℕ) (x : ℝ) :
         4 * (2 : ℝ) ^ (2 * k + 1) := by
     rw [show 2 * (k + 1) + 1 = (2 * k + 1) + 2 by omega, pow_add]
     norm_num
+    ring
   have hnorm :
       (2 : ℝ) ^ (2 * (k + 1) + 1) /
           (Real.pi * ((2 * (k + 1) + 1).factorial : ℝ)) =
