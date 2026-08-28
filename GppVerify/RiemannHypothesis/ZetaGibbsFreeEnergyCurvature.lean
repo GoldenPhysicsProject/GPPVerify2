@@ -41,7 +41,7 @@ theorem hasDerivAt_freeEnergyBetaDerivative
   have hβ0 : β ≠ 0 := by linarith
   have hS := hasDerivAt_zetaEntropy hβ
   have hsq : HasDerivAt (fun y : ℝ => y ^ 2) (2 * β) β := by
-    convert (hasDerivAt_id β).pow 2 using 1 <;> ring
+    simpa [id] using (hasDerivAt_id β).pow 2
   have hquot := hS.div hsq (pow_ne_zero 2 hβ0)
   have hcoef :
       (entropyBetaDerivative β * β ^ 2 - zetaEntropy β * (2 * β)) /
