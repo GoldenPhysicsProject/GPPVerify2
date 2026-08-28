@@ -1,4 +1,5 @@
-import Mathlib.Analysis.SpecialFunctions.Hyperbolic.Basic
+import Mathlib.Data.Real.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Tactic
 
 /-!
@@ -16,18 +17,13 @@ temperature beta=2*pi is
 Away from the removable point lam=0 their product is exactly
 
   (2/pi) lam^2.
-
-This is the elementary algebraic cancellation underlying the flat quadratic
-Fisher measure in the causal-diamond manuscript.
 -/
 
 namespace GppCausalDiamondFisher
 
-/-- Kontorovich--Lebedev spectral density for the boost radial operator. -/
 noncomputable def klDensity (lam : ℝ) : ℝ :=
   (2 / Real.pi^2) * lam * Real.sinh (Real.pi * lam)
 
-/-- Bisognano--Wichmann Kubo--Mori kernel, written off its removable zero. -/
 noncomputable def bwFisherKernel (lam : ℝ) : ℝ :=
   (Real.pi * lam) / Real.sinh (Real.pi * lam)
 
@@ -40,8 +36,7 @@ theorem klDensity_mul_bwFisherKernel
   field_simp [hsinh, hpi]
   ring
 
-/-- The polynomialized Fisher weight has an exact double zero at the trivial
-spectral point. -/
+/-- The polynomialized Fisher weight has an exact double zero at the trivial spectral point. -/
 theorem flatFisherWeight_zero :
     (2 / Real.pi) * (0 : ℝ)^2 = 0 := by
   ring
