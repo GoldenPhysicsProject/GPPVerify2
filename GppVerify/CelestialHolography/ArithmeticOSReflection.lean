@@ -71,7 +71,6 @@ theorem celestialWeight_intertwines_osReflection (s : ℂ) :
   · simp [celestialWeight, celestialShadow, osReflection, criticalReflection, complexConj]
     ring
   · simp [celestialWeight, celestialShadow, osReflection, criticalReflection, complexConj]
-    ring
 
 end GppArithmeticOS
 
