@@ -42,3 +42,6 @@ jobs:
 
       - name: Exact KL x Kubo-Mori cancellation
         run: lake build GppVerify.QuantumGravity.CausalDiamondFisherCancellation
+
+      - name: Fisher kernel equals principal-series Gamma modulus
+        run: lake build GppVerify.QuantumGravity.CausalDiamondGammaBridge
