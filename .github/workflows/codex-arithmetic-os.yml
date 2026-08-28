@@ -43,6 +43,9 @@ jobs:
       - name: Arithmetic OS reflection algebra
         run: lake build GppVerify.CelestialHolography.ArithmeticOSReflection
 
+      - name: General conformal shadow principal-series axis
+        run: lake build GppVerify.CelestialHolography.ConformalShadowPrincipalSeries
+
       - name: Arithmetic OS Gram positivity
         run: lake build GppVerify.CelestialHolography.ArithmeticOSGram
 
