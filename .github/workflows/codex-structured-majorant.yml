@@ -48,6 +48,9 @@ jobs:
       - name: Raised-box pointwise simplex majorant algebra
         if: always()
         run: lake build GppVerify.CelestialHolography.RaisedBoxSimplexMajorantAlgebra
+      - name: Raised-box scaled Beta integral layer
+        if: always()
+        run: lake build GppVerify.CelestialHolography.RaisedBoxSimplexBetaLayer
       - name: Raised-box pointwise regulator limit
         if: always()
         run: lake build GppVerify.CelestialHolography.RaisedBoxPointwiseLimit
