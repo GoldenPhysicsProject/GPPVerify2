@@ -24,11 +24,11 @@ namespace GppArithmeticPrimeLocalOS
 open scoped BigOperators
 
 /-- Positive coefficient carried by the `m`-th prime-power mode. -/
-def modeWeight (p : ℝ) (m : ℕ) : ℝ :=
+noncomputable def modeWeight (p : ℝ) (m : ℕ) : ℝ :=
   Real.log p * Real.exp (-((m : ℝ) / 2) * Real.log p)
 
 /-- Euclidean transfer amplitude of the `m`-th mode at logarithmic time `t`. -/
-def modeValue (p : ℝ) (m : ℕ) (t : ℝ) : ℝ :=
+noncomputable def modeValue (p : ℝ) (m : ℕ) (t : ℝ) : ℝ :=
   Real.exp (-(m : ℝ) * Real.log p * t)
 
 /-- Prime-power weights are nonnegative for `p ≥ 1`. -/
@@ -49,7 +49,7 @@ theorem singleMode_os_nonneg
 theorem truncatedPrime_os_nonneg
     {p : ℝ} (hp : 1 ≤ p) (M N : ℕ)
     (c t : Fin N → ℝ) :
-    0 ≤ ∑ m in Finset.range M,
+    0 ≤ ∑ m ∈ Finset.range M,
       modeWeight p (m + 1) *
         (∑ i : Fin N, c i * modeValue p (m + 1) (t i)) ^ 2 := by
   exact Finset.sum_nonneg fun m hm => singleMode_os_nonneg hp (m + 1) c t
