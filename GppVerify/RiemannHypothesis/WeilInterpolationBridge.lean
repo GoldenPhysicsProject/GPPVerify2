@@ -21,6 +21,21 @@ namespace GppWeilInterpolationBridge
 open Finset
 open GppWeilCriterion
 
+/-- The exact finite support sampled by the paired form: `S` together with its
+involutive partners. -/
+def pairSupport (ι : ℂ → ℂ) (S : Finset ℂ) : Finset ℂ :=
+  S ∪ S.image ι
+
+/-- Every original point lies in the pair-support. -/
+theorem mem_pairSupport_self {ι : ℂ → ℂ} {S : Finset ℂ} {ρ : ℂ}
+    (hρ : ρ ∈ S) : ρ ∈ pairSupport ι S := by
+  simp [pairSupport, hρ]
+
+/-- Every involutive partner of a point of `S` lies in the pair-support. -/
+theorem mem_pairSupport_image {ι : ℂ → ℂ} {S : Finset ℂ} {ρ : ℂ}
+    (hρ : ρ ∈ S) : ι ρ ∈ pairSupport ι S := by
+  simp [pairSupport, hρ]
+
 /-- Agreement on `S` and `iota(S)` is enough to preserve the paired form on `S`. -/
 theorem pairedForm_eq_of_agree_on_pairSupport
     {ι : ℂ → ℂ} {S : Finset ℂ} {c d : ℂ → ℂ}
@@ -31,6 +46,18 @@ theorem pairedForm_eq_of_agree_on_pairSupport
   apply Finset.sum_congr rfl
   intro ρ hρ
   rw [hS ρ hρ, hiS ρ hρ]
+
+/-- Single-support form of the same fact: equality on `pairSupport iota S` is
+exactly the finite information needed to preserve the paired form. -/
+theorem pairedForm_eq_of_agree_on_pairSupport_union
+    {ι : ℂ → ℂ} {S : Finset ℂ} {c d : ℂ → ℂ}
+    (h : ∀ z ∈ pairSupport ι S, d z = c z) :
+    pairedForm ι S d = pairedForm ι S c := by
+  apply pairedForm_eq_of_agree_on_pairSupport
+  · intro ρ hρ
+    exact h ρ (mem_pairSupport_self hρ)
+  · intro ρ hρ
+    exact h (ι ρ) (mem_pairSupport_image hρ)
 
 /-- Abstract finite interpolation principle: positivity for all coefficient functions
 coming from a test-transform class implies positivity of the full finite paired form,
@@ -54,6 +81,24 @@ theorem pairedForm_nonneg_of_finite_interpolation
   rw [← heq]
   exact htestPos S hSZ f
 
+/-- Cleaner support-packaged interpolation principle.  No values away from the
+finite set `pairSupport iota S` are relevant. -/
+theorem pairedForm_nonneg_of_pairSupport_interpolation
+    {T : Type*} {ι : ℂ → ℂ} {Z : Set ℂ}
+    (coeff : T → ℂ → ℂ)
+    (htestPos : ∀ S : Finset ℂ, ↑S ⊆ Z → ∀ f : T,
+      0 ≤ (pairedForm ι S (coeff f)).re)
+    (hinterp : ∀ S : Finset ℂ, ↑S ⊆ Z → ∀ c : ℂ → ℂ,
+      ∃ f : T, ∀ z ∈ pairSupport ι S, coeff f z = c z) :
+    ∀ S : Finset ℂ, ↑S ⊆ Z → ∀ c : ℂ → ℂ,
+      0 ≤ (pairedForm ι S c).re := by
+  intro S hSZ c
+  obtain ⟨f, hf⟩ := hinterp S hSZ c
+  have heq : pairedForm ι S (coeff f) = pairedForm ι S c :=
+    pairedForm_eq_of_agree_on_pairSupport_union hf
+  rw [← heq]
+  exact htestPos S hSZ f
+
 /-- **Explicit interpolation-to-RH reduction.** If a test-transform class is positive
 for the zeta paired form and has finite interpolation on every finite subset of the
 nontrivial zero set together with its shadow partners, then RH follows by the already
@@ -73,8 +118,24 @@ theorem rh_of_testPos_finiteInterpolation
   apply rh_iff_weil_pairedForm_nonneg.mpr
   exact pairedForm_nonneg_of_finite_interpolation coeff htestPos hinterp
 
+/-- Pair-support packaged version of the interpolation-to-RH reduction.  This is the
+minimal finite-surjectivity target for any proposed Mellin/Paley--Wiener realization:
+only arbitrary values on `S ∪ zetaInvolution(S)` are required. -/
+theorem rh_of_testPos_pairSupportInterpolation
+    {T : Type*} (coeff : T → ℂ → ℂ)
+    (htestPos : ∀ S : Finset ℂ, ↑S ⊆ nontrivialZeros → ∀ f : T,
+      0 ≤ (pairedForm zetaInvolution S (coeff f)).re)
+    (hinterp : ∀ S : Finset ℂ, ↑S ⊆ nontrivialZeros → ∀ c : ℂ → ℂ,
+      ∃ f : T, ∀ z ∈ pairSupport zetaInvolution S, coeff f z = c z) :
+    ∀ ρ ∈ nontrivialZeros, ρ.re = 1 / 2 := by
+  apply rh_iff_weil_pairedForm_nonneg.mpr
+  exact pairedForm_nonneg_of_pairSupport_interpolation coeff htestPos hinterp
+
 end GppWeilInterpolationBridge
 
 #print axioms GppWeilInterpolationBridge.pairedForm_eq_of_agree_on_pairSupport
+#print axioms GppWeilInterpolationBridge.pairedForm_eq_of_agree_on_pairSupport_union
 #print axioms GppWeilInterpolationBridge.pairedForm_nonneg_of_finite_interpolation
+#print axioms GppWeilInterpolationBridge.pairedForm_nonneg_of_pairSupport_interpolation
 #print axioms GppWeilInterpolationBridge.rh_of_testPos_finiteInterpolation
+#print axioms GppWeilInterpolationBridge.rh_of_testPos_pairSupportInterpolation
