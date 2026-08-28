@@ -71,17 +71,23 @@ theorem gammaPair_add_one {a : ℝ} (ha : 0 < a) (x : ℝ) :
   unfold gammaPair
   rw [hplus, hminus, hp, hm]
   have hquad : zp * zm = ((a ^ 2 + x ^ 2 : ℝ) : ℂ) := by
-    simp [zp, zm]
-    ring
-  rw [← mul_assoc, mul_assoc zp, hquad]
-  ring
+    apply Complex.ext <;> simp [zp, zm] <;> ring
+  calc
+    zp * Complex.Gamma zp * (zm * Complex.Gamma zm)
+        = (zp * zm) * (Complex.Gamma zp * Complex.Gamma zm) := by ring
+    _ = ((a ^ 2 + x ^ 2 : ℝ) : ℂ) *
+          (Complex.Gamma ((a : ℂ) + (x : ℂ) * I) *
+            Complex.Gamma ((a : ℂ) - (x : ℂ) * I)) := by
+          rw [hquad]
+          rfl
 
 /-- Integer-step specialization used by the `rho_m` hierarchy. -/
 theorem gammaPair_nat_succ (m : ℕ) (x : ℝ) :
     gammaPair ((m : ℝ) + 2) x =
       (((((m : ℝ) + 1) ^ 2 + x ^ 2 : ℝ) : ℂ) *
         gammaPair ((m : ℝ) + 1) x) := by
-  simpa [add_assoc] using gammaPair_add_one (a := (m : ℝ) + 1) (by positivity) x
+  have h := gammaPair_add_one (a := (m : ℝ) + 1) (by positivity) x
+  convert h using 1 <;> ring
 
 end GppSpectralGammaPair
 
