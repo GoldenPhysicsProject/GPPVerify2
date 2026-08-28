@@ -49,3 +49,6 @@ jobs:
 
       - name: Antiunitary googly exchange and Plucker quadric
         run: lake build GppVerify.CelestialHolography.GooglyAntiunitaryExchange
+
+      - name: Twistor-space lift of googly exchange
+        run: lake build GppVerify.CelestialHolography.GooglyTwistorLift
