@@ -51,8 +51,7 @@ theorem primeFactor_norm_sq_real
     {p : ℝ} (hp : 1 ≤ p) (m : ℕ) (t : ℝ) :
     (Real.sqrt (modeWeight p m) * modeValue p m t) ^ 2 =
       modeWeight p m * (modeValue p m t) ^ 2 := by
-  rw [mul_pow]
-  rw [sq_sqrt (modeWeight_nonneg hp m)]
+  rw [mul_pow, Real.sq_sqrt (modeWeight_nonneg hp m)]
 
 end GppArithmeticPrimeFactorMap
 
