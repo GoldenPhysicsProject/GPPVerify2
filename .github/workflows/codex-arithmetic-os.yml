@@ -48,3 +48,6 @@ jobs:
 
       - name: Prime-local arithmetic OS positivity
         run: lake build GppVerify.CelestialHolography.ArithmeticPrimeLocalOS
+
+      - name: Euler-log causal anomaly algebra
+        run: lake build GppVerify.CelestialHolography.ArithmeticEulerLogAnomaly
