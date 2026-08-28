@@ -84,6 +84,16 @@ theorem rhoStepFactor_gt_one_iff (k : ℕ) (x : ℝ) :
   rw [lt_div_iff₀ hden]
   constructor <;> intro h <;> nlinarith
 
+/-- **Sharp chamber suppression threshold.** The normalized spectral weight is
+suppressed from chamber `k` to `k+1` exactly inside the complementary central
+region `2 x^2 < k+1`. -/
+theorem rhoStepFactor_lt_one_iff (k : ℕ) (x : ℝ) :
+    rhoStepFactor k x < 1 ↔ 2 * x ^ 2 < ((k : ℝ) + 1) := by
+  unfold rhoStepFactor
+  have hden : 0 < ((k : ℝ) + 1) * (2 * (k : ℝ) + 3) := by positivity
+  rw [div_lt_iff₀ hden]
+  constructor <;> intro h <;> nlinarith
+
 /-- The threshold itself is the unique equality locus for the chamber multiplier. -/
 theorem rhoStepFactor_eq_one_iff (k : ℕ) (x : ℝ) :
     rhoStepFactor k x = 1 ↔ 2 * x ^ 2 = ((k : ℝ) + 1) := by
@@ -92,10 +102,19 @@ theorem rhoStepFactor_eq_one_iff (k : ℕ) (x : ℝ) :
   rw [div_eq_iff hden.ne']
   constructor <;> intro h <;> nlinarith
 
+/-- In particular the spectral origin is strictly suppressed at every chamber
+step. -/
+theorem rhoStepFactor_zero_lt_one (k : ℕ) :
+    rhoStepFactor k 0 < 1 := by
+  rw [rhoStepFactor_lt_one_iff]
+  norm_num
+
 end GppSpectralRho
 
 #print axioms GppSpectralRho.rhoGamma_neg
 #print axioms GppSpectralRho.rhoGamma_succ
 #print axioms GppSpectralRho.rhoStepFactor_pos
 #print axioms GppSpectralRho.rhoStepFactor_gt_one_iff
+#print axioms GppSpectralRho.rhoStepFactor_lt_one_iff
 #print axioms GppSpectralRho.rhoStepFactor_eq_one_iff
+#print axioms GppSpectralRho.rhoStepFactor_zero_lt_one
