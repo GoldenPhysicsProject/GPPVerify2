@@ -57,6 +57,7 @@ theorem rhoGamma_eq_chamberProduct (k : ℕ) (x : ℝ) :
           4 * (2 : ℝ) ^ (2 * k) := by
         rw [show 2 * (k + 1) = 2 * k + 2 by omega, pow_add]
         norm_num
+        ring
       rw [hfac, hpow]
       push_cast
       field_simp [hk1, hk23, hfact]
