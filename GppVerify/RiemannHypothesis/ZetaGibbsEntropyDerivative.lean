@@ -1,5 +1,6 @@
 import GppVerify.RiemannHypothesis.ZetaGibbsThermodynamicDerivatives
 import GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
+import GppVerify.RiemannHypothesis.ZetaGibbsCumulantDerivative
 import Mathlib.Tactic
 
 /-!
@@ -18,9 +19,14 @@ and proves the actual differential identity
 
   S'(β) = -β g(β).
 
+The cumulant flow `g'(β) = -κ₃(β)` then gives the exact entropy-response curvature
+
+  (S')'(β) = -g(β) + β κ₃(β).
+
 Thus the previously formalized `entropyBetaDerivative` is not merely a response ansatz: it
 is the derivative of an explicit entropy potential on the honest Gibbs half-line `β > 1`.
-No analytic continuation of this thermodynamic interpretation is asserted.
+No analytic continuation of this thermodynamic interpretation is asserted, and no global
+sign is asserted for the curvature because its two terms compete.
 -/
 
 namespace GppZetaGibbsEntropyDerivative
@@ -28,6 +34,7 @@ namespace GppZetaGibbsEntropyDerivative
 open GppZetaGibbsFisher
 open GppZetaGibbsStrictThermodynamics
 open GppZetaGibbsThermodynamicDerivatives
+open GppZetaGibbsCumulantDerivative
 
 /-- Entropy potential written directly in terms of the real zeta log-partition and mean
 log-energy response. -/
@@ -73,9 +80,34 @@ theorem heatCapacity_eq_neg_beta_mul_deriv_zetaEntropy
   rw [(hasDerivAt_zetaEntropy hβ).deriv]
   exact heatCapacity_eq_neg_beta_mul_entropyBetaDerivative β
 
+/-- **Exact entropy-response curvature law.**  Differentiating
+`S'(β) = -β κ₂(β)` and using `κ₂'(β) = -κ₃(β)` gives
+
+`(S')'(β) = -κ₂(β) + β κ₃(β)`.
+
+No sign is asserted: variance and skewness compete. -/
+theorem hasDerivAt_entropyBetaDerivative
+    {β : ℝ} (hβ : 1 < β) :
+    HasDerivAt entropyBetaDerivative
+      (-logEnergyVariance β + β * logEnergyThirdCumulant β) β := by
+  have hvar := hasDerivAt_logEnergyVariance hβ
+  have hprod := (hasDerivAt_id β).mul hvar
+  have hneg := hprod.neg
+  unfold entropyBetaDerivative
+  convert hneg using 1 <;> ring
+
+/-- Derivative form of the entropy-response curvature identity. -/
+theorem deriv_entropyBetaDerivative
+    {β : ℝ} (hβ : 1 < β) :
+    deriv entropyBetaDerivative β =
+      -logEnergyVariance β + β * logEnergyThirdCumulant β := by
+  exact (hasDerivAt_entropyBetaDerivative hβ).deriv
+
 end GppZetaGibbsEntropyDerivative
 
 #print axioms GppZetaGibbsEntropyDerivative.hasDerivAt_zetaEntropy
 #print axioms GppZetaGibbsEntropyDerivative.deriv_zetaEntropy_neg
 #print axioms GppZetaGibbsEntropyDerivative.deriv_zetaEntropy_eq_neg_heatCapacity_div_beta
 #print axioms GppZetaGibbsEntropyDerivative.heatCapacity_eq_neg_beta_mul_deriv_zetaEntropy
+#print axioms GppZetaGibbsEntropyDerivative.hasDerivAt_entropyBetaDerivative
+#print axioms GppZetaGibbsEntropyDerivative.deriv_entropyBetaDerivative
