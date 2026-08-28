@@ -41,6 +41,8 @@ jobs:
         run: lake build GppVerify.CelestialHolography.WienerHopfPositiveFactor
       - name: Wiener-Hopf Gamma base bridge
         run: lake build GppVerify.CelestialHolography.WienerHopfGammaBridge
+      - name: Positive factor of base Gamma spectral density
+        run: lake build GppVerify.CelestialHolography.WienerHopfGammaPositiveFactor
       - name: Wiener-Hopf Gamma full chamber hierarchy
         run: lake build GppVerify.CelestialHolography.WienerHopfGammaChamberHierarchy
       - name: Zero-shift and all-real sech convolution normalization
