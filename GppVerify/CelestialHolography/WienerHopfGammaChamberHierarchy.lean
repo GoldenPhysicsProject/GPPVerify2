@@ -28,7 +28,8 @@ theorem rhoGamma_eq_prod_stepFactor_mul_base (k : ℕ) (x : ℝ) :
   induction k with
   | zero => simp
   | succ k ih =>
-      rw [Nat.succ_eq_add_one, rhoGamma_succ, ih, Finset.prod_range_succ]
+      rw [rhoGamma_succ, ih, Finset.prod_range_succ]
+      unfold rhoStepFactor
       push_cast
       ring
 
