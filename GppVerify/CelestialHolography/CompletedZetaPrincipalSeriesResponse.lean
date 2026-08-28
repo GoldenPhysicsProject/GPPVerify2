@@ -1,5 +1,6 @@
 import GppVerify.RiemannHypothesis.CompletedZetaCriticalResponse
 import GppVerify.CelestialHolography.PositiveRealPrincipalSeries
+import GppVerify.CelestialHolography.PrincipalSeriesShadowConjugation
 import Mathlib.Tactic
 
 namespace GppCompletedZetaPrincipalSeriesResponse
@@ -50,8 +51,24 @@ theorem celestialCompletedResponse_shadow_odd
   rw [harg] at hreflect
   exact hreflect
 
+/-- **Principal-axis conjugation oddness.** On `Re Δ = 1`, scalar shadow is exactly
+complex conjugation. Hence the completed-zeta logarithmic response is odd under
+conjugation on the celestial principal-series axis. This is a direct combination
+of functional-equation reflection with the positive-real half-density dictionary;
+it makes no claim that a zero lies on this axis. -/
+theorem celestialCompletedResponse_conj_odd_on_principal
+    {Δ : ℂ} (hΔre : Δ.re = 1) (hΔ0 : Δ ≠ 0) (hΔ2 : Δ ≠ 2)
+    (hΛ : GppCompletedZetaDerivative.completedRiemannZeta (Δ / 2) ≠ 0) :
+    celestialCompletedResponse Δ =
+      -celestialCompletedResponse (complexConj Δ) := by
+  have hshadow : celestialShadow Δ = complexConj Δ :=
+    GppPrincipalShadow.shadow_eq_conj_iff.mpr hΔre
+  rw [← hshadow]
+  exact celestialCompletedResponse_shadow_odd hΔ0 hΔ2 hΛ
+
 end GppCompletedZetaPrincipalSeriesResponse
 
 #print axioms GppCompletedZetaPrincipalSeriesResponse.half_argument_re_eq_half
 #print axioms GppCompletedZetaPrincipalSeriesResponse.celestialCompletedResponse_re_eq_zero
 #print axioms GppCompletedZetaPrincipalSeriesResponse.celestialCompletedResponse_shadow_odd
+#print axioms GppCompletedZetaPrincipalSeriesResponse.celestialCompletedResponse_conj_odd_on_principal
