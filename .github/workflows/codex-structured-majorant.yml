@@ -54,6 +54,9 @@ jobs:
       - name: Raised-box nested simplex reduction
         if: always()
         run: lake build GppVerify.CelestialHolography.RaisedBoxSimplexNestedReduction
+      - name: Raised-box Beta-to-Gamma closure
+        if: always()
+        run: lake build GppVerify.CelestialHolography.RaisedBoxSimplexGammaClosure
       - name: Raised-box pointwise regulator limit
         if: always()
         run: lake build GppVerify.CelestialHolography.RaisedBoxPointwiseLimit
