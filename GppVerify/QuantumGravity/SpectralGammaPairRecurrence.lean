@@ -70,8 +70,18 @@ theorem gammaPair_add_one {a : ℝ} (ha : 0 < a) (x : ℝ) :
     ring
   unfold gammaPair
   rw [hplus, hminus, hp, hm]
-  have hquad : zp * zm = ((a ^ 2 + x ^ 2 : ℝ) : ℂ) := by
-    apply Complex.ext <;> norm_num [zp, zm] <;> ring
+  have hquadC : zp * zm = (a : ℂ) ^ 2 + (x : ℂ) ^ 2 := by
+    dsimp [zp, zm]
+    calc
+      ((a : ℂ) + (x : ℂ) * I) * ((a : ℂ) - (x : ℂ) * I)
+          = (a : ℂ) ^ 2 - ((x : ℂ) * I) ^ 2 := by ring
+      _ = (a : ℂ) ^ 2 + (x : ℂ) ^ 2 := by
+        rw [mul_pow]
+        norm_num
+        ring
+  have hcast : (a : ℂ) ^ 2 + (x : ℂ) ^ 2 = ((a ^ 2 + x ^ 2 : ℝ) : ℂ) := by
+    norm_num
+  have hquad : zp * zm = ((a ^ 2 + x ^ 2 : ℝ) : ℂ) := hquadC.trans hcast
   calc
     zp * Complex.Gamma zp * (zm * Complex.Gamma zm)
         = (zp * zm) * (Complex.Gamma zp * Complex.Gamma zm) := by ring
@@ -79,7 +89,6 @@ theorem gammaPair_add_one {a : ℝ} (ha : 0 < a) (x : ℝ) :
           (Complex.Gamma ((a : ℂ) + (x : ℂ) * I) *
             Complex.Gamma ((a : ℂ) - (x : ℂ) * I)) := by
           rw [hquad]
-          rfl
 
 /-- Integer-step specialization used by the `rho_m` hierarchy. -/
 theorem gammaPair_nat_succ (m : ℕ) (x : ℝ) :
