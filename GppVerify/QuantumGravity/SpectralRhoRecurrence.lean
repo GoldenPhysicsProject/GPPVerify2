@@ -63,7 +63,39 @@ theorem rhoGamma_succ (k : ℕ) (x : ℝ) :
   field_simp [hpi, hk1, hk23, hfact]
   ring
 
+/-- Real one-step multiplier in the normalized chamber recurrence. -/
+noncomputable def rhoStepFactor (k : ℕ) (x : ℝ) : ℝ :=
+  2 * ((((k : ℝ) + 1) ^ 2) + x ^ 2) /
+    (((k : ℝ) + 1) * (2 * (k : ℝ) + 3))
+
+/-- The chamber multiplier is strictly positive for every real spectral parameter. -/
+theorem rhoStepFactor_pos (k : ℕ) (x : ℝ) :
+    0 < rhoStepFactor k x := by
+  unfold rhoStepFactor
+  positivity
+
+/-- **Sharp chamber amplification threshold.** The normalized spectral weight grows
+from chamber `k` to `k+1` exactly when `2 x^2 > k+1`.  Thus the recurrence suppresses
+the central spectral region and amplifies the sufficiently large-|x| tail. -/
+theorem rhoStepFactor_gt_one_iff (k : ℕ) (x : ℝ) :
+    1 < rhoStepFactor k x ↔ ((k : ℝ) + 1) < 2 * x ^ 2 := by
+  unfold rhoStepFactor
+  have hden : 0 < ((k : ℝ) + 1) * (2 * (k : ℝ) + 3) := by positivity
+  rw [lt_div_iff₀ hden]
+  constructor <;> intro h <;> nlinarith
+
+/-- The threshold itself is the unique equality locus for the chamber multiplier. -/
+theorem rhoStepFactor_eq_one_iff (k : ℕ) (x : ℝ) :
+    rhoStepFactor k x = 1 ↔ 2 * x ^ 2 = ((k : ℝ) + 1) := by
+  unfold rhoStepFactor
+  have hden : 0 < ((k : ℝ) + 1) * (2 * (k : ℝ) + 3) := by positivity
+  rw [div_eq_iff hden.ne']
+  constructor <;> intro h <;> nlinarith
+
 end GppSpectralRho
 
 #print axioms GppSpectralRho.rhoGamma_neg
 #print axioms GppSpectralRho.rhoGamma_succ
+#print axioms GppSpectralRho.rhoStepFactor_pos
+#print axioms GppSpectralRho.rhoStepFactor_gt_one_iff
+#print axioms GppSpectralRho.rhoStepFactor_eq_one_iff
