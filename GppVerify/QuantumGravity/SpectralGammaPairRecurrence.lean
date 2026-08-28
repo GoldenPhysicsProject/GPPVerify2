@@ -78,7 +78,6 @@ theorem gammaPair_add_one {a : ℝ} (ha : 0 < a) (x : ℝ) :
       _ = (a : ℂ) ^ 2 + (x : ℂ) ^ 2 := by
         rw [mul_pow]
         norm_num
-        ring
   have hcast : (a : ℂ) ^ 2 + (x : ℂ) ^ 2 = ((a ^ 2 + x ^ 2 : ℝ) : ℂ) := by
     norm_num
   have hquad : zp * zm = ((a ^ 2 + x ^ 2 : ℝ) : ℂ) := hquadC.trans hcast
