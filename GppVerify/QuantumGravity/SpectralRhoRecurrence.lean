@@ -17,8 +17,8 @@ theorem rhoGamma_neg (k : ℕ) (x : ℝ) :
   unfold rhoGamma
   rw [gammaPair_neg]
 
-/-- Exact one-step recurrence, proved by separating the normalization ratio from
-Gamma recurrence before entering complex arithmetic. -/
+/-- Exact one-step recurrence, proved by separating the real normalization ratio
+from the Gamma recurrence before entering complex arithmetic. -/
 theorem rhoGamma_succ (k : ℕ) (x : ℝ) :
     rhoGamma (k + 1) x =
       (((2 * ((((k : ℝ) + 1) ^ 2) + x ^ 2)) /
@@ -27,6 +27,7 @@ theorem rhoGamma_succ (k : ℕ) (x : ℝ) :
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
   have hk1 : ((k : ℝ) + 1) ≠ 0 := by positivity
   have hk23 : (2 * (k : ℝ) + 3) ≠ 0 := by positivity
+  have hk22 : (2 * (k : ℝ) + 2) ≠ 0 := by positivity
   have hfact : (((2 * k + 1).factorial : ℕ) : ℝ) ≠ 0 := by positivity
   have hgamma := gammaPair_add_one (a := (k : ℝ) + 1) (by positivity) x
   have hfac : (2 * (k + 1) + 1).factorial =
@@ -34,6 +35,11 @@ theorem rhoGamma_succ (k : ℕ) (x : ℝ) :
     rw [show 2 * (k + 1) + 1 = (2 * k + 1) + 2 by omega]
     rw [Nat.factorial_succ, Nat.factorial_succ]
     ring
+  have hpow :
+      (2 : ℝ) ^ (2 * (k + 1) + 1) =
+        4 * (2 : ℝ) ^ (2 * k + 1) := by
+    rw [show 2 * (k + 1) + 1 = (2 * k + 1) + 2 by omega, pow_add]
+    norm_num
   have hnorm :
       (2 : ℝ) ^ (2 * (k + 1) + 1) /
           (Real.pi * ((2 * (k + 1) + 1).factorial : ℝ)) =
@@ -42,8 +48,8 @@ theorem rhoGamma_succ (k : ℕ) (x : ℝ) :
             (Real.pi * ((2 * k + 1).factorial : ℝ))) := by
     rw [hfac]
     push_cast
-    rw [show (2 : ℝ) * ((k : ℝ) + 1) = (2 * k + 2 : ℕ) by norm_num]
-    field_simp [hpi, hk1, hk23, hfact]
+    rw [hpow]
+    field_simp [hpi, hk1, hk23, hk22, hfact]
     ring
   unfold rhoGamma
   rw [show ((k + 1 : ℕ) : ℝ) + 1 = ((k : ℝ) + 1) + 1 by norm_num, hgamma]
