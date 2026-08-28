@@ -41,6 +41,8 @@ jobs:
         run: lake build GppVerify.RiemannHypothesis.GibbsCumulantDifferentialAlgebra
       - name: Full zeta cumulant hierarchy
         run: lake build GppVerify.RiemannHypothesis.ZetaGibbsCumulantHierarchy
+      - name: Strict zeta Gibbs variance curvature
+        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsVarianceCurvature
       - name: Quartic von Mangoldt positivity
         run: lake build GppVerify.RiemannHypothesis.VonMangoldtQuarticPositivity
       - name: Strict third Gibbs cumulant derivative
