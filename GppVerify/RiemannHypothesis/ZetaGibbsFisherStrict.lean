@@ -1,4 +1,5 @@
 import GppVerify.RiemannHypothesis.ZetaFisherStrictMonotonicity
+import GppVerify.RiemannHypothesis.TwoParameterFisherDeterminant
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 import Mathlib.Tactic
 
