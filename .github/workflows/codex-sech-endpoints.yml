@@ -37,6 +37,8 @@ jobs:
         run: lake build GppVerify.CelestialHolography.SechConvolutionClosedForm
       - name: Wiener-Hopf normalization of sech convolution
         run: lake build GppVerify.CelestialHolography.SechConvolutionWienerHopf
+      - name: Positive Wiener-Hopf square-root factor
+        run: lake build GppVerify.CelestialHolography.WienerHopfPositiveFactor
       - name: Wiener-Hopf Gamma base bridge
         run: lake build GppVerify.CelestialHolography.WienerHopfGammaBridge
       - name: Wiener-Hopf Gamma full chamber hierarchy
