@@ -45,3 +45,6 @@ jobs:
 
       - name: Arithmetic OS Gram positivity
         run: lake build GppVerify.CelestialHolography.ArithmeticOSGram
+
+      - name: Prime-local arithmetic OS positivity
+        run: lake build GppVerify.CelestialHolography.ArithmeticPrimeLocalOS
