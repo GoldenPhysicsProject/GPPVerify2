@@ -51,3 +51,6 @@ jobs:
 
       - name: Euler-log causal anomaly algebra
         run: lake build GppVerify.CelestialHolography.ArithmeticEulerLogAnomaly
+
+      - name: Arithmetic no-ghost inertia obstruction
+        run: lake build GppVerify.CelestialHolography.ArithmeticNoGhostInertia
