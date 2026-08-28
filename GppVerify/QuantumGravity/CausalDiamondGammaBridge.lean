@@ -40,8 +40,9 @@ theorem klDensity_mul_gamma_modulus
   have hsinh : Real.sinh (Real.pi * lam) ≠ 0 := by
     exact Real.sinh_ne_zero.mpr (mul_ne_zero Real.pi_ne_zero hlam)
   rw [gamma_modulus_eq_bwFisherKernel lam hlam]
-  push_cast
-  exact_mod_cast klDensity_mul_bwFisherKernel lam hsinh
+  have hreal := klDensity_mul_bwFisherKernel lam hsinh
+  have hcast := congrArg (fun r : ℝ => (r : ℂ)) hreal
+  simpa only [Complex.ofReal_mul] using hcast
 
 end GppCausalDiamondGammaBridge
 
