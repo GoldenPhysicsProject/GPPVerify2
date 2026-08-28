@@ -1,7 +1,4 @@
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Analysis.SpecialFunctions.Exp
-import Mathlib.Algebra.BigOperators.Basic
-import Mathlib.Tactic
+import Mathlib
 
 /-!
 # Prime-local arithmetic Osterwalder--Schrader positivity
