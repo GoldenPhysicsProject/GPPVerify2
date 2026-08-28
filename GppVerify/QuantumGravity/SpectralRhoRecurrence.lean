@@ -53,13 +53,13 @@ theorem rhoGamma_succ (k : ℕ) (x : ℝ) :
     rw [show 2 * (k + 1) + 1 = (2 * k + 1) + 2 by omega]
     rw [Nat.factorial_succ, Nat.factorial_succ]
     ring
-  unfold rhoGamma
-  rw [hindex, hgamma, hfac]
-  push_cast
   have hpow : (2 : ℝ) ^ (2 * (k + 1) + 1) = 4 * (2 : ℝ) ^ (2 * k + 1) := by
     rw [show 2 * (k + 1) + 1 = (2 * k + 1) + 2 by omega, pow_add]
     norm_num
-  rw [hpow]
+    ring
+  unfold rhoGamma
+  rw [hindex, hgamma, hfac, hpow]
+  push_cast
   field_simp [hpi, hk1, hk23, hfact]
   ring
 
@@ -108,6 +108,7 @@ theorem rhoStepFactor_zero_lt_one (k : ℕ) :
     rhoStepFactor k 0 < 1 := by
   rw [rhoStepFactor_lt_one_iff]
   norm_num
+  positivity
 
 end GppSpectralRho
 
