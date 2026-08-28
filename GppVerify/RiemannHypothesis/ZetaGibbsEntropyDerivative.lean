@@ -91,7 +91,11 @@ theorem hasDerivAt_entropyBetaDerivative
     HasDerivAt entropyBetaDerivative
       (-logEnergyVariance β + β * logEnergyThirdCumulant β) β := by
   have hvar := hasDerivAt_logEnergyVariance hβ
-  have hprod := (hasDerivAt_id β).mul hvar
+  have hprod :
+      HasDerivAt
+        (fun y : ℝ => y * logEnergyVariance y)
+        (logEnergyVariance β + β * (-logEnergyThirdCumulant β)) β := by
+    simpa only [id_eq, one_mul] using (hasDerivAt_id β).mul hvar
   have hneg := hprod.neg
   unfold entropyBetaDerivative
   convert hneg using 1 <;> ring
