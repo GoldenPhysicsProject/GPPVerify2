@@ -62,7 +62,7 @@ theorem sq_add_inv_sq_eq_three_of_unit_split
 
 /-- The reciprocal partner of the golden ratio is `goldenRatio - 1`. -/
 theorem goldenRatio_inv_eq_sub_one : goldenRatio⁻¹ = goldenRatio - 1 := by
-  apply (eq_div_iff goldenRatio_ne_zero).2
+  field_simp [goldenRatio_ne_zero]
   nlinarith [goldenRatio_sq]
 
 /-- The golden reciprocal pair has exactly unit additive separation. -/
