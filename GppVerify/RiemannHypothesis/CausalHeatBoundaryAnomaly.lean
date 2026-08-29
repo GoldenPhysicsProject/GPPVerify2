@@ -19,15 +19,15 @@ second integral is truncated at `R`, affine changes of variables give exactly
 
   T_R(a) = a g(a) - (1/2) integral_[2R-a,2R+a] g.
 
-Thus the trace anomaly `Tr(E_t V_a - V_a E_t) = a g_t(a)` is reduced to one honest
-analytic endpoint: the moving Gaussian-window integral tends to zero as `R -> infinity`.
-This file formalizes the finite-cutoff identity.  It does not yet package the operators or
-claim trace-classness.
+The moving window has fixed width `2a`; hence it vanishes for every kernel `g(x) -> 0` as
+`x -> +infinity`.  Thus the scalar boundary anomaly limit is already a general theorem,
+independent of Gaussian integration.  The remaining operator-theoretic layer is trace-classness
+and the identification of the operator trace with this diagonal integral.
 -/
 
 namespace GppCausalHeatBoundaryAnomaly
 
-open intervalIntegral
+open Filter Set Metric intervalIntegral
 
 /-- The normalized one-dimensional heat Gaussian. -/
 noncomputable def heatKernelGaussian (t x : ℝ) : ℝ :=
@@ -87,6 +87,73 @@ theorem truncatedBoundaryTrace_eq_boundary_minus_tail
     integral_add_adjacent_intervals _ _ _
   linarith
 
+/-- **Fixed-width moving windows vanish for every kernel decaying at `+infinity`.**
+No global integrability assumption is required: uniform smallness of `g` on the far window,
+together with the interval-integral norm bound, is enough. -/
+theorem movingWindowIntegral_tendsto_zero
+    {g : ℝ → ℝ} (hg : Tendsto g atTop (𝓝 0)) {a : ℝ} (ha : 0 < a) :
+    Tendsto (fun R : ℝ => ∫ y in (2 * R - a)..(2 * R + a), g y) atTop (𝓝 0) := by
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  let C : ℝ := ε / (4 * a)
+  have hC : 0 < C := by
+    dsimp [C]
+    positivity
+  have hev : ∀ᶠ y : ℝ in atTop, dist (g y) 0 < C :=
+    hg.eventually (ball_mem_nhds 0 hC)
+  rw [Filter.eventually_atTop] at hev
+  obtain ⟨N, hN⟩ := hev
+  refine Filter.eventually_atTop.2 ⟨(N + a) / 2, ?_⟩
+  intro R hR
+  have hlow : N ≤ 2 * R - a := by linarith
+  have hle : 2 * R - a ≤ 2 * R + a := by linarith
+  have hpt : ∀ y ∈ Ι (2 * R - a) (2 * R + a), ‖g y‖ ≤ C := by
+    intro y hy
+    rw [uIoc_of_le hle] at hy
+    have hNy : N ≤ y := le_trans hlow (le_of_lt hy.1)
+    have hyC : dist (g y) 0 < C := hN y hNy
+    simpa [Real.dist_eq, Real.norm_eq_abs] using le_of_lt hyC
+  have hbound := intervalIntegral.norm_integral_le_of_norm_le_const hpt
+  have hwidth : |(2 * R + a) - (2 * R - a)| = 2 * a := by
+    rw [show (2 * R + a) - (2 * R - a) = 2 * a by ring,
+      abs_of_pos (mul_pos (by norm_num) ha)]
+  rw [hwidth] at hbound
+  have hcalc : C * (2 * a) = ε / 2 := by
+    dsimp [C]
+    field_simp [ha.ne']
+    ring
+  rw [hcalc] at hbound
+  have hlt : ‖∫ y in (2 * R - a)..(2 * R + a), g y‖ < ε := by
+    linarith
+  simpa [dist_zero_right] using hlt
+
+/-- **Generic scalar boundary anomaly limit.** If the underlying kernel decays at positive
+infinity, the finite-cutoff diagonal trace converges to the boundary value `a*g(a)`. -/
+theorem truncatedBoundaryTrace_tendsto_boundary
+    {g : ℝ → ℝ} (hg : Tendsto g atTop (𝓝 0)) {a : ℝ} (ha : 0 < a) :
+    Tendsto (fun R : ℝ => truncatedBoundaryTrace g a R) atTop (𝓝 (a * g a)) := by
+  have htail := movingWindowIntegral_tendsto_zero hg ha
+  have hhalf :
+      Tendsto
+        (fun R : ℝ => (1 / 2 : ℝ) *
+          (∫ y in (2 * R - a)..(2 * R + a), g y))
+        atTop (𝓝 0) := by
+    simpa using (tendsto_const_nhds.mul htail)
+  have hmain :
+      Tendsto
+        (fun R : ℝ => a * g a - (1 / 2 : ℝ) *
+          (∫ y in (2 * R - a)..(2 * R + a), g y))
+        atTop (𝓝 (a * g a)) := by
+    simpa using (tendsto_const_nhds.sub hhalf)
+  have heq :
+      (fun R : ℝ => truncatedBoundaryTrace g a R) =
+        (fun R : ℝ => a * g a - (1 / 2 : ℝ) *
+          (∫ y in (2 * R - a)..(2 * R + a), g y)) := by
+    funext R
+    exact truncatedBoundaryTrace_eq_boundary_minus_tail g a R
+  rw [heq]
+  exact hmain
+
 /-- Specialization of the finite-cutoff identity to the normalized heat Gaussian. -/
 theorem truncatedHeatBoundaryTrace_eq
     (t a R : ℝ) :
@@ -102,4 +169,6 @@ end GppCausalHeatBoundaryAnomaly
 #print axioms GppCausalHeatBoundaryAnomaly.two_mul_integral_a_R_two_sub
 #print axioms GppCausalHeatBoundaryAnomaly.two_mul_integral_a_R_two_add
 #print axioms GppCausalHeatBoundaryAnomaly.truncatedBoundaryTrace_eq_boundary_minus_tail
+#print axioms GppCausalHeatBoundaryAnomaly.movingWindowIntegral_tendsto_zero
+#print axioms GppCausalHeatBoundaryAnomaly.truncatedBoundaryTrace_tendsto_boundary
 #print axioms GppCausalHeatBoundaryAnomaly.truncatedHeatBoundaryTrace_eq
