@@ -62,6 +62,11 @@ noncomputable def rhoStepFactor (k : ℕ) (x : ℝ) : ℝ :=
   2 * ((((k : ℝ) + 1) ^ 2) + x ^ 2) /
     (((k : ℝ) + 1) * (2 * (k : ℝ) + 3))
 
+/-- The Gamma-density recurrence packaged with the named real step factor. -/
+theorem rhoGamma_succ_stepFactor (k : ℕ) (x : ℝ) :
+    rhoGamma (k + 1) x = (rhoStepFactor k x : ℂ) * rhoGamma k x := by
+  simpa [rhoStepFactor] using rhoGamma_succ k x
+
 theorem rhoStepFactor_pos (k : ℕ) (x : ℝ) : 0 < rhoStepFactor k x := by
   unfold rhoStepFactor
   positivity
@@ -96,6 +101,7 @@ end GppSpectralRho
 
 #print axioms GppSpectralRho.rhoGamma_neg
 #print axioms GppSpectralRho.rhoGamma_succ
+#print axioms GppSpectralRho.rhoGamma_succ_stepFactor
 #print axioms GppSpectralRho.rhoStepFactor_pos
 #print axioms GppSpectralRho.rhoStepFactor_gt_one_iff
 #print axioms GppSpectralRho.rhoStepFactor_lt_one_iff
