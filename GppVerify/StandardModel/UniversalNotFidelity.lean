@@ -44,15 +44,20 @@ theorem pauliSum_eq (A : QMat) :
     pauliSum A = (2 * tr2 A) • (1 : QMat) - A := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [pauliSum, sigmaX, sigmaY, sigmaZ, tr2, Matrix.mul_apply, Fin.sum_univ_two] <;>
-    ring_nf <;>
-    simp [Complex.I_mul_I]
+    simp [pauliSum, sigmaX, sigmaY, sigmaZ, tr2, Matrix.mul_apply, Fin.sum_univ_two,
+      Complex.I_mul_I] <;>
+    ring
 
 /-- For a normalized qubit state, the equal Pauli mixture is `(2I-rho)/3`. -/
 theorem universalNot_eq_of_trace_one (rho : QMat) (htr : tr2 rho = 1) :
     universalNot rho = (3 : ℂ)⁻¹ • ((2 : ℂ) • (1 : QMat) - rho) := by
   rw [universalNot, pauliSum_eq, htr]
   norm_num
+
+/-- Two-by-two trace is linear under addition. -/
+theorem tr2_add (A B : QMat) : tr2 (A + B) = tr2 A + tr2 B := by
+  simp [tr2]
+  ring
 
 /-- Two-by-two trace is linear under subtraction. -/
 theorem tr2_sub (A B : QMat) : tr2 (A - B) = tr2 A - tr2 B := by
@@ -68,6 +73,15 @@ theorem tr2_smul (c : ℂ) (A : QMat) : tr2 (c • A) = c * tr2 A := by
   simp [tr2]
   ring
 
+/-- Exact product identity used in the pure-state fidelity calculation. -/
+theorem orthogonal_product_identity (rho : QMat) :
+    (1 - rho) * ((2 : ℂ) • (1 : QMat) - rho) =
+      2 • (1 : QMat) - 3 • rho + rho * rho := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.mul_apply, Fin.sum_univ_two] <;>
+    ring
+
 /-- Exact overlap with the orthogonal projector for a pure normalized qubit state. -/
 theorem universalNot_orthogonal_fidelity
     (rho : QMat)
@@ -77,15 +91,8 @@ theorem universalNot_orthogonal_fidelity
   rw [universalNot_eq_of_trace_one rho htr]
   rw [Matrix.mul_smul]
   rw [tr2_smul]
-  have hprod : (1 - rho) * ((2 : ℂ) • (1 : QMat) - rho) = 2 • (1 : QMat) - 3 • rho + rho * rho := by
-    ext i j
-    simp [Matrix.mul_apply, Fin.sum_univ_two]
-    ring
-  rw [hprod, hpure]
-  have htrace : tr2 (2 • (1 : QMat) - 3 • rho + rho) = 2 := by
-    simp [tr2, htr]
-    ring
-  rw [htrace]
+  rw [orthogonal_product_identity, hpure]
+  rw [tr2_add, tr2_sub, tr2_smul, tr2_smul, tr2_one, htr]
   norm_num
 
 end GppUniversalNot
