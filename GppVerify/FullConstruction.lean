@@ -3,13 +3,14 @@ import GppVerify
 /-!
 # GPPVerify full construction umbrella
 
-`GppVerify.lean` is the historical root module.  During rapid research, a number of
+`GppVerify.lean` is the historical root module. During rapid research, a number of
 proved modules were added behind focused CI lanes without immediately becoming imports
-of that root.  This umbrella makes the current integration frontier import-connected.
+of that root. This umbrella makes the current integration frontier import-connected.
 
 The repository's ordinary `lake build` remains the stronger file-level compilation gate:
-it builds the full `GppVerify` Lean library.  Building this module additionally checks
-that the active proved construction can coexist in one import graph.
+it builds the full `GppVerify` Lean library. Building this module additionally checks
+that the active proved construction can coexist in one import graph. No marker theorem
+is needed: successful elaboration of the imports is the gate.
 -/
 
 -- Hadamard / Shadow-Euler finite algebra
@@ -21,10 +22,14 @@ import GppVerify.RiemannHypothesis.CelestialRiemannAffineBridge
 import GppVerify.CelestialHolography.PositiveRealPrincipalSeries
 import GppVerify.CelestialHolography.CompletedZetaPrincipalSeriesResponse
 
--- Grassmannian / orientation / zitterbewegung structure
+-- Grassmannian / googly / orientation / zitterbewegung structure
 import GppVerify.GrassmannianOrientationZ4
+import GppVerify.CelestialHolography.GooglyAntiunitaryExchange
+import GppVerify.CelestialHolography.GooglyTwistorLift
+import GppVerify.StandardModel.MassOrientationCoupling
 
 -- Prime Poisson / positive-type / causal heat arithmetic
+import GppVerify.RiemannHypothesis.VonMangoldtPrimePowerPoissonFiber
 import GppVerify.RiemannHypothesis.PrimePoissonRadialPositiveType
 import GppVerify.RiemannHypothesis.FinitePrimePoissonRadialSum
 import GppVerify.RiemannHypothesis.PositiveTypeLimit
@@ -56,8 +61,3 @@ import GppVerify.CelestialHolography.TwoFlowScalarStateSum
 
 -- Quantum-information / Standard-Model finite cores
 import GppVerify.StandardModel.UniversalNotFidelity
-
--- This declaration provides a stable CI target for the import-connected construction.
-theorem fullConstruction_loaded : True := trivial
-
-#print axioms fullConstruction_loaded
