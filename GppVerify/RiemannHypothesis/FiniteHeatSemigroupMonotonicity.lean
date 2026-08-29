@@ -37,7 +37,8 @@ theorem atomicHeat_term_antitone
     w * Real.exp (-lam * u) ≤ w * Real.exp (-lam * t) := by
   apply mul_le_mul_of_nonneg_left _ hw
   apply Real.exp_le_exp.mpr
-  exact neg_le_neg (mul_le_mul_of_nonneg_left htu hlam)
+  simpa only [neg_mul] using
+    neg_le_neg (mul_le_mul_of_nonneg_left htu hlam)
 
 /-- A finite positive heat trace with nonnegative rates is antitone in Euclidean time. -/
 theorem atomicHeat_antitone
