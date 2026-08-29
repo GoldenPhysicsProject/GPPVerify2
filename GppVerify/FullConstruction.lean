@@ -21,6 +21,9 @@ import GppVerify.RiemannHypothesis.CelestialRiemannAffineBridge
 import GppVerify.CelestialHolography.PositiveRealPrincipalSeries
 import GppVerify.CelestialHolography.CompletedZetaPrincipalSeriesResponse
 
+-- Grassmannian / orientation / zitterbewegung structure
+import GppVerify.GrassmannianOrientationZ4
+
 -- Prime Poisson / positive-type / causal heat arithmetic
 import GppVerify.RiemannHypothesis.PrimePoissonRadialPositiveType
 import GppVerify.RiemannHypothesis.FinitePrimePoissonRadialSum
