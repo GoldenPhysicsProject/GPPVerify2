@@ -78,7 +78,8 @@ theorem blaschke_normSq_eq_one
   have hnum : Complex.normSq (z - (a : ℂ)) =
       Complex.normSq (1 - (a : ℂ) * z) := by
     simp [Complex.normSq, pow_two]
-    nlinarith
+    ring_nf at hz' ⊢
+    nlinarith [hz']
   rw [hnum]
   have hnormSq : Complex.normSq (1 - (a : ℂ) * z) ≠ 0 := by
     intro hzero
