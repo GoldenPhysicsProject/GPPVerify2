@@ -72,7 +72,9 @@ theorem rhoGamma_re_strictly_increases_above_threshold
   have hrec := congrArg Complex.re (rhoGamma_succ k lam)
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hrec
   rw [hrec]
-  nlinarith [mul_pos (sub_pos.mpr hfac) hpos]
+  have hgain : 0 < (rhoStepFactor k lam - 1) * (rhoGamma k lam).re :=
+    mul_pos (sub_pos.mpr hfac) hpos
+  nlinarith
 
 /-- Below the exact recurrence threshold `2 lam^2 < k+1`, the real Gamma density
 strictly decreases from chamber `k` to chamber `k+1`. -/
@@ -84,7 +86,9 @@ theorem rhoGamma_re_strictly_decreases_below_threshold
   have hrec := congrArg Complex.re (rhoGamma_succ k lam)
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hrec
   rw [hrec]
-  nlinarith [mul_pos (sub_pos.mpr hpos) (sub_pos.mpr (sub_pos.mpr ?_))]
+  have hloss : 0 < (1 - rhoStepFactor k lam) * (rhoGamma k lam).re :=
+    mul_pos (sub_pos.mpr hfac) hpos
+  nlinarith
 
 end GppWienerHopfGammaChamberPositiveFactor
 
