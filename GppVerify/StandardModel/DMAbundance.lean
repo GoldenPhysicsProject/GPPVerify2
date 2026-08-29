@@ -25,7 +25,7 @@ namespace GppDM
 
 /-- Exact rational proxy for the commonly quoted observational value `Ω_DM h² ≈ 0.12`.
 This is input data encoded as a definition, not a predicted value. -/
-def omega_DM : ℝ := 3 / 25
+noncomputable def omega_DM : ℝ := 3 / 25
 
 /-- The observational proxy lies strictly between zero and one. -/
 theorem omega_DM_observed : 0 < omega_DM ∧ omega_DM < 1 := by
