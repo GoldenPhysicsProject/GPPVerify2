@@ -8,6 +8,7 @@ import GppVerify.RiemannHypothesis.CausalHeatBoundaryAnomaly
 import GppVerify.RiemannHypothesis.CausalPrimeResolventFinite
 import GppVerify.RiemannHypothesis.CausalPrimeHeatBridge
 import GppVerify.RiemannHypothesis.CausalPrimeHeatSummability
+import GppVerify.RiemannHypothesis.CausalPrimeHeatReindex
 import GppVerify.CelestialHolography.ArithmeticPrimeWaveParticle
 import GppVerify.CelestialHolography.ArithmeticSplitConventionBridge
 
@@ -38,64 +39,41 @@ Connects to: l2_constraint (L² forces Re = 1/2), two_zeros_at_ordinate,
              adelic_l2_regularization.
 
 The imported arithmetic wave/particle files are deliberately part of the root build:
-finite von-Mangoldt particles, the exact finite cosine/sine feature-map factorization,
-the exact Gamma--Plancherel continuous feature factorization, the scalar causal heat-boundary
-anomaly, the finite causal prime-resolvent Euler-log cancellation, the local causal-to-
-von-Mangoldt prime-power heat identification, absolute summability of the normalized causal
-prime heat series, the centered regulator, the split-coordinate convention bridge, and the
-Cesàro principal-series boundedness selector must all compile before this spectral scaffold
-is considered current.
+finite von-Mangoldt particles, exact finite cosine/sine feature-map factorization,
+exact Gamma--Plancherel continuous feature factorization, the scalar causal heat-boundary
+anomaly, finite causal prime-resolvent Euler-log cancellation, local causal-to-von-Mangoldt
+prime-power heat identification, absolute summability of the normalized causal prime heat
+series, its convergent canonical global prime/repetition reindexing, the centered regulator,
+the split-coordinate convention bridge, and the Cesàro principal-series boundedness selector
+must all compile before this spectral scaffold is considered current.
 -/
 
 namespace GppSpectralWeil
 
 open Complex
 
--- ============================================================
--- §1  Algebraic spectral facts (proved clean)
--- ============================================================
-
-/-- A test function h satisfying h(ρ) = h(1-ρ̄) is symmetric under the functional equation. -/
 lemma test_function_fe_symmetric (h : ℂ → ℂ) (rho : ℂ) :
     h rho = h rho := rfl
 
-/-- The spectral sum over zeros converges absolutely for suitable test functions h.
-    (Formal identity: each ρ contributes h(ρ) with multiplicity m(ρ).) -/
 lemma spectral_sum_well_defined : True := trivial
 
-/-- The explicit formula error term involves the gamma factor.
-    Algebraic: Γ'/Γ(s) = -γ - 1/s + Σ_{n≥1} (1/n - 1/(n+s)). -/
-lemma digamma_series_form (_ : ℂ) :
-    True := trivial
+lemma digamma_series_form (_ : ℂ) : True := trivial
 
-/-- Shadow symmetry of the spectral sum: if ρ is a zero, so is 1-ρ̄
-    (already proved: zeta_zero_implies_companion_zero). -/
 lemma spectral_sum_fe_symmetric : True := trivial
 
--- ============================================================
--- §2  Infrastructure axioms
--- ============================================================
-
-/-- Weil explicit formula: Σ_ρ h(ρ) = geometric terms.
-    Gap: not in Mathlib 4.19.0. Reference: Weil (1952), Bombieri (2000). -/
+/-- Weil explicit formula.  Honest infrastructure gap. -/
 theorem weil_explicit_formula : True := trivial
 
-/-- Meyer spectral-Weil identity: zeros of ζ = eigenvalues of adelic shadow operator.
-    Gap: requires distributional spectral theory on idèle class group. -/
+/-- Meyer spectral-Weil identity.  Honest infrastructure gap. -/
 theorem meyer_spectral_weil_identity : True := trivial
 
-/-- Positivity of Weil distribution: the explicit formula has non-negative contributions.
-    Gap: this is the key positivity step in Pathway 2, related to the Weil-pairing positivity hypothesis (formerly the arithmetic_admissibility axiom). -/
+/-- Positivity of the completed Weil distribution.  Honest infrastructure gap. -/
 theorem weil_distribution_positivity : True := trivial
 
--- ============================================================
--- §3  Main theorem (thm:spectral-weil)
--- ============================================================
-
-/-- **thm:spectral-weil** (ONON52, cited 10×). -/
+/-- Full spectral-Weil statement remains a scaffold until the three inputs above are replaced. -/
 theorem spectral_weil : True := trivial
 
-/-- Connection to arithmetic_admissibility. -/
+/-- Connection to arithmetic admissibility remains a scaffold for the same reason. -/
 theorem spectral_weil_closes_arithmetic_admissibility : True := trivial
 
 end GppSpectralWeil
