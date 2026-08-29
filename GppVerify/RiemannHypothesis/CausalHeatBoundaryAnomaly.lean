@@ -59,7 +59,7 @@ end intervalIntegral
 
 namespace GppCausalHeatBoundaryAnomaly
 
-open Filter Set Metric intervalIntegral
+open Filter Set intervalIntegral
 
 /-- The normalized one-dimensional heat Gaussian. -/
 noncomputable def heatKernelGaussian (t x : ℝ) : ℝ :=
@@ -67,15 +67,16 @@ noncomputable def heatKernelGaussian (t x : ℝ) : ℝ :=
 
 /-- Finite-cutoff diagonal integral of the causal heat/translation commutator. -/
 noncomputable def truncatedBoundaryTrace (g : ℝ → ℝ) (a R : ℝ) : ℝ :=
-  (∫ x in 0..a, (g a - g (a + 2 * x))) +
+  (∫ x in (0 : ℝ)..a, (g a - g (a + 2 * x))) +
     ∫ x in a..R, (g (2 * x - a) - g (2 * x + a))
 
 /-- Affine substitution for the boundary piece `g(a+2x)`. -/
 theorem two_mul_integral_zero_a_add_two
     (g : ℝ → ℝ) (a : ℝ) :
-    2 * (∫ x in 0..a, g (a + 2 * x)) = ∫ y in a..(3 * a), g y := by
-  have h := intervalIntegral.mul_integral_comp_add_mul_real g 2 a (a := 0) (b := a)
-  simpa [add_comm, add_left_comm, add_assoc] using h
+    2 * (∫ x in (0 : ℝ)..a, g (a + 2 * x)) = ∫ y in a..(3 * a), g y := by
+  have h := intervalIntegral.mul_integral_comp_add_mul_real g 2 a
+    (a := (0 : ℝ)) (b := a)
+  convert h using 1 <;> ring
 
 /-- Affine substitution for `g(2x-a)` on the bulk interval. -/
 theorem two_mul_integral_a_R_two_sub
@@ -83,7 +84,7 @@ theorem two_mul_integral_a_R_two_sub
     2 * (∫ x in a..R, g (2 * x - a)) =
       ∫ y in a..(2 * R - a), g y := by
   have h := intervalIntegral.mul_integral_comp_mul_sub_real g 2 a (a := a) (b := R)
-  simpa using h
+  convert h using 1 <;> ring
 
 /-- Affine substitution for `g(2x+a)` on the bulk interval. -/
 theorem two_mul_integral_a_R_two_add
@@ -91,7 +92,7 @@ theorem two_mul_integral_a_R_two_add
     2 * (∫ x in a..R, g (2 * x + a)) =
       ∫ y in (3 * a)..(2 * R + a), g y := by
   have h := intervalIntegral.mul_integral_comp_mul_add_real g 2 a (a := a) (b := R)
-  simpa using h
+  convert h using 1 <;> ring
 
 /-- **Exact finite-cutoff boundary cancellation.** The only remainder is a moving window
 of the underlying kernel at the far endpoint. -/
@@ -122,8 +123,8 @@ theorem truncatedBoundaryTrace_eq_boundary_minus_tail
 /-- **Fixed-width moving windows vanish for every kernel decaying at `+infinity`.**
 No global integrability assumption is required. -/
 theorem movingWindowIntegral_tendsto_zero
-    {g : ℝ → ℝ} (hg : Tendsto g atTop (𝓝 0)) {a : ℝ} (ha : 0 < a) :
-    Tendsto (fun R : ℝ => ∫ y in (2 * R - a)..(2 * R + a), g y) atTop (𝓝 0) := by
+    {g : ℝ → ℝ} (hg : Tendsto g atTop (nhds 0)) {a : ℝ} (ha : 0 < a) :
+    Tendsto (fun R : ℝ => ∫ y in (2 * R - a)..(2 * R + a), g y) atTop (nhds 0) := by
   rw [Metric.tendsto_nhds]
   intro ε hε
   let C : ℝ := ε / (4 * a)
@@ -131,7 +132,7 @@ theorem movingWindowIntegral_tendsto_zero
     dsimp [C]
     positivity
   have hev : ∀ᶠ y : ℝ in atTop, dist (g y) 0 < C :=
-    hg.eventually (ball_mem_nhds 0 hC)
+    hg.eventually (Metric.ball_mem_nhds 0 hC)
   rw [Filter.eventually_atTop] at hev
   obtain ⟨N, hN⟩ := hev
   refine Filter.eventually_atTop.2 ⟨(N + a) / 2, ?_⟩
@@ -161,20 +162,20 @@ theorem movingWindowIntegral_tendsto_zero
 /-- **Generic scalar boundary anomaly limit.** If the underlying kernel decays at positive
 infinity, the finite-cutoff diagonal trace converges to the boundary value `a*g(a)`. -/
 theorem truncatedBoundaryTrace_tendsto_boundary
-    {g : ℝ → ℝ} (hg : Tendsto g atTop (𝓝 0)) {a : ℝ} (ha : 0 < a) :
-    Tendsto (fun R : ℝ => truncatedBoundaryTrace g a R) atTop (𝓝 (a * g a)) := by
+    {g : ℝ → ℝ} (hg : Tendsto g atTop (nhds 0)) {a : ℝ} (ha : 0 < a) :
+    Tendsto (fun R : ℝ => truncatedBoundaryTrace g a R) atTop (nhds (a * g a)) := by
   have htail := movingWindowIntegral_tendsto_zero hg ha
   have hhalf :
       Tendsto
         (fun R : ℝ => (1 / 2 : ℝ) *
           (∫ y in (2 * R - a)..(2 * R + a), g y))
-        atTop (𝓝 0) := by
+        atTop (nhds 0) := by
     simpa using (tendsto_const_nhds.mul htail)
   have hmain :
       Tendsto
         (fun R : ℝ => a * g a - (1 / 2 : ℝ) *
           (∫ y in (2 * R - a)..(2 * R + a), g y))
-        atTop (𝓝 (a * g a)) := by
+        atTop (nhds (a * g a)) := by
     simpa using (tendsto_const_nhds.sub hhalf)
   have heq :
       (fun R : ℝ => truncatedBoundaryTrace g a R) =
@@ -187,7 +188,7 @@ theorem truncatedBoundaryTrace_tendsto_boundary
 
 /-- For every positive heat time, the normalized Gaussian decays at positive infinity. -/
 theorem heatKernelGaussian_tendsto_zero {t : ℝ} (ht : 0 < t) :
-    Tendsto (heatKernelGaussian t) atTop (𝓝 0) := by
+    Tendsto (heatKernelGaussian t) atTop (nhds 0) := by
   have hden : 0 < 4 * t := by positivity
   have harg : Tendsto (fun x : ℝ => x ^ 2 / (4 * t)) atTop atTop := by
     have hev : ∀ᶠ x : ℝ in atTop, x ≤ x ^ 2 / (4 * t) := by
@@ -198,13 +199,13 @@ theorem heatKernelGaussian_tendsto_zero {t : ℝ} (ht : 0 < t) :
       nlinarith
     exact tendsto_atTop_mono' atTop hev tendsto_id
   have hexp :
-      Tendsto (fun x : ℝ => Real.exp (-(x ^ 2 / (4 * t)))) atTop (𝓝 0) :=
+      Tendsto (fun x : ℝ => Real.exp (-(x ^ 2 / (4 * t)))) atTop (nhds 0) :=
     Real.tendsto_exp_neg_atTop_nhds_zero.comp harg
   have hscale :
       Tendsto
         (fun x : ℝ => (Real.sqrt (4 * Real.pi * t))⁻¹ *
           Real.exp (-(x ^ 2 / (4 * t))))
-        atTop (𝓝 0) := by
+        atTop (nhds 0) := by
     simpa using (tendsto_const_nhds.mul hexp)
   simpa [heatKernelGaussian, div_eq_inv_mul, mul_comm] using hscale
 
@@ -222,7 +223,7 @@ theorem truncatedHeatBoundaryTrace_tendsto
     {t a : ℝ} (ht : 0 < t) (ha : 0 < a) :
     Tendsto (fun R : ℝ => truncatedBoundaryTrace (heatKernelGaussian t) a R)
       atTop
-      (𝓝 (a / Real.sqrt (4 * Real.pi * t) * Real.exp (-(a ^ 2) / (4 * t)))) := by
+      (nhds (a / Real.sqrt (4 * Real.pi * t) * Real.exp (-(a ^ 2) / (4 * t)))) := by
   have h := truncatedBoundaryTrace_tendsto_boundary (heatKernelGaussian_tendsto_zero ht) ha
   convert h using 1
   unfold heatKernelGaussian
