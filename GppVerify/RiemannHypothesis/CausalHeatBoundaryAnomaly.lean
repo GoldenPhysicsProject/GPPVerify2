@@ -1,5 +1,5 @@
 import GppVerify.RiemannHypothesis.HeatTraceCriterion
-import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Tactic
 
 /-!
@@ -28,6 +28,35 @@ This file does not yet package the Dirichlet heat operators or prove trace-class
 commutator. It closes the scalar diagonal-integral part of that operator theorem.
 -/
 
+namespace intervalIntegral
+
+/-- Real-valued multiplicative specialization of the current Lean 4.19 affine
+interval-integral substitution theorem. -/
+@[simp] theorem mul_integral_comp_add_mul_real
+    (f : ℝ → ℝ) (c d : ℝ) {a b : ℝ} :
+    c * (∫ x in a..b, f (d + c * x)) =
+      ∫ x in d + c * a..d + c * b, f x := by
+  simpa [smul_eq_mul] using
+    (smul_integral_comp_add_mul f c d (a := a) (b := b))
+
+/-- Real-valued multiplicative specialization for `f (c*x-d)`. -/
+@[simp] theorem mul_integral_comp_mul_sub_real
+    (f : ℝ → ℝ) (c d : ℝ) {a b : ℝ} :
+    c * (∫ x in a..b, f (c * x - d)) =
+      ∫ x in c * a - d..c * b - d, f x := by
+  simpa [smul_eq_mul] using
+    (smul_integral_comp_mul_sub f c d (a := a) (b := b))
+
+/-- Real-valued multiplicative specialization for `f (c*x+d)`. -/
+@[simp] theorem mul_integral_comp_mul_add_real
+    (f : ℝ → ℝ) (c d : ℝ) {a b : ℝ} :
+    c * (∫ x in a..b, f (c * x + d)) =
+      ∫ x in c * a + d..c * b + d, f x := by
+  simpa [smul_eq_mul] using
+    (smul_integral_comp_mul_add f c d (a := a) (b := b))
+
+end intervalIntegral
+
 namespace GppCausalHeatBoundaryAnomaly
 
 open Filter Set Metric intervalIntegral
@@ -45,7 +74,7 @@ noncomputable def truncatedBoundaryTrace (g : ℝ → ℝ) (a R : ℝ) : ℝ :=
 theorem two_mul_integral_zero_a_add_two
     (g : ℝ → ℝ) (a : ℝ) :
     2 * (∫ x in 0..a, g (a + 2 * x)) = ∫ y in a..(3 * a), g y := by
-  have h := intervalIntegral.mul_integral_comp_add_mul g 2 a (a := 0) (b := a)
+  have h := intervalIntegral.mul_integral_comp_add_mul_real g 2 a (a := 0) (b := a)
   simpa [add_comm, add_left_comm, add_assoc] using h
 
 /-- Affine substitution for `g(2x-a)` on the bulk interval. -/
@@ -53,7 +82,7 @@ theorem two_mul_integral_a_R_two_sub
     (g : ℝ → ℝ) (a R : ℝ) :
     2 * (∫ x in a..R, g (2 * x - a)) =
       ∫ y in a..(2 * R - a), g y := by
-  have h := intervalIntegral.mul_integral_comp_mul_sub g 2 a (a := a) (b := R)
+  have h := intervalIntegral.mul_integral_comp_mul_sub_real g 2 a (a := a) (b := R)
   simpa using h
 
 /-- Affine substitution for `g(2x+a)` on the bulk interval. -/
@@ -61,7 +90,7 @@ theorem two_mul_integral_a_R_two_add
     (g : ℝ → ℝ) (a R : ℝ) :
     2 * (∫ x in a..R, g (2 * x + a)) =
       ∫ y in (3 * a)..(2 * R + a), g y := by
-  have h := intervalIntegral.mul_integral_comp_mul_add g 2 a (a := a) (b := R)
+  have h := intervalIntegral.mul_integral_comp_mul_add_real g 2 a (a := a) (b := R)
   simpa using h
 
 /-- **Exact finite-cutoff boundary cancellation.** The only remainder is a moving window
