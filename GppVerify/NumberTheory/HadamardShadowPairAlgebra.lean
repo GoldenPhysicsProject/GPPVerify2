@@ -65,15 +65,14 @@ theorem normalized_pair_kernel
         (reflectionInvariant rho - 1 / 4) =
       (4 * reflectionInvariant rho - 4 * reflectionInvariant s) /
         (4 * reflectionInvariant rho - 1) := by
-  have h4 : (4 : ℂ) ≠ 0 := by norm_num
+  have hfactor :
+      4 * reflectionInvariant rho - 1 =
+        4 * (reflectionInvariant rho - 1 / 4) := by
+    ring
   have hden4 : 4 * reflectionInvariant rho - 1 ≠ 0 := by
-    intro h
-    apply hden
-    apply (mul_left_cancel₀ h4)
-    calc
-      4 * reflectionInvariant rho = 1 := by linarith
-      _ = 4 * (1 / 4 : ℂ) := by norm_num
-  field_simp
+    rw [hfactor]
+    exact mul_ne_zero (by norm_num) hden
+  field_simp [hden, hden4]
   ring
 
 /-- Celestial form of the exact normalized pair kernel. -/
