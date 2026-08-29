@@ -33,6 +33,8 @@ jobs:
         run: lake build GppVerify.NumberTheory.ShadowEulerFiniteCore
       - name: Causal heat prime-power anomaly core
         run: lake build GppVerify.RiemannHypothesis.CausalHeatPrimePowerAnomaly
+      - name: Causal heat von Mangoldt reindex core
+        run: lake build GppVerify.RiemannHypothesis.CausalHeatVonMangoldtReindex
       - name: Universal-NOT qubit fidelity
         run: lake build GppVerify.StandardModel.UniversalNotFidelity
       - name: Half-flip scaffold integration
