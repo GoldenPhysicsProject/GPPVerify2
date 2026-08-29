@@ -33,7 +33,13 @@ theorem eventually_cesaroMean_eq_one :
   filter_upwards [eventually_gt_atTop (1 : ℝ)] with R hR
   unfold cesaroMean
   have hborn := GppRHProofStructure.born_rule_cesaro R hR
-  simpa [Real.rpow_neg_one] using hborn
+  have hpow :
+      (fun r : ℝ => r ^ (2 * ((1 : ℝ) / 2) - 2)) = (fun r : ℝ => r⁻¹) := by
+    funext r
+    norm_num
+    exact Real.rpow_neg_one r
+  rw [hpow]
+  exact hborn
 
 /-- Any eventual finite upper bound forces the principal-series line. -/
 theorem critical_of_eventually_bounded
@@ -42,10 +48,13 @@ theorem critical_of_eventually_bounded
     sigma = (1 : ℝ) / 2 := by
   by_contra hsigma
   have hinf : Tendsto (cesaroMean sigma) atTop atTop := by
-    simpa [cesaroMean] using GppCesaroMean.tendsto_cesaro_mean_atTop_of_ne hsigma
+    unfold cesaroMean
+    simpa only [one_div] using GppCesaroMean.tendsto_cesaro_mean_atTop_of_ne hsigma
   have hlower : ∀ᶠ R : ℝ in atTop, M + 1 ≤ cesaroMean sigma R :=
     (tendsto_atTop.1 hinf) (M + 1)
-  filter_upwards [hbound, hlower] with R hupper hlowerR
+  have hboth : ∀ᶠ R : ℝ in atTop, cesaroMean sigma R ≤ M ∧ M + 1 ≤ cesaroMean sigma R :=
+    hbound.and hlower
+  rcases hboth.exists with ⟨R, hupper, hlowerR⟩
   linarith
 
 /-- **Principal-series selector.** The symmetric Haar/Cesaro norm is eventually bounded
