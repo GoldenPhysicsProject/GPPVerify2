@@ -107,8 +107,15 @@ theorem truncatedBoundaryTrace_eq_boundary_minus_tail
   have hga : Continuous (fun x : ℝ => g (a + 2 * x)) := by fun_prop
   have hgm : Continuous (fun x : ℝ => g (2 * x - a)) := by fun_prop
   have hgp : Continuous (fun x : ℝ => g (2 * x + a)) := by fun_prop
-  rw [integral_sub continuous_const.intervalIntegrable hga.intervalIntegrable,
-    integral_sub hgm.intervalIntegrable hgp.intervalIntegrable]
+  have hc0 : IntervalIntegrable (fun _x : ℝ => g a) volume (0 : ℝ) a :=
+    continuous_const.intervalIntegrable (0 : ℝ) a
+  have hga0 : IntervalIntegrable (fun x : ℝ => g (a + 2 * x)) volume (0 : ℝ) a :=
+    hga.intervalIntegrable (0 : ℝ) a
+  have hgmaR : IntervalIntegrable (fun x : ℝ => g (2 * x - a)) volume a R :=
+    hgm.intervalIntegrable a R
+  have hgpaR : IntervalIntegrable (fun x : ℝ => g (2 * x + a)) volume a R :=
+    hgp.intervalIntegrable a R
+  rw [integral_sub hc0 hga0, integral_sub hgmaR hgpaR]
   have hconst : (∫ _x in (0 : ℝ)..a, g a) = a * g a := by
     simp [intervalIntegral.integral_const]
   rw [hconst]
@@ -117,13 +124,17 @@ theorem truncatedBoundaryTrace_eq_boundary_minus_tail
   have h3 := two_mul_integral_a_R_two_add g a R
   have hadd1 :
       (∫ y in a..(3 * a), g y) + (∫ y in (3 * a)..(2 * R + a), g y) =
-        ∫ y in a..(2 * R + a), g y :=
-    integral_add_adjacent_intervals hgc.intervalIntegrable hgc.intervalIntegrable
+        ∫ y in a..(2 * R + a), g y := by
+    exact integral_add_adjacent_intervals
+      (hgc.intervalIntegrable a (3 * a))
+      (hgc.intervalIntegrable (3 * a) (2 * R + a))
   have hadd2 :
       (∫ y in a..(2 * R - a), g y) +
         (∫ y in (2 * R - a)..(2 * R + a), g y) =
-        ∫ y in a..(2 * R + a), g y :=
-    integral_add_adjacent_intervals hgc.intervalIntegrable hgc.intervalIntegrable
+        ∫ y in a..(2 * R + a), g y := by
+    exact integral_add_adjacent_intervals
+      (hgc.intervalIntegrable a (2 * R - a))
+      (hgc.intervalIntegrable (2 * R - a) (2 * R + a))
   linarith
 
 /-- **Fixed-width moving windows vanish for continuous kernels decaying at `+infinity`.** -/
@@ -213,7 +224,7 @@ theorem heatKernelGaussian_tendsto_zero {t : ℝ} (ht : 0 < t) :
   have hexp :
       Tendsto (fun x : ℝ => Real.exp (-(x ^ 2 / (4 * t)))) atTop (nhds 0) :=
     Real.tendsto_exp_neg_atTop_nhds_zero.comp harg
-  simpa [heatKernelGaussian] using
+  simpa [heatKernelGaussian, neg_div] using
     (hexp.div_const (Real.sqrt (4 * Real.pi * t)))
 
 /-- Specialization of the finite-cutoff identity to the normalized heat Gaussian. -/
