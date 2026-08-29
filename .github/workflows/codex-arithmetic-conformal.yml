@@ -48,3 +48,6 @@ jobs:
 
       - name: Arithmetic Eisenstein scattering unitarity
         run: lake build GppVerify.RiemannHypothesis.ArithmeticEisensteinUnitarity
+
+      - name: Local p-adic primary shell scaling
+        run: lake build GppVerify.RiemannHypothesis.PadicConformalScaling
