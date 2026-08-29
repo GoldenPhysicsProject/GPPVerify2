@@ -45,7 +45,7 @@ theorem pauliSum_eq (A : QMat) :
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [pauliSum, sigmaX, sigmaY, sigmaZ, tr2, Matrix.mul_apply,
-      Matrix.vecMul, dotProduct, Fin.sum_univ_two, Complex.I_mul_I] <;>
+      Matrix.vecMul, dotProduct, Fin.sum_univ_two, pow_two, Complex.I_mul_I] <;>
     ring_nf
 
 /-- For a normalized qubit state, the equal Pauli mixture is `(2I-rho)/3`. -/
