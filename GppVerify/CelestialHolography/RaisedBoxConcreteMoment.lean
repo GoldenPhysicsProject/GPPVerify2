@@ -86,8 +86,26 @@ theorem integrand_tendsto_one
   exact GppRaisedBoxPointwiseLimit.rpow_neg_tendsto_one
     (Q_pos hS hT hx1 hx2 hx3 hxsum)
 
+/-- The abstract one-channel estimate specializes exactly to the concrete
+Feynman-parametric integrand on the affine simplex. -/
+theorem integrand_le_one_channel_majorant
+    {ε δ S T x1 x2 x3 : ℝ}
+    (hS : 0 < S) (hT : 0 < T)
+    (hx1 : 0 < x1) (hx2 : 0 ≤ x2) (hx3 : 0 < x3)
+    (hxsum : x1 + x2 + x3 ≤ 1)
+    (hε0 : 0 ≤ ε) (hεδ : ε ≤ δ) (hδ : 0 < δ) :
+    integrand ε S T x1 x2 x3 ≤
+      1 + (S * x1 * x3) ^ (-δ : ℝ) := by
+  have hx4 : 0 ≤ x4 x1 x2 x3 := by
+    unfold x4
+    linarith
+  unfold integrand Q
+  exact GppRaisedBoxSimplexMajorantAlgebra.symanzik_neg_eps_majorized
+    hS hT.le hx1 hx2 hx3 hx4 hε0 hεδ hδ
+
 end GppRaisedBoxConcreteMoment
 
 #print axioms GppRaisedBoxConcreteMoment.simplexMoment_zero
 #print axioms GppRaisedBoxConcreteMoment.Q_pos
 #print axioms GppRaisedBoxConcreteMoment.integrand_tendsto_one
+#print axioms GppRaisedBoxConcreteMoment.integrand_le_one_channel_majorant
