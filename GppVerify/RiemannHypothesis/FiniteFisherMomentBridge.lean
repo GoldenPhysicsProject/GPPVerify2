@@ -27,6 +27,33 @@ def fisherNumerator (m0 m1 m2 m3 m4 : ℝ) : ℝ :=
   (m0 * m2 - m1 ^ 2) * (m0 * m4 - m2 ^ 2) -
     (m0 * m3 - m1 * m2) ^ 2
 
+/-- Scalar expansion of the determinant of the `3 × 3` Hankel moment matrix
+`[[m₀,m₁,m₂],[m₁,m₂,m₃],[m₂,m₃,m₄]]`.  Keeping this scalar form avoids
+introducing matrix infrastructure into downstream moment-limit arguments. -/
+def hankel3Det (m0 m1 m2 m3 m4 : ℝ) : ℝ :=
+  m0 * m2 * m4 + 2 * m1 * m2 * m3 - m2 ^ 3 - m0 * m3 ^ 2 - m1 ^ 2 * m4
+
+/-- **Exact Fisher--Hankel bridge.**  The mass-aware Fisher covariance
+numerator is total mass times the determinant of the `3 × 3` Hankel raw-moment
+matrix.  This exposes the strictness route: for positive mass, strict Fisher
+positivity is equivalent to strict positivity of the cubic Hankel determinant. -/
+theorem fisherNumerator_eq_mass_mul_hankel3Det
+    (m0 m1 m2 m3 m4 : ℝ) :
+    fisherNumerator m0 m1 m2 m3 m4 =
+      m0 * hankel3Det m0 m1 m2 m3 m4 := by
+  unfold fisherNumerator hankel3Det
+  ring
+
+/-- After probability normalization, the Fisher determinant is the Hankel
+moment determinant divided by the third power of the raw total mass. -/
+theorem normalized_fisherDet_eq_hankel3Det_div_mass_cube
+    (m0 m1 m2 m3 m4 : ℝ) (hm0 : m0 ≠ 0) :
+    fisherDet (m1 / m0) (m2 / m0) (m3 / m0) (m4 / m0) =
+      hankel3Det m0 m1 m2 m3 m4 / m0 ^ 3 := by
+  unfold fisherDet hankel3Det
+  field_simp [hm0]
+  ring
+
 /-- The cubic moment discriminant produced by expanding an ordered squared
 Vandermonde energy.  The `m0` argument is the total mass. -/
 def momentDiscriminant (m0 m1 m2 m3 m4 : ℝ) : ℝ :=
@@ -70,6 +97,8 @@ theorem six_fisherDet_eq_momentDiscriminant_one
 
 end GppFiniteFisherMomentBridge
 
+#print axioms GppFiniteFisherMomentBridge.fisherNumerator_eq_mass_mul_hankel3Det
+#print axioms GppFiniteFisherMomentBridge.normalized_fisherDet_eq_hankel3Det_div_mass_cube
 #print axioms GppFiniteFisherMomentBridge.six_fisherNumerator_eq_mass_mul_momentDiscriminant
 #print axioms GppFiniteFisherMomentBridge.fisherNumerator_one_eq_fisherDet
 #print axioms GppFiniteFisherMomentBridge.momentDiscriminant_one_eq_six_fisherDet
