@@ -6,6 +6,7 @@ import GppVerify.RiemannHypothesis.FinitePrimeWaveFeatureMap
 import GppVerify.RiemannHypothesis.GammaPlancherelFeatureMap
 import GppVerify.RiemannHypothesis.CausalHeatBoundaryAnomaly
 import GppVerify.RiemannHypothesis.CausalPrimeResolventFinite
+import GppVerify.RiemannHypothesis.CausalPrimeHeatBridge
 import GppVerify.CelestialHolography.ArithmeticPrimeWaveParticle
 import GppVerify.CelestialHolography.ArithmeticSplitConventionBridge
 
@@ -38,9 +39,10 @@ Connects to: l2_constraint (L² forces Re = 1/2), two_zeros_at_ordinate,
 The imported arithmetic wave/particle files are deliberately part of the root build:
 finite von-Mangoldt particles, the exact finite cosine/sine feature-map factorization,
 the exact Gamma--Plancherel continuous feature factorization, the scalar causal heat-boundary
-anomaly, the finite causal prime-resolvent Euler-log cancellation, the centered regulator,
-the split-coordinate convention bridge, and the Cesàro principal-series boundedness selector
-must all compile before this spectral scaffold is considered current.
+anomaly, the finite causal prime-resolvent Euler-log cancellation, the local causal-to-
+von-Mangoldt prime-power heat identification, the centered regulator, the split-coordinate
+convention bridge, and the Cesàro principal-series boundedness selector must all compile
+before this spectral scaffold is considered current.
 -/
 
 namespace GppSpectralWeil
