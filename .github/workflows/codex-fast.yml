@@ -42,6 +42,10 @@ jobs:
         if: always()
         run: lake build GppVerify.RiemannHypothesis.ScaleShadowHalfDensity
 
+      - name: Arithmetic one-dimensional conformal kinematics
+        if: always()
+        run: lake build GppVerify.RiemannHypothesis.ArithmeticConformalKinematics
+
       - name: Scalar-box endpoint linearization
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxEndpointLinearization
