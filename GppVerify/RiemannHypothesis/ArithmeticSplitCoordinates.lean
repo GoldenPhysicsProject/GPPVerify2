@@ -23,10 +23,15 @@ The arithmetic involutions act particularly simply:
 * Riemann shadow `s -> 1-s` negates both `xi_+` and `xi_-`;
 * complex conjugation swaps `xi_+` and `xi_-`.
 
-The critical line is not the null cone of this split form.  It is exactly the
-anti-diagonal `xi_+ = -xi_-`.  On that anti-diagonal, swapping the coordinates is
+The critical line is not the null cone of this split form. It is exactly the
+anti-diagonal `xi_+ = -xi_-`. On that anti-diagonal, swapping the coordinates is
 the same operation as negating both, which is the real-coordinate content of the
 already-proved identity `conj s = 1-s` on `Re s = 1/2`.
+
+The sum `xi_+ + xi_-` is twice the nonunitary displacement `sigma`, while their
+difference is twice the spectral coordinate `tau`. Therefore the modulus of the
+half-density character depends only on the symmetric split combination, and the
+critical line is exactly where that combination vanishes.
 
 Under the project dictionary `Delta = 2s`, the corresponding celestial centered
 coordinates scale by exactly two.
@@ -36,6 +41,7 @@ namespace GppArithmeticSplitCoordinates
 
 open Complex
 open GppScaleShadow
+open GppScaleMass
 
 /-- Real displacement from the half-density center `Re s = 1/2`. -/
 noncomputable def sigma (s : ℂ) : ℝ := s.re - 1 / 2
@@ -52,6 +58,18 @@ noncomputable def xiMinus (s : ℂ) : ℝ := sigma s - tau s
 /-- Split quadratic factorization in arithmetic centered coordinates. -/
 theorem xiPlus_mul_xiMinus (s : ℂ) :
     xiPlus s * xiMinus s = sigma s ^ 2 - tau s ^ 2 := by
+  unfold xiPlus xiMinus
+  ring
+
+/-- The symmetric split combination reconstructs the off-critical displacement. -/
+theorem sigma_eq_half_split_sum (s : ℂ) :
+    sigma s = (xiPlus s + xiMinus s) / 2 := by
+  unfold xiPlus xiMinus
+  ring
+
+/-- The antisymmetric split combination reconstructs the spectral coordinate. -/
+theorem tau_eq_half_split_difference (s : ℂ) :
+    tau s = (xiPlus s - xiMinus s) / 2 := by
   unfold xiPlus xiMinus
   ring
 
@@ -92,6 +110,12 @@ theorem critical_line_iff_antidiagonal (s : ℂ) :
     ring
   · linarith
 
+/-- Equivalent symmetric form: criticality means the split-coordinate sum vanishes. -/
+theorem critical_line_iff_split_sum_zero (s : ℂ) :
+    s.re = 1 / 2 ↔ xiPlus s + xiMinus s = 0 := by
+  rw [critical_line_iff_antidiagonal]
+  constructor <;> intro h <;> linarith
+
 /-- On the critical line, coordinate swap equals simultaneous sign reversal. -/
 theorem conj_split_eq_shadow_split {s : ℂ} (hs : s.re = 1 / 2) :
     xiPlus ((starRingEnd ℂ) s) = xiPlus (1 - s) ∧
@@ -103,6 +127,23 @@ theorem conj_split_eq_shadow_split {s : ℂ} (hs : s.re = 1 / 2) :
     linarith
   · rw [xiMinus_conj, xiMinus_shadow]
     linarith
+
+/-- Exact half-density modulus written in split coordinates. The symmetric split
+combination controls growth/decay under positive-real dilation. -/
+theorem norm_dilationCharacter_split (s : ℂ) (a : ℝ) :
+    ‖dilationCharacter s a‖ =
+      Real.exp (Real.log a * ((xiPlus s + xiMinus s) / 2)) := by
+  rw [norm_dilationCharacter]
+  rw [← sigma_eq_half_split_sum]
+  rfl
+
+/-- At any fixed nontrivial positive scale, unit modulus is equivalent to the
+anti-diagonal split condition. -/
+theorem split_antidiagonal_iff_dilation_unitary
+    {s : ℂ} {a : ℝ} (ha : 0 < a) (ha1 : a ≠ 1) :
+    xiPlus s = -xiMinus s ↔ ‖dilationCharacter s a‖ = 1 := by
+  rw [← critical_line_iff_antidiagonal]
+  exact critical_line_iff_dilation_unitary ha ha1
 
 /-- Celestial centered real displacement for `Delta = 2s`. -/
 noncomputable def deltaSigma (s : ℂ) : ℝ := (celestialDelta s).re - 1
@@ -144,11 +185,16 @@ theorem deltaXiMinus_eq_two_mul_xiMinus (s : ℂ) :
 end GppArithmeticSplitCoordinates
 
 #print axioms GppArithmeticSplitCoordinates.xiPlus_mul_xiMinus
+#print axioms GppArithmeticSplitCoordinates.sigma_eq_half_split_sum
+#print axioms GppArithmeticSplitCoordinates.tau_eq_half_split_difference
 #print axioms GppArithmeticSplitCoordinates.xiPlus_shadow
 #print axioms GppArithmeticSplitCoordinates.xiMinus_shadow
 #print axioms GppArithmeticSplitCoordinates.xiPlus_conj
 #print axioms GppArithmeticSplitCoordinates.xiMinus_conj
 #print axioms GppArithmeticSplitCoordinates.critical_line_iff_antidiagonal
+#print axioms GppArithmeticSplitCoordinates.critical_line_iff_split_sum_zero
 #print axioms GppArithmeticSplitCoordinates.conj_split_eq_shadow_split
+#print axioms GppArithmeticSplitCoordinates.norm_dilationCharacter_split
+#print axioms GppArithmeticSplitCoordinates.split_antidiagonal_iff_dilation_unitary
 #print axioms GppArithmeticSplitCoordinates.deltaXiPlus_eq_two_mul_xiPlus
 #print axioms GppArithmeticSplitCoordinates.deltaXiMinus_eq_two_mul_xiMinus
