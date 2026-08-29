@@ -107,13 +107,13 @@ theorem truncatedBoundaryTrace_eq_boundary_minus_tail
   have hga : Continuous (fun x : ℝ => g (a + 2 * x)) := by fun_prop
   have hgm : Continuous (fun x : ℝ => g (2 * x - a)) := by fun_prop
   have hgp : Continuous (fun x : ℝ => g (2 * x + a)) := by fun_prop
-  have hc0 : IntervalIntegrable (fun _x : ℝ => g a) volume (0 : ℝ) a :=
+  have hc0 : IntervalIntegrable (fun _x : ℝ => g a) MeasureTheory.volume (0 : ℝ) a :=
     continuous_const.intervalIntegrable (0 : ℝ) a
-  have hga0 : IntervalIntegrable (fun x : ℝ => g (a + 2 * x)) volume (0 : ℝ) a :=
+  have hga0 : IntervalIntegrable (fun x : ℝ => g (a + 2 * x)) MeasureTheory.volume (0 : ℝ) a :=
     hga.intervalIntegrable (0 : ℝ) a
-  have hgmaR : IntervalIntegrable (fun x : ℝ => g (2 * x - a)) volume a R :=
+  have hgmaR : IntervalIntegrable (fun x : ℝ => g (2 * x - a)) MeasureTheory.volume a R :=
     hgm.intervalIntegrable a R
-  have hgpaR : IntervalIntegrable (fun x : ℝ => g (2 * x + a)) volume a R :=
+  have hgpaR : IntervalIntegrable (fun x : ℝ => g (2 * x + a)) MeasureTheory.volume a R :=
     hgp.intervalIntegrable a R
   rw [integral_sub hc0 hga0, integral_sub hgmaR hgpaR]
   have hconst : (∫ _x in (0 : ℝ)..a, g a) = a * g a := by
@@ -135,7 +135,13 @@ theorem truncatedBoundaryTrace_eq_boundary_minus_tail
     exact integral_add_adjacent_intervals
       (hgc.intervalIntegrable a (2 * R - a))
       (hgc.intervalIntegrable (2 * R - a) (2 * R + a))
-  linarith
+  have htail :
+      (∫ y in a..(2 * R - a), g y) -
+          (∫ y in a..(3 * a), g y) -
+          (∫ y in (3 * a)..(2 * R + a), g y) =
+        -(∫ y in (2 * R - a)..(2 * R + a), g y) := by
+    linarith [hadd1, hadd2]
+  linarith [h1, h2, h3, htail]
 
 /-- **Fixed-width moving windows vanish for continuous kernels decaying at `+infinity`.** -/
 theorem movingWindowIntegral_tendsto_zero
@@ -224,8 +230,10 @@ theorem heatKernelGaussian_tendsto_zero {t : ℝ} (ht : 0 < t) :
   have hexp :
       Tendsto (fun x : ℝ => Real.exp (-(x ^ 2 / (4 * t)))) atTop (nhds 0) :=
     Real.tendsto_exp_neg_atTop_nhds_zero.comp harg
-  simpa [heatKernelGaussian, neg_div] using
-    (hexp.div_const (Real.sqrt (4 * Real.pi * t)))
+  change Tendsto
+    (fun x : ℝ => Real.exp (-(x ^ 2) / (4 * t)) /
+      Real.sqrt (4 * Real.pi * t)) atTop (nhds 0)
+  convert (hexp.div_const (Real.sqrt (4 * Real.pi * t))) using 1 <;> ring
 
 /-- Specialization of the finite-cutoff identity to the normalized heat Gaussian. -/
 theorem truncatedHeatBoundaryTrace_eq
