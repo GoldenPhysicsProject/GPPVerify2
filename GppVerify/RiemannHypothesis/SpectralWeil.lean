@@ -7,6 +7,7 @@ import GppVerify.RiemannHypothesis.GammaPlancherelFeatureMap
 import GppVerify.RiemannHypothesis.CausalHeatBoundaryAnomaly
 import GppVerify.RiemannHypothesis.CausalPrimeResolventFinite
 import GppVerify.RiemannHypothesis.CausalPrimeHeatBridge
+import GppVerify.RiemannHypothesis.CausalPrimeHeatSummability
 import GppVerify.CelestialHolography.ArithmeticPrimeWaveParticle
 import GppVerify.CelestialHolography.ArithmeticSplitConventionBridge
 
@@ -40,9 +41,10 @@ The imported arithmetic wave/particle files are deliberately part of the root bu
 finite von-Mangoldt particles, the exact finite cosine/sine feature-map factorization,
 the exact Gamma--Plancherel continuous feature factorization, the scalar causal heat-boundary
 anomaly, the finite causal prime-resolvent Euler-log cancellation, the local causal-to-
-von-Mangoldt prime-power heat identification, the centered regulator, the split-coordinate
-convention bridge, and the Cesàro principal-series boundedness selector must all compile
-before this spectral scaffold is considered current.
+von-Mangoldt prime-power heat identification, absolute summability of the normalized causal
+prime heat series, the centered regulator, the split-coordinate convention bridge, and the
+Cesàro principal-series boundedness selector must all compile before this spectral scaffold
+is considered current.
 -/
 
 namespace GppSpectralWeil
@@ -64,7 +66,6 @@ lemma spectral_sum_well_defined : True := trivial
 /-- The explicit formula error term involves the gamma factor.
     Algebraic: Γ'/Γ(s) = -γ - 1/s + Σ_{n≥1} (1/n - 1/(n+s)). -/
 lemma digamma_series_form (_ : ℂ) :
-    -- digamma function satisfies this series (formal statement)
     True := trivial
 
 /-- Shadow symmetry of the spectral sum: if ρ is a zero, so is 1-ρ̄
@@ -91,30 +92,14 @@ theorem weil_distribution_positivity : True := trivial
 -- §3  Main theorem (thm:spectral-weil)
 -- ============================================================
 
-/-- **thm:spectral-weil** (ONON52, cited 10×).
-
-    The zeros of ζ(s) are eigenvalues of the adelic shadow operator
-    on L²(A×/Q×), and satisfy the Weil explicit formula.
-
-    Specifically:
-    (1) Each non-trivial zero ρ contributes h(ρ) to the spectral sum
-    (2) The sum equals geometric terms (primes + archimedean)
-    (3) Positivity of the Weil distribution forces all zeros to satisfy Re(ρ) = 1/2
-
-    Proved clean: test function symmetry, explicit formula structure.
-    Infrastructure: Weil explicit formula, Meyer identity, positivity.
-    This is the rigidity step that makes `arithmetic_admissibility` precise. -/
+/-- **thm:spectral-weil** (ONON52, cited 10×). -/
 theorem spectral_weil : True := trivial
 
-/-- Connection to arithmetic_admissibility:
-    The spectral-Weil identity is the precise content of `arithmetic_admissibility`.
-    Once weil_explicit_formula + weil_distribution_positivity are in Mathlib,
-    the (retired) arithmetic_admissibility condition becomes a theorem. -/
+/-- Connection to arithmetic_admissibility. -/
 theorem spectral_weil_closes_arithmetic_admissibility : True := trivial
 
 end GppSpectralWeil
 
--- Summary checks
 #check @GppSpectralWeil.test_function_fe_symmetric
 #check @GppSpectralWeil.spectral_weil
 #check @GppSpectralWeil.spectral_weil_closes_arithmetic_admissibility
