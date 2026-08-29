@@ -1,4 +1,5 @@
 import GppVerify.RiemannHypothesis.FiniteFisherMomentBridge
+import GppVerify.RiemannHypothesis.FiniteFisherVandermondeIdentity
 import Mathlib.Topology.Algebra.InfiniteSum.Real
 import Mathlib.Tactic
 
@@ -20,6 +21,8 @@ namespace GppCountableFisherMomentLimit
 open Filter
 open scoped BigOperators Topology
 open GppFiniteFisherMomentBridge
+open GppFiniteMomentFactorization
+open GppFiniteFisherVandermondeIdentity
 
 /-- Finite range raw moment. -/
 def partialMoment (w x : ℕ → ℝ) (r N : ℕ) : ℝ :=
@@ -28,6 +31,15 @@ def partialMoment (w x : ℕ → ℝ) (r N : ℕ) : ℝ :=
 /-- Countable raw moment. -/
 noncomputable def infiniteMoment (w x : ℕ → ℝ) (r : ℕ) : ℝ :=
   ∑' n : ℕ, w n * x n ^ r
+
+/-- The raw moment of the restriction to `Fin N` is exactly the usual
+`Finset.range N` partial moment. This is the bookkeeping bridge between the
+finite Vandermonde theorem and countable truncations. -/
+theorem rawMoment_fin_eq_partialMoment
+    (w x : ℕ → ℝ) (r N : ℕ) :
+    rawMoment (fun i : Fin N => w i) (fun i : Fin N => x i) r =
+      partialMoment w x r N := by
+  simp [rawMoment, partialMoment, Fin.sum_univ_eq_sum_range]
 
 /-- A summable weighted raw moment is the limit of its finite range truncations. -/
 theorem partialMoment_tendsto_infiniteMoment
@@ -99,6 +111,20 @@ theorem fisherNumerator_partial_tendsto_infinite
       ((h0lim.mul h4lim).sub (h2lim.pow 2))).sub
       (((h0lim.mul h3lim).sub (h1lim.mul h2lim)).pow 2)
 
+/-- Every raw finite truncation has nonnegative mass-aware Fisher numerator
+when the countable weights are pointwise nonnegative. No normalization of the
+truncation is required. -/
+theorem fisherNumerator_partial_nonneg
+    (w x : ℕ → ℝ) (hw : ∀ n, 0 ≤ w n) (N : ℕ) :
+    0 ≤ fisherNumerator
+      (partialMoment w x 0 N) (partialMoment w x 1 N)
+      (partialMoment w x 2 N) (partialMoment w x 3 N)
+      (partialMoment w x 4 N) := by
+  have h := fisherNumerator_nonneg
+    (fun i : Fin N => w i) (fun i : Fin N => x i)
+    (fun i => hw i)
+  simpa only [rawMoment_fin_eq_partialMoment] using h
+
 /-- Nonnegativity of every finite mass-aware Fisher numerator survives the
 countable moment limit. This is the topological half of the finite-to-countable
 Vandermonde positivity bridge. -/
@@ -120,6 +146,23 @@ theorem fisherNumerator_infinite_nonneg_of_partial_nonneg
   apply le_of_tendsto
     (fisherNumerator_partial_tendsto_infinite w x h0 h1 h2 h3 h4)
   exact Filter.Eventually.of_forall hfin
+
+/-- Pointwise nonnegative weights automatically supply the finite positivity
+hypothesis, so the countable mass-aware Fisher numerator is nonnegative. -/
+theorem fisherNumerator_infinite_nonneg
+    (w x : ℕ → ℝ)
+    (hw : ∀ n, 0 ≤ w n)
+    (h0 : Summable (fun n : ℕ => w n * x n ^ 0))
+    (h1 : Summable (fun n : ℕ => w n * x n ^ 1))
+    (h2 : Summable (fun n : ℕ => w n * x n ^ 2))
+    (h3 : Summable (fun n : ℕ => w n * x n ^ 3))
+    (h4 : Summable (fun n : ℕ => w n * x n ^ 4)) :
+    0 ≤ fisherNumerator
+      (infiniteMoment w x 0) (infiniteMoment w x 1)
+      (infiniteMoment w x 2) (infiniteMoment w x 3)
+      (infiniteMoment w x 4) := by
+  exact fisherNumerator_infinite_nonneg_of_partial_nonneg
+    w x h0 h1 h2 h3 h4 (fisherNumerator_partial_nonneg w x hw)
 
 /-- At unit total mass, the mass-aware limiting numerator is exactly the usual
 countable Fisher determinant. -/
@@ -143,10 +186,34 @@ theorem fisherDet_infinite_nonneg_of_mass_one_and_partial_numerator_nonneg
   rw [hmass, fisherNumerator_one_eq_fisherDet] at h
   exact h
 
+/-- **Countable Fisher positivity.** For a nonnegative countable weight with
+summable raw moments through order four and unit total mass, the Fisher
+covariance determinant of the sufficient statistics `X` and `X^2` is
+nonnegative. This closes the finite Vandermonde-to-countable positivity bridge
+without assuming normalized finite truncations. -/
+theorem fisherDet_infinite_nonneg
+    (w x : ℕ → ℝ)
+    (hw : ∀ n, 0 ≤ w n)
+    (h0 : Summable (fun n : ℕ => w n * x n ^ 0))
+    (h1 : Summable (fun n : ℕ => w n * x n ^ 1))
+    (h2 : Summable (fun n : ℕ => w n * x n ^ 2))
+    (h3 : Summable (fun n : ℕ => w n * x n ^ 3))
+    (h4 : Summable (fun n : ℕ => w n * x n ^ 4))
+    (hmass : infiniteMoment w x 0 = 1) :
+    0 ≤ fisherDet
+      (infiniteMoment w x 1) (infiniteMoment w x 2)
+      (infiniteMoment w x 3) (infiniteMoment w x 4) := by
+  exact fisherDet_infinite_nonneg_of_mass_one_and_partial_numerator_nonneg
+    w x h0 h1 h2 h3 h4 hmass (fisherNumerator_partial_nonneg w x hw)
+
 end GppCountableFisherMomentLimit
 
+#print axioms GppCountableFisherMomentLimit.rawMoment_fin_eq_partialMoment
 #print axioms GppCountableFisherMomentLimit.partialMoment_tendsto_infiniteMoment
 #print axioms GppCountableFisherMomentLimit.fisherDet_partial_tendsto_infinite
 #print axioms GppCountableFisherMomentLimit.fisherNumerator_partial_tendsto_infinite
+#print axioms GppCountableFisherMomentLimit.fisherNumerator_partial_nonneg
 #print axioms GppCountableFisherMomentLimit.fisherNumerator_infinite_nonneg_of_partial_nonneg
+#print axioms GppCountableFisherMomentLimit.fisherNumerator_infinite_nonneg
 #print axioms GppCountableFisherMomentLimit.fisherDet_infinite_nonneg_of_mass_one_and_partial_numerator_nonneg
+#print axioms GppCountableFisherMomentLimit.fisherDet_infinite_nonneg
