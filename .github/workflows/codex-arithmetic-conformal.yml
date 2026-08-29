@@ -51,3 +51,6 @@ jobs:
 
       - name: Local p-adic primary shell scaling
         run: lake build GppVerify.RiemannHypothesis.PadicConformalScaling
+
+      - name: p-adic Möbius conformal covariance
+        run: lake build GppVerify.RiemannHypothesis.PadicMobiusConformal
