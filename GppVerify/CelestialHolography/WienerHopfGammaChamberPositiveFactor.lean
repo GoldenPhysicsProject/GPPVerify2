@@ -69,7 +69,7 @@ theorem rhoGamma_re_strictly_increases_above_threshold
     (rhoGamma k lam).re < (rhoGamma (k + 1) lam).re := by
   have hfac : 1 < rhoStepFactor k lam := (rhoStepFactor_gt_one_iff k lam).2 h
   have hpos : 0 < (rhoGamma k lam).re := rhoGamma_re_pos k lam
-  have hrec := congrArg Complex.re (rhoGamma_succ k lam)
+  have hrec := congrArg Complex.re (rhoGamma_succ_stepFactor k lam)
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hrec
   rw [hrec]
   have hgain : 0 < (rhoStepFactor k lam - 1) * (rhoGamma k lam).re :=
@@ -83,7 +83,7 @@ theorem rhoGamma_re_strictly_decreases_below_threshold
     (rhoGamma (k + 1) lam).re < (rhoGamma k lam).re := by
   have hfac : rhoStepFactor k lam < 1 := (rhoStepFactor_lt_one_iff k lam).2 h
   have hpos : 0 < (rhoGamma k lam).re := rhoGamma_re_pos k lam
-  have hrec := congrArg Complex.re (rhoGamma_succ k lam)
+  have hrec := congrArg Complex.re (rhoGamma_succ_stepFactor k lam)
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hrec
   rw [hrec]
   have hloss : 0 < (1 - rhoStepFactor k lam) * (rhoGamma k lam).re :=
