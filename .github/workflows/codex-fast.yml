@@ -46,6 +46,10 @@ jobs:
         if: always()
         run: lake build GppVerify.RiemannHypothesis.ArithmeticConformalKinematics
 
+      - name: Arithmetic conformal Casimir dispersion
+        if: always()
+        run: lake build GppVerify.RiemannHypothesis.ArithmeticConformalCasimir
+
       - name: Scalar-box endpoint linearization
         if: always()
         run: lake build GppVerify.CelestialHolography.ScalarBoxEndpointLinearization
