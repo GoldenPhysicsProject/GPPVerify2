@@ -23,7 +23,7 @@ particularly simple way:
 * arithmetic OS / Weil reflection `s -> 1-conj(s)` flips sigma_A only;
 * positive-real inversion `s -> 1-s` flips both.
 
-Hence the first two reverse the sign of Q_A while inversion preserves it.  Under the
+Hence the first two reverse the sign of Q_A while inversion preserves it. Under the
 project dictionary Delta = 2s, the same split form is transported to the celestial
 principal plane with the expected factor of four.
 
@@ -38,17 +38,17 @@ open GppPositiveReal
 open GppArithmeticOS
 
 /-- Centered real displacement from the arithmetic critical line. -/
-def sigmaA (s : ℂ) : ℝ := s.re - (1 : ℝ) / 2
+noncomputable def sigmaA (s : ℂ) : ℝ := s.re - (1 : ℝ) / 2
 
 /-- Arithmetic spectral coordinate along the critical line. -/
-def tauA (s : ℂ) : ℝ := s.im
+noncomputable def tauA (s : ℂ) : ℝ := s.im
 
 /-- Split bilinear pairing in the arithmetic null coordinates `(sigma_A,tau_A)`. -/
-def splitPairingA (s z : ℂ) : ℝ :=
+noncomputable def splitPairingA (s z : ℂ) : ℝ :=
   sigmaA s * tauA z + tauA s * sigmaA z
 
 /-- Associated split quadratic form. -/
-def splitFormA (s : ℂ) : ℝ := 2 * sigmaA s * tauA s
+noncomputable def splitFormA (s : ℂ) : ℝ := 2 * sigmaA s * tauA s
 
 /-- The quadratic form is the self-pairing. -/
 theorem splitPairingA_self (s : ℂ) :
@@ -61,7 +61,21 @@ real axis. -/
 theorem splitFormA_eq_zero_iff (s : ℂ) :
     splitFormA s = 0 ↔
       s.re = (1 : ℝ) / 2 ∨ s.im = 0 := by
-  simp [splitFormA, sigmaA, tauA]
+  unfold splitFormA sigmaA tauA
+  constructor
+  · intro h
+    have hprod : (s.re - (1 : ℝ) / 2) * s.im = 0 := by
+      nlinarith
+    rcases mul_eq_zero.mp hprod with hs | ht
+    · left
+      linarith
+    · right
+      exact ht
+  · rintro (hs | ht)
+    · rw [hs]
+      norm_num
+    · rw [ht]
+      ring
 
 /-- In particular every point of the critical line is split-null. -/
 theorem splitFormA_zero_on_critical {s : ℂ}
@@ -91,7 +105,8 @@ theorem tauA_criticalReflection (s : ℂ) :
 /-- Therefore positive-real inversion preserves the split quadratic form. -/
 theorem splitFormA_criticalReflection (s : ℂ) :
     splitFormA (criticalReflection s) = splitFormA s := by
-  rw [splitFormA, sigmaA_criticalReflection, tauA_criticalReflection]
+  unfold splitFormA
+  rw [sigmaA_criticalReflection, tauA_criticalReflection]
   ring
 
 /-- Complex conjugation fixes the transverse coordinate and flips spectral time. -/
@@ -107,7 +122,8 @@ theorem tauA_complexConj (s : ℂ) :
 /-- Hence conjugation reverses the split quadratic form. -/
 theorem splitFormA_complexConj (s : ℂ) :
     splitFormA (complexConj s) = - splitFormA s := by
-  rw [splitFormA, sigmaA_complexConj, tauA_complexConj]
+  unfold splitFormA
+  rw [sigmaA_complexConj, tauA_complexConj]
   ring
 
 /-- Arithmetic OS reflection flips the critical displacement and fixes spectral time. -/
@@ -124,7 +140,8 @@ theorem tauA_osReflection (s : ℂ) :
 /-- Thus arithmetic OS reflection reverses the split quadratic form. -/
 theorem splitFormA_osReflection (s : ℂ) :
     splitFormA (osReflection s) = - splitFormA s := by
-  rw [splitFormA, sigmaA_osReflection, tauA_osReflection]
+  unfold splitFormA
+  rw [sigmaA_osReflection, tauA_osReflection]
   ring
 
 /-- The two single-coordinate reflections compose to the two-coordinate arithmetic
@@ -135,13 +152,13 @@ theorem criticalReflection_eq_os_after_conj (s : ℂ) :
     simp [criticalReflection, osReflection, complexConj]
 
 /-- Celestial centered transverse coordinate corresponding to `Re Delta = 1`. -/
-def sigmaDelta (Delta : ℂ) : ℝ := Delta.re - 1
+noncomputable def sigmaDelta (Delta : ℂ) : ℝ := Delta.re - 1
 
 /-- Celestial principal-series spectral coordinate. -/
-def tauDelta (Delta : ℂ) : ℝ := Delta.im
+noncomputable def tauDelta (Delta : ℂ) : ℝ := Delta.im
 
 /-- Split quadratic form on the celestial principal plane. -/
-def splitFormDelta (Delta : ℂ) : ℝ :=
+noncomputable def splitFormDelta (Delta : ℂ) : ℝ :=
   2 * sigmaDelta Delta * tauDelta Delta
 
 /-- `Delta = 2s` doubles each null coordinate. -/
@@ -158,8 +175,8 @@ theorem tauDelta_celestialWeight (s : ℂ) :
 /-- Consequently the celestial split form is four times the arithmetic split form. -/
 theorem splitFormDelta_celestialWeight (s : ℂ) :
     splitFormDelta (celestialWeight s) = 4 * splitFormA s := by
-  rw [splitFormDelta, sigmaDelta_celestialWeight, tauDelta_celestialWeight]
-  unfold splitFormA
+  unfold splitFormDelta splitFormA
+  rw [sigmaDelta_celestialWeight, tauDelta_celestialWeight]
   ring
 
 end GppArithmeticSplitSignature
