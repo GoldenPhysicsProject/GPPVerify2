@@ -46,7 +46,7 @@ theorem pauliSum_eq (A : QMat) :
   fin_cases i <;> fin_cases j <;>
     simp [pauliSum, sigmaX, sigmaY, sigmaZ, tr2, Matrix.mul_apply, Fin.sum_univ_two,
       Complex.I_mul_I] <;>
-    ring
+    ring_nf
 
 /-- For a normalized qubit state, the equal Pauli mixture is `(2I-rho)/3`. -/
 theorem universalNot_eq_of_trace_one (rho : QMat) (htr : tr2 rho = 1) :
@@ -76,11 +76,11 @@ theorem tr2_smul (c : ℂ) (A : QMat) : tr2 (c • A) = c * tr2 A := by
 /-- Exact product identity used in the pure-state fidelity calculation. -/
 theorem orthogonal_product_identity (rho : QMat) :
     (1 - rho) * ((2 : ℂ) • (1 : QMat) - rho) =
-      2 • (1 : QMat) - 3 • rho + rho * rho := by
+      (2 : ℂ) • (1 : QMat) - (3 : ℂ) • rho + rho * rho := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [Matrix.mul_apply, Fin.sum_univ_two] <;>
-    ring
+    ring_nf
 
 /-- Exact overlap with the orthogonal projector for a pure normalized qubit state. -/
 theorem universalNot_orthogonal_fidelity
