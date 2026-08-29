@@ -1,4 +1,4 @@
-import GppVerify.CelestialHolography.RaisedBoxSimplexBetaLayer
+import GppVerify.CelestialHolography.RaisedBoxSimplexMeasureBridge
 import Mathlib.Tactic
 
 /-!
