@@ -15,8 +15,10 @@ with observable `x(n) = log n`.  The all-order logarithmic summability theorem s
 raw moments through order four for every `beta > 1`; pointwise nonnegativity of the
 von-Mangoldt Fisher weight then gives a nonnegative mass-aware covariance numerator.
 
-No normalization of finite truncations is used.  This is the correct countable statement
-before dividing by the total Fisher mass to obtain a probability distribution.
+No normalization of finite truncations is used.  The total countable mass is proved
+strictly positive, so the raw moments can then be divided by that mass.  The normalized
+covariance determinant is the mass-aware numerator divided by the fourth power of the
+mass and is therefore nonnegative.
 -/
 
 namespace GppPrimeFisherCountableGeometry
@@ -61,7 +63,39 @@ theorem prime_fisherNumerator_infinite_nonneg {β : ℝ} (hβ : 1 < β) :
   · simpa using summable_fisherWeight_mul_log_pow 3 hβ
   · simpa using summable_fisherWeight_mul_log_pow 4 hβ
 
+/-- **Normalized countable prime-Fisher determinant is nonnegative.**
+Writing `m_r` for the full raw moments and `m_0 > 0` for the total Fisher mass,
+the covariance determinant of the probability-normalized moments `m_r / m_0` is
+exactly `fisherNumerator m_0 ... m_4 / m_0^4`.  Thus normalization introduces no
+finite-truncation assumption and preserves positivity. -/
+theorem prime_fisher_normalized_det_nonneg {β : ℝ} (hβ : 1 < β) :
+    let m0 := infiniteMoment (fisherWeight β) Real.log 0
+    let m1 := infiniteMoment (fisherWeight β) Real.log 1
+    let m2 := infiniteMoment (fisherWeight β) Real.log 2
+    let m3 := infiniteMoment (fisherWeight β) Real.log 3
+    let m4 := infiniteMoment (fisherWeight β) Real.log 4
+    0 ≤ fisherDet (m1 / m0) (m2 / m0) (m3 / m0) (m4 / m0) := by
+  dsimp
+  let m0 := infiniteMoment (fisherWeight β) Real.log 0
+  let m1 := infiniteMoment (fisherWeight β) Real.log 1
+  let m2 := infiniteMoment (fisherWeight β) Real.log 2
+  let m3 := infiniteMoment (fisherWeight β) Real.log 3
+  let m4 := infiniteMoment (fisherWeight β) Real.log 4
+  have hm0 : 0 < m0 := by
+    simpa [m0] using prime_fisher_mass_pos hβ
+  have hnum : 0 ≤ fisherNumerator m0 m1 m2 m3 m4 := by
+    simpa [m0, m1, m2, m3, m4] using prime_fisherNumerator_infinite_nonneg hβ
+  have hid :
+      fisherDet (m1 / m0) (m2 / m0) (m3 / m0) (m4 / m0) =
+        fisherNumerator m0 m1 m2 m3 m4 / m0 ^ 4 := by
+    unfold fisherDet fisherNumerator
+    field_simp [ne_of_gt hm0]
+    ring
+  rw [hid]
+  exact div_nonneg hnum (pow_nonneg m0 4)
+
 end GppPrimeFisherCountableGeometry
 
 #print axioms GppPrimeFisherCountableGeometry.prime_fisher_mass_pos
 #print axioms GppPrimeFisherCountableGeometry.prime_fisherNumerator_infinite_nonneg
+#print axioms GppPrimeFisherCountableGeometry.prime_fisher_normalized_det_nonneg
