@@ -26,7 +26,8 @@ open Finset ArithmeticFunction
 noncomputable def principalWave (tau x : ℝ) : ℝ := Real.cos (tau * x)
 
 /-- The arithmetic particle weight at the integer location `n`. -/
-noncomputable def particleWeight (n : ℕ) : ℝ := Lambda n / Real.sqrt n
+noncomputable def particleWeight (n : ℕ) : ℝ :=
+  ArithmeticFunction.vonMangoldt n / Real.sqrt n
 
 /-- The symmetric response of the particle at `± log n` to a principal wave. -/
 noncomputable def particleWaveResponse (n : ℕ) (tau : ℝ) : ℝ :=
@@ -45,7 +46,7 @@ theorem particleWaveResponse_eq (n : ℕ) (tau : ℝ) :
 theorem particleWeight_eq_zero_of_not_primePow {n : ℕ} (hn : ¬ IsPrimePow n) :
     particleWeight n = 0 := by
   unfold particleWeight
-  have hLambda : Lambda n = 0 := by
+  have hLambda : ArithmeticFunction.vonMangoldt n = 0 := by
     by_contra hne
     exact hn (ArithmeticFunction.vonMangoldt_ne_zero_iff.mp hne)
   rw [hLambda, zero_div]
@@ -59,14 +60,13 @@ theorem particleWaveResponse_eq_zero_of_not_primePow {n : ℕ} (hn : ¬ IsPrimeP
 
 /-- Finite prime/prime-power source paired with a principal wave. -/
 noncomputable def finitePrimeWaveResponse (N : ℕ) (tau : ℝ) : ℝ :=
-  sum (range (N + 1)) (fun n => particleWaveResponse n tau)
+  ∑ n ∈ range (N + 1), particleWaveResponse n tau
 
 /-- Exact finite wave-particle dictionary: the symmetric discrete prime-power source is the
 finite cosine superposition with von Mangoldt weights. -/
 theorem finitePrimeWaveResponse_eq (N : ℕ) (tau : ℝ) :
     finitePrimeWaveResponse N tau =
-      2 * sum (range (N + 1))
-        (fun n => particleWeight n * Real.cos (tau * Real.log n)) := by
+      2 * ∑ n ∈ range (N + 1), particleWeight n * Real.cos (tau * Real.log n) := by
   unfold finitePrimeWaveResponse
   simp_rw [particleWaveResponse_eq]
   rw [mul_sum]
@@ -86,9 +86,9 @@ theorem finitePrimeWaveResponse_neg (N : ℕ) (tau : ℝ) :
 /-- The response at zero frequency is twice the total finite arithmetic particle weight. -/
 theorem finitePrimeWaveResponse_zero (N : ℕ) :
     finitePrimeWaveResponse N 0 =
-      2 * sum (range (N + 1)) particleWeight := by
+      2 * ∑ n ∈ range (N + 1), particleWeight n := by
   rw [finitePrimeWaveResponse_eq]
-  simp [principalWave]
+  simp
 
 end GppArithmeticPrimeWaveParticle
 
