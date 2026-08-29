@@ -45,3 +45,5 @@ jobs:
         run: lake build GppVerify.StandardModel.HalfFlipProposition
       - name: Mixed-helicity rational physical-chart closure
         run: lake build GppVerify.CelestialHolography.MassiveVectorPhysicalChartClosure
+      - name: D-dimensional mu4 massive celestial radial weight
+        run: lake build GppVerify.CelestialHolography.MassiveCutRadialMu4Weight
