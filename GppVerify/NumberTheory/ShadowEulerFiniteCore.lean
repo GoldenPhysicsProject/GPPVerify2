@@ -44,10 +44,19 @@ theorem celestial_glueball_defect
 theorem su3_glueballS : glueballS 1 3 = (3 : ℂ) / 4 := by
   norm_num [glueballS]
 
-/-- The SU(3), level-one defect is exactly `1/16`. -/
-theorem su3_defect :
-    1 - 4 * reflectionInvariant (glueballS 1 3) = (1 : ℂ) / 16 := by
-  norm_num [reflectionInvariant, glueballS]
+/-- For SU(3), level one, the unscaled quadratic defect is exactly `1/4`:
+`1 - 4 s(1-s) = 4(s-1/2)^2 = 1/4` at `s=3/4`. -/
+theorem su3_unscaled_defect :
+    1 - 4 * reflectionInvariant (glueballS 1 3) = (1 : ℂ) / 4 := by
+  rw [one_sub_four_glueball_invariant 1 3 (by norm_num)]
+  norm_num
+
+/-- The Shadow Euler coupling uses one further factor of `1/4`, hence its square is
+`1/16` in the SU(3), level-one case. -/
+theorem su3_shadowCoupling_sq :
+    (1 - 4 * reflectionInvariant (glueballS 1 3)) / 4 = (1 : ℂ) / 16 := by
+  rw [su3_unscaled_defect]
+  norm_num
 
 /-- Substituting a glueball point into the unconditional normalized pair kernel produces
 the exact celestial numerator used before any infinite Hadamard product is invoked. -/
@@ -66,5 +75,6 @@ end GppShadowEulerFiniteCore
 
 #print axioms GppShadowEulerFiniteCore.one_sub_four_glueball_invariant
 #print axioms GppShadowEulerFiniteCore.celestial_glueball_defect
-#print axioms GppShadowEulerFiniteCore.su3_defect
+#print axioms GppShadowEulerFiniteCore.su3_unscaled_defect
+#print axioms GppShadowEulerFiniteCore.su3_shadowCoupling_sq
 #print axioms GppShadowEulerFiniteCore.normalized_glueball_pair_kernel
