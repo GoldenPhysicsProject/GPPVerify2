@@ -61,7 +61,6 @@ theorem primeHeatSummand_primePower
   rw [GppVonMangoldtPrimePowerTower.vonMangoldt_prime_pow (p : ℕ) k p.prop]
   norm_cast
   rw [Nat.cast_pow, Real.log_pow]
-  push_cast
 
 /-- The `m`th Euler-log weighted causal anomaly is exactly the corresponding global
 von Mangoldt Gaussian summand.  This is the precise local-to-arithmetic coefficient
