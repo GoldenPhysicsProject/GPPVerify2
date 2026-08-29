@@ -60,6 +60,36 @@ theorem deriv_freeEnergyBetaDerivative
       -logEnergyVariance β / β - 2 * zetaEntropy β / β ^ 3 :=
   (hasDerivAt_freeEnergyBetaDerivative hβ).deriv
 
+/-- Clearing the positive-temperature denominator exposes the exact fluctuation
+balance behind the curvature: `β³ F'' = -β² κ₂ - 2S`.  This form is useful because
+it separates the strictly positive Fisher contribution from the entropy term without
+introducing any additional analytic assumptions. -/
+theorem beta_cube_mul_deriv_freeEnergyBetaDerivative
+    {β : ℝ} (hβ : 1 < β) :
+    β ^ 3 * deriv freeEnergyBetaDerivative β =
+      -(β ^ 2 * logEnergyVariance β) - 2 * zetaEntropy β := by
+  have hβ0 : β ≠ 0 := by linarith
+  rw [deriv_freeEnergyBetaDerivative hβ]
+  field_simp [hβ0]
+  ring
+
+/-- If the Gibbs entropy potential is nonnegative at `β`, then the free-energy
+curvature is strictly negative there.  Strictness comes from the already-proved
+positive Fisher variance; entropy contributes only an additional nonpositive term.
+The entropy sign is kept explicit rather than assumed from terminology. -/
+theorem deriv_freeEnergyBetaDerivative_neg_of_entropy_nonneg
+    {β : ℝ} (hβ : 1 < β) (hS : 0 ≤ zetaEntropy β) :
+    deriv freeEnergyBetaDerivative β < 0 := by
+  rw [deriv_freeEnergyBetaDerivative hβ]
+  have hβpos : 0 < β := by linarith
+  have hV : 0 < logEnergyVariance β := logEnergyVariance_pos hβ
+  have hfirst : -logEnergyVariance β / β < 0 :=
+    div_neg_of_neg_of_pos (neg_neg_of_pos hV) hβpos
+  have hβ3 : 0 < β ^ 3 := pow_pos hβpos 3
+  have hsecond : 0 ≤ 2 * zetaEntropy β / β ^ 3 :=
+    div_nonneg (mul_nonneg (by norm_num) hS) hβ3.le
+  linarith
+
 /-- The first derivative of the actual free energy is exactly the response whose
 curvature was computed above. -/
 theorem deriv_zetaFreeEnergy_eq_freeEnergyBetaDerivative
@@ -72,4 +102,6 @@ end GppZetaGibbsFreeEnergyCurvature
 
 #print axioms GppZetaGibbsFreeEnergyCurvature.hasDerivAt_freeEnergyBetaDerivative
 #print axioms GppZetaGibbsFreeEnergyCurvature.deriv_freeEnergyBetaDerivative
+#print axioms GppZetaGibbsFreeEnergyCurvature.beta_cube_mul_deriv_freeEnergyBetaDerivative
+#print axioms GppZetaGibbsFreeEnergyCurvature.deriv_freeEnergyBetaDerivative_neg_of_entropy_nonneg
 #print axioms GppZetaGibbsFreeEnergyCurvature.deriv_zetaFreeEnergy_eq_freeEnergyBetaDerivative
