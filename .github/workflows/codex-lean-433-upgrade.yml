@@ -1,0 +1,23 @@
+name: Codex Lean 4.33.1 upgrade probe
+
+on:
+  push:
+    branches:
+      - codex/lean-4.33-upgrade
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve Lean 4.33.1 dependency graph
+        run: lake update
+      - name: Get matching Mathlib cache
+        run: lake exe cache get
+      - name: Build full GPPVerify root
+        run: lake build GppVerify
