@@ -46,6 +46,9 @@ jobs:
       - name: Arithmetic principal-series Casimir
         run: lake build GppVerify.RiemannHypothesis.ArithmeticConformalCasimir
 
+      - name: Golden reciprocal scale algebra
+        run: lake build GppVerify.RiemannHypothesis.GoldenReciprocalScale
+
       - name: Arithmetic Eisenstein scattering unitarity
         run: lake build GppVerify.RiemannHypothesis.ArithmeticEisensteinUnitarity
 
