@@ -43,6 +43,19 @@ theorem sameHelicityDefect_nonneg (r t : ℝ) :
   unfold sameHelicityDefect
   positivity
 
+/-- The real-adjoint-scalar sewing is nonnegative everywhere in the rational chart. -/
+theorem sameHelicityScalarSewing_nonneg (r t : ℝ) :
+    0 ≤ sameHelicityScalarSewing r t := by
+  unfold sameHelicityScalarSewing
+  positivity
+
+/-- The reconstructed `D_s=4` same-helicity baseline is nonnegative everywhere
+in the rational chart. -/
+theorem sameHelicityDs4Baseline_nonneg (r t : ℝ) :
+    0 ≤ sameHelicityDs4Baseline r t := by
+  unfold sameHelicityDs4Baseline
+  positivity
+
 /-- The old `3:1` relation is recovered exactly on the threshold slice `r=1`. -/
 @[simp] theorem sameHelicityDefect_one (t : ℝ) :
     sameHelicityDefect 1 t = 0 := by
@@ -68,6 +81,15 @@ theorem ds4Baseline_eq_two_scalar_add_defect
     nlinarith [sq_nonneg t]
   field_simp [h1, h2]
   ring
+
+/-- The positive defect is a rigorous lower bound for the reconstructed
+same-helicity `D_s=4` baseline away from the degenerate `r=0` chart point. -/
+theorem sameHelicityDefect_le_ds4Baseline
+    {r t : ℝ} (hr : r ≠ 0) :
+    sameHelicityDefect r t ≤ sameHelicityDs4Baseline r t := by
+  rw [ds4Baseline_eq_two_scalar_add_defect hr]
+  have hs := sameHelicityScalarSewing_nonneg r t
+  linarith
 
 /-- The exact generic baseline recovers the threshold state count `2`. -/
 @[simp] theorem sameHelicityDs4Baseline_one :
@@ -96,6 +118,9 @@ theorem vector_eq_three_scalar_at_threshold
 end GppMassiveVectorGenericDefect
 
 #print axioms GppMassiveVectorGenericDefect.sameHelicityDefect_nonneg
+#print axioms GppMassiveVectorGenericDefect.sameHelicityScalarSewing_nonneg
+#print axioms GppMassiveVectorGenericDefect.sameHelicityDs4Baseline_nonneg
 #print axioms GppMassiveVectorGenericDefect.ds4Baseline_eq_two_scalar_add_defect
+#print axioms GppMassiveVectorGenericDefect.sameHelicityDefect_le_ds4Baseline
 #print axioms GppMassiveVectorGenericDefect.vector_ge_three_scalar_of_defect
 #print axioms GppMassiveVectorGenericDefect.vector_eq_three_scalar_at_threshold
