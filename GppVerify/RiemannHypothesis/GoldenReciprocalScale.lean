@@ -12,6 +12,8 @@ not select the golden ratio.  The extra unit-splitting condition
   r - r⁻¹ = 1
 
 is equivalent, for nonzero `r`, to the golden quadratic `r² = r + 1`.
+Its squared reciprocal pair then has trace `3`, the first integer strictly above
+the parabolic threshold `2` for a determinant-one reciprocal spectrum.
 -/
 
 namespace GppGoldenReciprocalScale
@@ -48,6 +50,16 @@ theorem unit_split_iff_golden_quadratic {r : ℝ} (hr : r ≠ 0) :
     field_simp [hr]
     nlinarith
 
+/-- Squaring a reciprocal unit-split pair produces a determinant-one reciprocal
+pair whose sum is exactly `3`.  Algebraically this is the trace-three hyperbolic
+spectrum associated with the golden split. -/
+theorem sq_add_inv_sq_eq_three_of_unit_split
+    {r : ℝ} (hr : r ≠ 0) (hsplit : r - r⁻¹ = 1) :
+    r ^ 2 + (r⁻¹) ^ 2 = 3 := by
+  have hprod : r * r⁻¹ = 1 := mul_inv_cancel₀ hr
+  have hsq := congrArg (fun x : ℝ => x ^ 2) hsplit
+  nlinarith [sq_nonneg (r - r⁻¹)]
+
 /-- The reciprocal partner of the golden ratio is `goldenRatio - 1`. -/
 theorem goldenRatio_inv_eq_sub_one : goldenRatio⁻¹ = goldenRatio - 1 := by
   apply (eq_div_iff goldenRatio_ne_zero).2
@@ -62,6 +74,12 @@ theorem goldenRatio_sub_inv : goldenRatio - goldenRatio⁻¹ = 1 := by
 theorem goldenRatio_mul_inv : goldenRatio * goldenRatio⁻¹ = 1 := by
   exact mul_inv_cancel₀ goldenRatio_ne_zero
 
+/-- The squared golden reciprocal pair has trace three. -/
+theorem goldenRatio_sq_add_inv_sq :
+    goldenRatio ^ 2 + (goldenRatio⁻¹) ^ 2 = 3 := by
+  exact sq_add_inv_sq_eq_three_of_unit_split
+    goldenRatio_ne_zero goldenRatio_sub_inv
+
 /-- In logarithmic scale coordinates the reciprocal partners are symmetric about
 zero, the logarithm of the unit scale. -/
 theorem log_goldenRatio_inv : Real.log goldenRatio⁻¹ = -Real.log goldenRatio := by
@@ -71,5 +89,7 @@ end GppGoldenReciprocalScale
 
 #print axioms GppGoldenReciprocalScale.goldenRatio_sq
 #print axioms GppGoldenReciprocalScale.unit_split_iff_golden_quadratic
+#print axioms GppGoldenReciprocalScale.sq_add_inv_sq_eq_three_of_unit_split
 #print axioms GppGoldenReciprocalScale.goldenRatio_sub_inv
+#print axioms GppGoldenReciprocalScale.goldenRatio_sq_add_inv_sq
 #print axioms GppGoldenReciprocalScale.log_goldenRatio_inv
