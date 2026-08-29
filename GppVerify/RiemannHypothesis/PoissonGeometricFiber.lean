@@ -55,7 +55,7 @@ theorem re_radial_phase_pow (r θ : ℝ) (m : ℕ) :
     push_cast
     ring
   rw [harg, Complex.exp_mul_I]
-  simp [Complex.mul_re]
+  simp
 
 /-- Complex-power form of the positive-frequency Poisson fiber. -/
 theorem two_mul_tsum_re_pow_succ_eq_KrClosed_sub_one
