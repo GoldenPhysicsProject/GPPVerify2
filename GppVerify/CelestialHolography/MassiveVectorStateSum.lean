@@ -18,11 +18,34 @@ theorem sym2_s_channel_polynomial (s μ : ℝ) :
       s ^ 2 - 4 * s * μ ^ 2 + 3 * μ ^ 4 := by
   ring
 
+/-- The invariant polynomial factors into the two physical quadratic thresholds. -/
+theorem sym2_s_channel_factorization (s μ : ℝ) :
+    s ^ 2 - 4 * s * μ ^ 2 + 3 * μ ^ 4 =
+      (s - μ ^ 2) * (s - 3 * μ ^ 2) := by
+  ring
+
 /-- At two-particle threshold `s = 4 μ²`, the massive-vector state sum reduces to
 three equal polarization weights, namely `3 μ⁴`. -/
 theorem sym2_threshold_three_polarizations (μ : ℝ) :
     ((4 * μ ^ 2) - 2 * μ ^ 2) ^ 2 - μ ^ 4 = 3 * μ ^ 4 := by
   ring
+
+/-- In the physical two-particle region `s ≥ 4 μ²`, the spin-one state-sum
+polynomial is bounded below by its threshold value `3 μ⁴`. -/
+theorem sym2_physical_region_ge_threshold
+    {s μ : ℝ} (hs : 4 * μ ^ 2 ≤ s) :
+    3 * μ ^ 4 ≤ s ^ 2 - 4 * s * μ ^ 2 + 3 * μ ^ 4 := by
+  have hs0 : 0 ≤ s := le_trans (by positivity : 0 ≤ 4 * μ ^ 2) hs
+  have hgap : 0 ≤ s - 4 * μ ^ 2 := sub_nonneg.mpr hs
+  nlinarith [mul_nonneg hs0 hgap]
+
+/-- Consequently the spin-one state-sum polynomial itself is nonnegative
+throughout the physical two-particle region. -/
+theorem sym2_physical_region_nonneg
+    {s μ : ℝ} (hs : 4 * μ ^ 2 ≤ s) :
+    0 ≤ s ^ 2 - 4 * s * μ ^ 2 + 3 * μ ^ 4 := by
+  have hμ : 0 ≤ 3 * μ ^ 4 := by positivity
+  exact le_trans hμ (sym2_physical_region_ge_threshold hs)
 
 /-- Algebraic equivalence of the two dimensional-reconstruction parameterizations.
 If `C_V = C_4 + C_S`, then
@@ -50,7 +73,10 @@ theorem hv_specialization
 end GppMassiveVectorStateSum
 
 #print axioms GppMassiveVectorStateSum.sym2_s_channel_polynomial
+#print axioms GppMassiveVectorStateSum.sym2_s_channel_factorization
 #print axioms GppMassiveVectorStateSum.sym2_threshold_three_polarizations
+#print axioms GppMassiveVectorStateSum.sym2_physical_region_ge_threshold
+#print axioms GppMassiveVectorStateSum.sym2_physical_region_nonneg
 #print axioms GppMassiveVectorStateSum.dimensional_reconstruction_equiv
 #print axioms GppMassiveVectorStateSum.ds4_baseline_from_vector_minus_scalar
 #print axioms GppMassiveVectorStateSum.hv_specialization
