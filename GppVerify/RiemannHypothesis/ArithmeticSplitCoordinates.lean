@@ -107,7 +107,6 @@ theorem xiMinus_conj (s : ℂ) :
     xiMinus ((starRingEnd ℂ) s) = xiPlus s := by
   unfold xiPlus xiMinus sigma tau
   simp
-  ring
 
 /-- The Riemann critical line is exactly the anti-diagonal in split coordinates. -/
 theorem critical_line_iff_antidiagonal (s : ℂ) :
