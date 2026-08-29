@@ -51,7 +51,7 @@ theorem tendsto_specialRemainderMajorant_regulator
             (|Real.log (m / U)| + (81 / 32 : ℝ) * (m / U)))
         (𝓝[>] 0) (𝓝 0) := by
     have h := hρ2log.add (hρ3.const_mul (81 / 32 : ℝ))
-    convert h using 1 <;> ring_nf
+    simpa [div_eq_mul_inv, mul_add, pow_succ, mul_assoc, mul_left_comm, mul_comm] using h
   have htotal :=
     (hη.const_mul (48 / 19 : ℝ)).add
       ((hρ.const_mul (232 / 105 : ℝ)).add
