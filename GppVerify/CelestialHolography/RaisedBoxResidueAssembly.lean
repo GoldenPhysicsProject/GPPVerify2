@@ -1,5 +1,7 @@
 import GppVerify.CelestialHolography.Mu4DimensionShiftAlgebra
 import GppVerify.CelestialHolography.GammaResidueAtZero
+import GppVerify.CelestialHolography.RaisedBoxConcreteMoment
+import GppVerify.CelestialHolography.RaisedBoxSimplexZeroVolume
 import Mathlib.Topology.Algebra.Order.Field
 import Mathlib.Tactic
 
@@ -15,13 +17,20 @@ A Feynman-parameter derivation factors the raised-dimensional integral as
 
   I8(eps) = Gamma(eps) * simplexMoment(eps).
 
-`GammaResidueAtZero.lean` now proves the other formerly-open input
+`GammaResidueAtZero.lean` proves the Gamma-pole input
 
-  eps * Gamma(eps) -> 1
+  eps * Gamma(eps) -> 1.
 
-on the punctured real neighborhood of zero.  This file keeps a generic assembly theorem
-and then specializes it to the genuine real Gamma factor.  No Feynman-parameter
-factorization or simplex dominated-convergence theorem is asserted here.
+The concrete Feynman-parametric moment is now defined in
+`RaisedBoxConcreteMoment.lean`, with
+
+  Q = S x1 x3 + T x2 x4,
+  x4 = 1 - x1 - x2 - x3,
+
+on the standard affine three-simplex.  `RaisedBoxSimplexZeroVolume.lean`
+independently certifies the reduced zero-regulator simplex normalization `1/6`.
+Thus the remaining physics-side analytic target is precisely dominated convergence
+for that concrete moment.
 -/
 
 namespace GppRaisedBoxResidueAssembly
@@ -29,6 +38,7 @@ namespace GppRaisedBoxResidueAssembly
 open Filter Set
 open GppMu4DimensionShift
 open GppGammaResidueAtZero
+open GppRaisedBoxConcreteMoment
 
 /-- Product assembly for the scaled raised-box residue. -/
 theorem tendsto_scaledRaisedBox_of_gamma_simplex
@@ -70,6 +80,19 @@ theorem tendsto_scaledRaisedBox_realGamma_of_simplex
   exact tendsto_scaledRaisedBox_of_factorization hI
     tendsto_mul_realGamma_zero hsimplex
 
+/-- **Concrete Feynman-parametric specialization.** For fixed Euclidean chamber
+parameters `S,T`, once the concrete moment from `RaisedBoxConcreteMoment` is shown
+to tend to the simplex volume `1/6`, the scaled raised box has residue `1/6`.
+This theorem makes the sole remaining analytic obligation explicit. -/
+theorem tendsto_scaledRaisedBox_realGamma_of_concreteMoment
+    {I : ℝ → ℝ} {S T : ℝ}
+    (hI : ∀ ε, I ε = Real.Gamma ε * simplexMoment ε S T)
+    (hsimplex : Tendsto (fun ε => simplexMoment ε S T)
+      (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (1 / 6 : ℝ))) :
+    Tendsto (fun ε : ℝ => ε * I ε)
+      (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (1 / 6 : ℝ)) := by
+  exact tendsto_scaledRaisedBox_realGamma_of_simplex hI hsimplex
+
 /-- **Complete algebraic route to the finite `mu^4` rational term.** Once the
 Feynman-parameter factorization, Gamma residue, and simplex-volume limit are
 available, the dimension-shifted product tends to `-1/6`. -/
@@ -96,10 +119,23 @@ theorem tendsto_mu4_rational_realGamma_of_simplex
     (tendsto_nhdsWithin_of_tendsto_nhds tendsto_id)
   exact tendsto_scaledRaisedBox_realGamma_of_simplex hI hsimplex
 
+/-- Concrete `mu^4` specialization: the only remaining hypothesis is the DCT
+limit for the actual Symanzik simplex moment. -/
+theorem tendsto_mu4_rational_realGamma_of_concreteMoment
+    {I : ℝ → ℝ} {S T : ℝ}
+    (hI : ∀ ε, I ε = Real.Gamma ε * simplexMoment ε S T)
+    (hsimplex : Tendsto (fun ε => simplexMoment ε S T)
+      (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (1 / 6 : ℝ))) :
+    Tendsto (fun ε : ℝ => shiftFactor ε * I ε)
+      (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (-(1 / 6 : ℝ))) := by
+  exact tendsto_mu4_rational_realGamma_of_simplex hI hsimplex
+
 end GppRaisedBoxResidueAssembly
 
 #print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_of_gamma_simplex
 #print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_of_factorization
 #print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_realGamma_of_simplex
+#print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_realGamma_of_concreteMoment
 #print axioms GppRaisedBoxResidueAssembly.tendsto_mu4_rational_of_gamma_simplex
 #print axioms GppRaisedBoxResidueAssembly.tendsto_mu4_rational_realGamma_of_simplex
+#print axioms GppRaisedBoxResidueAssembly.tendsto_mu4_rational_realGamma_of_concreteMoment
