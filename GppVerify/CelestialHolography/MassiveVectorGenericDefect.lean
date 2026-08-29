@@ -23,9 +23,15 @@ In physical coordinates `beta=|p|/E`, `rho=mu/E`, `c=cos(theta)`, these become
   Cv-3Cs = 16 beta^2/(1-beta*c)^2,
   C4 = (2 rho^4 + 16 beta^2)/(1-beta*c)^2.
 
-This file certifies the rational algebra and the chart-to-physical conversion.
-The identification with explicit sewn Yang--Mills trees remains an executable
-symbolic discovery result rather than being hidden inside a Lean assumption.
+For mixed helicity, writing `u = beta^2 sin(theta)^2`, the exact discovery
+calculation gives
+
+  Cs_mixed = u^2/(1-beta*c)^2,
+  C4_mixed = 2 (u^2 - 8u + 8)/(1-beta*c)^2.
+
+On physical kinematics `0 <= u <= 1`, the mixed numerator is uniformly at least
+one.  This file certifies that positivity statement independently of the symbolic
+amplitude engine.
 -/
 
 namespace GppMassiveVectorGenericDefect
@@ -46,6 +52,11 @@ def sameHelicityDs4Baseline (r t : ℝ) : ℝ :=
   4 * (r ^ 8 + 1) * (1 + t ^ 2) ^ 2 /
     ((r ^ 2 + 1) ^ 2 * (r ^ 2 + t ^ 2) ^ 2)
 
+/-- Physical mixed-helicity `D_s=4` baseline in terms of
+`u = beta^2 sin(theta)^2` and `c = cos(theta)`. -/
+def mixedHelicityDs4Physical (beta c u : ℝ) : ℝ :=
+  2 * (u ^ 2 - 8 * u + 8) / (1 - beta * c) ^ 2
+
 /-- The generic correction is manifestly nonnegative. -/
 theorem sameHelicityDefect_nonneg (r t : ℝ) :
     0 ≤ sameHelicityDefect r t := by
@@ -64,6 +75,37 @@ theorem sameHelicityDs4Baseline_nonneg (r t : ℝ) :
     0 ≤ sameHelicityDs4Baseline r t := by
   unfold sameHelicityDs4Baseline
   positivity
+
+/-- On the physical interval `0 <= u <= 1`, the exact mixed-helicity polynomial
+`u^2 - 8u + 8` is uniformly at least one. -/
+theorem mixedHelicityNumerator_ge_one
+    {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1) :
+    1 ≤ u ^ 2 - 8 * u + 8 := by
+  have h7 : 0 ≤ 7 - u := by linarith
+  have hprod : 0 ≤ (1 - u) * (7 - u) :=
+    mul_nonneg (sub_nonneg.mpr hu1) h7
+  nlinarith
+
+/-- Consequently the physical mixed-helicity `D_s=4` cut baseline is nonnegative
+throughout `0 <= u <= 1`, even using Lean's totalized division convention. -/
+theorem mixedHelicityDs4Physical_nonneg
+    (beta c : ℝ) {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1) :
+    0 ≤ mixedHelicityDs4Physical beta c u := by
+  unfold mixedHelicityDs4Physical
+  have hn : 0 ≤ u ^ 2 - 8 * u + 8 :=
+    le_trans zero_le_one (mixedHelicityNumerator_ge_one hu0 hu1)
+  exact div_nonneg (mul_nonneg (by norm_num) hn) (sq_nonneg (1 - beta * c))
+
+/-- Away from the collinear denominator zero, the same physical mixed-helicity
+baseline is strictly positive. -/
+theorem mixedHelicityDs4Physical_pos
+    (beta c : ℝ) {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1)
+    (hden : 1 - beta * c ≠ 0) :
+    0 < mixedHelicityDs4Physical beta c u := by
+  unfold mixedHelicityDs4Physical
+  have hn : 0 < u ^ 2 - 8 * u + 8 :=
+    lt_of_lt_of_le zero_lt_one (mixedHelicityNumerator_ge_one hu0 hu1)
+  exact div_pos (mul_pos (by norm_num) hn) (sq_pos_of_ne_zero hden)
 
 /-- The old `3:1` relation is recovered exactly on the threshold slice `r=1`. -/
 @[simp] theorem sameHelicityDefect_one (t : ℝ) :
@@ -168,6 +210,9 @@ end GppMassiveVectorGenericDefect
 #print axioms GppMassiveVectorGenericDefect.sameHelicityDefect_nonneg
 #print axioms GppMassiveVectorGenericDefect.sameHelicityScalarSewing_nonneg
 #print axioms GppMassiveVectorGenericDefect.sameHelicityDs4Baseline_nonneg
+#print axioms GppMassiveVectorGenericDefect.mixedHelicityNumerator_ge_one
+#print axioms GppMassiveVectorGenericDefect.mixedHelicityDs4Physical_nonneg
+#print axioms GppMassiveVectorGenericDefect.mixedHelicityDs4Physical_pos
 #print axioms GppMassiveVectorGenericDefect.ds4Baseline_eq_two_scalar_add_defect
 #print axioms GppMassiveVectorGenericDefect.sameHelicityDefect_le_ds4Baseline
 #print axioms GppMassiveVectorGenericDefect.sameHelicityScalarSewing_physical
