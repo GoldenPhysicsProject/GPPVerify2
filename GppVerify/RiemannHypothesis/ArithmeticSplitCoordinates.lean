@@ -85,21 +85,29 @@ theorem tau_shadow (s : ℂ) : tau (1 - s) = -tau s := by
 
 /-- Riemann shadow negates the first split coordinate. -/
 theorem xiPlus_shadow (s : ℂ) : xiPlus (1 - s) = -xiPlus s := by
-  simp [xiPlus, sigma_shadow, tau_shadow]
+  unfold xiPlus
+  rw [sigma_shadow, tau_shadow]
+  ring
 
 /-- Riemann shadow negates the second split coordinate. -/
 theorem xiMinus_shadow (s : ℂ) : xiMinus (1 - s) = -xiMinus s := by
-  simp [xiMinus, sigma_shadow, tau_shadow]
+  unfold xiMinus
+  rw [sigma_shadow, tau_shadow]
+  ring
 
 /-- Complex conjugation swaps the first split coordinate with the second. -/
 theorem xiPlus_conj (s : ℂ) :
     xiPlus ((starRingEnd ℂ) s) = xiMinus s := by
-  simp [xiPlus, xiMinus, sigma, tau]
+  unfold xiPlus xiMinus sigma tau
+  simp
+  ring
 
 /-- Complex conjugation swaps the second split coordinate with the first. -/
 theorem xiMinus_conj (s : ℂ) :
     xiMinus ((starRingEnd ℂ) s) = xiPlus s := by
-  simp [xiPlus, xiMinus, sigma, tau]
+  unfold xiPlus xiMinus sigma tau
+  simp
+  ring
 
 /-- The Riemann critical line is exactly the anti-diagonal in split coordinates. -/
 theorem critical_line_iff_antidiagonal (s : ℂ) :
