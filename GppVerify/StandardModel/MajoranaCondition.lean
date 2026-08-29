@@ -124,6 +124,11 @@ theorem T_boundary_oscillation_period (m : ℝ) (hm : m ≠ 0) :
 
 /-! ## Summary -/
 
-theorem majorana_summary : True := trivial
+/-- Honest summary of the finite-dimensional algebra actually certified in this
+module.  The stronger Majorana/neutrino/cosmology statements above remain
+separate scaffolds until their spinor, PDE, and QFT infrastructure is built. -/
+theorem majorana_summary :
+    epsilon * epsilon = -1 ∧ epsilon.det = 1 :=
+  ⟨epsilon_sq, epsilon_det⟩
 
 end GppMajorana
