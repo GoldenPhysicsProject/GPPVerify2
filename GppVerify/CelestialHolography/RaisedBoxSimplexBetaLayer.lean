@@ -47,6 +47,51 @@ theorem inner_scaled_beta_identity
   simpa using
     (betaIntegral_scaled (((1 - δ : ℝ) : ℂ)) (2 : ℂ) ha)
 
+/-- A reusable integrability companion to Mathlib's `betaIntegral_scaled`.
+Mathlib proves the value of the scaled interval integral but does not separately
+expose its `IntervalIntegrable` certificate.  We obtain it from the unit Beta
+kernel by the affine rescaling `u = x / a`; endpoint values are irrelevant for
+Lebesgue interval integrability. -/
+theorem scaled_beta_convergent
+    {s t : ℂ} (hs : 0 < s.re) (ht : 0 < t.re) {a : ℝ} (ha : 0 < a) :
+    IntervalIntegrable
+      (fun x : ℝ =>
+        (x : ℂ) ^ (s - 1) * (((a : ℂ) - x) ^ (t - 1)))
+      MeasureTheory.volume 0 a := by
+  let f : ℝ → ℂ := fun u =>
+    (u : ℂ) ^ (s - 1) * (1 - (u : ℂ)) ^ (t - 1)
+  have hf : IntervalIntegrable f MeasureTheory.volume 0 1 := by
+    simpa [f] using betaIntegral_convergent hs ht
+  have ha0 : a ≠ 0 := ha.ne'
+  have hscaled :
+      IntervalIntegrable (fun x : ℝ => f (x / a)) MeasureTheory.volume 0 a := by
+    have h := hf.comp_mul_left (c := a⁻¹)
+    simpa [div_eq_mul_inv, ha0, f, mul_comm, mul_left_comm, mul_assoc] using h
+  have hconst := hscaled.const_mul
+    (((a : ℂ) ^ (s - 1)) * ((a : ℂ) ^ (t - 1)))
+  refine hconst.congr_uIoo ?_
+  intro x hx
+  have hxa : 0 < x / a := div_pos hx.1 ha
+  have hxa1 : x / a < 1 := (div_lt_one ha).2 hx.2
+  have h1 :
+      (x : ℂ) ^ (s - 1) =
+        (a : ℂ) ^ (s - 1) * ((x / a : ℝ) : ℂ) ^ (s - 1) := by
+    rw [← mul_cpow_ofReal_nonneg ha.le hxa.le]
+    push_cast
+    field_simp [ha0]
+  have h2 :
+      (((a : ℂ) - x) ^ (t - 1)) =
+        (a : ℂ) ^ (t - 1) * ((1 - x / a : ℝ) : ℂ) ^ (t - 1) := by
+    rw [← mul_cpow_ofReal_nonneg ha.le (sub_nonneg.mpr hxa1.le)]
+    congr 1
+    push_cast
+    field_simp [ha0]
+    ring
+  simp only [f]
+  rw [h1, h2]
+  push_cast
+  ring
+
 /-- Exact affine simplex-slice identity. For a fixed outer coordinate `x < 1`, the
 remaining inner edge has length `1-x`, so its singular integral is precisely the
 scaled Beta factor used in the raised-box Dirichlet reduction. -/
@@ -58,6 +103,17 @@ theorem inner_simplex_slice_beta_identity
       ((1 - x : ℝ) : ℂ) ^ ((((1 - δ : ℝ) : ℂ) + 2 - 1)) *
         betaIntegral (((1 - δ : ℝ) : ℂ)) 2 := by
   exact inner_scaled_beta_identity (sub_pos.mpr hx)
+
+/-- Integrability of every nondegenerate affine simplex slice. -/
+theorem inner_simplex_slice_convergent
+    {δ x : ℝ} (hδ : δ < 1) (hx : x < 1) :
+    IntervalIntegrable
+      (fun y : ℝ =>
+        (y : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
+          (((1 - x : ℝ) : ℂ) - y) ^ (((2 : ℂ) - 1)))
+      MeasureTheory.volume 0 (1 - x) := by
+  exact scaled_beta_convergent
+    (one_sub_delta_re_pos hδ) (by norm_num) (sub_pos.mpr hx)
 
 /-- After the exact inner simplex slice is inserted, the remaining outer integral
 is exactly the product `B(1-δ,3-δ) B(1-δ,2)`.  This is the second Beta factor in
@@ -98,7 +154,9 @@ end GppRaisedBoxSimplexBetaLayer
 #print axioms GppRaisedBoxSimplexBetaLayer.one_sub_delta_re_pos
 #print axioms GppRaisedBoxSimplexBetaLayer.three_sub_delta_re_pos
 #print axioms GppRaisedBoxSimplexBetaLayer.inner_scaled_beta_identity
+#print axioms GppRaisedBoxSimplexBetaLayer.scaled_beta_convergent
 #print axioms GppRaisedBoxSimplexBetaLayer.inner_simplex_slice_beta_identity
+#print axioms GppRaisedBoxSimplexBetaLayer.inner_simplex_slice_convergent
 #print axioms GppRaisedBoxSimplexBetaLayer.outer_reduced_beta_product_identity
 #print axioms GppRaisedBoxSimplexBetaLayer.inner_beta_convergent
 #print axioms GppRaisedBoxSimplexBetaLayer.outer_beta_convergent
