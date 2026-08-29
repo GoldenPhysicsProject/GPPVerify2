@@ -2,6 +2,7 @@ import GppVerify.RiemannHypothesis.AdelicL2
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import GppVerify.RiemannHypothesis.CesaroPrincipalSeriesSelector
 import GppVerify.RiemannHypothesis.CenteredPrimeWaveRegulator
+import GppVerify.RiemannHypothesis.FinitePrimeWaveFeatureMap
 import GppVerify.CelestialHolography.ArithmeticPrimeWaveParticle
 import GppVerify.CelestialHolography.ArithmeticSplitConventionBridge
 
@@ -32,10 +33,10 @@ Connects to: l2_constraint (L² forces Re = 1/2), two_zeros_at_ordinate,
              adelic_l2_regularization.
 
 The imported arithmetic wave/particle files are deliberately part of the root build:
-finite von-Mangoldt particles, the absolutely-convergent global damped wave response,
-the centered regulator, the split-coordinate convention bridge, and the Cesàro
-principal-series boundedness selector must all compile before this spectral scaffold is
-considered current.
+finite von-Mangoldt particles, the exact finite cosine/sine feature-map factorization,
+the absolutely-convergent global damped wave response, the centered regulator, the
+split-coordinate convention bridge, and the Cesàro principal-series boundedness selector
+must all compile before this spectral scaffold is considered current.
 -/
 
 namespace GppSpectralWeil
