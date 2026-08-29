@@ -54,7 +54,8 @@ theorem re_radial_phase_pow (r θ : ℝ) (m : ℕ) :
   have harg : (m : ℂ) * (θ * Complex.I) = (((m : ℝ) * θ : ℝ) : ℂ) * Complex.I := by
     push_cast
     ring
-  rw [harg, Complex.exp_mul_I]
+  rw [harg]
+  rw [Complex.mul_re, Complex.exp_re]
   simp
 
 /-- Complex-power form of the positive-frequency Poisson fiber. -/
