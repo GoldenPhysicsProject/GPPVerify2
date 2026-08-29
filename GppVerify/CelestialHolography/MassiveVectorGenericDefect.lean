@@ -27,11 +27,13 @@ For mixed helicity, writing `u = beta^2 sin(theta)^2`, the exact discovery
 calculation gives
 
   Cs_mixed = u^2/(1-beta*c)^2,
-  C4_mixed = 2 (u^2 - 8u + 8)/(1-beta*c)^2.
+  C4_mixed = 2 (u^2 - 8u + 8)/(1-beta*c)^2,
+  Cv_mixed = (3u^2 - 16u + 16)/(1-beta*c)^2,
 
-On physical kinematics `0 <= u <= 1`, the mixed numerator is uniformly at least
-one.  This file certifies that positivity statement independently of the symbolic
-amplitude engine.
+with the exact dimensional-reconstruction identity `Cv_mixed = C4_mixed + Cs_mixed`.
+On physical kinematics `0 <= u <= 1`, both the `D_s=4` and massive-vector
+numerators are uniformly positive.  This file certifies those algebraic and
+positivity statements independently of the symbolic amplitude engine.
 -/
 
 namespace GppMassiveVectorGenericDefect
@@ -52,10 +54,18 @@ def sameHelicityDs4Baseline (r t : ℝ) : ℝ :=
   4 * (r ^ 8 + 1) * (1 + t ^ 2) ^ 2 /
     ((r ^ 2 + 1) ^ 2 * (r ^ 2 + t ^ 2) ^ 2)
 
-/-- Physical mixed-helicity `D_s=4` baseline in terms of
+/-- Physical mixed-helicity scalar sewing in terms of
 `u = beta^2 sin(theta)^2` and `c = cos(theta)`. -/
+def mixedHelicityScalarPhysical (beta c u : ℝ) : ℝ :=
+  u ^ 2 / (1 - beta * c) ^ 2
+
+/-- Physical mixed-helicity `D_s=4` baseline. -/
 def mixedHelicityDs4Physical (beta c u : ℝ) : ℝ :=
   2 * (u ^ 2 - 8 * u + 8) / (1 - beta * c) ^ 2
+
+/-- Physical mixed-helicity massive-vector state sum from the exact audit. -/
+def mixedHelicityVectorPhysical (beta c u : ℝ) : ℝ :=
+  (3 * u ^ 2 - 16 * u + 16) / (1 - beta * c) ^ 2
 
 /-- The generic correction is manifestly nonnegative. -/
 theorem sameHelicityDefect_nonneg (r t : ℝ) :
@@ -86,6 +96,12 @@ theorem mixedHelicityNumerator_ge_one
     mul_nonneg (sub_nonneg.mpr hu1) h7
   nlinarith
 
+/-- The mixed scalar sewing is nonnegative for every real chart point. -/
+theorem mixedHelicityScalarPhysical_nonneg (beta c u : ℝ) :
+    0 ≤ mixedHelicityScalarPhysical beta c u := by
+  unfold mixedHelicityScalarPhysical
+  exact div_nonneg (sq_nonneg u) (sq_nonneg (1 - beta * c))
+
 /-- Consequently the physical mixed-helicity `D_s=4` cut baseline is nonnegative
 throughout `0 <= u <= 1`, even using Lean's totalized division convention. -/
 theorem mixedHelicityDs4Physical_nonneg
@@ -106,6 +122,50 @@ theorem mixedHelicityDs4Physical_pos
   have hn : 0 < u ^ 2 - 8 * u + 8 :=
     lt_of_lt_of_le zero_lt_one (mixedHelicityNumerator_ge_one hu0 hu1)
   exact div_pos (mul_pos (by norm_num) hn) (sq_pos_of_ne_zero hden)
+
+/-- The mixed massive-vector numerator has the exact factorization found by the
+discovery audit. -/
+theorem mixedHelicityVectorNumerator_factor (u : ℝ) :
+    3 * u ^ 2 - 16 * u + 16 = (3 * u - 4) * (u - 4) := by
+  ring
+
+/-- On physical kinematics `0 <= u <= 1`, the mixed massive-vector numerator is
+uniformly at least three. -/
+theorem mixedHelicityVectorNumerator_ge_three
+    {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1) :
+    3 ≤ 3 * u ^ 2 - 16 * u + 16 := by
+  have h10 : 0 ≤ 13 - 3 * u := by linarith
+  have hprod : 0 ≤ (1 - u) * (13 - 3 * u) :=
+    mul_nonneg (sub_nonneg.mpr hu1) h10
+  nlinarith
+
+/-- The massive-vector mixed-helicity cut is nonnegative on the physical interval. -/
+theorem mixedHelicityVectorPhysical_nonneg
+    (beta c : ℝ) {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1) :
+    0 ≤ mixedHelicityVectorPhysical beta c u := by
+  unfold mixedHelicityVectorPhysical
+  have hn : 0 ≤ 3 * u ^ 2 - 16 * u + 16 :=
+    le_trans (by norm_num) (mixedHelicityVectorNumerator_ge_three hu0 hu1)
+  exact div_nonneg hn (sq_nonneg (1 - beta * c))
+
+/-- Away from the collinear denominator zero, the massive-vector mixed-helicity
+cut is strictly positive on `0 <= u <= 1`. -/
+theorem mixedHelicityVectorPhysical_pos
+    (beta c : ℝ) {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1)
+    (hden : 1 - beta * c ≠ 0) :
+    0 < mixedHelicityVectorPhysical beta c u := by
+  unfold mixedHelicityVectorPhysical
+  have hn : 0 < 3 * u ^ 2 - 16 * u + 16 :=
+    lt_of_lt_of_le (by norm_num) (mixedHelicityVectorNumerator_ge_three hu0 hu1)
+  exact div_pos hn (sq_pos_of_ne_zero hden)
+
+/-- **Mixed-helicity dimensional reconstruction.** The exact massive-vector sewing
+is the `D_s=4` baseline plus one real-adjoint-scalar sewing. -/
+theorem mixedHelicityVector_eq_ds4_add_scalar (beta c u : ℝ) :
+    mixedHelicityVectorPhysical beta c u =
+      mixedHelicityDs4Physical beta c u + mixedHelicityScalarPhysical beta c u := by
+  unfold mixedHelicityVectorPhysical mixedHelicityDs4Physical mixedHelicityScalarPhysical
+  ring
 
 /-- The old `3:1` relation is recovered exactly on the threshold slice `r=1`. -/
 @[simp] theorem sameHelicityDefect_one (t : ℝ) :
@@ -211,8 +271,14 @@ end GppMassiveVectorGenericDefect
 #print axioms GppMassiveVectorGenericDefect.sameHelicityScalarSewing_nonneg
 #print axioms GppMassiveVectorGenericDefect.sameHelicityDs4Baseline_nonneg
 #print axioms GppMassiveVectorGenericDefect.mixedHelicityNumerator_ge_one
+#print axioms GppMassiveVectorGenericDefect.mixedHelicityScalarPhysical_nonneg
 #print axioms GppMassiveVectorGenericDefect.mixedHelicityDs4Physical_nonneg
 #print axioms GppMassiveVectorGenericDefect.mixedHelicityDs4Physical_pos
+#print axioms GppMassiveVectorGenericDefect.mixedHelicityVectorNumerator_factor
+#print axioms GppMassiveVectorGenericDefect.mixedHelicityVectorNumerator_ge_three
+#print axioms GppMassiveVectorGenericDefect.mixedHelicityVectorPhysical_nonneg
+#print axioms GppMassiveVectorGenericDefect.mixedHelicityVectorPhysical_pos
+#print axioms GppMassiveVectorGenericDefect.mixedHelicityVector_eq_ds4_add_scalar
 #print axioms GppMassiveVectorGenericDefect.ds4Baseline_eq_two_scalar_add_defect
 #print axioms GppMassiveVectorGenericDefect.sameHelicityDefect_le_ds4Baseline
 #print axioms GppMassiveVectorGenericDefect.sameHelicityScalarSewing_physical
