@@ -1,3 +1,4 @@
+import GppVerify.CelestialHolography.MassiveCutPhysicalCoordinates
 import Mathlib.Tactic
 
 /-!
@@ -16,12 +17,20 @@ collapses to the unexpectedly simple numerator `r^8+1`:
   C4_same = 4 (r^8+1) (1+t^2)^2 /
     ((1+r^2)^2 (r^2+t^2)^2).
 
-This file certifies the rational algebra and its relation to the earlier defect.
+In physical coordinates `beta=|p|/E`, `rho=mu/E`, `c=cos(theta)`, these become
+
+  Cs = rho^4/(1-beta*c)^2,
+  Cv-3Cs = 16 beta^2/(1-beta*c)^2,
+  C4 = (2 rho^4 + 16 beta^2)/(1-beta*c)^2.
+
+This file certifies the rational algebra and the chart-to-physical conversion.
 The identification with explicit sewn Yang--Mills trees remains an executable
 symbolic discovery result rather than being hidden inside a Lean assumption.
 -/
 
 namespace GppMassiveVectorGenericDefect
+
+open GppMassiveCutPhysicalCoordinates
 
 /-- Exact rational defect found by the generic symbolic state-sum audit. -/
 def sameHelicityDefect (r t : ℝ) : ℝ :=
@@ -91,6 +100,45 @@ theorem sameHelicityDefect_le_ds4Baseline
   have hs := sameHelicityScalarSewing_nonneg r t
   linarith
 
+/-- Exact chart-to-physical conversion of the scalar `mu^4` sewing. -/
+theorem sameHelicityScalarSewing_physical
+    {r t : ℝ} (hr : r ≠ 0) :
+    sameHelicityScalarSewing r t =
+      rhoCoord r ^ 4 / (1 - betaCoord r * cosThetaCoord t) ^ 2 := by
+  unfold sameHelicityScalarSewing rhoCoord betaCoord cosThetaCoord
+  have hR : 1 + r ^ 2 ≠ 0 := by nlinarith [sq_nonneg r]
+  have hT : 1 + t ^ 2 ≠ 0 := by nlinarith [sq_nonneg t]
+  have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
+  have hRT : r ^ 2 + t ^ 2 ≠ 0 := by nlinarith [sq_nonneg t]
+  field_simp [hR, hT, hRT]
+  ring
+
+/-- Exact physical form of the generic polarization defect. -/
+theorem sameHelicityDefect_physical
+    {r t : ℝ} (hr : r ≠ 0) :
+    sameHelicityDefect r t =
+      16 * betaCoord r ^ 2 /
+        (1 - betaCoord r * cosThetaCoord t) ^ 2 := by
+  unfold sameHelicityDefect betaCoord cosThetaCoord
+  have hR : 1 + r ^ 2 ≠ 0 := by nlinarith [sq_nonneg r]
+  have hT : 1 + t ^ 2 ≠ 0 := by nlinarith [sq_nonneg t]
+  have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
+  have hRT : r ^ 2 + t ^ 2 ≠ 0 := by nlinarith [sq_nonneg t]
+  field_simp [hR, hT, hRT]
+  ring
+
+/-- **Physical generic `D_s=4` numerator.** The baseline separates exactly into
+a `mu^4` scalar term and a velocity/polarization term. -/
+theorem sameHelicityDs4Baseline_physical
+    {r t : ℝ} (hr : r ≠ 0) :
+    sameHelicityDs4Baseline r t =
+      (2 * rhoCoord r ^ 4 + 16 * betaCoord r ^ 2) /
+        (1 - betaCoord r * cosThetaCoord t) ^ 2 := by
+  rw [ds4Baseline_eq_two_scalar_add_defect hr,
+    sameHelicityScalarSewing_physical hr,
+    sameHelicityDefect_physical hr]
+  ring
+
 /-- The exact generic baseline recovers the threshold state count `2`. -/
 @[simp] theorem sameHelicityDs4Baseline_one :
     sameHelicityDs4Baseline 1 1 = 2 := by
@@ -122,5 +170,8 @@ end GppMassiveVectorGenericDefect
 #print axioms GppMassiveVectorGenericDefect.sameHelicityDs4Baseline_nonneg
 #print axioms GppMassiveVectorGenericDefect.ds4Baseline_eq_two_scalar_add_defect
 #print axioms GppMassiveVectorGenericDefect.sameHelicityDefect_le_ds4Baseline
+#print axioms GppMassiveVectorGenericDefect.sameHelicityScalarSewing_physical
+#print axioms GppMassiveVectorGenericDefect.sameHelicityDefect_physical
+#print axioms GppMassiveVectorGenericDefect.sameHelicityDs4Baseline_physical
 #print axioms GppMassiveVectorGenericDefect.vector_ge_three_scalar_of_defect
 #print axioms GppMassiveVectorGenericDefect.vector_eq_three_scalar_at_threshold
