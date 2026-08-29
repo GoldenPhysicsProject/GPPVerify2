@@ -55,14 +55,17 @@ theorem primaryShellIntegral_succ (Delta : ℝ) (n : ℕ) :
   rw [primaryShellIntegral_eq, primaryShellIntegral_eq, pow_succ]
   ac_rfl
 
-/-- The shell ratio is independent of level wherever the current shell
-contribution is nonzero. -/
+/-- The shell ratio is independent of level whenever the current shell is a
+finite nonzero `ENNReal`.  Both hypotheses are required for cancellation in
+`ℝ≥0∞`; finiteness must not be silently inferred merely from nonvanishing. -/
 theorem primaryShellIntegral_ratio
-    (Delta : ℝ) (n : ℕ) (hn : primaryShellIntegral p Delta n ≠ 0) :
+    (Delta : ℝ) (n : ℕ)
+    (hn : primaryShellIntegral p Delta n ≠ 0)
+    (hfin : primaryShellIntegral p Delta n ≠ ⊤) :
     primaryShellIntegral p Delta (n + 1) /
         primaryShellIntegral p Delta n = primaryScale p Delta := by
   rw [primaryShellIntegral_succ]
-  exact mul_div_cancel_right₀ _ hn
+  exact ENNReal.mul_div_cancel_right hn hfin
 
 /-- At weight zero, the local scaling eigenvalue is trivial. -/
 @[simp] theorem primaryScale_zero : primaryScale p 0 = 1 := by
