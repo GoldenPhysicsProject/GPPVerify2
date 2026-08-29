@@ -1,5 +1,6 @@
 import GppVerify.CelestialHolography.MehlerFockSpectralWeight
 import GppVerify.QuantumGravity.GammaHalfModulusIdentity
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Tactic
 
 /-!
@@ -35,10 +36,8 @@ theorem gamma_product_eq_collapsedWeight (lam : ℝ) :
   push_cast
   ring
 
-/-- **Closed real-axis Wiener--Hopf / Mehler--Fock / Gamma bridge.** Away from
-the zero of the `sinh` denominator, the product of the two elementary spectral
-weights is exactly `lam^2` times the half-shifted Gamma reflection product. -/
-theorem wienerHopf_mul_mehlerFock_eq_gamma_product
+/-- Closed Wiener--Hopf / Mehler--Fock / Gamma bridge away from the origin. -/
+theorem wienerHopf_mul_mehlerFock_eq_gamma_product_of_sinh_ne_zero
     {lam : ℝ} (hs : Real.sinh (Real.pi * lam) ≠ 0) :
     (((wienerHopfWeight lam * mehlerFockWeight lam : ℝ) : ℂ)) =
       ((lam : ℂ) ^ 2) *
@@ -49,7 +48,24 @@ theorem wienerHopf_mul_mehlerFock_eq_gamma_product
   symm
   exact gamma_product_eq_collapsedWeight lam
 
+/-- **All-real Wiener--Hopf / Mehler--Fock / Gamma bridge.** The apparent
+puncture at `lam = 0` is removable for the explicitly defined weights: both
+sides vanish there, while off the origin `sinh(pi*lam)` is nonzero. Thus the
+spectral-weight identity holds on the entire real axis. -/
+theorem wienerHopf_mul_mehlerFock_eq_gamma_product (lam : ℝ) :
+    (((wienerHopfWeight lam * mehlerFockWeight lam : ℝ) : ℂ)) =
+      ((lam : ℂ) ^ 2) *
+        (Complex.Gamma (((1 : ℂ) / 2) + (lam : ℂ) * I) *
+          Complex.Gamma (((1 : ℂ) / 2) - (lam : ℂ) * I)) := by
+  by_cases hlam : lam = 0
+  · subst lam
+    simp [wienerHopfWeight, mehlerFockWeight]
+  · apply wienerHopf_mul_mehlerFock_eq_gamma_product_of_sinh_ne_zero
+    rw [Real.sinh_ne_zero]
+    exact mul_ne_zero (ne_of_gt Real.pi_pos) hlam
+
 end GppMehlerFockGammaCollapsed
 
 #print axioms GppMehlerFockGammaCollapsed.gamma_product_eq_collapsedWeight
+#print axioms GppMehlerFockGammaCollapsed.wienerHopf_mul_mehlerFock_eq_gamma_product_of_sinh_ne_zero
 #print axioms GppMehlerFockGammaCollapsed.wienerHopf_mul_mehlerFock_eq_gamma_product
