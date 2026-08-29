@@ -20,19 +20,19 @@ physical range of `u = beta^2 sin(theta)^2` directly in the rational chart.
 namespace GppMassiveCutPhysicalCoordinates
 
 /-- Velocity coordinate `|p|/E` in the rational massive-cut chart. -/
-def betaCoord (r : ℝ) : ℝ := (1 - r ^ 2) / (1 + r ^ 2)
+noncomputable def betaCoord (r : ℝ) : ℝ := (1 - r ^ 2) / (1 + r ^ 2)
 
 /-- Mass coordinate `mu/E` in the rational massive-cut chart. -/
-def rhoCoord (r : ℝ) : ℝ := 2 * r / (1 + r ^ 2)
+noncomputable def rhoCoord (r : ℝ) : ℝ := 2 * r / (1 + r ^ 2)
 
 /-- Rational angular parametrization of `cos theta`. -/
-def cosThetaCoord (t : ℝ) : ℝ := (1 - t ^ 2) / (1 + t ^ 2)
+noncomputable def cosThetaCoord (t : ℝ) : ℝ := (1 - t ^ 2) / (1 + t ^ 2)
 
 /-- Rational angular parametrization of `sin theta`. -/
-def sinThetaCoord (t : ℝ) : ℝ := 2 * t / (1 + t ^ 2)
+noncomputable def sinThetaCoord (t : ℝ) : ℝ := 2 * t / (1 + t ^ 2)
 
 /-- Physical mixed-helicity variable `u = beta^2 sin(theta)^2`. -/
-def mixedHelicityUCoord (r t : ℝ) : ℝ :=
+noncomputable def mixedHelicityUCoord (r t : ℝ) : ℝ :=
   betaCoord r ^ 2 * sinThetaCoord t ^ 2
 
 /-- The velocity and mass coordinates lie exactly on the unit mass shell. -/
@@ -71,8 +71,9 @@ theorem mixedHelicityUCoord_mem_unitInterval (r t : ℝ) :
     have hs0 : 0 ≤ sinThetaCoord t ^ 2 := sq_nonneg _
     have hb1 : betaCoord r ^ 2 ≤ 1 := beta_sq_le_one r
     have hs1 : sinThetaCoord t ^ 2 ≤ 1 := sinTheta_sq_le_one t
-    nlinarith [mul_nonneg (1 - betaCoord r ^ 2) (sinThetaCoord t ^ 2),
-      mul_nonneg (betaCoord r ^ 2) (1 - sinThetaCoord t ^ 2)]
+    have hgap : 0 ≤ (betaCoord r ^ 2) * (1 - sinThetaCoord t ^ 2) :=
+      mul_nonneg hb0 (sub_nonneg.mpr hs1)
+    nlinarith
 
 /-- Exact conversion of the rational cut denominator to physical variables. -/
 theorem one_sub_beta_mul_cosTheta (r t : ℝ) :
