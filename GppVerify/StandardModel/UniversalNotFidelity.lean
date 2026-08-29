@@ -42,13 +42,15 @@ noncomputable def universalNot (A : QMat) : QMat := (3 : ℂ)⁻¹ • pauliSum 
 /-- The Pauli conjugation identity on `M₂(ℂ)`. -/
 theorem pauliSum_eq (A : QMat) :
     pauliSum A = (2 * tr2 A) • (1 : QMat) - A := by
-  have hI : Complex.I ^ 2 = (-1 : ℂ) := by
-    simpa [pow_two] using Complex.I_mul_I
+  have hI_sandwich (z : ℂ) : Complex.I * (z * Complex.I) = -z := by
+    calc
+      Complex.I * (z * Complex.I) = (Complex.I * Complex.I) * z := by ring
+      _ = (-1 : ℂ) * z := by rw [Complex.I_mul_I]
+      _ = -z := by ring
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [pauliSum, sigmaX, sigmaY, sigmaZ, tr2, Matrix.mul_apply,
-      Matrix.vecMul, dotProduct, Fin.sum_univ_two] <;>
-    rw [hI] <;>
+      Matrix.vecMul, dotProduct, Fin.sum_univ_two, hI_sandwich] <;>
     ring
 
 /-- For a normalized qubit state, the equal Pauli mixture is `(2I-rho)/3`. -/
