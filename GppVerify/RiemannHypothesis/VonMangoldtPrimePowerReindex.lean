@@ -14,7 +14,7 @@ This file uses that equivalence to perform the global countable reindexing exact
 
 namespace GppVonMangoldtPrimePowerReindex
 
-open Set
+open Set Complex
 open ArithmeticFunction
 open GppVonMangoldtCosine
 
@@ -49,7 +49,13 @@ theorem cosineSummand_primePower
   norm_cast
   rw [Nat.cast_pow, Real.log_pow]
   norm_cast
-  ring_nf
+  have hexp :
+      -(Real.log (p : ℕ) * (k + 1 : ℝ)) * a =
+        -(k + 1 : ℝ) * Real.log (p : ℕ) * a := by ring
+  have hcos :
+      (Real.log (p : ℕ) * (k + 1 : ℝ)) * t =
+        (k + 1 : ℝ) * Real.log (p : ℕ) * t := by ring
+  rw [hexp, hcos]
 
 /-- Exact global reindexing from natural numbers to canonical prime-power coordinates. -/
 theorem cosine_tsum_eq_primePower_pair_tsum (a t : ℝ) :
@@ -85,9 +91,9 @@ theorem cosine_tsum_eq_primePower_geometric_tsum (a t : ℝ) :
 prime-power sum on `a>1`. -/
 theorem neg_zeta_logDeriv_re_eq_primePower_geometric_tsum
     {a t : ℝ} (ha : 1 < a) :
-    (-(Complex.deriv Complex.riemannZeta
-      ((a : ℂ) + (t : ℂ) * Complex.I) /
-      Complex.riemannZeta ((a : ℂ) + (t : ℂ) * Complex.I))).re =
+    (-(deriv riemannZeta
+      ((a : ℂ) + (t : ℂ) * I) /
+      riemannZeta ((a : ℂ) + (t : ℂ) * I))).re =
       ∑' pk : Nat.Primes × ℕ,
         Real.log (pk.1 : ℕ) *
           Real.exp (-(pk.2 + 1 : ℝ) * Real.log (pk.1 : ℕ) * a) *
