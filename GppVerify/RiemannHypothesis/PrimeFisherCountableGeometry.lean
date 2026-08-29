@@ -1,5 +1,6 @@
 import GppVerify.RiemannHypothesis.CountableFisherMomentLimit
 import GppVerify.RiemannHypothesis.PrimeFisherMomentSummability
+import GppVerify.RiemannHypothesis.PrimeHankelAllOrderStrict
 import Mathlib.Tactic
 
 /-!
@@ -23,6 +24,7 @@ namespace GppPrimeFisherCountableGeometry
 open GppCountableFisherMomentLimit
 open GppPrimeFisherMomentSummability
 open GppPrimeHankelFisherSpecialization
+open GppPrimeHankelAllOrderStrict
 open GppFiniteFisherMomentBridge
 
 /-- Every raw logarithmic moment of the arithmetic Fisher weight is summable on `beta > 1`,
@@ -30,6 +32,15 @@ expressed in the generic `infiniteMoment` interface used by the countable Fisher
 theorem summable_prime_fisher_moment (r : ℕ) {β : ℝ} (hβ : 1 < β) :
     Summable (fun n : ℕ => fisherWeight β n * (Real.log n) ^ r) := by
   exact summable_fisherWeight_mul_log_pow r hβ
+
+/-- **The full arithmetic Fisher measure has strictly positive finite mass.**
+This is obtained from the already-proved all-order strict polynomial Gram theorem by
+specializing the polynomial to the constant `1`.  It is the denominator certificate
+needed before normalizing the countable Fisher measure to a probability distribution. -/
+theorem prime_fisher_mass_pos {β : ℝ} (hβ : 1 < β) :
+    0 < infiniteMoment (fisherWeight β) Real.log 0 := by
+  have h := fisher_polynomial_tsum_pos_unconditional hβ (1 : Polynomial ℝ) (by norm_num)
+  simpa [infiniteMoment] using h
 
 /-- **Countable arithmetic Fisher positivity.**  On the half-plane `beta > 1`, the
 mass-aware covariance numerator for the sufficient statistics `log n` and `(log n)^2`
@@ -52,4 +63,5 @@ theorem prime_fisherNumerator_infinite_nonneg {β : ℝ} (hβ : 1 < β) :
 
 end GppPrimeFisherCountableGeometry
 
+#print axioms GppPrimeFisherCountableGeometry.prime_fisher_mass_pos
 #print axioms GppPrimeFisherCountableGeometry.prime_fisherNumerator_infinite_nonneg
