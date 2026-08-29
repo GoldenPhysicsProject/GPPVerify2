@@ -46,14 +46,12 @@ theorem epsilon_sq : epsilon * epsilon = -1 := by
 theorem epsilon_det : epsilon.det = 1 := by
   simp [epsilon, Matrix.det_fin_two_of]
 
-/-- Charge conjugation C satisfies C² = -1 for Dirac spinors. The matrix
-    part is `epsilon_sq`; the full antiunitary statement (including
-    complex conjugation) is a further Mathlib gap, recorded here as
-    before. -/
-theorem charge_conjugation_sq : True := trivial
--- NOTE: full antiunitary Clifford algebra / spinor bundle formalism
--- needed for the complex-conjugation half; the matrix half is
--- `epsilon_sq` above.
+/-- Exact matrix component of charge-conjugation squaring: ε² = -I.
+The full antiunitary spinor statement additionally requires the conjugation
+operator and its interaction with the spinor representation; that stronger
+claim remains outside this theorem. -/
+theorem charge_conjugation_sq : epsilon * epsilon = -1 :=
+  epsilon_sq
 
 /-- Majorana condition: ψ = Cψ̄ is self-consistent for Weyl spinors -/
 theorem majorana_self_consistency : True := trivial
