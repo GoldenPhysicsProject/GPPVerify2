@@ -13,14 +13,19 @@ with Euler-log coefficients
 
   p^{-(m+1)/2} / (m+1).
 
-The scalar boundary anomaly contributes an extra factor `a_m`.  The repetition number
+The scalar boundary anomaly contributes an extra factor `a_m`. The repetition number
 therefore cancels exactly, leaving the standard prime-orbit coefficient
 
   log p * p^{-(m+1)/2}.
 
-This file records that finite algebraic layer and its finite-sum consequence.  It does not
-construct the resolvent operator, prove trace-class summability, or pass to the infinite
-prime/repetition sum.
+For positive `p`, the remaining half-density factor is exactly the familiar prime-power
+weight
+
+  p^{-(m+1)/2} = 1 / sqrt(p^(m+1)).
+
+Thus each finite causal repetition anomaly has precisely the arithmetic normalization used
+by the von-Mangoldt heat term. This file does not construct the resolvent operator, prove
+trace-class summability, or pass to the infinite prime/repetition sum.
 -/
 
 namespace GppCausalPrimeResolventFinite
@@ -43,7 +48,26 @@ noncomputable def resolventWeight (p : ℝ) (m : ℕ) : ℝ :=
 noncomputable def scalarHeatAnomaly (t a : ℝ) : ℝ :=
   a * heatKernelGaussian t a
 
-/-- **Euler repetition cancellation.**  Multiplying the resolvent coefficient by the
+/-- Square root commutes with every natural power of a nonnegative real number. -/
+theorem sqrt_pow_nat {p : ℝ} (hp : 0 ≤ p) :
+    ∀ n : ℕ, Real.sqrt (p ^ n) = Real.sqrt p ^ n
+  | 0 => by simp
+  | n + 1 => by
+      rw [pow_succ, Real.sqrt_mul (pow_nonneg hp n), sqrt_pow_nat hp n, pow_succ]
+
+/-- The radial half-density weight is exactly inverse square-root normalization on the
+corresponding prime power. -/
+theorem rpow_neg_half_repetition_eq_inv_sqrt_pow
+    {p : ℝ} (hp : 0 < p) (m : ℕ) :
+    p ^ (-(repetition m : ℝ) / 2) =
+      1 / Real.sqrt (p ^ repetition m) := by
+  have hp0 : 0 ≤ p := hp.le
+  have hneg : -(repetition m : ℝ) / 2 = -((repetition m : ℝ) / 2) := by ring
+  rw [hneg, Real.rpow_neg hp0,
+    Real.rpow_div_two_eq_sqrt (repetition m : ℝ) hp0,
+    Real.rpow_natCast, one_div, sqrt_pow_nat hp0]
+
+/-- **Euler repetition cancellation.** Multiplying the resolvent coefficient by the
 boundary anomaly cancels the repetition denominator exactly. -/
 theorem resolventWeight_mul_scalarHeatAnomaly
     (p t : ℝ) (m : ℕ) :
@@ -54,6 +78,16 @@ theorem resolventWeight_mul_scalarHeatAnomaly
     positivity
   unfold resolventWeight scalarHeatAnomaly repetitionLength
   field_simp [hm]
+  ring
+
+/-- The same repetition anomaly in literal von-Mangoldt prime-power normalization. -/
+theorem resolventWeight_mul_scalarHeatAnomaly_eq_sqrt_weight
+    {p : ℝ} (hp : 0 < p) (t : ℝ) (m : ℕ) :
+    resolventWeight p m * scalarHeatAnomaly t (repetitionLength p m) =
+      (Real.log p / Real.sqrt (p ^ repetition m)) *
+        heatKernelGaussian t (repetitionLength p m) := by
+  rw [resolventWeight_mul_scalarHeatAnomaly,
+    rpow_neg_half_repetition_eq_inv_sqrt_pow hp]
   ring
 
 /-- Closed Gaussian form of one weighted prime repetition anomaly. -/
@@ -84,8 +118,24 @@ theorem finiteResolventAnomaly_eq_primeHeatSum
   intro m hm
   exact resolventWeight_mul_scalarHeatAnomaly p t m
 
+/-- For positive `p`, the finite causal resolvent sum is already written with the literal
+inverse-square-root prime-power coefficient. -/
+theorem finiteResolventAnomaly_eq_sqrt_primeHeatSum
+    {p : ℝ} (hp : 0 < p) (t : ℝ) (M : ℕ) :
+    finiteResolventAnomaly p t M =
+      ∑ m in range M,
+        (Real.log p / Real.sqrt (p ^ repetition m)) *
+          heatKernelGaussian t (repetitionLength p m) := by
+  unfold finiteResolventAnomaly
+  apply Finset.sum_congr rfl
+  intro m hm
+  exact resolventWeight_mul_scalarHeatAnomaly_eq_sqrt_weight hp t m
+
 end GppCausalPrimeResolventFinite
 
+#print axioms GppCausalPrimeResolventFinite.sqrt_pow_nat
+#print axioms GppCausalPrimeResolventFinite.rpow_neg_half_repetition_eq_inv_sqrt_pow
 #print axioms GppCausalPrimeResolventFinite.resolventWeight_mul_scalarHeatAnomaly
-#print axioms GppCausalPrimeResolventFinite.resolventWeight_mul_scalarHeatAnomaly_closed
+#print axioms GppCausalPrimeResolventFinite.resolventWeight_mul_scalarHeatAnomaly_eq_sqrt_weight
 #print axioms GppCausalPrimeResolventFinite.finiteResolventAnomaly_eq_primeHeatSum
+#print axioms GppCausalPrimeResolventFinite.finiteResolventAnomaly_eq_sqrt_primeHeatSum
