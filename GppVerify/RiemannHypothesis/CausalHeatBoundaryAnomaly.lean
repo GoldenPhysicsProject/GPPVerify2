@@ -233,7 +233,16 @@ theorem heatKernelGaussian_tendsto_zero {t : ℝ} (ht : 0 < t) :
   change Tendsto
     (fun x : ℝ => Real.exp (-(x ^ 2) / (4 * t)) /
       Real.sqrt (4 * Real.pi * t)) atTop (nhds 0)
-  convert (hexp.div_const (Real.sqrt (4 * Real.pi * t))) using 1 <;> ring
+  have hfun :
+      (fun x : ℝ => Real.exp (-(x ^ 2) / (4 * t)) /
+        Real.sqrt (4 * Real.pi * t)) =
+      (fun x : ℝ => Real.exp (-(x ^ 2 / (4 * t))) /
+        Real.sqrt (4 * Real.pi * t)) := by
+    funext x
+    have hexponent : -(x ^ 2) / (4 * t) = -(x ^ 2 / (4 * t)) := by ring
+    rw [hexponent]
+  rw [hfun]
+  exact hexp.div_const (Real.sqrt (4 * Real.pi * t))
 
 /-- Specialization of the finite-cutoff identity to the normalized heat Gaussian. -/
 theorem truncatedHeatBoundaryTrace_eq
