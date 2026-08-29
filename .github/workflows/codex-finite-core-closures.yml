@@ -37,6 +37,8 @@ jobs:
         run: lake build GppVerify.RiemannHypothesis.CausalHeatVonMangoldtReindex
       - name: Finite positive heat-semigroup Gram core
         run: lake build GppVerify.RiemannHypothesis.FiniteHeatSemigroupGram
+      - name: Finite positive heat-semigroup monotonicity
+        run: lake build GppVerify.RiemannHypothesis.FiniteHeatSemigroupMonotonicity
       - name: Local Euler shadow colligation core
         run: lake build GppVerify.RiemannHypothesis.LocalEulerShadowColligation
       - name: Universal-NOT qubit fidelity
@@ -51,3 +53,7 @@ jobs:
         run: lake build GppVerify.CelestialHolography.MassiveCutMu4RadialMoment
       - name: Two-orientation scalar flow state sum
         run: lake build GppVerify.CelestialHolography.TwoFlowScalarStateSum
+      - name: Positive regulator eventually small
+        run: lake build GppVerify.CelestialHolography.PositiveRegulatorEventuallySmall
+      - name: Scalar box automatic regulator convergence
+        run: lake build GppVerify.CelestialHolography.ScalarBoxAutomaticRegulatorConvergence
