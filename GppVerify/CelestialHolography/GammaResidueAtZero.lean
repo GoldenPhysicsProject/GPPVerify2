@@ -1,4 +1,4 @@
-import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
+import Mathlib.Analysis.SpecialFunctions.Gamma.Deriv
 import Mathlib.Tactic
 
 /-!
@@ -16,25 +16,13 @@ namespace GppGammaResidueAtZero
 
 open Filter Set
 
-/-- Real Gamma is continuous at `1`, obtained by restricting the complex Gamma
-function, which is differentiable away from its poles. -/
+/-- Real Gamma is continuous at `1`, as an immediate consequence of Mathlib's
+real differentiability theorem away from the nonpositive integer poles. -/
 theorem continuousAt_realGamma_one : ContinuousAt Real.Gamma 1 := by
-  have hpoles : ∀ m : ℕ, (1 : ℂ) ≠ -m := by
-    intro m h
-    have hre := congrArg Complex.re h
-    have hm0 : (0 : ℝ) ≤ (m : ℝ) := by positivity
-    simp only [Complex.one_re, map_neg, Complex.natCast_re] at hre
-    linarith
-  have hc : Tendsto Complex.Gamma (nhds (1 : ℂ)) (nhds (1 : ℂ)) := by
-    simpa using (Complex.differentiableAt_Gamma (1 : ℂ) hpoles).continuousAt
-  have hof : Tendsto (fun x : ℝ => (x : ℂ)) (nhds 1) (nhds (1 : ℂ)) :=
-    Complex.continuous_ofReal.continuousAt
-  have hcg : Tendsto (fun x : ℝ => Complex.Gamma (x : ℂ))
-      (nhds 1) (nhds (1 : ℂ)) := hc.comp hof
-  have hre : Tendsto (fun z : ℂ => z.re) (nhds (1 : ℂ)) (nhds 1) :=
-    Complex.continuous_re.continuousAt
-  have hreal := hre.comp hcg
-  simpa [Real.Gamma] using hreal
+  apply (Real.differentiableAt_Gamma ?_).continuousAt
+  intro m h
+  have hm0 : (0 : ℝ) ≤ (m : ℝ) := by positivity
+  linarith
 
 /-- **Gamma residue at the origin.** In the punctured real neighborhood of zero,
 `eps * Gamma(eps)` tends to `1`.  This is exactly the residue input used by the
@@ -51,11 +39,11 @@ theorem tendsto_mul_realGamma_zero :
   have hshift :
       Tendsto (fun ε : ℝ => Real.Gamma (ε + 1))
         (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds 1) :=
-    continuousAt_realGamma_one.comp hadd
+    continuousAt_realGamma_one.tendsto.comp hadd
   apply hshift.congr'
   filter_upwards [self_mem_nhdsWithin] with ε hε
   have hε0 : ε ≠ 0 := by simpa using hε
-  exact Real.Gamma_add_one hε0
+  exact (Real.Gamma_add_one hε0).symm
 
 end GppGammaResidueAtZero
 
