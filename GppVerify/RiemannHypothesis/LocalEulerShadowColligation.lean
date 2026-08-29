@@ -59,12 +59,11 @@ theorem transfer_eq_blaschke
     (hden : 1 - a * z ≠ 0) :
     transfer a b z = (z - a) / (1 - a * z) := by
   unfold transfer
-  have hden' : 1 - z * a ≠ 0 := by
-    simpa [mul_comm] using hden
-  rw [div_eq_mul_inv]
+  have hcomm : 1 - z * a = 1 - a * z := by ring
+  rw [hcomm]
   apply (eq_div_iff hden).2
-  field_simp [hden']
-  nlinarith [hab]
+  field_simp [hden]
+  linear_combination z * hab
 
 /-- On the unit circle, the real-parameter Blaschke factor has unit norm.  This is
 proved algebraically from `|z|^2=1`, avoiding any appeal to Hardy-space machinery. -/
