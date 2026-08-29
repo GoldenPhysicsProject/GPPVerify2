@@ -21,7 +21,7 @@ open GppPadicMobiusConformal
 variable (p : ℕ) [Fact p.Prime]
 
 /-- The affine cross ratio `(x₁₂ x₃₄)/(x₁₃ x₂₄)`. -/
-def crossRatio (x1 x2 x3 x4 : Padic p) : Padic p :=
+noncomputable def crossRatio (x1 x2 x3 x4 : Padic p) : Padic p :=
   ((x1 - x2) * (x3 - x4)) / ((x1 - x3) * (x2 - x4))
 
 /-- **Exact p-adic conformal four-point invariant.**  A nondegenerate fractional
