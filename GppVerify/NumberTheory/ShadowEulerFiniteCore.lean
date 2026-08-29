@@ -14,7 +14,7 @@ namespace GppShadowEulerFiniteCore
 open GppHadamardShadowPairAlgebra
 
 /-- The arithmetic glueball evaluation point. -/
-def glueballS (k N : ℂ) : ℂ := k * N / (k + N)
+noncomputable def glueballS (k N : ℂ) : ℂ := k * N / (k + N)
 
 /-- Exact perfect-square defect at the glueball evaluation point:
 
@@ -47,15 +47,13 @@ theorem su3_glueballS : glueballS 1 3 = (3 : ℂ) / 4 := by
 /-- The SU(3), level-one defect is exactly `1/16`. -/
 theorem su3_defect :
     1 - 4 * reflectionInvariant (glueballS 1 3) = (1 : ℂ) / 16 := by
-  rw [one_sub_four_glueball_invariant 1 3 (by norm_num)]
-  norm_num
+  norm_num [reflectionInvariant, glueballS]
 
 /-- Substituting a glueball point into the unconditional normalized pair kernel produces
 the exact celestial numerator used before any infinite Hadamard product is invoked. -/
 theorem normalized_glueball_pair_kernel
     {rho k N : ℂ}
-    (hrho : reflectionInvariant rho ≠ 1 / 4)
-    (hden : k + N ≠ 0) :
+    (hrho : reflectionInvariant rho ≠ 1 / 4) :
     (reflectionInvariant rho - reflectionInvariant (glueballS k N)) /
         (reflectionInvariant rho - 1 / 4) =
       (4 * reflectionInvariant rho -
