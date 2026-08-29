@@ -28,26 +28,25 @@ RH proof.
 
 namespace GppArithmeticEisensteinUnitarity
 
-open Complex
 open GppEisenstein
 
 /-- On the principal axis, celestial shadow is exactly Hermitian conjugation of the
 spectral parameter. -/
-theorem two_sub_eq_conj_of_re_one {Delta : ℂ} (hDelta : Delta.re = 1) :
-    2 - Delta = conj Delta := by
+theorem two_sub_eq_star_of_re_one {Delta : ℂ} (hDelta : Delta.re = 1) :
+    2 - Delta = (starRingEnd ℂ) Delta := by
   apply Complex.ext
   · simp [hDelta]
   · simp
 
 /-- The global Eisenstein scattering coefficient is a pure completed-zeta phase on
 the principal axis. -/
-theorem eisensteinCoeff_eq_conj_div_of_re_one
+theorem eisensteinCoeff_eq_star_div_of_re_one
     {Delta : ℂ} (hDelta : Delta.re = 1) :
     eisensteinCoeff Delta =
-      conj (completedRiemannZeta Delta) / completedRiemannZeta Delta := by
+      (starRingEnd ℂ) (completedRiemannZeta Delta) / completedRiemannZeta Delta := by
   have hpos : 0 < Delta.re := by rw [hDelta]; norm_num
   rw [eisensteinCoeff_eq_shadow_ratio,
-    two_sub_eq_conj_of_re_one hDelta,
+    two_sub_eq_star_of_re_one hDelta,
     GppCompletedZetaReality.completedRiemannZeta_conj hpos]
 
 /-- **Principal-series scattering unitarity.**  Away from a zero of the completed
@@ -57,9 +56,8 @@ theorem norm_eisensteinCoeff_eq_one_of_re_one
     {Delta : ℂ} (hDelta : Delta.re = 1)
     (hLambda : completedRiemannZeta Delta ≠ 0) :
     ‖eisensteinCoeff Delta‖ = 1 := by
-  rw [eisensteinCoeff_eq_conj_div_of_re_one hDelta, norm_div]
-  rw [norm_conj]
-  exact div_self (norm_ne_zero_iff.mpr hLambda)
+  rw [eisensteinCoeff_eq_star_div_of_re_one hDelta, norm_div]
+  simp [hLambda]
 
 /-- Explicit principal-axis parameterization induced from
 `s = 1/2 + i tau` by `Delta = 2s`. -/
@@ -84,7 +82,7 @@ theorem eisensteinCoeff_reflection_principal
     (hLambda : completedRiemannZeta Delta ≠ 0) :
     eisensteinCoeff (2 - Delta) * eisensteinCoeff Delta = 1 := by
   have hshadow : completedRiemannZeta (2 - Delta) ≠ 0 := by
-    rw [two_sub_eq_conj_of_re_one hDelta]
+    rw [two_sub_eq_star_of_re_one hDelta]
     have hpos : 0 < Delta.re := by rw [hDelta]; norm_num
     rw [GppCompletedZetaReality.completedRiemannZeta_conj hpos]
     exact map_ne_zero (starRingEnd ℂ) hLambda
@@ -92,7 +90,7 @@ theorem eisensteinCoeff_reflection_principal
 
 end GppArithmeticEisensteinUnitarity
 
-#print axioms GppArithmeticEisensteinUnitarity.eisensteinCoeff_eq_conj_div_of_re_one
+#print axioms GppArithmeticEisensteinUnitarity.eisensteinCoeff_eq_star_div_of_re_one
 #print axioms GppArithmeticEisensteinUnitarity.norm_eisensteinCoeff_eq_one_of_re_one
 #print axioms GppArithmeticEisensteinUnitarity.norm_eisensteinCoeff_principalDelta
 #print axioms GppArithmeticEisensteinUnitarity.eisensteinCoeff_reflection_principal
