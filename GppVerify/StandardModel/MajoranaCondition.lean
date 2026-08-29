@@ -120,6 +120,7 @@ theorem T_boundary_oscillation_period (m : ℝ) (hm : m ≠ 0) :
     Complex.exp (((2 * m * (Real.pi / m) : ℝ) : ℂ) * Complex.I) = 1 := by
   have hphase : 2 * m * (Real.pi / m) = 2 * Real.pi := by
     field_simp [hm]
+    ring
   rw [hphase]
   simpa using Complex.exp_two_pi_mul_I
 
