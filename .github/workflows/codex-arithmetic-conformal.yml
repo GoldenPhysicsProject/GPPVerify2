@@ -54,3 +54,6 @@ jobs:
 
       - name: p-adic Möbius conformal covariance
         run: lake build GppVerify.RiemannHypothesis.PadicMobiusConformal
+
+      - name: p-adic cross-ratio invariance
+        run: lake build GppVerify.RiemannHypothesis.PadicCrossRatio
