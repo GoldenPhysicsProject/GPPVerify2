@@ -47,3 +47,5 @@ jobs:
         run: lake build GppVerify.CelestialHolography.MassiveVectorPhysicalChartClosure
       - name: D-dimensional mu4 massive celestial radial weight
         run: lake build GppVerify.CelestialHolography.MassiveCutRadialMu4Weight
+      - name: Exact D-dimensional mu4 celestial radial moment
+        run: lake build GppVerify.CelestialHolography.MassiveCutMu4RadialMoment
