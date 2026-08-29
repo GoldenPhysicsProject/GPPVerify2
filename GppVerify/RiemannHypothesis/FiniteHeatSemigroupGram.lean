@@ -42,9 +42,15 @@ theorem atomicHeatKernel_eq_atomicHeat_add
   unfold atomicHeatKernel atomicHeat
   apply Finset.sum_congr rfl
   intro a ha
-  rw [← Real.exp_add]
-  congr 2
-  ring
+  calc
+    weight a * Real.exp (-(rate a) * t) * Real.exp (-(rate a) * u) =
+        weight a *
+          (Real.exp (-(rate a) * t) * Real.exp (-(rate a) * u)) := by ring
+    _ = weight a * Real.exp (-(rate a) * t + (-(rate a) * u)) := by
+      rw [Real.exp_add]
+    _ = weight a * Real.exp (-(rate a) * (t + u)) := by
+      congr 2
+      ring
 
 /-- Weighted rank-one quadratic forms are nonnegative. -/
 theorem weighted_rankOne_sum_nonneg
@@ -76,12 +82,60 @@ theorem atomicHeatKernel_gram_nonneg
     exact hsq
   unfold atomicHeatKernel
   simp_rw [Finset.mul_sum]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro a ha
-  rw [Finset.sum_mul]
-  simp_rw [Finset.mul_sum]
-  ring
+  calc
+    (∑ i in I, ∑ j in I, ∑ a in atoms,
+      coeff i * coeff j *
+        (weight a * Real.exp (-(rate a) * time i) *
+          Real.exp (-(rate a) * time j))) =
+      ∑ i in I, ∑ a in atoms, ∑ j in I,
+        coeff i * coeff j *
+          (weight a * Real.exp (-(rate a) * time i) *
+            Real.exp (-(rate a) * time j)) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [Finset.sum_comm]
+    _ = ∑ a in atoms, ∑ i in I, ∑ j in I,
+        coeff i * coeff j *
+          (weight a * Real.exp (-(rate a) * time i) *
+            Real.exp (-(rate a) * time j)) := by
+      rw [Finset.sum_comm]
+    _ = ∑ a in atoms,
+        weight a * (∑ i in I, coeff i * Real.exp (-(rate a) * time i)) ^ 2 := by
+      apply Finset.sum_congr rfl
+      intro a ha
+      symm
+      calc
+        weight a * (∑ i in I, coeff i * Real.exp (-(rate a) * time i)) ^ 2 =
+            weight a *
+              ((∑ i in I, coeff i * Real.exp (-(rate a) * time i)) *
+               (∑ j in I, coeff j * Real.exp (-(rate a) * time j))) := by
+          rw [pow_two]
+        _ = weight a *
+              (∑ i in I, ∑ j in I,
+                (coeff i * Real.exp (-(rate a) * time i)) *
+                  (coeff j * Real.exp (-(rate a) * time j))) := by
+          congr 1
+          rw [Finset.sum_mul]
+          apply Finset.sum_congr rfl
+          intro i hi
+          rw [Finset.mul_sum]
+        _ = ∑ i in I, ∑ j in I,
+              weight a *
+                ((coeff i * Real.exp (-(rate a) * time i)) *
+                  (coeff j * Real.exp (-(rate a) * time j))) := by
+          rw [Finset.mul_sum]
+          apply Finset.sum_congr rfl
+          intro i hi
+          rw [Finset.mul_sum]
+        _ = ∑ i in I, ∑ j in I,
+              coeff i * coeff j *
+                (weight a * Real.exp (-(rate a) * time i) *
+                  Real.exp (-(rate a) * time j)) := by
+          apply Finset.sum_congr rfl
+          intro i hi
+          apply Finset.sum_congr rfl
+          intro j hj
+          ring
 
 /-- Equivalent `K(t_i+t_j)` form of the same finite Gram positivity theorem. -/
 theorem atomicHeat_add_gram_nonneg
