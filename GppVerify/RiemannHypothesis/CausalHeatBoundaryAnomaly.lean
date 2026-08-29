@@ -3,10 +3,10 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Tactic
 
 /-!
-# Causal Dirichlet-heat boundary anomaly: finite-cutoff core
+# Causal Dirichlet-heat boundary anomaly: scalar core
 
 The causal replacement in the arithmetic heat-trace program uses the Dirichlet heat kernel
-on the positive half-line and the unilateral translation by `a > 0`.  On the diagonal, the
+on the positive half-line and the unilateral translation by `a > 0`. On the diagonal, the
 commutator kernel has the two pieces
 
   g(a) - g(a + 2x),             0 < x < a,
@@ -14,15 +14,18 @@ commutator kernel has the two pieces
 
 where for the heat problem `g = g_t` is the normalized Gaussian.
 
-Before invoking trace-class theory, there is a purely one-dimensional cancellation.  If the
-second integral is truncated at `R`, affine changes of variables give exactly
+For a finite cutoff `R`, affine changes of variables give exactly
 
   T_R(a) = a g(a) - (1/2) integral_[2R-a,2R+a] g.
 
 The moving window has fixed width `2a`; hence it vanishes for every kernel `g(x) -> 0` as
-`x -> +infinity`.  Thus the scalar boundary anomaly limit is already a general theorem,
-independent of Gaussian integration.  The remaining operator-theoretic layer is trace-classness
-and the identification of the operator trace with this diagonal integral.
+`x -> +infinity`. The normalized heat Gaussian has this decay for every `t > 0`, so the
+scalar anomaly is exactly
+
+  lim_R T_R(a) = a / sqrt(4*pi*t) * exp(-a^2/(4t)).
+
+This file does not yet package the Dirichlet heat operators or prove trace-classness of their
+commutator. It closes the scalar diagonal-integral part of that operator theorem.
 -/
 
 namespace GppCausalHeatBoundaryAnomaly
@@ -61,7 +64,7 @@ theorem two_mul_integral_a_R_two_add
   have h := intervalIntegral.mul_integral_comp_mul_add g 2 a (a := a) (b := R)
   simpa using h
 
-/-- **Exact finite-cutoff boundary cancellation.**  The only remainder is a moving window
+/-- **Exact finite-cutoff boundary cancellation.** The only remainder is a moving window
 of the underlying kernel at the far endpoint. -/
 theorem truncatedBoundaryTrace_eq_boundary_minus_tail
     (g : ℝ → ℝ) (a R : ℝ) :
@@ -88,8 +91,7 @@ theorem truncatedBoundaryTrace_eq_boundary_minus_tail
   linarith
 
 /-- **Fixed-width moving windows vanish for every kernel decaying at `+infinity`.**
-No global integrability assumption is required: uniform smallness of `g` on the far window,
-together with the interval-integral norm bound, is enough. -/
+No global integrability assumption is required. -/
 theorem movingWindowIntegral_tendsto_zero
     {g : ℝ → ℝ} (hg : Tendsto g atTop (𝓝 0)) {a : ℝ} (ha : 0 < a) :
     Tendsto (fun R : ℝ => ∫ y in (2 * R - a)..(2 * R + a), g y) atTop (𝓝 0) := by
@@ -154,6 +156,29 @@ theorem truncatedBoundaryTrace_tendsto_boundary
   rw [heq]
   exact hmain
 
+/-- For every positive heat time, the normalized Gaussian decays at positive infinity. -/
+theorem heatKernelGaussian_tendsto_zero {t : ℝ} (ht : 0 < t) :
+    Tendsto (heatKernelGaussian t) atTop (𝓝 0) := by
+  have hden : 0 < 4 * t := by positivity
+  have harg : Tendsto (fun x : ℝ => x ^ 2 / (4 * t)) atTop atTop := by
+    have hev : ∀ᶠ x : ℝ in atTop, x ≤ x ^ 2 / (4 * t) := by
+      filter_upwards [eventually_ge_atTop (max 0 (4 * t))] with x hx
+      have hx0 : 0 ≤ x := (le_max_left 0 (4 * t)).trans hx
+      have hxt : 4 * t ≤ x := (le_max_right 0 (4 * t)).trans hx
+      rw [le_div_iff₀ hden]
+      nlinarith
+    exact tendsto_atTop_mono' atTop hev tendsto_id
+  have hexp :
+      Tendsto (fun x : ℝ => Real.exp (-(x ^ 2 / (4 * t)))) atTop (𝓝 0) :=
+    Real.tendsto_exp_neg_atTop_nhds_zero.comp harg
+  have hscale :
+      Tendsto
+        (fun x : ℝ => (Real.sqrt (4 * Real.pi * t))⁻¹ *
+          Real.exp (-(x ^ 2 / (4 * t))))
+        atTop (𝓝 0) := by
+    simpa using (tendsto_const_nhds.mul hexp)
+  simpa [heatKernelGaussian, div_eq_inv_mul, mul_comm] using hscale
+
 /-- Specialization of the finite-cutoff identity to the normalized heat Gaussian. -/
 theorem truncatedHeatBoundaryTrace_eq
     (t a R : ℝ) :
@@ -163,6 +188,17 @@ theorem truncatedHeatBoundaryTrace_eq
           (∫ y in (2 * R - a)..(2 * R + a), heatKernelGaussian t y) := by
   exact truncatedBoundaryTrace_eq_boundary_minus_tail (heatKernelGaussian t) a R
 
+/-- **Exact scalar causal heat-boundary anomaly.** -/
+theorem truncatedHeatBoundaryTrace_tendsto
+    {t a : ℝ} (ht : 0 < t) (ha : 0 < a) :
+    Tendsto (fun R : ℝ => truncatedBoundaryTrace (heatKernelGaussian t) a R)
+      atTop
+      (𝓝 (a / Real.sqrt (4 * Real.pi * t) * Real.exp (-(a ^ 2) / (4 * t)))) := by
+  have h := truncatedBoundaryTrace_tendsto_boundary (heatKernelGaussian_tendsto_zero ht) ha
+  convert h using 1
+  unfold heatKernelGaussian
+  ring
+
 end GppCausalHeatBoundaryAnomaly
 
 #print axioms GppCausalHeatBoundaryAnomaly.two_mul_integral_zero_a_add_two
@@ -171,4 +207,5 @@ end GppCausalHeatBoundaryAnomaly
 #print axioms GppCausalHeatBoundaryAnomaly.truncatedBoundaryTrace_eq_boundary_minus_tail
 #print axioms GppCausalHeatBoundaryAnomaly.movingWindowIntegral_tendsto_zero
 #print axioms GppCausalHeatBoundaryAnomaly.truncatedBoundaryTrace_tendsto_boundary
-#print axioms GppCausalHeatBoundaryAnomaly.truncatedHeatBoundaryTrace_eq
+#print axioms GppCausalHeatBoundaryAnomaly.heatKernelGaussian_tendsto_zero
+#print axioms GppCausalHeatBoundaryAnomaly.truncatedHeatBoundaryTrace_tendsto
