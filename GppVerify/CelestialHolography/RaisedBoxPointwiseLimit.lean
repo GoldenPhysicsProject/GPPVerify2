@@ -24,9 +24,9 @@ open Filter
 /-- A positive constant raised to the vanishing negative regulator tends to one. -/
 theorem tendsto_neg_rpow_one {q : ℝ} (hq : 0 < q) :
     Tendsto (fun ε : ℝ => q ^ (-ε)) (𝓝 0) (𝓝 1) := by
-  have hcont : ContinuousAt (fun ε : ℝ => q ^ (-ε)) 0 := by
-    fun_prop
-  simpa using hcont
+  have hcont : Continuous (fun ε : ℝ => q ^ (-ε)) :=
+    (Real.continuous_const_rpow hq.ne').comp continuous_neg
+  simpa using hcont.continuousAt
 
 /-- Pointwise convergence of the Euclidean four-point Symanzik integrand on the
 simplex interior. -/
