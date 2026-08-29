@@ -43,7 +43,6 @@ theorem tendsto_specialRemainderMajorant_regulator
     convert h using 1
     · funext m
       field_simp [hU.ne']
-      ring
     · norm_num
   have htail :
       Tendsto
@@ -52,7 +51,7 @@ theorem tendsto_specialRemainderMajorant_regulator
             (|Real.log (m / U)| + (81 / 32 : ℝ) * (m / U)))
         (𝓝[>] 0) (𝓝 0) := by
     have h := hρ2log.add (hρ3.const_mul (81 / 32 : ℝ))
-    convert h using 1 <;> ring
+    convert h using 1 <;> ring_nf
   have htotal :=
     (hη.const_mul (48 / 19 : ℝ)).add
       ((hρ.const_mul (232 / 105 : ℝ)).add
