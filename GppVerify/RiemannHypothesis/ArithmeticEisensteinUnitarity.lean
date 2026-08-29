@@ -1,6 +1,5 @@
 import GppVerify.QuantumGravity.GlobalEisensteinCoefficient
 import GppVerify.RiemannHypothesis.CompletedZetaReality
-import GppVerify.CelestialHolography.CompletedZetaSpectralAxis
 import Mathlib.Tactic
 
 /-!
@@ -59,39 +58,41 @@ theorem norm_eisensteinCoeff_eq_one_of_re_one
     (hLambda : completedRiemannZeta Delta ≠ 0) :
     ‖eisensteinCoeff Delta‖ = 1 := by
   rw [eisensteinCoeff_eq_conj_div_of_re_one hDelta, norm_div]
-  rw [map_ne_zero_iff (starRingEnd ℂ), norm_ne_zero_iff.mpr hLambda]
-  simp
+  rw [norm_conj]
+  exact div_self (norm_ne_zero_iff.mpr hLambda)
 
-/-- Parameterized version on `Delta(tau)=1+2 i tau`, the exact image of
-`s=1/2+i tau` under `Delta=2s`. -/
+/-- Explicit principal-axis parameterization induced from
+`s = 1/2 + i tau` by `Delta = 2s`. -/
+noncomputable def principalDelta (tau : ℝ) : ℂ :=
+  1 + (2 * tau : ℂ) * Complex.I
+
+@[simp] theorem principalDelta_re (tau : ℝ) :
+    (principalDelta tau).re = 1 := by
+  simp [principalDelta]
+
+/-- Parameterized principal-series scattering unitarity. -/
 theorem norm_eisensteinCoeff_principalDelta
     (tau : ℝ)
-    (hLambda : completedRiemannZeta
-      (GppCompletedZetaSpectralAxis.principalDelta tau) ≠ 0) :
-    ‖eisensteinCoeff (GppCompletedZetaSpectralAxis.principalDelta tau)‖ = 1 := by
-  exact norm_eisensteinCoeff_eq_one_of_re_one
-    (GppCompletedZetaSpectralAxis.principalDelta_re tau) hLambda
+    (hLambda : completedRiemannZeta (principalDelta tau) ≠ 0) :
+    ‖eisensteinCoeff (principalDelta tau)‖ = 1 := by
+  exact norm_eisensteinCoeff_eq_one_of_re_one (principalDelta_re tau) hLambda
 
-/-- On the principal axis, the reflected scattering coefficient is the inverse of
-the original one, matching the Weyl/shadow group law. -/
-theorem reflected_eisensteinCoeff_eq_inv
+/-- The reflected coefficient and original coefficient multiply to one on the
+principal axis, using the already formalized global Weyl/reflection law. -/
+theorem eisensteinCoeff_reflection_principal
     {Delta : ℂ} (hDelta : Delta.re = 1)
     (hLambda : completedRiemannZeta Delta ≠ 0) :
-    eisensteinCoeff (2 - Delta) = (eisensteinCoeff Delta)⁻¹ := by
+    eisensteinCoeff (2 - Delta) * eisensteinCoeff Delta = 1 := by
   have hshadow : completedRiemannZeta (2 - Delta) ≠ 0 := by
     rw [two_sub_eq_conj_of_re_one hDelta]
     have hpos : 0 < Delta.re := by rw [hDelta]; norm_num
     rw [GppCompletedZetaReality.completedRiemannZeta_conj hpos]
     exact map_ne_zero (starRingEnd ℂ) hLambda
-  have href := eisensteinCoeff_reflection hLambda hshadow
-  exact (eq_inv_iff_mul_eq_one₀ (by
-    intro hzero
-    rw [hzero, mul_zero] at href
-    norm_num at href)).2 href
+  exact eisensteinCoeff_reflection hLambda hshadow
 
 end GppArithmeticEisensteinUnitarity
 
 #print axioms GppArithmeticEisensteinUnitarity.eisensteinCoeff_eq_conj_div_of_re_one
 #print axioms GppArithmeticEisensteinUnitarity.norm_eisensteinCoeff_eq_one_of_re_one
 #print axioms GppArithmeticEisensteinUnitarity.norm_eisensteinCoeff_principalDelta
-#print axioms GppArithmeticEisensteinUnitarity.reflected_eisensteinCoeff_eq_inv
+#print axioms GppArithmeticEisensteinUnitarity.eisensteinCoeff_reflection_principal
