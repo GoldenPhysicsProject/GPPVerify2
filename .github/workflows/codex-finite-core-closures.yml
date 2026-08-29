@@ -35,6 +35,8 @@ jobs:
         run: lake build GppVerify.RiemannHypothesis.CausalHeatPrimePowerAnomaly
       - name: Causal heat von Mangoldt reindex core
         run: lake build GppVerify.RiemannHypothesis.CausalHeatVonMangoldtReindex
+      - name: Finite positive heat-semigroup Gram core
+        run: lake build GppVerify.RiemannHypothesis.FiniteHeatSemigroupGram
       - name: Local Euler shadow colligation core
         run: lake build GppVerify.RiemannHypothesis.LocalEulerShadowColligation
       - name: Universal-NOT qubit fidelity
