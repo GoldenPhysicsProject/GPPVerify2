@@ -82,23 +82,40 @@ theorem finiteCosineKernel_gram_eq_featureEnergy
   classical
   unfold finiteCosineKernel featureEnergy
   simp_rw [Finset.mul_sum]
-  rw [Finset.sum_comm]
+  let F : Fin n → Fin n → ι → ℝ := fun i j k =>
+    ((starRingEnd ℂ) (c i) * c j).re *
+      (w k * Real.cos (omega k * (x i - x j)))
+  have hreorder :
+      (∑ i : Fin n, ∑ j : Fin n, ∑ k ∈ S, F i j k) =
+        ∑ k ∈ S, ∑ i : Fin n, ∑ j : Fin n, F i j k := by
+    calc
+      (∑ i : Fin n, ∑ j : Fin n, ∑ k ∈ S, F i j k) =
+          ∑ i : Fin n, ∑ k ∈ S, ∑ j : Fin n, F i j k := by
+            refine Finset.sum_congr rfl ?_
+            intro i _
+            exact (Finset.sum_comm :
+              (∑ j : Fin n, ∑ k ∈ S, F i j k) =
+                ∑ k ∈ S, ∑ j : Fin n, F i j k)
+      _ = ∑ k ∈ S, ∑ i : Fin n, ∑ j : Fin n, F i j k := by
+            exact (Finset.sum_comm :
+              (∑ i : Fin n, ∑ k ∈ S, ∑ j : Fin n, F i j k) =
+                ∑ k ∈ S, ∑ i : Fin n, ∑ j : Fin n, F i j k)
+  change (∑ i : Fin n, ∑ j : Fin n, ∑ k ∈ S, F i j k) = _
+  rw [hreorder]
   apply Finset.sum_congr rfl
   intro k hk
-  rw [Finset.sum_comm]
-  simp_rw [← mul_assoc, Finset.sum_mul]
-  congr 1
   have hcos : ∀ i j : Fin n,
       Real.cos (omega k * (x i - x j)) =
         Real.cos (omega k * x i) * Real.cos (omega k * x j) +
         Real.sin (omega k * x i) * Real.sin (omega k * x j) := by
     intro i j
     rw [mul_sub, Real.cos_sub]
-  simp_rw [hcos, mul_add, Finset.sum_add_distrib]
+  rw [← gram_square_eq_normSq c (fun i => Real.cos (omega k * x i)),
+      ← gram_square_eq_normSq c (fun i => Real.sin (omega k * x i)), mul_add]
+  simp_rw [Finset.mul_sum]
+  simp_rw [F, hcos, mul_add, Finset.sum_add_distrib]
   rw [Finset.sum_add_distrib]
-  congr 1
-  · exact gram_square_eq_normSq c (fun i => Real.cos (omega k * x i))
-  · exact gram_square_eq_normSq c (fun i => Real.sin (omega k * x i))
+  ring
 
 /-- Nonnegative weights make the explicit feature energy nonnegative. -/
 theorem featureEnergy_nonneg
