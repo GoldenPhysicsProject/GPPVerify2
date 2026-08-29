@@ -12,6 +12,10 @@ This file combines those two results.
 
 For every finite chamber `k` and every real spectral parameter `lam`, the real
 Gamma density is therefore an exact square of a strictly positive real factor.
+The one-step recurrence also gives an exact growth threshold: chamber `k+1`
+has larger real density than chamber `k` precisely in the regime controlled by
+`2 lam^2 > k+1`, and smaller density in the complementary strict regime.
+
 This remains an Archimedean spectral statement; no identification with the signed
 completed arithmetic Weil form is made here.
 -/
@@ -58,8 +62,34 @@ theorem rhoGamma_re_pos (k : ℕ) (lam : ℝ) :
   rw [← gammaChamberFactor_sq]
   exact sq_pos_of_pos (gammaChamberFactor_pos k lam)
 
+/-- Above the exact recurrence threshold `k+1 < 2 lam^2`, the real Gamma density
+strictly increases from chamber `k` to chamber `k+1`. -/
+theorem rhoGamma_re_strictly_increases_above_threshold
+    (k : ℕ) (lam : ℝ) (h : ((k : ℝ) + 1) < 2 * lam ^ 2) :
+    (rhoGamma k lam).re < (rhoGamma (k + 1) lam).re := by
+  have hfac : 1 < rhoStepFactor k lam := (rhoStepFactor_gt_one_iff k lam).2 h
+  have hpos : 0 < (rhoGamma k lam).re := rhoGamma_re_pos k lam
+  have hrec := congrArg Complex.re (rhoGamma_succ k lam)
+  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hrec
+  rw [hrec]
+  nlinarith [mul_pos (sub_pos.mpr hfac) hpos]
+
+/-- Below the exact recurrence threshold `2 lam^2 < k+1`, the real Gamma density
+strictly decreases from chamber `k` to chamber `k+1`. -/
+theorem rhoGamma_re_strictly_decreases_below_threshold
+    (k : ℕ) (lam : ℝ) (h : 2 * lam ^ 2 < ((k : ℝ) + 1)) :
+    (rhoGamma (k + 1) lam).re < (rhoGamma k lam).re := by
+  have hfac : rhoStepFactor k lam < 1 := (rhoStepFactor_lt_one_iff k lam).2 h
+  have hpos : 0 < (rhoGamma k lam).re := rhoGamma_re_pos k lam
+  have hrec := congrArg Complex.re (rhoGamma_succ k lam)
+  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hrec
+  rw [hrec]
+  nlinarith [mul_pos (sub_pos.mpr hpos) (sub_pos.mpr (sub_pos.mpr ?_))]
+
 end GppWienerHopfGammaChamberPositiveFactor
 
 #print axioms GppWienerHopfGammaChamberPositiveFactor.gammaChamberFactor_pos
 #print axioms GppWienerHopfGammaChamberPositiveFactor.gammaChamberFactor_sq
 #print axioms GppWienerHopfGammaChamberPositiveFactor.rhoGamma_re_pos
+#print axioms GppWienerHopfGammaChamberPositiveFactor.rhoGamma_re_strictly_increases_above_threshold
+#print axioms GppWienerHopfGammaChamberPositiveFactor.rhoGamma_re_strictly_decreases_below_threshold
