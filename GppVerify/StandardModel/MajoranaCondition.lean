@@ -112,10 +112,16 @@ theorem zitterbewegung_frequency (m : ℝ) (hm : 0 < m) : 2 * m > 0 := by linari
 theorem zitterbewegung_period (m : ℝ) (hm : 0 < m) :
     Real.pi / m > 0 := by positivity
 
-/-- The T-boundary oscillation at frequency 2m produces return after period π/m -/
-theorem T_boundary_oscillation_period : True := trivial
--- SOURCE: zitterbewegung paper. The complex phase e^{2imt} returns to 1 at t = π/m.
--- MATHLIB GAP: Oscillatory PDE at T-boundary (Mathlib gap).
+/-- The exact phase-return statement behind the T-boundary oscillation period:
+    for nonzero mass, the phase `exp(i * 2m t)` returns to one at `t = π/m`.
+    This retires the former `True := trivial` scaffold for the elementary
+    oscillatory core; no PDE or spinor-bundle claim is smuggled into it. -/
+theorem T_boundary_oscillation_period (m : ℝ) (hm : m ≠ 0) :
+    Complex.exp (((2 * m * (Real.pi / m) : ℝ) : ℂ) * Complex.I) = 1 := by
+  have hphase : 2 * m * (Real.pi / m) = 2 * Real.pi := by
+    field_simp [hm]
+  rw [hphase]
+  simpa using Complex.exp_two_pi_mul_I
 
 /-! ## Summary -/
 
