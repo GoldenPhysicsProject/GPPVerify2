@@ -1,144 +1,214 @@
-# GPPVerify — Golden Physics Project Lean 4 Formalization
+# GPPVerify2 — Golden Physics Project Lean 4 formalization
 
-Formal verification of the ONON framework in Lean 4 + Mathlib.
+`GPPVerify2` is the Codex/GPT formal-verification workbench for the Golden Physics Project. It is not an RH-only repository. The repository formalizes exact mathematical layers arising across celestial amplitudes, representation theory and spectral analysis, analytic number theory, thermodynamic number theory, Grassmannian geometry, quantum field theory, gravity, and the broader ONON framework.
 
-**Blueprint (live proof progress):** https://lean.goldenphysics.org  
-**Paper:** Daniel Toupin, *On the Nature of Nature* (2026) — https://goldenphysics.org  
+**Blueprint:** https://lean.goldenphysics.org  
+**Project:** https://goldenphysics.org  
 **Author:** Daniel Toupin | ORCID: 0009-0003-7682-9579
 
----
-
-## Primary target: RH Pathway 2 (Spectral / Meyer)
-
-The most self-contained proof of the Riemann Hypothesis in the ONON framework:
-
-```
-Haar self-duality on A×/Q×          [HaarSelfDuality.lean — CLEAN ✓]
-  → functional equation ξ(s) = ξ(1-s)  [FunctionalEquation.lean — CLEAN ✓]
-  → Peter-Weyl discrete spectrum        [HaarMeasure.lean — mostly clean, 2 Mathlib-gap axioms]
-  → L² constraint forces Re(s) = ½     [RHSpectralMultiplicity.lean — improved]
-  → Riemann Hypothesis
-```
-
-**Flagship conditional statement:** `GppWeilCriterion.rh_of_weil_pairedForm_nonneg`
-(`WeilPositivityCriterion.lean`) — RH from finite Weil-pairing positivity, no axioms
-beyond Mathlib's built-ins. The former `arithmetic_admissibility` axiom (RH restated)
-is retired as of 2026-07-17.
-
-**Also complete:** `GppVerify/GrassmannianMass.lean` — the Jacobian Mass relation is now a
-real theorem (`transition_transition_eq_neg`, τ∘τ = -id exactly), replacing an earlier
-axiom-based version; see the file's own doc comment for what changed and why.
+The Codex working branch is `codex/lean-workbench`. Experimental and numerical work belongs in the companion repository `GPPDiscovery2` on `codex/discovery-workbench`; durable Codex research state belongs in the `codex` Supabase schema.
 
 ---
 
-## File status
+## What this repository is for
 
-*Sorry/axiom counts below are `grep`-verified against the current tree, not hand-maintained
-— re-run `grep -rn "^\s*sorry\s*$" --include="*.lean" .` and
-`grep -rn "^axiom " --include="*.lean" .` to reproduce.*
+The governing rule is simple: formalize real mathematics, preserve the exact boundary between proved and open statements, and never make the repository look stronger by weakening the claim.
 
-| File | Sorries | Axioms | Status |
-|------|---------|--------|--------|
-| `GppVerify/HaarSelfDuality.lean` | 0 | 0 | **CLEAN** |
-| `GppVerify/CoreTheorems.lean` | 0 | 0 | Clean |
-| `GppVerify/RHSpectralMultiplicity.lean` | 0 | 1 | `riemannZeta_conj` proved (Mellin/HurwitzZeta); `arithmetic_admissibility` axiom + `riemann_hypothesis` alias **retired 2026-07-17** (they restated RH verbatim — superseded by `GppWeilCriterion.rh_of_weil_pairedForm_nonneg`); `schwartz_integral_clm_exists` **retired 2026-08-14** — now a theorem via Mathlib's `SchwartzMap.integralCLM`, kernel-verified to depend on no custom axiom. Sole remaining axiom: `exp_growth_not_tempered` (see `docs/FORMALIZATION_PLAN.md` Phase 4 — the Lean statement is subtler than the mathematics, because Mathlib's integral takes a junk value on non-integrable integrands) |
-| `GppVerify/RiemannHypothesis/TwoPointCriterion.lean` | 0 | 0 | Thread D2: RH iff pair positivity on the reflection pairs `{rho, 1-conj(rho)}` — kernel-checked record that the zero side of the Weil criterion carries no analytic content |
-| `GppVerify/RiemannHypothesis/SchurWeilClass.lean` | 0 | 0 | Thread S2: positive-type x convolution square is positive-type (translates as Gram vectors, no spectral theorem); corollary: the epsilon-regularized Cauchy-kernel datum is positive-type |
-| `GppVerify/RiemannHypothesis/TruncatedTransport.lean` | 0 | 0 | Thread T: rung-level transport onto the S-truncated chart `R x Z^S` — one pullback, no adeles. `logPrime_lattice_injective` is now **PROVED** (this row previously claimed 1 sorry; stale — kernel-verified clean 2026-08-14) |
-| `GppVerify/GrassmannianMass.lean` | 0 | 0 | **CLEAN** — `τ∘τ = -id` proved directly, no axioms |
-| `GppVerify/RiemannHypothesis/HaarMeasure.lean` | 0 | 0 | Mostly clean; two results are honest `True := trivial` stubs pending Fujisaki's lemma / adelic compactness (not in Mathlib 4.19.0) — no `sorry`, no axiom smuggling the actual claim |
-| `GppVerify/RiemannHypothesis/FunctionalEquation.lean` | 0 | 0 | **CLEAN** |
-| `GppVerify/RiemannHypothesis/ShadowSymmetry.lean` | 0 | 0 | Clean; one result honestly stubbed pending the Penrose correspondence, one explicitly gated on the open `thm:link6` below |
+The current active program has four major research fronts.
 
-Whole-repo sweep (this session): **zero `sorry` tactics anywhere in the tree**, and no
-axiom whose hypotheses are vacuous while its conclusion is a substantive unconditional
-claim (that exact bug shape was found and fixed once, in `L2Constraint.lean` — see git
-history). Genuinely open results are `theorem foo : True := trivial` stubs with a doc
-comment naming the precise Mathlib gap, never a bare `axiom` asserting the open claim
-itself.
+### 1. Celestial amplitudes, dispersion, Yang–Mills and gravity
 
-### Three categories, always quoted together
+Formal targets include:
 
-Sorry and axiom counts alone overstate how much is proved, because the `True := trivial`
-convention is invisible to both. **Any status claim about this repo should quote all three
-numbers.** As of 2026-08-23, `grep`-verified against the tree:
+- celestial-cut and Mellin-transform kinematics;
+- regulated scalar box identities, dispersion reconstruction, regulator limits, endpoint control, and raised-box/dimension-shift arguments;
+- simplex majorants, Beta reductions, Fubini/Tonelli and dominated-convergence closure;
+- honest fixed-loop-momentum Yang–Mills sewing numerators, including the `D_s = 4`, `μ ≠ 0` state sum rather than scalar reconstruction relabelled as gauge theory;
+- higher-loop and generalized cuts;
+- gravity cuts and the analytic/subtraction hypotheses required for amplitude reconstruction.
 
-| Category | Count | Meaning |
-|---|---|---|
-| `sorry` | **0** | Enforced discipline. Never commit one. |
-| `axiom` | **13** | Mostly named physics parameters (`omega_DM`, `c_2D`, `kappa_0`) and explicitly-open physics inputs (`link6_from_physics`, `boyle_turok_2021`). One analytic axiom remains: `exp_growth_not_tempered`. |
-| `theorem _ : True := trivial` | **134** in 25 files | Open results parked honestly, each with a doc comment naming the upstream gap. **Not a proof of anything.** |
+A cut identity is not by itself an amplitude theorem. Generalized-cut completeness, analyticity, subtraction data, normalization, color/state sums, and loop induction are tracked explicitly when required.
 
-Densest stub files: `RiemannHypothesis/HaarPositivityWeil`, `QuantumGravity/WightmanAxioms`,
-`NumberTheory/ShadowEulerIdentity` (12 each), `CelestialHolography/TwistorGoogly` (11),
-`YangMills/MassGap`, `StandardModel/MajoranaCondition` (10 each).
+### 2. Half-densities, principal series, completed zeta and the Weil bridge
 
-Reproduce:
+Formal targets include:
+
+- positive-real dilation characters and half-density normalization;
+- `Δ = 2s`, shadow `s ↦ 1-s`, and critical-line unitarity/conjugation;
+- completed-zeta and Archimedean Gamma response;
+- Mehler–Fock/Legendre spectral weights;
+- Wiener–Hopf positive factors and exact spectral kernels;
+- explicit-formula transport and the genuine Weil quadratic form.
+
+The local representation-theoretic and spectral structure does **not** prove RH. A successful RH route must construct the completed global object without encoding unknown zeros, identify its quadratic form with the actual Weil explicit-formula criterion on an adequate test class, and prove the required global positivity unconditionally.
+
+### 3. Prime-gas and number thermodynamics
+
+Formal targets include:
+
+- Gibbs measures on integers and prime/von-Mangoldt weighted ensembles;
+- partition functions, free energy, entropy, response functions and cumulants;
+- exact log-moment summability;
+- finite and countable Fisher/Hessian geometry;
+- covariance determinants and Vandermonde/Cauchy–Binet structure;
+- thermodynamic limits and fluctuation geometry.
+
+One-dimensional Fisher geometry is intrinsically flat; curvature claims therefore require a genuinely multi-parameter statistical family.
+
+### 4. Exact spectral-weight, chamber and convolution mathematics
+
+Formal targets include:
+
+- exact Gamma/Mehler–Fock spectral-weight identities;
+- positivity and recurrence of chamber polynomials;
+- Wiener–Hopf factorization identities;
+- chamber convolution formulas when they are actually justified;
+- exact period/MZV structure at higher loop order.
+
+Previously tempting extrapolations, such as unrestricted all-loop rationality of chamber integrals, are not treated as theorems without proof.
+
+---
+
+## Representative certified results
+
+The repository contains many independent exact layers. Representative examples include:
+
+- Haar self-duality and functional-equation infrastructure;
+- the Grassmannian transition identity `τ ∘ τ = -id` as a theorem rather than an axiom;
+- positive-real half-density/shadow dilation identities;
+- exact Gamma/Mehler–Fock spectral recurrences and positivity results;
+- Wiener–Hopf/Gamma factor identities;
+- scalar-box endpoint, special-function and regulator lemmas;
+- number-Gibbs entropy and differential thermodynamics;
+- finite-support Fisher/Vandermonde identities, including the arbitrary finite normalized identity
+  `ordered Vandermonde energy = 6 × det Cov(X, X²)`;
+- countable raw-moment/Fisher determinant limit infrastructure.
+
+These are reusable mathematical components. Their existence does not silently promote any still-open global theorem.
+
+---
+
+## Proof-status discipline
+
+Three categories must always be distinguished:
+
+1. **proved theorem** — Lean kernel checks the intended mathematical statement from Mathlib and explicitly listed assumptions;
+2. **explicit axiom/input** — a named external physical or mathematical input whose role is visible in the dependency graph;
+3. **honest scaffold/stub** — infrastructure placeholder that proves no substantive open claim and whose documentation names the missing mathematics.
+
+Never collapse these categories in status reports.
+
+### No-`sorry` rule
+
+`codex/lean-workbench` is maintained under a zero-`sorry` discipline. New work must not introduce `sorry`, `admit`, or an equivalent unsound escape hatch. CI should treat this as an invariant, not as a one-time cleanup campaign.
+
+### Stub retirement
+
+Existing `True := trivial` scaffolds are not proofs. They should be retired only by replacing them with the intended theorem and a real proof. Deleting a difficult target, weakening its statement while retaining the name, or moving the claim into an axiom does not count as progress.
+
+### Axiom minimization
+
+The axiom inventory is audited separately from `sorry` and stubs. Physics inputs, mathematical external assumptions, and reducible convenience axioms should be categorized separately. Whenever Mathlib or an already-proved theorem can replace a custom axiom, the custom axiom should be removed.
+
+---
+
+## Discovery → formalization workflow
+
+The Codex/GPT workflow is deliberately split across two repositories.
+
+### `GPPDiscovery2`
+
+Use `codex/discovery-workbench` for exact symbolic algebra, Python/SymPy/mpmath/NumPy/SciPy experiments, interval checks, numerical convergence studies, counterexample searches, period recognition, and reproducible derivations.
+
+Numerical evidence is never imported into Lean as if it were a theorem. A discovery is promoted only after its exact mathematical statement, hypotheses, domains, branch choices, and singular cases are understood.
+
+### `GPPVerify2`
+
+Use `codex/lean-workbench` for exact theorem statements and kernel-checked proofs. Search the pinned Mathlib version before creating parallel infrastructure. Prefer standard Mathlib objects and theorems whenever they express the same mathematics cleanly.
+
+Discovery scripts may generate constants or finite data used by a proof only when the generation procedure and validation are reproducible and the Lean theorem checks the mathematically relevant property rather than merely trusting an opaque numerical artifact.
+
+---
+
+## Mathlib alignment and maintenance
+
+The project tracks a pinned Lean/Mathlib toolchain. Maintenance work includes:
+
+- replacing obsolete custom lemmas with equivalent standard Mathlib results when doing so simplifies dependencies;
+- avoiding redundant local definitions that obscure standard mathematical structure;
+- keeping theorem statements stable while refactoring implementations;
+- running the complete Lake build after substantive changes;
+- auditing `sorry`, custom axioms, and vacuous scaffolds independently;
+- using `#print axioms` on important theorem endpoints.
+
+Refactoring is valuable only when it preserves or strengthens the actual theorem.
+
+---
+
+## Physics-to-mathematics translation
+
+Physics notation is retained where useful, but theorem docstrings should identify the mathematical object being formalized. For non-obvious constructions, document mappings such as:
+
+- physical scaling dimension ↔ complex principal-series parameter;
+- shadow transform ↔ reciprocal/conjugate dilation character;
+- cut phase space ↔ a measure/integral on a specified domain;
+- regulator ↔ a parameterized integrable family with a stated limiting filter;
+- state sum ↔ a finite sum over an explicitly defined polarization/state basis;
+- thermodynamic susceptibility ↔ covariance/Hessian entry;
+- spectral density ↔ a real/complex-valued function with stated positivity and normalization properties.
+
+The purpose is not pedagogical decoration; it prevents verbal physics shorthand from hiding a different formal statement.
+
+---
+
+## Current high-value open boundaries
+
+The most important active boundaries include:
+
+- **scalar raised box:** package the fixed simplex majorant as an actual `Integrable` object, justify the required Fubini/Tonelli steps, and invoke measure-theoretic dominated convergence;
+- **Yang–Mills:** compute and normalize the genuine fixed-loop-momentum `D_s = 4`, `μ ≠ 0` gluon sewing numerator and then extend to generalized cuts;
+- **gravity:** higher-multiplicity/generalized-cut reconstruction with the necessary analytic hypotheses;
+- **Weil/RH:** assemble the signed prime-plus-Archimedean global quadratic form, identify it with the genuine Weil criterion on the correct test class, and prove unconditional positivity;
+- **number thermodynamics:** pass finite Fisher positivity cleanly to countable Gibbs/arithmetic ensembles using summability and normalization;
+- **higher chamber integrals:** determine the correct period/MZV class rather than assume rationality;
+- **broader ONON formalization:** replace remaining honest scaffolds in Grassmannian, QFT, Standard Model, Yang–Mills, gravity and number-theory modules by actual mathematics as infrastructure becomes available.
+
+These boundaries are expected to move. Durable session-by-session state belongs in Supabase `codex.research_notes`, not in this README.
+
+---
+
+## Build and audit
+
 ```bash
-grep -rn "^\s*sorry\s*$" --include="*.lean" GppVerify/ | wc -l
-grep -rn "^axiom " --include="*.lean" GppVerify/ | wc -l
-grep -rn ": True := trivial" --include="*.lean" GppVerify/ | wc -l
-```
-
-A stub is retired only by **proving** it. Deleting it, or weakening its statement while
-keeping its name, is the one move that would make this tree dishonest.
-
----
-
-## Open problem: `thm:link6`
-
-The theorem **`thm:link6`** (`c_{2D} = c_{4D}^{Weyl}`, ONON52 §Link 6) is explicitly open.
-Lean declarations that depend on it are honest `True := trivial` stubs gated in their doc
-comments on a proof of Link 6 — not `sorry`, since there is nothing left to fill in once
-Link 6 is proved; the gap is upstream mathematics, not a missing Lean argument.
-
-Do **not** weaken these stubs into an unconditional claim without a proof of Link 6.
-
----
-
-## Build
-
-```bash
-# Install elan (if needed)
-curl -sSfL https://github.com/leanprover/elan/releases/latest/download/elan-x86_64-unknown-linux-gnu.tar.gz | tar xz
-./elan-init -y
-
-# Get Mathlib cache (fast)
 lake exe cache get
-
-# Build everything
 lake build
+
+# No-sorry invariant
+grep -rn "^\s*sorry\s*$" --include="*.lean" GppVerify/
+
+# Custom axiom inventory
+grep -rn "^axiom " --include="*.lean" GppVerify/
+
+# Honest scaffold inventory
+grep -rn ": True := trivial" --include="*.lean" GppVerify/
 ```
+
+Important endpoints should additionally be checked with `#print axioms` and the repository audit scripts.
 
 ---
 
-## Blueprint
+## Blueprint and dependency map
 
 ```bash
 pip install leanblueprint
 cd blueprint
 leanblueprint build
-# Output at blueprint/web/index.html
 ```
 
----
-
-## Dependency map
-
-See [`docs/DependencyMap.md`](docs/DependencyMap.md) for the full theorem dependency
-tree extracted from ONON52.tex (686 named results, 22 chapters).
+See `docs/DependencyMap.md` for the broader theorem dependency map. The live blueprint is at https://lean.goldenphysics.org.
 
 ---
 
-**Status:** Haar self-duality, the functional equation, and the Grassmannian mass relation
-are all fully proved with no axioms. The zeta conjugate-symmetry fact in the multiplicity
-path is a proved theorem rather than an axiom. Genuinely open steps (Fujisaki's lemma,
-the Penrose correspondence, `thm:link6`, and the L² adelic constraint) are honestly
-recorded as `True := trivial` stubs naming the exact missing infrastructure, never
-smuggled in as an axiom asserting the open claim itself, and the whole tree has been
-independently swept for both `sorry` and for axioms with vacuous hypotheses masking a
-substantive conclusion. A parallel thread is formalizing Tate's-thesis local zeta
-integrals (p-adic and archimedean places, an Euler-product bridge to Mathlib's own
-`riemannZeta_eulerProduct`) as real, from-scratch measure-theoretic infrastructure —
-not derived from the paper, built to support it. Work continues toward closing the
-remaining gaps.
+## Status principle
+
+This repository is an executable mathematical research program, not a claim counter. A theorem is reported as proved only when its intended statement is present and kernel-checked; a numerical or symbolic discovery is reported at its actual evidentiary level; and an unresolved global theorem remains unresolved until every required bridge is closed.

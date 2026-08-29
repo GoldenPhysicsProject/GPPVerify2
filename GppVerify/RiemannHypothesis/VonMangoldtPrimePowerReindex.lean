@@ -14,23 +14,20 @@ This file uses that equivalence to perform the global countable reindexing exact
 
 namespace GppVonMangoldtPrimePowerReindex
 
-open Set
+open Set Complex
 open ArithmeticFunction
 open GppVonMangoldtCosine
 
-/-- Real von-Mangoldt cosine summand. -/
 noncomputable def cosineSummand (a t : ℝ) (n : ℕ) : ℝ :=
   ArithmeticFunction.vonMangoldt n *
     Real.exp (-Real.log n * a) * Real.cos (Real.log n * t)
 
-/-- The summand vanishes away from prime powers. -/
 theorem cosineSummand_eq_zero_of_not_primePow
     (a t : ℝ) {n : ℕ} (hn : ¬ IsPrimePow n) :
     cosineSummand a t n = 0 := by
   rw [cosineSummand, ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr hn]
   simp
 
-/-- Support of the global cosine summand is contained in the prime powers. -/
 theorem support_cosineSummand_subset_primePowers (a t : ℝ) :
     Function.support (cosineSummand a t) ⊆ {n : ℕ | IsPrimePow n} := by
   intro n hn
@@ -48,8 +45,8 @@ theorem cosineSummand_primePower
   rw [GppVonMangoldtPrimePowerTower.vonMangoldt_prime_pow (p : ℕ) k p.prop]
   norm_cast
   rw [Nat.cast_pow, Real.log_pow]
-  norm_cast
-  ring_nf
+  push_cast
+  congr 2 <;> ring
 
 /-- Exact global reindexing from natural numbers to canonical prime-power coordinates. -/
 theorem cosine_tsum_eq_primePower_pair_tsum (a t : ℝ) :
@@ -85,9 +82,9 @@ theorem cosine_tsum_eq_primePower_geometric_tsum (a t : ℝ) :
 prime-power sum on `a>1`. -/
 theorem neg_zeta_logDeriv_re_eq_primePower_geometric_tsum
     {a t : ℝ} (ha : 1 < a) :
-    (-(Complex.deriv Complex.riemannZeta
-      ((a : ℂ) + (t : ℂ) * Complex.I) /
-      Complex.riemannZeta ((a : ℂ) + (t : ℂ) * Complex.I))).re =
+    (-(deriv riemannZeta
+      ((a : ℂ) + (t : ℂ) * I) /
+      riemannZeta ((a : ℂ) + (t : ℂ) * I))).re =
       ∑' pk : Nat.Primes × ℕ,
         Real.log (pk.1 : ℕ) *
           Real.exp (-(pk.2 + 1 : ℝ) * Real.log (pk.1 : ℕ) * a) *

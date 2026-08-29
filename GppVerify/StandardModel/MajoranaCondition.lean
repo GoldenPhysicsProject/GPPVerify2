@@ -46,14 +46,12 @@ theorem epsilon_sq : epsilon * epsilon = -1 := by
 theorem epsilon_det : epsilon.det = 1 := by
   simp [epsilon, Matrix.det_fin_two_of]
 
-/-- Charge conjugation C satisfies C² = -1 for Dirac spinors. The matrix
-    part is `epsilon_sq`; the full antiunitary statement (including
-    complex conjugation) is a further Mathlib gap, recorded here as
-    before. -/
-theorem charge_conjugation_sq : True := trivial
--- NOTE: full antiunitary Clifford algebra / spinor bundle formalism
--- needed for the complex-conjugation half; the matrix half is
--- `epsilon_sq` above.
+/-- Exact matrix component of charge-conjugation squaring: ε² = -I.
+The full antiunitary spinor statement additionally requires the conjugation
+operator and its interaction with the spinor representation; that stronger
+claim remains outside this theorem. -/
+theorem charge_conjugation_sq : epsilon * epsilon = -1 :=
+  epsilon_sq
 
 /-- Majorana condition: ψ = Cψ̄ is self-consistent for Weyl spinors -/
 theorem majorana_self_consistency : True := trivial
@@ -112,13 +110,25 @@ theorem zitterbewegung_frequency (m : ℝ) (hm : 0 < m) : 2 * m > 0 := by linari
 theorem zitterbewegung_period (m : ℝ) (hm : 0 < m) :
     Real.pi / m > 0 := by positivity
 
-/-- The T-boundary oscillation at frequency 2m produces return after period π/m -/
-theorem T_boundary_oscillation_period : True := trivial
--- SOURCE: zitterbewegung paper. The complex phase e^{2imt} returns to 1 at t = π/m.
--- MATHLIB GAP: Oscillatory PDE at T-boundary (Mathlib gap).
+/-- The exact phase-return statement behind the T-boundary oscillation period:
+    for nonzero mass, the phase `exp(i * 2m t)` returns to one at `t = π/m`.
+    This retires the former `True := trivial` scaffold for the elementary
+    oscillatory core; no PDE or spinor-bundle claim is smuggled into it. -/
+theorem T_boundary_oscillation_period (m : ℝ) (hm : m ≠ 0) :
+    Complex.exp (((2 * m * (Real.pi / m) : ℝ) : ℂ) * Complex.I) = 1 := by
+  have hphase : 2 * m * (Real.pi / m) = 2 * Real.pi := by
+    field_simp [hm]
+    ring
+  rw [hphase]
+  simpa using Complex.exp_two_pi_mul_I
 
 /-! ## Summary -/
 
-theorem majorana_summary : True := trivial
+/-- Honest summary of the finite-dimensional algebra actually certified in this
+module.  The stronger Majorana/neutrino/cosmology statements above remain
+separate scaffolds until their spinor, PDE, and QFT infrastructure is built. -/
+theorem majorana_summary :
+    epsilon * epsilon = -1 ∧ epsilon.det = 1 :=
+  ⟨epsilon_sq, epsilon_det⟩
 
 end GppMajorana

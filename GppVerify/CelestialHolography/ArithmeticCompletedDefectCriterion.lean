@@ -1,5 +1,4 @@
 import GppVerify.CelestialHolography.ArithmeticDefectPositivity
-import Mathlib
 
 /-!
 # Completed arithmetic defect criterion
@@ -22,8 +21,9 @@ then the signed completed quadratic quantity
 is nonnegative. If, more strongly, this defect is the norm square of a physical
 quotient amplitude, positivity is an exact no-ghost identity.
 
-This file proves only the criterion. It does not construct `Ainf`, prove the
-contraction, identify the defect with the Weil form, or prove RH.
+This file proves the abstract and factorized criteria. It does not yet construct
+the actual arithmetic transfer operator, identify the resulting defect with the
+full Weil form, or prove RH.
 -/
 
 namespace GppArithmeticCompletedDefectCriterion
@@ -55,6 +55,22 @@ theorem completedDefect_nonneg
   intro x
   exact completedDefect_nonneg_of_contract Ainf Aprime x (hcontract x)
 
+/-- **Contraction-factorization bridge.** If the prime amplitude factors through
+the ambient amplitude by a norm-contractive transfer map `C`, then the signed
+completed defect is nonnegative for every test state. This isolates the concrete
+operator construction needed by the prime-plus-Archimedean assembly: construct
+`C`, prove `Aprime = C ∘ Ainf`, and prove `C` contractive. -/
+theorem completedDefect_nonneg_of_contraction_factorization
+    {X E P : Type*} [NormedAddCommGroup E] [NormedAddCommGroup P]
+    (Ainf : X → E) (Aprime : X → P) (C : E → P)
+    (hfactor : ∀ x, Aprime x = C (Ainf x))
+    (hC : ∀ y, ‖C y‖ ≤ ‖y‖) :
+    ∀ x, 0 ≤ completedDefect Ainf Aprime x := by
+  intro x
+  apply completedDefect_nonneg_of_contract Ainf Aprime x
+  rw [hfactor x]
+  exact hC (Ainf x)
+
 /-- Exact no-ghost form: if the signed ambient-minus-prime defect is the norm
 square of a physical quotient amplitude, positivity follows without any separate
 spectral assumption. -/
@@ -71,4 +87,5 @@ end GppArithmeticCompletedDefectCriterion
 
 #print axioms GppArithmeticCompletedDefectCriterion.completedDefect_nonneg_of_contract
 #print axioms GppArithmeticCompletedDefectCriterion.completedDefect_nonneg
+#print axioms GppArithmeticCompletedDefectCriterion.completedDefect_nonneg_of_contraction_factorization
 #print axioms GppArithmeticCompletedDefectCriterion.completedDefect_nonneg_of_physical_factor

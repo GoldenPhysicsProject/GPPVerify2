@@ -2,6 +2,7 @@ import Mathlib.Tactic
 import Mathlib.Data.Matrix.Basic
 import Mathlib.LinearAlgebra.Matrix.Hermitian
 import GppVerify.QuantumInformation.TransposeNotCompletelyPositive
+import GppVerify.StandardModel.UniversalNotFidelity
 
 /-!
 # The Half-Flip Proposition: Antimatter as the Unitary Shadow of CPT
@@ -25,13 +26,15 @@ Proposition 4.1(a) (Wigner time reversal is the universal spin inverter):
 on ℂ², T(ψ₁,ψ₂) = (conj ψ₂, -conj ψ₁) is exactly i·σy·K. Proved: ⟨ψ,Tψ⟩ = 0
 identically (`wignerT_orthogonal`), and T² = -1 (`wignerT_wignerT`).
 
-Proposition 2.2 (No-Enactment), for `d = 2`, is now imported from the actual
+Proposition 2.2 (No-Enactment), for `d = 2`, is imported from the actual
 Choi-matrix / complete-positivity development and exposed below as a substantive
 theorem rather than the former `True` placeholder.
 
-Proposition 4.1(c) (the depolarizing channel E(ρ) = (1/3)Σᵢ σᵢρσᵢ is CPTP
-and achieves inversion fidelity exactly 2/3) still needs the Bloch-sphere
-fidelity computation; that remains open rather than being promoted.
+Proposition 4.1(c) is now formalized algebraically without a Bloch-sphere parametrization.
+The exact Pauli identity
+`Σᵢ σᵢ A σᵢ = 2 Tr(A) I - A` gives the equal-Pauli channel
+`E(ρ) = (2I-ρ)/3` for every trace-one qubit state.  If `ρ²=ρ`, then the overlap
+with the orthogonal projector `I-ρ` is exactly `2/3`.
 -/
 
 namespace GppHalfFlip
@@ -79,14 +82,17 @@ theorem no_enactment :
     ¬ GppChoiMatrix.CompletelyPositive GppHalfFlipMatrix.transposeMap :=
   GppHalfFlipMatrix.transposeMap_not_completelyPositive
 
-/-- Proposition 4.1(c): the channel E(ρ) = (1/3)Σᵢ σᵢρσᵢ is completely
-    positive and trace preserving, and achieves inversion fidelity exactly
-    2/3 uniformly on the Bloch sphere. Not formalized: needs the same
-    complete-positivity notion together with a Bloch-sphere fidelity
-    computation. Verified symbolically and on a 200-sample numerical
-    ensemble in the companion script. -/
-theorem universal_not_fidelity : True := trivial
+/-- Proposition 4.1(c), exact finite-dimensional form.  For a normalized pure qubit
+projector `ρ`, the equal mixture of the three Pauli conjugations has fidelity exactly
+`2/3` with the orthogonal projector `I-ρ`. -/
+theorem universal_not_fidelity
+    (rho : GppUniversalNot.QMat)
+    (htr : GppUniversalNot.tr2 rho = 1)
+    (hpure : rho * rho = rho) :
+    GppUniversalNot.tr2 ((1 - rho) * GppUniversalNot.universalNot rho) = (2 : ℂ) / 3 :=
+  GppUniversalNot.universalNot_orthogonal_fidelity rho htr hpure
 
 end GppHalfFlip
 
 #print axioms GppHalfFlip.no_enactment
+#print axioms GppHalfFlip.universal_not_fidelity

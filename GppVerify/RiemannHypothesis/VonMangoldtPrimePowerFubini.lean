@@ -1,6 +1,6 @@
 import GppVerify.RiemannHypothesis.VonMangoldtPrimePowerReindex
 import Mathlib.Topology.Algebra.InfiniteSum.Constructions
-import Mathlib.Analysis.Complex.Norm
+import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic
 
 /-!
