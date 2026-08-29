@@ -1,5 +1,9 @@
 import GppVerify.RiemannHypothesis.AdelicL2
 import Mathlib.NumberTheory.LSeries.RiemannZeta
+import GppVerify.RiemannHypothesis.CesaroPrincipalSeriesSelector
+import GppVerify.RiemannHypothesis.CenteredPrimeWaveRegulator
+import GppVerify.CelestialHolography.ArithmeticPrimeWaveParticle
+import GppVerify.CelestialHolography.ArithmeticSplitConventionBridge
 
 /-!
 # Spectral Weil Identity (thm:spectral-weil, cited 10×)
@@ -26,6 +30,12 @@ operator on the idèle class group.
 
 Connects to: l2_constraint (L² forces Re = 1/2), two_zeros_at_ordinate,
              adelic_l2_regularization.
+
+The imported arithmetic wave/particle files are deliberately part of the root build:
+finite von-Mangoldt particles, the absolutely-convergent global damped wave response,
+the centered regulator, the split-coordinate convention bridge, and the Cesàro
+principal-series boundedness selector must all compile before this spectral scaffold is
+considered current.
 -/
 
 namespace GppSpectralWeil
