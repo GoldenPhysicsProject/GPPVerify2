@@ -9,10 +9,16 @@ parameters `r,t`, its same-helicity defect is
 
   4 (r^2 - 1)^2 (1+t^2)^2 / (r^2+t^2)^2.
 
-This file certifies only the algebraic positivity and threshold consequences of
-that rational expression.  The identification of `C_V` and `C_S` with explicit
-sewn tree amplitudes is deliberately kept as an explicit hypothesis below; this
-module does not replace the still-required Yang--Mills tree-current derivation.
+A subsequent exact generic sewing audit evaluated the real-adjoint-scalar
+contribution and the `D_s=4` massive-vector-minus-scalar baseline.  The latter
+collapses to the unexpectedly simple numerator `r^8+1`:
+
+  C4_same = 4 (r^8+1) (1+t^2)^2 /
+    ((1+r^2)^2 (r^2+t^2)^2).
+
+This file certifies the rational algebra and its relation to the earlier defect.
+The identification with explicit sewn Yang--Mills trees remains an executable
+symbolic discovery result rather than being hidden inside a Lean assumption.
 -/
 
 namespace GppMassiveVectorGenericDefect
@@ -20,6 +26,16 @@ namespace GppMassiveVectorGenericDefect
 /-- Exact rational defect found by the generic symbolic state-sum audit. -/
 def sameHelicityDefect (r t : ℝ) : ℝ :=
   4 * (r ^ 2 - 1) ^ 2 * (1 + t ^ 2) ^ 2 / (r ^ 2 + t ^ 2) ^ 2
+
+/-- Exact same-helicity one-real-adjoint-scalar sewing from the generic audit. -/
+def sameHelicityScalarSewing (r t : ℝ) : ℝ :=
+  4 * r ^ 4 * (1 + t ^ 2) ^ 2 /
+    ((r ^ 2 + 1) ^ 2 * (r ^ 2 + t ^ 2) ^ 2)
+
+/-- Exact `D_s=4` same-helicity baseline obtained as massive-vector minus scalar. -/
+def sameHelicityDs4Baseline (r t : ℝ) : ℝ :=
+  4 * (r ^ 8 + 1) * (1 + t ^ 2) ^ 2 /
+    ((r ^ 2 + 1) ^ 2 * (r ^ 2 + t ^ 2) ^ 2)
 
 /-- The generic correction is manifestly nonnegative. -/
 theorem sameHelicityDefect_nonneg (r t : ℝ) :
@@ -36,6 +52,27 @@ theorem sameHelicityDefect_nonneg (r t : ℝ) :
 @[simp] theorem sameHelicityDefect_neg_one (t : ℝ) :
     sameHelicityDefect (-1) t = 0 := by
   simp [sameHelicityDefect]
+
+/-- **Generic `D_s=4` closure.** Away from the degenerate `r=0` parametrization,
+the exact massive-vector-minus-scalar baseline is two scalar sewings plus the
+previously certified vector-minus-three-scalar defect. -/
+theorem ds4Baseline_eq_two_scalar_add_defect
+    {r t : ℝ} (hr : r ≠ 0) :
+    sameHelicityDs4Baseline r t =
+      2 * sameHelicityScalarSewing r t + sameHelicityDefect r t := by
+  unfold sameHelicityDs4Baseline sameHelicityScalarSewing sameHelicityDefect
+  have h1 : r ^ 2 + 1 ≠ 0 := by
+    nlinarith [sq_nonneg r]
+  have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
+  have h2 : r ^ 2 + t ^ 2 ≠ 0 := by
+    nlinarith [sq_nonneg t]
+  field_simp [h1, h2]
+  ring
+
+/-- The exact generic baseline recovers the threshold state count `2`. -/
+@[simp] theorem sameHelicityDs4Baseline_one :
+    sameHelicityDs4Baseline 1 1 = 2 := by
+  norm_num [sameHelicityDs4Baseline]
 
 /-- If an explicit Yang--Mills sewing calculation identifies its vector/scalar
 state-sum difference with the audited rational defect, then the vector sewing is
@@ -59,5 +96,6 @@ theorem vector_eq_three_scalar_at_threshold
 end GppMassiveVectorGenericDefect
 
 #print axioms GppMassiveVectorGenericDefect.sameHelicityDefect_nonneg
+#print axioms GppMassiveVectorGenericDefect.ds4Baseline_eq_two_scalar_add_defect
 #print axioms GppMassiveVectorGenericDefect.vector_ge_three_scalar_of_defect
 #print axioms GppMassiveVectorGenericDefect.vector_eq_three_scalar_at_threshold
