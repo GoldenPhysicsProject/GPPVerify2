@@ -41,7 +41,8 @@ theorem natSucc_cast_ne_zero (k : ℕ) : ((k + 1 : ℕ) : ℝ) ≠ 0 := by
   positivity
 
 /-- Exact cancellation of the Euler-log `1/m` coefficient against the shift length
-`m log p` in the causal boundary anomaly. -/
+`m log p` in the causal boundary anomaly.  No hypothesis on the heat denominator is
+needed: only the positive integer `m=k+1` is cancelled. -/
 theorem eulerLog_boundaryAnomaly_cancel
     (p : Nat.Primes) (k : ℕ) (t : ℝ) :
     (1 / ((k + 1 : ℕ) : ℝ)) *
@@ -51,10 +52,21 @@ theorem eulerLog_boundaryAnomaly_cancel
         Real.exp (-(((k + 1 : ℕ) : ℝ) * Real.log (p : ℕ)) / 2) /
           Real.sqrt (4 * Real.pi * t) *
         Real.exp (-((((k + 1 : ℕ) : ℝ) * Real.log (p : ℕ)) ^ 2) / (4 * t)) := by
-  unfold boundaryAnomaly
-  have hm : ((k + 1 : ℕ) : ℝ) ≠ 0 := natSucc_cast_ne_zero k
-  field_simp [hm]
-  ring
+  let m : ℝ := ((k + 1 : ℕ) : ℝ)
+  let L : ℝ := Real.log (p : ℕ)
+  let E : ℝ := Real.exp (-(m * L) / 2)
+  let D : ℝ := Real.sqrt (4 * Real.pi * t)
+  let G : ℝ := Real.exp (-((m * L) ^ 2) / (4 * t))
+  have hm : m ≠ 0 := by
+    dsimp [m]
+    exact natSucc_cast_ne_zero k
+  have hcancel : (1 / m) * (m * L) = L := by
+    field_simp [hm]
+  change (1 / m) * E * ((m * L) / D * G) = L * E / D * G
+  calc
+    (1 / m) * E * ((m * L) / D * G) =
+        ((1 / m) * (m * L)) * E / D * G := by ring
+    _ = L * E / D * G := by rw [hcancel]
 
 /-- The coefficient left after the `1/m` cancellation is exactly the von Mangoldt
 value of the corresponding prime power. -/
