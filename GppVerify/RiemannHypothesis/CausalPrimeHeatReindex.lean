@@ -11,18 +11,16 @@ Its support is contained in the prime powers, and Mathlib's canonical equivalenc
 
   Nat.Primes × ℕ ≃ {n : ℕ // IsPrimePow n}
 
-therefore reindexes the arithmetic heat series into prime/repetition coordinates.  The local
-causal heat bridge then identifies every reindexed term with the weighted boundary anomaly
-of the corresponding unilateral prime translation.
+therefore reindexes the arithmetic heat series into prime/repetition coordinates. The local
+causal heat bridge identifies every reindexed term with the weighted boundary anomaly of the
+corresponding unilateral prime translation.
 
-Thus the convergent arithmetic heat series has the exact causal representation
+The same convergent scalar series is also exactly one half of the normalized Weil-ladder prime
+side at the heat Gaussian. Thus the causal prime-resolvent construction and the existing
+`HeatTraceCriterion` arithmetic prime distribution are literally the same scalar object.
 
-  sum_n H_t(n)
-    = sum_(p,k) weight(p,k) * anomaly_t((k+1) log p).
-
-This is still a scalar series identity.  It does not assert that the infinite sum of
-operator commutators converges in trace norm; the manuscript requires a relative
-prime--Archimedean trace for that operator-theoretic completion.
+This does not assert that the infinite sum of operator commutators converges in trace norm;
+the manuscript requires a relative prime--Archimedean trace for that operator completion.
 -/
 
 namespace GppCausalPrimeHeatReindex
@@ -82,9 +80,36 @@ theorem normalizedPrimeHeat_tsum_eq_causalPrimePair_tsum (t : ℝ) :
   simpa [repetition] using
     (weighted_causal_anomaly_eq_normalizedPrimeHeatSummand pk.1 t pk.2).symm
 
-/-- For positive heat time, the preceding global scalar identity has an absolutely summable
-arithmetic left-hand side.  This packages convergence and causal reindexing together without
-claiming trace-norm convergence of the operator series. -/
+/-- The normalized heat `tsum` is exactly the Weil-support-ladder prime side with its common
+heat normalization and even-test-function factor removed. -/
+theorem normalizedPrimeHeat_tsum_eq_scaled_weilPrimeSide (t : ℝ) :
+    (∑' n : ℕ, normalizedPrimeHeatSummand t n) =
+      (1 / (2 * Real.sqrt (4 * Real.pi * t))) *
+        GppWeilLadder.primeSide (GppHeatTrace.heatGaussian t) := by
+  have hterm : ∀ n : ℕ,
+      normalizedPrimeHeatSummand t n =
+        (Real.sqrt (4 * Real.pi * t))⁻¹ *
+          ((ArithmeticFunction.vonMangoldt n / Real.sqrt n) *
+            Real.exp (-(Real.log n) ^ 2 / (4 * t))) := by
+    intro n
+    unfold normalizedPrimeHeatSummand GppCausalHeatBoundaryAnomaly.heatKernelGaussian
+    ring
+  simp_rw [hterm]
+  rw [tsum_mul_left, GppHeatTrace.primeSide_heatGaussian]
+  ring
+
+/-- Therefore the causal prime/repetition `tsum` itself is exactly the normalized Weil prime
+side. -/
+theorem causalPrimePair_tsum_eq_scaled_weilPrimeSide (t : ℝ) :
+    (∑' pk : Nat.Primes × ℕ, causalPrimePairTerm t pk) =
+      (1 / (2 * Real.sqrt (4 * Real.pi * t))) *
+        GppWeilLadder.primeSide (GppHeatTrace.heatGaussian t) := by
+  rw [← normalizedPrimeHeat_tsum_eq_causalPrimePair_tsum]
+  exact normalizedPrimeHeat_tsum_eq_scaled_weilPrimeSide t
+
+/-- For positive heat time, the global scalar identity has an absolutely summable arithmetic
+side and is simultaneously the causal prime/repetition series and the normalized Weil prime
+side. -/
 theorem convergent_normalizedPrimeHeat_eq_causalPrimePair_tsum
     {t : ℝ} (ht : 0 < t) :
     Summable (normalizedPrimeHeatSummand t) ∧
@@ -97,4 +122,6 @@ end GppCausalPrimeHeatReindex
 
 #print axioms GppCausalPrimeHeatReindex.normalizedPrimeHeat_tsum_eq_primePower_pair_tsum
 #print axioms GppCausalPrimeHeatReindex.normalizedPrimeHeat_tsum_eq_causalPrimePair_tsum
+#print axioms GppCausalPrimeHeatReindex.normalizedPrimeHeat_tsum_eq_scaled_weilPrimeSide
+#print axioms GppCausalPrimeHeatReindex.causalPrimePair_tsum_eq_scaled_weilPrimeSide
 #print axioms GppCausalPrimeHeatReindex.convergent_normalizedPrimeHeat_eq_causalPrimePair_tsum
