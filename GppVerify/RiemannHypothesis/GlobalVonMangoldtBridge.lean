@@ -55,7 +55,14 @@ theorem neg_zeta_logDeriv_eq_tsum_vonMangoldt_div {s : ℂ} (hs : 1 < s.re) :
     -(deriv riemannZeta s / riemannZeta s) =
       ∑' n : ℕ, vonMangoldtComplex n / (n : ℂ) ^ s := by
   rw [neg_zeta_logDeriv_eq_vonMangoldtLSeries hs]
-  exact LSeries_def₀ (by simp [vonMangoldtComplex]) s
+  have hs0 : s ≠ 0 := by
+    intro h0
+    subst s
+    norm_num at hs
+  unfold LSeries
+  apply tsum_congr
+  intro n
+  exact LSeries.term_of_ne_zero' hs0 vonMangoldtComplex n
 
 /-- Absolute convergence allows the real part to pass through the global
 von-Mangoldt `tsum` on `Re s > 1`. This is the rigorous interchange step
