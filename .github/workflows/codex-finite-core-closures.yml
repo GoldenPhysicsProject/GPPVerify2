@@ -41,3 +41,5 @@ jobs:
         run: lake build GppVerify.StandardModel.UniversalNotFidelity
       - name: Half-flip scaffold integration
         run: lake build GppVerify.StandardModel.HalfFlipProposition
+      - name: Mixed-helicity rational physical-chart closure
+        run: lake build GppVerify.CelestialHolography.MassiveVectorPhysicalChartClosure
