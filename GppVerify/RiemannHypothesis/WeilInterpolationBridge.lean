@@ -22,19 +22,24 @@ open Finset
 open GppWeilCriterion
 
 /-- The exact finite support sampled by the paired form: `S` together with its
-involutive partners. -/
-def pairSupport (ι : ℂ → ℂ) (S : Finset ℂ) : Finset ℂ :=
+involutive partners.  This is noncomputable only because equality on `ℂ` is used to
+form a `Finset`; the mathematical support itself is finite and explicit. -/
+noncomputable def pairSupport (ι : ℂ → ℂ) (S : Finset ℂ) : Finset ℂ :=
   S ∪ S.image ι
 
 /-- Every original point lies in the pair-support. -/
 theorem mem_pairSupport_self {ι : ℂ → ℂ} {S : Finset ℂ} {ρ : ℂ}
     (hρ : ρ ∈ S) : ρ ∈ pairSupport ι S := by
-  simp [pairSupport, hρ]
+  classical
+  exact Finset.mem_union_left _ hρ
 
 /-- Every involutive partner of a point of `S` lies in the pair-support. -/
 theorem mem_pairSupport_image {ι : ℂ → ℂ} {S : Finset ℂ} {ρ : ℂ}
     (hρ : ρ ∈ S) : ι ρ ∈ pairSupport ι S := by
-  simp [pairSupport, hρ]
+  classical
+  unfold pairSupport
+  apply Finset.mem_union_right
+  exact Finset.mem_image.mpr ⟨ρ, hρ, rfl⟩
 
 /-- Agreement on `S` and `iota(S)` is enough to preserve the paired form on `S`. -/
 theorem pairedForm_eq_of_agree_on_pairSupport
