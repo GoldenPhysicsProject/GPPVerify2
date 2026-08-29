@@ -11,8 +11,9 @@ Usage:
 
 It scans GppVerify/**/*.lean and reports, per file:
   * top-level `axiom` declarations;
-  * `: True := trivial` scaffolds;
-  * `∀ (_ : True), True`-style scaffolds;
+  * theorem/lemma declarations whose own target is exactly `True` and whose
+    own proof is exactly `trivial`;
+  * `∀ (_ : True), True`-style vacuous scaffolds;
   * executable `sorry` / `admit` tokens outside comments (conservative scan).
 
 The text report is ranked by a simple pressure score so dense files rise to the
@@ -31,13 +32,13 @@ ROOT = Path(__file__).resolve().parents[1]
 LEAN_ROOT = ROOT / "GppVerify"
 
 AXIOM_RE = re.compile(r"^\s*axiom\s+([A-Za-z0-9_'.]+)", re.MULTILINE)
-TRUE_TRIVIAL_RE = re.compile(
-    r"^\s*(?:theorem|lemma)\s+([A-Za-z0-9_'.]+)[\s\S]{0,400}?:\s*True\s*:=\s*trivial\b",
+DECL_RE = re.compile(
+    r"^\s*(?:theorem|lemma)\s+([A-Za-z0-9_'.]+)\b",
     re.MULTILINE,
 )
-VACUOUS_FORALL_RE = re.compile(
-    r"^\s*(?:theorem|lemma)\s+([A-Za-z0-9_'.]+)[\s\S]{0,500}?:[\s\S]{0,160}?"
-    r"(?:∀|forall)\s*\([^)]*:\s*True\)[^:]{0,120}?True\s*:=\s*(?:by\s+)?trivial\b",
+TOP_LEVEL_BOUNDARY_RE = re.compile(
+    r"^\s*(?:theorem|lemma|axiom|def|noncomputable\s+def|abbrev|structure|class|instance|"
+    r"namespace|section|end|inductive|example|#print)\b",
     re.MULTILINE,
 )
 SORRY_RE = re.compile(r"\b(?:sorry|admit)\b")
@@ -91,12 +92,50 @@ def strip_comments(text: str) -> str:
     return "".join(out)
 
 
+def theorem_chunks(code: str):
+    """Yield `(name, declaration_text)` without crossing into the next declaration.
+
+    This is deliberately a lightweight lexical scanner rather than a Lean parser,
+    but unlike the old bounded wildcard regex it cannot attribute a later
+    `: True := trivial` declaration to the theorem immediately preceding it.
+    """
+    starts = list(TOP_LEVEL_BOUNDARY_RE.finditer(code))
+    for i, start in enumerate(starts):
+        m = DECL_RE.match(code, start.start())
+        if m is None:
+            continue
+        stop = starts[i + 1].start() if i + 1 < len(starts) else len(code)
+        yield m.group(1), code[start.start():stop]
+
+
+def classify_scaffolds(code: str) -> tuple[list[str], list[str]]:
+    true_trivial: list[str] = []
+    vacuous_forall: list[str] = []
+    for name, chunk in theorem_chunks(code):
+        if ":=" not in chunk:
+            continue
+        signature, rhs = chunk.split(":=", 1)
+        rhs = rhs.strip()
+        exact_trivial = re.match(r"^(?:by\s+)?trivial\b", rhs) is not None
+        if not exact_trivial:
+            continue
+
+        if re.search(r":\s*True\s*$", signature.rstrip()):
+            true_trivial.append(name)
+
+        if (
+            re.search(r"(?:∀|forall)\s*\([^)]*:\s*True\)", signature)
+            and re.search(r"True\s*$", signature.rstrip())
+        ):
+            vacuous_forall.append(name)
+    return true_trivial, vacuous_forall
+
+
 def audit_file(path: Path) -> FileAudit:
     raw = path.read_text(encoding="utf-8")
     code = strip_comments(raw)
     axioms = AXIOM_RE.findall(code)
-    true_trivial = TRUE_TRIVIAL_RE.findall(code)
-    vacuous_forall = VACUOUS_FORALL_RE.findall(code)
+    true_trivial, vacuous_forall = classify_scaffolds(code)
     sorry_hits = len(SORRY_RE.findall(code))
     return FileAudit(
         path=str(path.relative_to(ROOT)),
