@@ -42,8 +42,9 @@ theorem gammaChamberFactor_sq (k : ℕ) (lam : ℝ) :
   rw [mul_pow]
   rw [Real.sq_sqrt (prod_rhoStepFactor_pos k lam).le]
   rw [gammaBaseFactor_sq]
-  rw [rhoGamma_eq_prod_stepFactor_mul_base]
-  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
+  have hk := congrArg Complex.re (rhoGamma_eq_prod_stepFactor_mul_base k lam)
+  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hk
+  exact hk.symm
 
 /-- In particular no finite Gamma chamber factor vanishes anywhere on the real axis. -/
 theorem gammaChamberFactor_ne_zero (k : ℕ) (lam : ℝ) :
