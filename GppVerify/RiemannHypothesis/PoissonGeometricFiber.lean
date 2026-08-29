@@ -39,9 +39,11 @@ theorem tsum_re_pow_succ {z : ℂ} (hz : ‖z‖ < 1) :
     apply hmul.congr
     intro k
     rw [pow_succ']
-  rw [← Complex.reCLM.map_tsum hs]
-  congr 1
-  exact tsum_pow_succ hz
+  calc
+    (∑' k : ℕ, (z ^ (k + 1)).re) = ((∑' k : ℕ, z ^ (k + 1)) : ℂ).re := by
+      symm
+      simpa using Complex.reCLM.map_tsum hs
+    _ = (z / (1 - z)).re := by rw [tsum_pow_succ hz]
 
 /-- De Moivre form of the real part of a radial phase power. -/
 theorem re_radial_phase_pow (r θ : ℝ) (m : ℕ) :
@@ -52,7 +54,7 @@ theorem re_radial_phase_pow (r θ : ℝ) (m : ℕ) :
   have harg : (m : ℂ) * (θ * Complex.I) = (((m : ℝ) * θ : ℝ) : ℂ) * Complex.I := by
     push_cast
     ring
-  rw [harg, Complex.exp_ofReal_mul_I]
+  rw [harg, Complex.exp_mul_I]
   simp [Complex.mul_re]
 
 /-- Complex-power form of the positive-frequency Poisson fiber. -/
