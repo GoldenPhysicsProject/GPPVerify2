@@ -73,12 +73,17 @@ theorem blaschke_normSq_eq_one
     (hden : (1 : ℂ) - (a : ℂ) * z ≠ 0) :
     Complex.normSq ((z - (a : ℂ)) / (1 - (a : ℂ) * z)) = 1 := by
   rw [Complex.normSq_div]
+  have hz' : z.re ^ 2 + z.im ^ 2 = 1 := by
+    simpa [Complex.normSq, pow_two] using hz
   have hnum : Complex.normSq (z - (a : ℂ)) =
       Complex.normSq (1 - (a : ℂ) * z) := by
-    simp [Complex.normSq, hz]
-    ring
+    simp [Complex.normSq, pow_two]
+    nlinarith
   rw [hnum]
-  exact div_self (Complex.normSq_ne_zero.mpr hden)
+  have hnormSq : Complex.normSq (1 - (a : ℂ) * z) ≠ 0 := by
+    intro hzero
+    exact hden (Complex.normSq_eq_zero.mp hzero)
+  exact div_self hnormSq
 
 end GppLocalEulerShadowColligation
 
