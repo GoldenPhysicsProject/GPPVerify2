@@ -35,7 +35,7 @@ spectral parameter. -/
 theorem two_sub_eq_star_of_re_one {Delta : ℂ} (hDelta : Delta.re = 1) :
     2 - Delta = (starRingEnd ℂ) Delta := by
   apply Complex.ext
-  · simp [hDelta]
+  · norm_num [hDelta]
   · simp
 
 /-- The global Eisenstein scattering coefficient is a pure completed-zeta phase on
@@ -85,7 +85,7 @@ theorem eisensteinCoeff_reflection_principal
     rw [two_sub_eq_star_of_re_one hDelta]
     have hpos : 0 < Delta.re := by rw [hDelta]; norm_num
     rw [GppCompletedZetaReality.completedRiemannZeta_conj hpos]
-    exact map_ne_zero (starRingEnd ℂ) hLambda
+    exact (map_ne_zero (starRingEnd ℂ)).2 hLambda
   exact eisensteinCoeff_reflection hLambda hshadow
 
 end GppArithmeticEisensteinUnitarity
