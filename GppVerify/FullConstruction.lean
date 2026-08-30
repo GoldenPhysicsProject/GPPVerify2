@@ -22,6 +22,13 @@ import GppVerify.RiemannHypothesis.CelestialRiemannAffineBridge
 import GppVerify.CelestialHolography.PositiveRealPrincipalSeries
 import GppVerify.CelestialHolography.CompletedZetaPrincipalSeriesResponse
 
+-- Global completion / logarithmic-derivative separation
+import GppVerify.RiemannHypothesis.GlobalCompletedFactorization
+import GppVerify.RiemannHypothesis.LogDerivativeProduct
+
+-- Exact PGL(2,R)-representative orientation sign channel for the 1D conformal thread
+import GppVerify.RiemannHypothesis.PGL2OrientationAlgebra
+
 -- Grassmannian / googly / orientation / zitterbewegung structure
 import GppVerify.GrassmannianOrientationZ4
 import GppVerify.CelestialHolography.GooglyAntiunitaryExchange
