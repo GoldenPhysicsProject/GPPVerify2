@@ -87,7 +87,7 @@ theorem heatGaussian_le_inv_sq_eventually {t : ℝ} (ht : 0 < t) :
             rw [show -2 * Real.log n = -Real.log n + -Real.log n by ring,
               Real.exp_add]
       _ = (Real.exp (Real.log n))⁻¹ * (Real.exp (Real.log n))⁻¹ := by
-            rw [Real.exp_neg, Real.exp_neg]
+            rw [Real.exp_neg]
       _ = 1 / (n : ℝ) ^ 2 := by
             rw [Real.exp_log hnpos]
             ring
