@@ -35,3 +35,5 @@ jobs:
         run: lake build
       - name: Build import-connected construction
         run: lake build GppVerify.FullConstruction
+      - name: Audit root and full-construction import coverage
+        run: python3 scripts/audit_root_imports.py
