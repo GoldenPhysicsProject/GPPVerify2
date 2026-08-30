@@ -23,6 +23,13 @@ specializes to the genuine zeta Gibbs cumulants:
 Combined with the independently proved strict decrease of `kappa_3`, this also
 proves `kappa_4(beta) > 0` throughout the honest Gibbs half-line.
 
+The same hierarchy gives an exact two-observable fluctuation invariant.  For the
+observables `X = log(n+1)` and `X^2`, their covariance determinant is
+
+  kappa_2*kappa_4 + 2*kappa_2^3 - kappa_3^2,
+
+where `kappa_2` is the log-energy variance.  All dependence on the mean cancels.
+
 No analytic continuation of these identities or signs outside `beta > 1` is asserted.
 -/
 
@@ -210,6 +217,53 @@ theorem logEnergyFourthCumulant_pos
   rw [deriv_logEnergyThirdCumulant_eq_neg_fourth hβ] at hneg
   linarith
 
+/-- Covariance of the Gibbs observables `X` and `X^2` in normalized raw moments. -/
+noncomputable def logEnergySquareCovariance (β : ℝ) : ℝ :=
+  M3 β / Z β - (M1 β / Z β) * (M2 β / Z β)
+
+/-- Variance of the squared Gibbs observable `X^2`. -/
+noncomputable def logEnergySquareVariance (β : ℝ) : ℝ :=
+  M4 β / Z β - (M2 β / Z β) ^ 2
+
+/-- Determinant of the covariance matrix of `X` and `X^2`. -/
+noncomputable def logEnergyTwoObservableDet (β : ℝ) : ℝ :=
+  logEnergyVariance β * logEnergySquareVariance β -
+    (logEnergySquareCovariance β) ^ 2
+
+/-- The mixed covariance is `kappa_3 + 2 mu kappa_2`. -/
+theorem logEnergySquareCovariance_eq_cumulants (β : ℝ) :
+    logEnergySquareCovariance β =
+      logEnergyThirdCumulant β +
+        2 * (M1 β / Z β) * logEnergyVariance β := by
+  unfold logEnergySquareCovariance logEnergyThirdCumulant logEnergyVariance
+  ring
+
+/-- The squared-observable variance in cumulant coordinates. -/
+theorem logEnergySquareVariance_eq_cumulants (β : ℝ) :
+    logEnergySquareVariance β =
+      logEnergyFourthCumulant β +
+        4 * (M1 β / Z β) * logEnergyThirdCumulant β +
+        4 * (M1 β / Z β) ^ 2 * logEnergyVariance β +
+        2 * (logEnergyVariance β) ^ 2 := by
+  unfold logEnergySquareVariance logEnergyFourthCumulant
+  unfold logEnergyThirdCumulant logEnergyVariance
+  ring
+
+/-- **Exact two-observable zeta Gibbs fluctuation invariant.**  The determinant
+of the covariance matrix of `X` and `X^2` is independent of the mean and equals
+`kappa_2*kappa_4 + 2*kappa_2^3 - kappa_3^2`. -/
+theorem logEnergyTwoObservableDet_eq_cumulants (β : ℝ) :
+    logEnergyTwoObservableDet β =
+      logEnergyVariance β * logEnergyFourthCumulant β +
+        2 * (logEnergyVariance β) ^ 3 -
+        (logEnergyThirdCumulant β) ^ 2 := by
+  unfold logEnergyTwoObservableDet
+  rw [logEnergySquareVariance_eq_cumulants,
+    logEnergySquareCovariance_eq_cumulants]
+  exact covarianceDetFromCumulants_eq
+    (M1 β / Z β) (logEnergyVariance β)
+      (logEnergyThirdCumulant β) (logEnergyFourthCumulant β)
+
 end GppZetaGibbsCumulantHierarchy
 
 #print axioms GppZetaGibbsCumulantHierarchy.hasDerivAt_Z
@@ -219,3 +273,6 @@ end GppZetaGibbsCumulantHierarchy
 #print axioms GppZetaGibbsCumulantHierarchy.hasDerivAt_logEnergyThirdCumulant_eq_neg_fourth
 #print axioms GppZetaGibbsCumulantHierarchy.deriv_logEnergyThirdCumulant_eq_neg_fourth
 #print axioms GppZetaGibbsCumulantHierarchy.logEnergyFourthCumulant_pos
+#print axioms GppZetaGibbsCumulantHierarchy.logEnergySquareCovariance_eq_cumulants
+#print axioms GppZetaGibbsCumulantHierarchy.logEnergySquareVariance_eq_cumulants
+#print axioms GppZetaGibbsCumulantHierarchy.logEnergyTwoObservableDet_eq_cumulants
