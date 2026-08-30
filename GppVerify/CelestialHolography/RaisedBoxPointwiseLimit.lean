@@ -20,6 +20,7 @@ convergence passage over the 3-simplex.
 namespace GppRaisedBoxPointwiseLimit
 
 open Filter
+open scoped Topology
 
 /-- A positive constant raised to the vanishing negative regulator tends to one. -/
 theorem tendsto_neg_rpow_one {q : ℝ} (hq : 0 < q) :
