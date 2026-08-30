@@ -49,8 +49,23 @@ theorem prod_rhoStepFactor_pos (k : ℕ) (x : ℝ) :
     0 < ∏ j in Finset.range k, rhoStepFactor j x := by
   exact Finset.prod_pos fun j _ => rhoStepFactor_pos j x
 
+/-- **Strict positivity in every Gamma chamber.**  The continuously extended
+Wiener--Hopf base weight is positive on the whole real axis, and every recurrence
+step contributes a positive factor.  Hence the real part of every normalized
+Gamma/Mehler--Fock chamber is strictly positive, including at the removable
+origin. -/
+theorem rhoGamma_re_pos (k : ℕ) (x : ℝ) :
+    0 < (rhoGamma k x).re := by
+  rw [rhoGamma_re_eq_prod_stepFactor_mul_wienerHopf]
+  have hprod : 0 < ∏ j in Finset.range k, rhoStepFactor j x :=
+    prod_rhoStepFactor_pos k x
+  have hpi : 0 < (2 : ℝ) / Real.pi := div_pos (by norm_num) Real.pi_pos
+  have hwh : 0 < extendedWienerHopfWeight x := extendedWienerHopfWeight_pos x
+  positivity
+
 end GppWienerHopfGammaChamberHierarchy
 
 #print axioms GppWienerHopfGammaChamberHierarchy.rhoGamma_eq_prod_stepFactor_mul_base
 #print axioms GppWienerHopfGammaChamberHierarchy.rhoGamma_re_eq_prod_stepFactor_mul_wienerHopf
 #print axioms GppWienerHopfGammaChamberHierarchy.prod_rhoStepFactor_pos
+#print axioms GppWienerHopfGammaChamberHierarchy.rhoGamma_re_pos
