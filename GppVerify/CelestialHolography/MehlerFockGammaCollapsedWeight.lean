@@ -32,8 +32,8 @@ theorem gamma_product_eq_collapsedWeight (lam : ℝ) :
           Complex.Gamma (((1 : ℂ) / 2) - (lam : ℂ) * I)) =
       ((collapsedWeight lam : ℝ) : ℂ) := by
   rw [GppGammaHalfModulus.gamma_half_add_mul_gamma_half_sub]
+  norm_cast
   unfold collapsedWeight
-  push_cast
   ring
 
 /-- Closed Wiener--Hopf / Mehler--Fock / Gamma bridge away from the origin. -/
