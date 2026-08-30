@@ -79,7 +79,9 @@ theorem M1_nonneg (β : ℝ) :
 theorem zetaMeanEnergy_nonneg {β : ℝ} (hβ : 1 < β) :
     0 ≤ zetaMeanEnergy β := by
   rw [zetaMeanEnergy_eq_M1_div_Z hβ]
-  exact div_nonneg (M1_nonneg β) (zetaPartition_pos hβ).le
+  have hZ : 0 ≤ Z β := by
+    simpa [Z] using (gibbsWeight_tsum_pos hβ).le
+  exact div_nonneg (M1_nonneg β) hZ
 
 /-- **Entropy positivity.**  The honest zeta Gibbs entropy is nonnegative for every
 `β > 1`.  This follows directly from `Z ≥ 1`, nonnegative logarithmic energy, and
