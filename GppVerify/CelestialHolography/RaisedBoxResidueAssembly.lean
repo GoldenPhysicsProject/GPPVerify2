@@ -30,12 +30,14 @@ The concrete Feynman-parametric moment is now defined in
 on the standard affine three-simplex.  `RaisedBoxSimplexZeroVolume.lean`
 independently certifies the reduced zero-regulator simplex normalization `1/6`.
 Thus the remaining physics-side analytic target is precisely dominated convergence
-for that concrete moment.
+for that concrete moment.  The positive-regulator specializations below align this
+assembly with the one-sided DCT domain `eps -> 0+` used by the majorant.
 -/
 
 namespace GppRaisedBoxResidueAssembly
 
 open Filter Set
+open scoped Topology
 open GppMu4DimensionShift
 open GppGammaResidueAtZero
 open GppRaisedBoxConcreteMoment
@@ -80,6 +82,16 @@ theorem tendsto_scaledRaisedBox_realGamma_of_simplex
   exact tendsto_scaledRaisedBox_of_factorization hI
     tendsto_mul_realGamma_zero hsimplex
 
+/-- **Positive-regulator Real-Gamma specialization.**  On `eps -> 0+`, the Gamma
+residue is already certified, so only the one-sided simplex DCT remains. -/
+theorem tendsto_scaledRaisedBox_realGamma_pos_of_simplex
+    {I simplexMoment : ℝ → ℝ}
+    (hI : ∀ ε, I ε = Real.Gamma ε * simplexMoment ε)
+    (hsimplex : Tendsto simplexMoment (𝓝[>] 0) (nhds (1 / 6 : ℝ))) :
+    Tendsto (fun ε : ℝ => ε * I ε) (𝓝[>] 0) (nhds (1 / 6 : ℝ)) := by
+  exact tendsto_scaledRaisedBox_of_factorization hI
+    tendsto_mul_realGamma_zero_pos hsimplex
+
 /-- **Concrete Feynman-parametric specialization.** For fixed Euclidean chamber
 parameters `S,T`, once the concrete moment from `RaisedBoxConcreteMoment` is shown
 to tend to the simplex volume `1/6`, the scaled raised box has residue `1/6`.
@@ -92,6 +104,15 @@ theorem tendsto_scaledRaisedBox_realGamma_of_concreteMoment
     Tendsto (fun ε : ℝ => ε * I ε)
       (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (1 / 6 : ℝ)) := by
   exact tendsto_scaledRaisedBox_realGamma_of_simplex hI hsimplex
+
+/-- Concrete positive-regulator specialization matching the one-channel majorant domain. -/
+theorem tendsto_scaledRaisedBox_realGamma_pos_of_concreteMoment
+    {I : ℝ → ℝ} {S T : ℝ}
+    (hI : ∀ ε, I ε = Real.Gamma ε * simplexMoment ε S T)
+    (hsimplex : Tendsto (fun ε => simplexMoment ε S T)
+      (𝓝[>] 0) (nhds (1 / 6 : ℝ))) :
+    Tendsto (fun ε : ℝ => ε * I ε) (𝓝[>] 0) (nhds (1 / 6 : ℝ)) := by
+  exact tendsto_scaledRaisedBox_realGamma_pos_of_simplex hI hsimplex
 
 /-- **Complete algebraic route to the finite `mu^4` rational term.** Once the
 Feynman-parameter factorization, Gamma residue, and simplex-volume limit are
@@ -119,6 +140,19 @@ theorem tendsto_mu4_rational_realGamma_of_simplex
     (tendsto_nhdsWithin_of_tendsto_nhds tendsto_id)
   exact tendsto_scaledRaisedBox_realGamma_of_simplex hI hsimplex
 
+/-- **Positive-regulator `mu^4` closure.**  Once the actual simplex DCT is proved on
+`eps -> 0+`, the existing dimension-shift algebra gives the finite rational residue
+without strengthening the DCT to an unnecessary two-sided regulator limit. -/
+theorem tendsto_mu4_rational_realGamma_pos_of_simplex
+    {I simplexMoment : ℝ → ℝ}
+    (hI : ∀ ε, I ε = Real.Gamma ε * simplexMoment ε)
+    (hsimplex : Tendsto simplexMoment (𝓝[>] 0) (nhds (1 / 6 : ℝ))) :
+    Tendsto (fun ε : ℝ => shiftFactor ε * I ε)
+      (𝓝[>] 0) (nhds (-(1 / 6 : ℝ))) := by
+  exact tendsto_mu4_rational_of_gamma_simplex
+    (tendsto_nhdsWithin_of_tendsto_nhds tendsto_id) hI
+    tendsto_mul_realGamma_zero_pos hsimplex
+
 /-- Concrete `mu^4` specialization: the only remaining hypothesis is the DCT
 limit for the actual Symanzik simplex moment. -/
 theorem tendsto_mu4_rational_realGamma_of_concreteMoment
@@ -130,12 +164,27 @@ theorem tendsto_mu4_rational_realGamma_of_concreteMoment
       (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (-(1 / 6 : ℝ))) := by
   exact tendsto_mu4_rational_realGamma_of_simplex hI hsimplex
 
+/-- Concrete positive-regulator closure: after the one-sided simplex DCT, the physical
+`mu^4` rational term is exactly `-1/6`. -/
+theorem tendsto_mu4_rational_realGamma_pos_of_concreteMoment
+    {I : ℝ → ℝ} {S T : ℝ}
+    (hI : ∀ ε, I ε = Real.Gamma ε * simplexMoment ε S T)
+    (hsimplex : Tendsto (fun ε => simplexMoment ε S T)
+      (𝓝[>] 0) (nhds (1 / 6 : ℝ))) :
+    Tendsto (fun ε : ℝ => shiftFactor ε * I ε)
+      (𝓝[>] 0) (nhds (-(1 / 6 : ℝ))) := by
+  exact tendsto_mu4_rational_realGamma_pos_of_simplex hI hsimplex
+
 end GppRaisedBoxResidueAssembly
 
 #print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_of_gamma_simplex
 #print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_of_factorization
 #print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_realGamma_of_simplex
+#print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_realGamma_pos_of_simplex
 #print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_realGamma_of_concreteMoment
+#print axioms GppRaisedBoxResidueAssembly.tendsto_scaledRaisedBox_realGamma_pos_of_concreteMoment
 #print axioms GppRaisedBoxResidueAssembly.tendsto_mu4_rational_of_gamma_simplex
 #print axioms GppRaisedBoxResidueAssembly.tendsto_mu4_rational_realGamma_of_simplex
+#print axioms GppRaisedBoxResidueAssembly.tendsto_mu4_rational_realGamma_pos_of_simplex
 #print axioms GppRaisedBoxResidueAssembly.tendsto_mu4_rational_realGamma_of_concreteMoment
+#print axioms GppRaisedBoxResidueAssembly.tendsto_mu4_rational_realGamma_pos_of_concreteMoment
