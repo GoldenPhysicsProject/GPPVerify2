@@ -242,7 +242,7 @@ theorem heatKernelGaussian_tendsto_zero {t : ℝ} (ht : 0 < t) :
     have hexponent : -(x ^ 2) / (4 * t) = -(x ^ 2 / (4 * t)) := by ring
     rw [hexponent]
   rw [hfun]
-  exact hexp.div_const (Real.sqrt (4 * Real.pi * t))
+  simpa using (hexp.div_const (Real.sqrt (4 * Real.pi * t)))
 
 /-- Specialization of the finite-cutoff identity to the normalized heat Gaussian. -/
 theorem truncatedHeatBoundaryTrace_eq
