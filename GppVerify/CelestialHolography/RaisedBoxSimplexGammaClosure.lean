@@ -66,8 +66,9 @@ theorem beta_product_eq_gamma_ratio
   change betaIntegral a b * betaIntegral a 2 = Gamma a ^ 2 / Gamma c
   field_simp [hGc]
   calc
-    Gamma c * (betaIntegral a b * betaIntegral a 2)
-        = (Gamma c * betaIntegral a b) * betaIntegral a 2 := by ring
+    (betaIntegral a b * betaIntegral a 2) * Gamma c
+        = Gamma c * (betaIntegral a b * betaIntegral a 2) := by ring
+    _ = (Gamma c * betaIntegral a b) * betaIntegral a 2 := by ring
     _ = (Gamma a * Gamma b) * betaIntegral a 2 := by rw [← h2']
     _ = Gamma a * (Gamma b * betaIntegral a 2) := by ring
     _ = Gamma a * Gamma a := by rw [← h1']
