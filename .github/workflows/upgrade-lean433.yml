@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - codex/lean-upgrade-4.33
+      - codex/lean-upgrade-4.33-current
   workflow_dispatch:
 
 jobs:
@@ -18,9 +19,13 @@ jobs:
       - name: Update dependencies
         run: lake update
       - name: Get Mathlib cache
-        run: lake exe cache get
+        run: lake exe cache get || true
       - name: Full build
         run: lake build
+      - name: Full construction
+        run: lake build GppVerify.FullConstruction
+      - name: Root import coverage census
+        run: python3 scripts/audit_root_imports.py
       - name: Zero-sorry gate
         run: |
           if grep -RInE '^[[:space:]]*(sorry|admit)([[:space:]]|$)' GppVerify --include='*.lean'; then
