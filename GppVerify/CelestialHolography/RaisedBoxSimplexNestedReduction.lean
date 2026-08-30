@@ -6,7 +6,7 @@ import Mathlib.Tactic
 
 This file closes the bookkeeping step between the actual nested affine-simplex
 integral used by the one-channel majorant and the already-proved reduced outer
-Beta integral.  Endpoint `x=1` is handled explicitly; no Fubini interchange is
+Beta integral. Endpoint `x=1` is handled explicitly; no Fubini interchange is
 used here because the simplex has already been parameterized as an iterated
 integral.
 
@@ -29,7 +29,7 @@ noncomputable def nestedSimplexIntegral (δ : ℝ) : ℂ :=
         (y : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
           (((1 - x : ℝ) : ℂ) - y) ^ (((2 : ℂ) - 1)))
 
-/-- Exact nested-to-reduced simplex identity.  The only exceptional outer
+/-- Exact nested-to-reduced simplex identity. The only exceptional outer
 endpoint is `x=1`; both sides vanish there when `δ<1`. -/
 theorem nestedSimplexIntegral_eq_reduced
     {δ : ℝ} (hδ : δ < 1) :
@@ -45,20 +45,23 @@ theorem nestedSimplexIntegral_eq_reduced
   rw [Set.uIoc_of_le (by norm_num : (0 : ℝ) ≤ 1)] at hx
   by_cases hx1 : x = 1
   · subst x
-    simp
     have hne : ((((3 - δ : ℝ) : ℂ) - 1)) ≠ 0 := by
-      apply Complex.ext
-      · simp
-        linarith
-      · simp
+      intro h
+      have hre := congrArg Complex.re h
+      simp at hre
+      linarith
     simp [hne]
   · have hxlt : x < 1 := lt_of_le_of_ne hx.2 hx1
     rw [inner_simplex_slice_beta_identity hxlt]
-    congr 2
-    have hbase : ((1 - (x : ℝ) : ℝ) : ℂ) = 1 - (x : ℂ) := by push_cast; ring
-    rw [hbase]
-    congr 1
-    push_cast
+    have hbase : ((1 - (x : ℝ) : ℝ) : ℂ) = 1 - (x : ℂ) := by
+      push_cast
+      ring
+    have hexp :
+        ((((1 - δ : ℝ) : ℂ) + 2 - 1)) =
+          ((((3 - δ : ℝ) : ℂ) - 1)) := by
+      push_cast
+      ring
+    rw [hbase, hexp]
     ring
 
 /-- The full nested majorant integral is exactly the product of the two Beta
