@@ -25,13 +25,13 @@ The cumulant flow `g'(β) = -κ₃(β)` then gives the exact entropy-response cu
 
 Thus the previously formalized `entropyBetaDerivative` is not merely a response ansatz: it
 is the derivative of an explicit entropy potential on the honest Gibbs half-line `β > 1`.
-No analytic continuation of this thermodynamic interpretation is asserted, and no global
-sign is asserted for the curvature because its two terms compete.
+No analytic continuation of this thermodynamic interpretation is asserted.
 -/
 
 namespace GppZetaGibbsEntropyDerivative
 
 open GppZetaGibbsFisher
+open GppZetaGibbsSummability
 open GppZetaGibbsStrictThermodynamics
 open GppZetaGibbsThermodynamicDerivatives
 open GppZetaGibbsCumulantDerivative
@@ -40,6 +40,56 @@ open GppZetaGibbsCumulantDerivative
 log-energy response. -/
 noncomputable def zetaEntropy (β : ℝ) : ℝ :=
   zetaLogPartition β + β * zetaMeanEnergy β
+
+/-- The zeta Gibbs partition is at least its `n=0` Gibbs term, which is exactly one. -/
+theorem one_le_Z {β : ℝ} (hβ : 1 < β) :
+    1 ≤ Z β := by
+  have hs : Summable (gibbsWeight β) := summable_gibbsWeight hβ
+  have hnonneg : ∀ n : ℕ, 0 ≤ gibbsWeight β n := by
+    intro n
+    unfold gibbsWeight
+    positivity
+  have hle := sum_le_tsum ({0} : Finset ℕ)
+    (fun n _ => hnonneg n) hs
+  simpa [Z, gibbsWeight] using hle
+
+/-- The real zeta log-partition is nonnegative on the honest Gibbs half-line. -/
+theorem zetaLogPartition_nonneg {β : ℝ} (hβ : 1 < β) :
+    0 ≤ zetaLogPartition β := by
+  unfold zetaLogPartition
+  rw [zetaPartition_eq_Z hβ]
+  exact Real.log_nonneg (one_le_Z hβ)
+
+/-- Every logarithmic energy `log(n+1)` is nonnegative. -/
+theorem logEnergy_nonneg (n : ℕ) :
+    0 ≤ logEnergy n := by
+  unfold logEnergy
+  apply Real.log_nonneg
+  exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
+
+/-- The unnormalized first logarithmic moment is nonnegative. -/
+theorem M1_nonneg (β : ℝ) :
+    0 ≤ M1 β := by
+  unfold M1
+  apply tsum_nonneg
+  intro n
+  exact mul_nonneg (by unfold gibbsWeight; positivity) (logEnergy_nonneg n)
+
+/-- The zeta Gibbs mean log-energy is nonnegative on `β > 1`. -/
+theorem zetaMeanEnergy_nonneg {β : ℝ} (hβ : 1 < β) :
+    0 ≤ zetaMeanEnergy β := by
+  rw [zetaMeanEnergy_eq_M1_div_Z hβ]
+  exact div_nonneg (M1_nonneg β) (zetaPartition_pos hβ).le
+
+/-- **Entropy positivity.**  The honest zeta Gibbs entropy is nonnegative for every
+`β > 1`.  This follows directly from `Z ≥ 1`, nonnegative logarithmic energy, and
+`S = log Z + β U`; no thermodynamic sign convention is assumed. -/
+theorem zetaEntropy_nonneg {β : ℝ} (hβ : 1 < β) :
+    0 ≤ zetaEntropy β := by
+  unfold zetaEntropy
+  have hβ0 : 0 ≤ β := by linarith
+  exact add_nonneg (zetaLogPartition_nonneg hβ)
+    (mul_nonneg hβ0 (zetaMeanEnergy_nonneg hβ))
 
 /-- The entropy potential has derivative `-β` times the Gibbs Fisher variance. -/
 theorem hasDerivAt_zetaEntropy
@@ -109,6 +159,12 @@ theorem deriv_entropyBetaDerivative
 
 end GppZetaGibbsEntropyDerivative
 
+#print axioms GppZetaGibbsEntropyDerivative.one_le_Z
+#print axioms GppZetaGibbsEntropyDerivative.zetaLogPartition_nonneg
+#print axioms GppZetaGibbsEntropyDerivative.logEnergy_nonneg
+#print axioms GppZetaGibbsEntropyDerivative.M1_nonneg
+#print axioms GppZetaGibbsEntropyDerivative.zetaMeanEnergy_nonneg
+#print axioms GppZetaGibbsEntropyDerivative.zetaEntropy_nonneg
 #print axioms GppZetaGibbsEntropyDerivative.hasDerivAt_zetaEntropy
 #print axioms GppZetaGibbsEntropyDerivative.deriv_zetaEntropy_neg
 #print axioms GppZetaGibbsEntropyDerivative.deriv_zetaEntropy_eq_neg_heatCapacity_div_beta
