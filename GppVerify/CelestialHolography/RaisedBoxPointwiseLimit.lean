@@ -27,7 +27,8 @@ theorem tendsto_neg_rpow_one {q : ℝ} (hq : 0 < q) :
     Tendsto (fun ε : ℝ => q ^ (-ε)) (𝓝 0) (𝓝 1) := by
   have hcont : Continuous (fun ε : ℝ => q ^ (-ε)) :=
     (Real.continuous_const_rpow hq.ne').comp continuous_neg
-  simpa using hcont.continuousAt
+  have h := hcont.continuousAt
+  convert h using 1 <;> simp
 
 /-- Pointwise convergence of the Euclidean four-point Symanzik integrand on the
 simplex interior. -/
