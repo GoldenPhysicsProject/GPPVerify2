@@ -97,9 +97,10 @@ theorem tendsto_structuredPhysicalCoreMajorant_nhdsGT_zero
     (continuousAt_id.tendsto).mono_left inf_le_left
   have hm2 : Tendsto (fun m : ℝ => m ^ 2) (𝓝[>] 0) (𝓝 0) := by
     simpa using hm.pow 2
-  have hEa : Tendsto (fun m : ℝ => A * m) (𝓝[>] 0) (𝓝 0) := hm.const_mul A
+  have hEa : Tendsto (fun m : ℝ => A * m) (𝓝[>] 0) (𝓝 0) := by
+    simpa using hm.const_mul A
   have hEt : Tendsto (fun m : ℝ => B * m + C * m ^ 2) (𝓝[>] 0) (𝓝 0) := by
-    exact (hm.const_mul B).add (hm2.const_mul C)
+    simpa using (hm.const_mul B).add (hm2.const_mul C)
   have hEaLogS :
       Tendsto (fun m : ℝ => (A * m) * |Real.log (m / S)|) (𝓝[>] 0) (𝓝 0) := by
     simpa [mul_assoc] using (tendsto_mul_abs_log_div_const_nhdsGT_zero hS).const_mul A
@@ -110,19 +111,44 @@ theorem tendsto_structuredPhysicalCoreMajorant_nhdsGT_zero
       Tendsto
         (fun m : ℝ => |Real.log (m / U)| * (B * m + C * m ^ 2))
         (𝓝[>] 0) (𝓝 0) := by
-    have h1 := (tendsto_mul_abs_log_div_const_nhdsGT_zero hU).const_mul B
-    have h2 := (tendsto_sq_mul_abs_log_div_const_nhdsGT_zero hU).const_mul C
-    have h := h1.add h2
+    have h1 : Tendsto (fun k : ℝ => B * (k * |Real.log (k / U)|))
+        (𝓝[>] 0) (𝓝 0) := by
+      simpa using (tendsto_mul_abs_log_div_const_nhdsGT_zero hU).const_mul B
+    have h2 : Tendsto (fun k : ℝ => C * (k ^ 2 * |Real.log (k / U)|))
+        (𝓝[>] 0) (𝓝 0) := by
+      simpa using (tendsto_sq_mul_abs_log_div_const_nhdsGT_zero hU).const_mul C
+    have h : Tendsto
+        (fun x : ℝ => B * (x * |Real.log (x / U)|) + C * (x ^ 2 * |Real.log (x / U)|))
+        (𝓝[>] 0) (𝓝 0) := by
+      simpa using h1.add h2
     apply h.congr'
     filter_upwards with m
     ring
-  have hEaEt := hEa.mul hEt
-  have hEaSq := hEa.pow 2
+  have hEaEt : Tendsto (fun x : ℝ => A * x * (B * x + C * x ^ 2))
+      (𝓝[>] 0) (𝓝 0) := by
+    simpa using hEa.mul hEt
+  have hEaSq : Tendsto (fun x : ℝ => (A * x) ^ 2) (𝓝[>] 0) (𝓝 0) := by
+    simpa using hEa.pow 2
   have hspecial :=
     GppScalarBoxSpecialRemainderVanishing.tendsto_specialRemainderMajorant_regulator hS hU
-  have hsum := (((hEaLogS.add hEaLogU).add hEtLogU).add hEaEt).add
-    (hEaSq.const_mul (1 / 2 : ℝ))
-  have hall := hsum.add hspecial
+  have hsum : Tendsto
+      (fun x : ℝ =>
+        A * x * |Real.log (x / S)| + A * x * |Real.log (x / U)| +
+          |Real.log (x / U)| * (B * x + C * x ^ 2) +
+          A * x * (B * x + C * x ^ 2) +
+          (1 / 2 : ℝ) * (A * x) ^ 2)
+      (𝓝[>] 0) (𝓝 0) := by
+    simpa using (((hEaLogS.add hEaLogU).add hEtLogU).add hEaEt).add
+      (hEaSq.const_mul (1 / 2 : ℝ))
+  have hall : Tendsto
+      (fun x : ℝ =>
+        A * x * |Real.log (x / S)| + A * x * |Real.log (x / U)| +
+          |Real.log (x / U)| * (B * x + C * x ^ 2) +
+          A * x * (B * x + C * x ^ 2) +
+          (1 / 2 : ℝ) * (A * x) ^ 2 +
+          specialRemainderMajorant (x / U) (x / S))
+      (𝓝[>] 0) (𝓝 0) := by
+    simpa using hsum.add hspecial
   apply hall.congr'
   filter_upwards with m
   rw [lowerLogError_regulator_polynomial hS.ne' hU.ne']
