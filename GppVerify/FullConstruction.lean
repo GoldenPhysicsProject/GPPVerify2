@@ -57,6 +57,7 @@ import GppVerify.RiemannHypothesis.PrimeFisherCenteredGeometry
 -- Exact sech / Wiener-Hopf / Gamma chamber structure
 import GppVerify.RiemannHypothesis.SechSixthIntegral
 import GppVerify.CelestialHolography.WienerHopfGammaChamberPositiveFactor
+import GppVerify.CelestialHolography.WienerHopfGammaChamberHierarchy
 
 -- Scalar-box regulator and physical convergence
 import GppVerify.CelestialHolography.ScalarBoxRegulatorAlgebra
