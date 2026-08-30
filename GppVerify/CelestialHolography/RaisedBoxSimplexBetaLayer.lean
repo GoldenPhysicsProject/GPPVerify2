@@ -88,7 +88,6 @@ theorem scaled_beta_convergent
     congr 1
     push_cast
     field_simp [ha0]
-    ring
   simp only [f]
   rw [h1, h2]
   push_cast
