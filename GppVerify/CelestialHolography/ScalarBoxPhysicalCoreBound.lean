@@ -42,7 +42,8 @@ theorem abs_physical_structured_core_sub_D0_le
     (hκsqScale : κ ^ 2 = 1 + δ * (1 - η))
     (hxsq : x ^ 2 = 1 - δ * η / (1 + δ))
     (hRsqScale : R ^ 2 = 1 / (1 + δ)) :
-    |structuredScalarBoxCore a t (specialRemainder a q t) - scalarBoxD0 S U m| ≤
+    |structuredScalarBoxCore a t (specialRemainder a q t) -
+      GppScalarBoxD0PrefactorVanishing.scalarBoxD0 S U m| ≤
       structuredPhysicalCoreMajorant S U m := by
   have hmS' : m ≤ S := by linarith
   have hδ0 : 0 ≤ δ := by rw [hδ]; positivity
@@ -63,13 +64,18 @@ theorem abs_physical_structured_core_sub_D0_le
   have htLog := abs_log_t_sub_log_m_div_S_le
     hS hm hδ0 hδsmall hη0 hηsmall hκlo hκhi
     hxlo hxhi hRlo hRhi hκsqScale hxsq hRsqScale hBdef hη ht
+  have htLog' : |Real.log t - Real.log (m / S)| ≤
+      poleLogError (4 * m / U) (m / S) := by
+    rw [GppScalarBoxRegulatorVanishing.poleLogError_regulator_polynomial hS.ne' hU.ne']
+    rw [hδ, hη] at htLog
+    convert htLog using 1 <;> ring
   have hE := abs_specialRemainder_le_physical
     hS hU hm hmS hmU hRlo hRhi hκlo hq ha hRsq hκsq hρ hη ht
     hBpair.1.le hBpair.2
   have hE' : |specialRemainder a q t| ≤
       specialRemainderMajorant (m / U) (m / S) := by
     simpa [hρ, hη] using hE
-  exact abs_structuredScalarBoxCore_sub_D0_le hS hU hm haLog htLog hE'
+  exact abs_structuredScalarBoxCore_sub_D0_le hS hU hm haLog htLog' hE'
 
 end GppScalarBoxPhysicalCoreBound
 
