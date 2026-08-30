@@ -94,64 +94,62 @@ theorem scaled_beta_convergent
   push_cast
   ring
 
-/-- The lower Beta exponent is convergent on the raised-box regulator range. -/
-theorem one_sub_delta_beta_convergent {δ : ℝ} (hδ : δ < 1) :
-    0 < (((1 - δ : ℝ) : ℂ)).re := one_sub_delta_re_pos hδ
-
-/-- The outer Beta exponent is convergent on the raised-box regulator range. -/
-theorem three_sub_delta_beta_convergent {δ : ℝ} (hδ : δ < 1) :
-    0 < (((3 - δ : ℝ) : ℂ)).re := three_sub_delta_re_pos hδ
-
-/-- Exact unit-interval Beta identity needed after the first simplex slice. -/
+/-- Exact affine simplex-slice identity. For a fixed outer coordinate `x < 1`, the
+remaining inner edge has length `1-x`, so its singular integral is precisely the
+scaled Beta factor used in the raised-box Dirichlet reduction. -/
 theorem inner_simplex_slice_beta_identity
-    {δ : ℝ} (hδ : δ < 1) :
-    (∫ x in (0)..1,
-      (x : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
-        ((1 : ℂ) - x) ^ (((2 : ℂ) - 1))) =
-      betaIntegral (((1 - δ : ℝ) : ℂ)) 2 := by
-  simpa using inner_scaled_beta_identity (δ := δ) (a := (1 : ℝ)) zero_lt_one
+    {δ x : ℝ} (hx : x < 1) :
+    (∫ y in (0)..(1 - x),
+      (y : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
+        (((1 - x : ℝ) : ℂ) - y) ^ (((2 : ℂ) - 1))) =
+      ((1 - x : ℝ) : ℂ) ^ ((((1 - δ : ℝ) : ℂ) + 2 - 1)) *
+        betaIntegral (((1 - δ : ℝ) : ℂ)) 2 := by
+  exact inner_scaled_beta_identity (sub_pos.mpr hx)
 
-/-- The first simplex slice is interval-integrable whenever `δ < 1`. -/
+/-- Integrability of every nondegenerate affine simplex slice. -/
 theorem inner_simplex_slice_convergent
-    {δ : ℝ} (hδ : δ < 1) :
+    {δ x : ℝ} (hδ : δ < 1) (hx : x < 1) :
     IntervalIntegrable
-      (fun x : ℝ =>
-        (x : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
-          (((1 : ℂ) - x) ^ (((2 : ℂ) - 1))))
-      MeasureTheory.volume 0 1 := by
-  apply scaled_beta_convergent
-  · exact one_sub_delta_re_pos hδ
-  · norm_num
-  · norm_num
+      (fun y : ℝ =>
+        (y : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
+          (((1 - x : ℝ) : ℂ) - y) ^ (((2 : ℂ) - 1)))
+      MeasureTheory.volume 0 (1 - x) := by
+  exact scaled_beta_convergent
+    (one_sub_delta_re_pos hδ) (by norm_num) (sub_pos.mpr hx)
 
-/-- Exact outer reduced Beta product identity. -/
-theorem outer_reduced_beta_product_identity
-    {δ : ℝ} (hδ : δ < 1) :
-    betaIntegral (((1 - δ : ℝ) : ℂ)) (((3 - δ : ℝ) : ℂ)) *
-      betaIntegral (((1 - δ : ℝ) : ℂ)) 2 =
+/-- After the exact inner simplex slice is inserted, the remaining outer integral
+is exactly the product `B(1-δ,3-δ) B(1-δ,2)`.  This is the second Beta factor in
+the raised-box Dirichlet majorant.  The separate Fubini/endpoint theorem that
+identifies the original nested simplex integral with this reduced outer integral
+is intentionally not asserted here. -/
+theorem outer_reduced_beta_product_identity (δ : ℝ) :
+    (∫ x in (0)..1,
+      ((x : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
+        (1 - (x : ℂ)) ^ ((((3 - δ : ℝ) : ℂ) - 1))) *
+        betaIntegral (((1 - δ : ℝ) : ℂ)) 2) =
       betaIntegral (((1 - δ : ℝ) : ℂ)) (((3 - δ : ℝ) : ℂ)) *
         betaIntegral (((1 - δ : ℝ) : ℂ)) 2 := by
+  rw [intervalIntegral.integral_mul_const]
   rfl
 
-/-- The inner Beta factor is in its convergent half-plane. -/
-theorem inner_beta_convergent
-    {δ : ℝ} (hδ : δ < 1) :
+/-- Convergence of the inner Beta integral for `δ < 1`. -/
+theorem inner_beta_convergent {δ : ℝ} (hδ : δ < 1) :
     IntervalIntegrable
       (fun x : ℝ =>
         (x : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
-          (((1 : ℂ) - x) ^ (((2 : ℂ) - 1))))
-      MeasureTheory.volume 0 1 :=
-  inner_simplex_slice_convergent hδ
-
-/-- The outer Beta factor is in its convergent half-plane. -/
-theorem outer_beta_convergent
-    {δ : ℝ} (hδ : δ < 1) :
-    IntervalIntegrable
-      (fun x : ℝ =>
-        (x : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
-          (((1 : ℂ) - x) ^ ((((3 - δ : ℝ) : ℂ) - 1))))
+          (1 - (x : ℂ)) ^ (((2 : ℂ) - 1)))
       MeasureTheory.volume 0 1 := by
-  simpa using betaIntegral_convergent (one_sub_delta_re_pos hδ) (three_sub_delta_re_pos hδ)
+  exact betaIntegral_convergent (one_sub_delta_re_pos hδ) (by norm_num)
+
+/-- Convergence of the outer Beta integral `B(1-δ,3-δ)`. -/
+theorem outer_beta_convergent {δ : ℝ} (hδ : δ < 1) :
+    IntervalIntegrable
+      (fun x : ℝ =>
+        (x : ℂ) ^ ((((1 - δ : ℝ) : ℂ) - 1)) *
+          (1 - (x : ℂ)) ^ ((((3 - δ : ℝ) : ℂ) - 1)))
+      MeasureTheory.volume 0 1 := by
+  exact betaIntegral_convergent
+    (one_sub_delta_re_pos hδ) (three_sub_delta_re_pos hδ)
 
 end GppRaisedBoxSimplexBetaLayer
 
