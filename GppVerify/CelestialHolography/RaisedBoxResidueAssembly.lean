@@ -137,7 +137,7 @@ theorem tendsto_mu4_rational_realGamma_of_simplex
     Tendsto (fun ε : ℝ => shiftFactor ε * I ε)
       (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds (-(1 / 6 : ℝ))) := by
   apply tendsto_shiftFactor_mul_of_scaledResidue
-    (tendsto_nhdsWithin_of_tendsto_nhds tendsto_id)
+    (tendsto_id.mono_left inf_le_left)
   exact tendsto_scaledRaisedBox_realGamma_of_simplex hI hsimplex
 
 /-- **Positive-regulator `mu^4` closure.**  Once the actual simplex DCT is proved on
@@ -150,7 +150,7 @@ theorem tendsto_mu4_rational_realGamma_pos_of_simplex
     Tendsto (fun ε : ℝ => shiftFactor ε * I ε)
       (𝓝[>] 0) (nhds (-(1 / 6 : ℝ))) := by
   exact tendsto_mu4_rational_of_gamma_simplex
-    (tendsto_nhdsWithin_of_tendsto_nhds tendsto_id) hI
+    (tendsto_id.mono_left inf_le_left) hI
     tendsto_mul_realGamma_zero_pos hsimplex
 
 /-- Concrete `mu^4` specialization: the only remaining hypothesis is the DCT
