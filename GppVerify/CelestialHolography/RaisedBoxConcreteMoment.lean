@@ -13,7 +13,7 @@ For Euclidean invariants `S,T > 0`, the raised massless scalar box in
   Q = S x1 x3 + T x2 x4,
   x4 = 1 - x1 - x2 - x3.
 
-This file introduces that exact affine nested-interval object.  The subsequent
+This file introduces that exact affine nested-interval object. The subsequent
 measure layer will prove `J_epsilon -> 1/6` by dominated convergence using the
 already-certified pointwise limit and one-channel majorant.
 -/
@@ -83,7 +83,7 @@ theorem integrand_tendsto_one
       (fun ε : ℝ => integrand ε S T x1 x2 x3)
       (nhds 0) (nhds 1) := by
   unfold integrand
-  exact GppRaisedBoxPointwiseLimit.rpow_neg_tendsto_one
+  exact GppRaisedBoxPointwiseLimit.tendsto_neg_rpow_one
     (Q_pos hS hT hx1 hx2 hx3 hxsum)
 
 /-- The abstract one-channel estimate specializes exactly to the concrete
