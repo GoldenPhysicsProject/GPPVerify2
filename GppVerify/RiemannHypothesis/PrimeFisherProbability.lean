@@ -1,4 +1,6 @@
 import GppVerify.RiemannHypothesis.PrimeFisherCountableGeometry
+import GppVerify.RiemannHypothesis.PrimeHankelAllOrderStrict
+import GppVerify.RiemannHypothesis.WeightedVarianceInfiniteStrict
 import Mathlib.Tactic
 
 /-!
@@ -23,6 +25,8 @@ open GppCountableFisherMomentLimit
 open GppPrimeFisherMomentSummability
 open GppPrimeHankelFisherSpecialization
 open GppPrimeFisherCountableGeometry
+open GppPrimeHankelAllOrderStrict
+open GppWeightedVarianceInfiniteStrict
 
 /-- Total mass of the arithmetic Fisher measure. -/
 noncomputable def primeFisherMass (beta : ℝ) : ℝ :=
@@ -35,6 +39,11 @@ noncomputable def primeFisherProbability (beta : ℝ) (n : ℕ) : ℝ :=
 /-- Expectation with respect to the normalized countable prime-Fisher ensemble. -/
 noncomputable def primeFisherExpectation (beta : ℝ) (f : ℕ → ℝ) : ℝ :=
   ∑' n : ℕ, primeFisherProbability beta n * f n
+
+/-- Normalized variance of the logarithmic energy observable. -/
+noncomputable def primeFisherLogVariance (beta : ℝ) : ℝ :=
+  primeFisherExpectation beta (fun n : ℕ => (Real.log n) ^ 2) -
+    (primeFisherExpectation beta (fun n : ℕ => Real.log n)) ^ 2
 
 /-- The total Fisher mass is strictly positive on the thermodynamic half-line. -/
 theorem primeFisherMass_pos {beta : ℝ} (hbeta : 1 < beta) :
@@ -83,6 +92,46 @@ theorem primeFisherExpectation_log_pow_eq_moment_div_mass
   intro n
   ring
 
+/-- The normalized logarithmic variance written directly in terms of the
+unnormalized Fisher moments is strictly positive for every `beta > 1`.
+The strictness is supplied by the two distinct positive prime-power support
+points `2` and `4`, through the general countable weighted-variance theorem. -/
+theorem primeFisher_normalized_log_variance_pos
+    {beta : ℝ} (hbeta : 1 < beta) :
+    0 < infiniteMoment (fisherWeight beta) Real.log 2 / primeFisherMass beta -
+      (infiniteMoment (fisherWeight beta) Real.log 1 / primeFisherMass beta) ^ 2 := by
+  have hW : Summable (fun n : ℕ => fisherWeight beta n) := by
+    simpa using summable_fisherWeight_mul_log_pow 0 hbeta
+  have hM : Summable (fun n : ℕ => fisherWeight beta n * Real.log n) := by
+    simpa using summable_fisherWeight_mul_log_pow 1 hbeta
+  have hQ : Summable (fun n : ℕ => fisherWeight beta n * (Real.log n) ^ 2) := by
+    simpa using summable_fisherWeight_mul_log_pow 2 hbeta
+  have hWpos : 0 < ∑' n : ℕ, fisherWeight beta n := by
+    rw [fisherWeight_tsum_eq_mass]
+    exact primeFisherMass_pos hbeta
+  have hw2 : 0 < fisherWeight beta 2 := by
+    simpa using (fisherWeight_two_pow_pos (β := beta) 0)
+  have hw4 : 0 < fisherWeight beta 4 := by
+    simpa using (fisherWeight_two_pow_pos (β := beta) 1)
+  have hlog : Real.log (2 : ℝ) ≠ Real.log (4 : ℝ) := by
+    exact ne_of_lt (Real.strictMonoOn_log (by norm_num) (by norm_num) (by norm_num))
+  have hvar := normalized_weighted_variance_pos_tsum
+    (fun n : ℕ => fisherWeight beta n) (fun n : ℕ => Real.log n)
+    (fisherWeight_nonneg beta) hW hM hQ hWpos hw2 hw4 (by simpa using hlog)
+  simpa [primeFisherMass, infiniteMoment] using hvar
+
+/-- **Strict normalized prime-Fisher fluctuation.**  The actual probability
+ensemble has positive variance in the logarithmic energy observable everywhere
+on the thermodynamic half-line `beta > 1`; it is never a delta distribution. -/
+theorem primeFisherLogVariance_pos {beta : ℝ} (hbeta : 1 < beta) :
+    0 < primeFisherLogVariance beta := by
+  have h2 := primeFisherExpectation_log_pow_eq_moment_div_mass 2 beta
+  have h1 := primeFisherExpectation_log_pow_eq_moment_div_mass 1 beta
+  simp only [pow_one] at h1
+  unfold primeFisherLogVariance
+  rw [h2, h1]
+  exact primeFisher_normalized_log_variance_pos hbeta
+
 end GppPrimeFisherProbability
 
 #print axioms GppPrimeFisherProbability.primeFisherMass_pos
@@ -90,3 +139,5 @@ end GppPrimeFisherProbability
 #print axioms GppPrimeFisherProbability.primeFisherProbability_tsum_eq_one
 #print axioms GppPrimeFisherProbability.summable_primeFisherProbability
 #print axioms GppPrimeFisherProbability.primeFisherExpectation_log_pow_eq_moment_div_mass
+#print axioms GppPrimeFisherProbability.primeFisher_normalized_log_variance_pos
+#print axioms GppPrimeFisherProbability.primeFisherLogVariance_pos
