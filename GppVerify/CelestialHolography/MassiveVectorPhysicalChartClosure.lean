@@ -34,13 +34,13 @@ theorem physicalDenominator_eq_zero_iff (r t : ℝ) :
   rw [one_sub_beta_mul_cosTheta]
   have hr : 1 + r ^ 2 ≠ 0 := by nlinarith [sq_nonneg r]
   have ht : 1 + t ^ 2 ≠ 0 := by nlinarith [sq_nonneg t]
-  rw [div_eq_zero_iff]
+  have hden : (1 + r ^ 2) * (1 + t ^ 2) ≠ 0 := mul_ne_zero hr ht
   constructor
   · intro h
-    rcases h with hnum | hden
-    · have hs : r ^ 2 + t ^ 2 = 0 := by nlinarith
-      constructor <;> nlinarith [sq_nonneg r, sq_nonneg t]
-    · exact False.elim ((mul_ne_zero hr ht) hden)
+    have hmul := congrArg (fun z : ℝ => z * ((1 + r ^ 2) * (1 + t ^ 2))) h
+    have hs : r ^ 2 + t ^ 2 = 0 := by
+      simpa [hden] using hmul
+    constructor <;> nlinarith [sq_nonneg r, sq_nonneg t]
   · rintro ⟨rfl, rfl⟩
     norm_num
 
