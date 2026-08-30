@@ -11,13 +11,6 @@ centered observables. Fourth-moment summability makes the corresponding
 probability-weighted square summable. Strict positivity is witnessed already by
 the first three states n=0,1,2: a nonzero quadratic score cannot vanish at the
 three distinct log-energies 0, log 2, log 3.
-
-Consequently the covariance matrix of (X,X^2) is positive definite, and the
-exact cumulant invariant
-
-  kappa_2*kappa_4 + 2*kappa_2^3 - kappa_3^2
-
-is strictly positive throughout the honest Gibbs half-line.
 -/
 
 namespace GppZetaGibbsTwoObservableStrict
@@ -28,28 +21,22 @@ open GppZetaGibbsFourthCumulant
 open GppZetaGibbsCumulantHierarchy
 open GppStrictQuadraticDeterminant
 
-/-- Normalized zeta Gibbs probability on n >= 0. -/
 noncomputable def gibbsProbability (beta : ℝ) (n : ℕ) : ℝ :=
   gibbsWeight beta n / Z beta
 
-/-- Centered log-energy observable. -/
 noncomputable def centeredLogEnergy (beta : ℝ) (n : ℕ) : ℝ :=
   logEnergy n - M1 beta / Z beta
 
-/-- Centered squared log-energy observable. -/
 noncomputable def centeredLogEnergySq (beta : ℝ) (n : ℕ) : ℝ :=
   (logEnergy n) ^ 2 - M2 beta / Z beta
 
-/-- Variance of the centered log-energy observable. -/
 noncomputable def centeredLogVariance (beta : ℝ) : ℝ :=
   ∑' n : ℕ, gibbsProbability beta n * (centeredLogEnergy beta n) ^ 2
 
-/-- Covariance of centered X and centered X^2. -/
 noncomputable def centeredLogSquareCovariance (beta : ℝ) : ℝ :=
   ∑' n : ℕ, gibbsProbability beta n *
     (centeredLogEnergy beta n * centeredLogEnergySq beta n)
 
-/-- Variance of the centered squared log-energy observable. -/
 noncomputable def centeredLogSquareVariance (beta : ℝ) : ℝ :=
   ∑' n : ℕ, gibbsProbability beta n * (centeredLogEnergySq beta n) ^ 2
 
@@ -236,17 +223,6 @@ theorem normalized_centered_quadratic_eq_covariance
     _ = centeredLogVariance beta * a ^ 2 +
         2 * centeredLogSquareCovariance beta * a * b +
         centeredLogSquareVariance beta * b ^ 2 := by ring
-
-/-- The centered variance is the existing zeta Gibbs variance. -/
-theorem centeredLogVariance_eq (beta : ℝ) :
-    centeredLogVariance beta = logEnergyVariance beta := by
-  unfold centeredLogVariance centeredLogEnergy gibbsProbability logEnergyVariance
-  unfold M1 M2 Z
-  have hZ : Z beta = ∑' n, gibbsWeight beta n := rfl
-  simp only [div_eq_mul_inv]
-  ring_nf
-  rw [← tsum_mul_left]
-  sorry
 
 /-- Strict positivity of the centered covariance determinant. -/
 theorem centeredCovarianceDet_pos {beta : ℝ} (hbeta : 1 < beta) :
