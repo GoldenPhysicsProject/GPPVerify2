@@ -78,11 +78,19 @@ theorem heatGaussian_le_inv_sq_eventually {t : ℝ} (ht : 0 < t) :
     nlinarith [mul_nonneg hlog0 (sub_nonneg.mpr hlog)]
   have hgauss :
       Real.exp (-(Real.log n) ^ 2 / (4 * t)) ≤ Real.exp (-2 * Real.log n) := by
-    exact Real.exp_le_exp.mpr (by linarith)
+    exact Real.exp_le_exp.mpr (by
+      simpa [neg_div] using (neg_le_neg hquad))
   have hexp_inv : Real.exp (-2 * Real.log n) = 1 / (n : ℝ) ^ 2 := by
-    rw [show -2 * Real.log n = -(Real.log n + Real.log n) by ring,
-      Real.exp_neg, Real.exp_add, Real.exp_log hnpos, Real.exp_log hnpos]
-    ring
+    calc
+      Real.exp (-2 * Real.log n) =
+          Real.exp (-Real.log n) * Real.exp (-Real.log n) := by
+            rw [show -2 * Real.log n = -Real.log n + -Real.log n by ring,
+              Real.exp_add]
+      _ = (Real.exp (Real.log n))⁻¹ * (Real.exp (Real.log n))⁻¹ := by
+            rw [Real.exp_neg, Real.exp_neg]
+      _ = 1 / (n : ℝ) ^ 2 := by
+            rw [Real.exp_log hnpos]
+            ring
   rwa [hexp_inv] at hgauss
 
 /-- The unnormalized heat summand is eventually dominated by the summable Dirichlet majorant. -/
@@ -100,7 +108,6 @@ theorem primeHeatCore_le_majorant_eventually {t : ℝ} (ht : 0 < t) :
     rw [div_le_iff₀ hsqrtpos]
     nlinarith
   have hgauss0 : 0 ≤ Real.exp (-(Real.log n) ^ 2 / (4 * t)) := Real.exp_nonneg _
-  have hinv0 : 0 ≤ 1 / (n : ℝ) ^ 2 := by positivity
   have hstep1 : primeHeatCore t n ≤
       ArithmeticFunction.vonMangoldt n * Real.exp (-(Real.log n) ^ 2 / (4 * t)) := by
     unfold primeHeatCore
@@ -123,8 +130,8 @@ theorem primeHeatCore_le_majorant_eventually {t : ℝ} (ht : 0 < t) :
 /-- The unnormalized prime heat series is absolutely summable for every `t > 0`. -/
 theorem summable_primeHeatCore {t : ℝ} (ht : 0 < t) :
     Summable (primeHeatCore t) :=
-  Summable.of_norm_bounded_eventually_nat summable_vonMangoldtDivSq
-    (primeHeatCore_le_majorant_eventually ht)
+  Summable.of_norm_bounded_eventually_nat (g := vonMangoldtDivSq)
+    summable_vonMangoldtDivSq (primeHeatCore_le_majorant_eventually ht)
 
 /-- The normalized causal/von-Mangoldt heat series is absolutely summable for every positive
 heat time. -/
@@ -137,7 +144,7 @@ theorem summable_normalizedPrimeHeatSummand {t : ℝ} (ht : 0 < t) :
     unfold normalizedPrimeHeatSummand heatKernelGaussian primeHeatCore
     ring
   rw [hconst]
-  exact hcore.const_mul _
+  exact Summable.mul_left _ hcore
 
 end GppCausalPrimeHeatSummability
 
