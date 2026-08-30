@@ -61,8 +61,9 @@ theorem wienerHopf_mul_mehlerFock_eq_gamma_product (lam : ℝ) :
   · subst lam
     simp [wienerHopfWeight, mehlerFockWeight]
   · apply wienerHopf_mul_mehlerFock_eq_gamma_product_of_sinh_ne_zero
-    rw [Real.sinh_ne_zero]
-    exact mul_ne_zero (ne_of_gt Real.pi_pos) hlam
+    have harg : Real.pi * lam ≠ 0 :=
+      mul_ne_zero (ne_of_gt Real.pi_pos) hlam
+    exact (Real.sinh_ne_zero).2 harg
 
 end GppMehlerFockGammaCollapsed
 
