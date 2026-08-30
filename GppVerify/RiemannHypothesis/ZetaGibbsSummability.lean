@@ -6,11 +6,10 @@ import Mathlib.Tactic
 /-!
 # Summability of the zeta Gibbs log moments
 
-For real `β > 1` the three real series needed for the Gibbs variance,
+For real `β > 1` the real series needed through fourth-order Gibbs fluctuation
+geometry,
 
-  (n+1)^(-β),
-  (n+1)^(-β) log(n+1),
-  (n+1)^(-β) log(n+1)^2,
+  (n+1)^(-β) log(n+1)^k,  k = 0,1,2,3,4,
 
 are summable. The logarithmically weighted cases are obtained from Mathlib's
 L-series abscissa machinery: multiplying coefficients by `log n` does not change
@@ -62,6 +61,39 @@ lemma real_log_sq_abscissa_le_one :
       simp
     _ ≤ 1 := constant_abscissa_le_one
 
+/-- The cubed real logarithm coefficient sequence has the same convergence boundary. -/
+lemma real_log_cube_abscissa_le_one :
+    LSeries.abscissaOfAbsConv (fun n : ℕ => (((Real.log n) ^ 3 : ℝ) : ℂ)) ≤ 1 := by
+  calc
+    LSeries.abscissaOfAbsConv (fun n : ℕ => (((Real.log n) ^ 3 : ℝ) : ℂ)) =
+        LSeries.abscissaOfAbsConv
+          (LSeries.logMul
+            (LSeries.logMul
+              (LSeries.logMul (fun _ : ℕ => (1 : ℂ))))) := by
+      apply LSeries.abscissaOfAbsConv_congr
+      intro n hn
+      simp [LSeries.logMul, Complex.natCast_log, pow_succ, pow_two] <;> ring
+    _ = LSeries.abscissaOfAbsConv (fun _ : ℕ => (1 : ℂ)) := by
+      simp
+    _ ≤ 1 := constant_abscissa_le_one
+
+/-- The fourth real logarithm coefficient sequence has the same convergence boundary. -/
+lemma real_log_fourth_abscissa_le_one :
+    LSeries.abscissaOfAbsConv (fun n : ℕ => (((Real.log n) ^ 4 : ℝ) : ℂ)) ≤ 1 := by
+  calc
+    LSeries.abscissaOfAbsConv (fun n : ℕ => (((Real.log n) ^ 4 : ℝ) : ℂ)) =
+        LSeries.abscissaOfAbsConv
+          (LSeries.logMul
+            (LSeries.logMul
+              (LSeries.logMul
+                (LSeries.logMul (fun _ : ℕ => (1 : ℂ)))))) := by
+      apply LSeries.abscissaOfAbsConv_congr
+      intro n hn
+      simp [LSeries.logMul, Complex.natCast_log, pow_succ, pow_two] <;> ring
+    _ = LSeries.abscissaOfAbsConv (fun _ : ℕ => (1 : ℂ)) := by
+      simp
+    _ ≤ 1 := constant_abscissa_le_one
+
 /-- The Gibbs partition-weight series is summable for `β > 1`. -/
 theorem summable_gibbsWeight {β : ℝ} (hβ : 1 < β) :
     Summable (gibbsWeight β) := by
@@ -89,6 +121,30 @@ theorem summable_gibbsWeight_mul_logEnergy_sq {β : ℝ} (hβ : 1 < β) :
   have habs : LSeries.abscissaOfAbsConv (fun n : ℕ => (((Real.log n) ^ 2 : ℝ) : ℂ)) < β :=
     real_log_sq_abscissa_le_one.trans_lt (by exact_mod_cast hβ)
   have hbase : Summable (fun n : ℕ => (Real.log n) ^ 2 / (n : ℝ) ^ β) :=
+    LSeries.summable_real_of_abscissaOfAbsConv_lt habs
+  have hshift := (_root_.summable_nat_add_iff 1).2 hbase
+  exact hshift.congr (fun n => by
+    simp [gibbsWeight, logEnergy, Nat.cast_add, Nat.cast_one, div_eq_mul_inv,
+      mul_comm])
+
+/-- The third log-energy moment is absolutely summable for `β > 1`. -/
+theorem summable_gibbsWeight_mul_logEnergy_cube {β : ℝ} (hβ : 1 < β) :
+    Summable (fun n => gibbsWeight β n * (logEnergy n) ^ 3) := by
+  have habs : LSeries.abscissaOfAbsConv (fun n : ℕ => (((Real.log n) ^ 3 : ℝ) : ℂ)) < β :=
+    real_log_cube_abscissa_le_one.trans_lt (by exact_mod_cast hβ)
+  have hbase : Summable (fun n : ℕ => (Real.log n) ^ 3 / (n : ℝ) ^ β) :=
+    LSeries.summable_real_of_abscissaOfAbsConv_lt habs
+  have hshift := (_root_.summable_nat_add_iff 1).2 hbase
+  exact hshift.congr (fun n => by
+    simp [gibbsWeight, logEnergy, Nat.cast_add, Nat.cast_one, div_eq_mul_inv,
+      mul_comm])
+
+/-- The fourth log-energy moment is absolutely summable for `β > 1`. -/
+theorem summable_gibbsWeight_mul_logEnergy_fourth {β : ℝ} (hβ : 1 < β) :
+    Summable (fun n => gibbsWeight β n * (logEnergy n) ^ 4) := by
+  have habs : LSeries.abscissaOfAbsConv (fun n : ℕ => (((Real.log n) ^ 4 : ℝ) : ℂ)) < β :=
+    real_log_fourth_abscissa_le_one.trans_lt (by exact_mod_cast hβ)
+  have hbase : Summable (fun n : ℕ => (Real.log n) ^ 4 / (n : ℝ) ^ β) :=
     LSeries.summable_real_of_abscissaOfAbsConv_lt habs
   have hshift := (_root_.summable_nat_add_iff 1).2 hbase
   exact hshift.congr (fun n => by
@@ -125,5 +181,7 @@ end GppZetaGibbsSummability
 #print axioms GppZetaGibbsSummability.summable_gibbsWeight
 #print axioms GppZetaGibbsSummability.summable_gibbsWeight_mul_logEnergy
 #print axioms GppZetaGibbsSummability.summable_gibbsWeight_mul_logEnergy_sq
+#print axioms GppZetaGibbsSummability.summable_gibbsWeight_mul_logEnergy_cube
+#print axioms GppZetaGibbsSummability.summable_gibbsWeight_mul_logEnergy_fourth
 #print axioms GppZetaGibbsSummability.gibbsWeight_tsum_pos
 #print axioms GppZetaGibbsSummability.gibbs_logEnergy_variance_nonneg
