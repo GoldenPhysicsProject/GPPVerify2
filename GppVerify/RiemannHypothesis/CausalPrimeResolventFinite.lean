@@ -74,8 +74,10 @@ theorem resolventWeight_mul_scalarHeatAnomaly
     resolventWeight p m * scalarHeatAnomaly t (repetitionLength p m) =
       Real.log p * p ^ (-(repetition m : ℝ) / 2) *
         heatKernelGaussian t (repetitionLength p m) := by
+  have hmNat : repetition m ≠ 0 := by
+    simp [repetition]
   have hm : (repetition m : ℝ) ≠ 0 := by
-    positivity
+    exact_mod_cast hmNat
   unfold resolventWeight scalarHeatAnomaly repetitionLength
   field_simp [hm]
   ring
