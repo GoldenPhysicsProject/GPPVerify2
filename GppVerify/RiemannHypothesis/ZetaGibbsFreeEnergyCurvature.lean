@@ -17,9 +17,9 @@ Differentiating once more gives the exact curvature identity
 
   F''(β) = -κ₂(β)/β - 2 S(β)/β^3.
 
-This is an exact fluctuation-geometric identity.  We deliberately assert no global
-sign for `F''`: the variance term is negative, while a sign for the entropy potential
-must be established separately rather than assumed from thermodynamic terminology.
+The entropy layer now proves `S(β) ≥ 0` directly from the normalized Gibbs structure,
+while strict Fisher positivity gives `κ₂(β) > 0`.  Hence the free-energy curvature is
+strictly negative throughout the honest Gibbs half-line `β > 1`.
 -/
 
 namespace GppZetaGibbsFreeEnergyCurvature
@@ -61,9 +61,7 @@ theorem deriv_freeEnergyBetaDerivative
   (hasDerivAt_freeEnergyBetaDerivative hβ).deriv
 
 /-- Clearing the positive-temperature denominator exposes the exact fluctuation
-balance behind the curvature: `β³ F'' = -β² κ₂ - 2S`.  This form is useful because
-it separates the strictly positive Fisher contribution from the entropy term without
-introducing any additional analytic assumptions. -/
+balance behind the curvature: `β³ F'' = -β² κ₂ - 2S`. -/
 theorem beta_cube_mul_deriv_freeEnergyBetaDerivative
     {β : ℝ} (hβ : 1 < β) :
     β ^ 3 * deriv freeEnergyBetaDerivative β =
@@ -75,8 +73,7 @@ theorem beta_cube_mul_deriv_freeEnergyBetaDerivative
 
 /-- If the Gibbs entropy potential is nonnegative at `β`, then the free-energy
 curvature is strictly negative there.  Strictness comes from the already-proved
-positive Fisher variance; entropy contributes only an additional nonpositive term.
-The entropy sign is kept explicit rather than assumed from terminology. -/
+positive Fisher variance; entropy contributes only an additional nonpositive term. -/
 theorem deriv_freeEnergyBetaDerivative_neg_of_entropy_nonneg
     {β : ℝ} (hβ : 1 < β) (hS : 0 ≤ zetaEntropy β) :
     deriv freeEnergyBetaDerivative β < 0 := by
@@ -89,6 +86,15 @@ theorem deriv_freeEnergyBetaDerivative_neg_of_entropy_nonneg
   have hsecond : 0 ≤ 2 * zetaEntropy β / β ^ 3 :=
     div_nonneg (mul_nonneg (by norm_num) hS) hβ3.le
   linarith
+
+/-- **Strict Gibbs free-energy concavity.**  On every `β > 1`, the entropy sign
+hypothesis is discharged by the countable Gibbs construction itself, so the free-energy
+curvature is unconditionally negative. -/
+theorem deriv_freeEnergyBetaDerivative_neg
+    {β : ℝ} (hβ : 1 < β) :
+    deriv freeEnergyBetaDerivative β < 0 := by
+  exact deriv_freeEnergyBetaDerivative_neg_of_entropy_nonneg hβ
+    (zetaEntropy_nonneg hβ)
 
 /-- The first derivative of the actual free energy is exactly the response whose
 curvature was computed above. -/
@@ -104,4 +110,5 @@ end GppZetaGibbsFreeEnergyCurvature
 #print axioms GppZetaGibbsFreeEnergyCurvature.deriv_freeEnergyBetaDerivative
 #print axioms GppZetaGibbsFreeEnergyCurvature.beta_cube_mul_deriv_freeEnergyBetaDerivative
 #print axioms GppZetaGibbsFreeEnergyCurvature.deriv_freeEnergyBetaDerivative_neg_of_entropy_nonneg
+#print axioms GppZetaGibbsFreeEnergyCurvature.deriv_freeEnergyBetaDerivative_neg
 #print axioms GppZetaGibbsFreeEnergyCurvature.deriv_zetaFreeEnergy_eq_freeEnergyBetaDerivative
