@@ -61,6 +61,11 @@ theorem abs_physical_structured_core_sub_D0_le
   have haLog := abs_log_a_sub_log_m_div_U_le
     hS hU hm hmS' hδ0 hδsmall hη0 hηsmall hκlo hκhi
     ha hκsq hη hκsqScale
+  have haLog' : |Real.log a - Real.log (m / U)| ≤
+      lowerLogError (4 * m / U) (m / S) := by
+    rw [GppScalarBoxRegulatorVanishing.lowerLogError_regulator_polynomial hS.ne' hU.ne']
+    rw [hδ, hη] at haLog
+    convert haLog using 1 <;> ring
   have htLog := abs_log_t_sub_log_m_div_S_le
     hS hm hδ0 hδsmall hη0 hηsmall hκlo hκhi
     hxlo hxhi hRlo hRhi hκsqScale hxsq hRsqScale hBdef hη ht
@@ -75,7 +80,7 @@ theorem abs_physical_structured_core_sub_D0_le
   have hE' : |specialRemainder a q t| ≤
       specialRemainderMajorant (m / U) (m / S) := by
     simpa [hρ, hη] using hE
-  exact abs_structuredScalarBoxCore_sub_D0_le hS hU hm haLog htLog' hE'
+  exact abs_structuredScalarBoxCore_sub_D0_le hS hU hm haLog' htLog' hE'
 
 end GppScalarBoxPhysicalCoreBound
 
