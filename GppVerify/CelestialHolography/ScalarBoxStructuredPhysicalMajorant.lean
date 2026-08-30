@@ -151,9 +151,10 @@ theorem tendsto_structuredPhysicalCoreMajorant_nhdsGT_zero
     simpa using hsum.add hspecial
   apply hall.congr'
   filter_upwards with m
+  unfold structuredPhysicalCoreMajorant
+  dsimp
   rw [lowerLogError_regulator_polynomial hS.ne' hU.ne']
   rw [poleLogError_regulator_polynomial hS.ne' hU.ne']
-  unfold structuredPhysicalCoreMajorant
   dsimp [A, B, C]
   ring
 
