@@ -53,6 +53,7 @@ import GppVerify.RiemannHypothesis.PrimeResponseTransferOperator
 
 -- Strict normalized prime-Fisher fluctuation geometry
 import GppVerify.RiemannHypothesis.PrimeFisherCenteredGeometry
+import GppVerify.RiemannHypothesis.PrimeFisherCenteredDeterminant
 
 -- Exact sech / Wiener-Hopf / Gamma chamber structure
 import GppVerify.RiemannHypothesis.SechSixthIntegral
