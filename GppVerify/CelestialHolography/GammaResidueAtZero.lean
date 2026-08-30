@@ -39,12 +39,12 @@ theorem tendsto_mul_realGamma_zero :
     hadd0.mono_left inf_le_left
   have hshift :
       Tendsto (fun ε : ℝ => Real.Gamma (ε + 1))
-        (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds 1) :=
-    continuousAt_realGamma_one.tendsto.comp hadd
+        (nhdsWithin 0 ({0} : Set ℝ)ᶜ) (nhds 1) := by
+    simpa [Function.comp_def] using continuousAt_realGamma_one.tendsto.comp hadd
   apply hshift.congr'
   filter_upwards [self_mem_nhdsWithin] with ε hε
   have hε0 : ε ≠ 0 := by simpa using hε
-  exact (Real.Gamma_add_one hε0).symm
+  exact Real.Gamma_add_one hε0
 
 /-- The same Gamma residue holds on the physically relevant positive-regulator
 neighborhood `ε → 0⁺`.  This removes a filter mismatch with the raised-box DCT,
