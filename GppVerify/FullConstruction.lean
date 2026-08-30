@@ -51,6 +51,9 @@ import GppVerify.RiemannHypothesis.LocalEulerShadowColligation
 import GppVerify.RiemannHypothesis.PrimeResponseContraction
 import GppVerify.RiemannHypothesis.PrimeResponseTransferOperator
 
+-- Strict normalized prime-Fisher fluctuation geometry
+import GppVerify.RiemannHypothesis.PrimeFisherCenteredGeometry
+
 -- Exact sech / Wiener-Hopf / Gamma chamber structure
 import GppVerify.RiemannHypothesis.SechSixthIntegral
 import GppVerify.CelestialHolography.WienerHopfGammaChamberPositiveFactor
