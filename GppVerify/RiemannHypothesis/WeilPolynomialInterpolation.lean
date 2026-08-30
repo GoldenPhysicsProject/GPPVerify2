@@ -95,7 +95,7 @@ theorem rh_of_testPos_seed_polynomialClosure
     {T : Type*} (coeff : T → ℂ → ℂ)
     (htestPos : ∀ S : Finset ℂ, ↑S ⊆ nontrivialZeros → ∀ f : T,
       0 ≤ (pairedForm zetaInvolution S (coeff f)).re)
-    (hseed : ∀ S : Finset ℂ, ↑S ⊆ nontrivialZeros,
+    (hseed : ∀ S : Finset ℂ, ↑S ⊆ nontrivialZeros →
       ∃ seed : T, ∀ z ∈ pairSupport zetaInvolution S, coeff seed z ≠ 0)
     (hpoly : ∀ seed : T, ∀ p : ℂ[X], ∃ f : T, ∀ z : ℂ,
       coeff f z = p.eval z * coeff seed z) :
