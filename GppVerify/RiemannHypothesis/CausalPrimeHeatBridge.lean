@@ -41,7 +41,6 @@ theorem log_primePow_eq_repetitionLength
       repetitionLength (p : ℝ) m := by
   unfold repetitionLength
   rw [Real.log_pow]
-  norm_cast
 
 /-- **Exact local causal/prime-heat bridge.** Each weighted causal repetition anomaly is
 literally the normalized von-Mangoldt heat summand of the corresponding prime power. -/
@@ -54,13 +53,10 @@ theorem weighted_causal_anomaly_eq_normalizedPrimeHeatSummand
     exact_mod_cast p.prop.pos
   rw [resolventWeight_mul_scalarHeatAnomaly_eq_sqrt_weight hpR]
   unfold normalizedPrimeHeatSummand
+  simp only [repetition]
   rw [GppVonMangoldtPrimePowerTower.vonMangoldt_prime_pow (p : ℕ) m p.prop]
-  rw [show repetition m = m + 1 by rfl]
   rw [Nat.cast_pow]
-  have hlog : Real.log ((p : ℕ) ^ (m + 1)) = repetitionLength (p : ℝ) m := by
-    simpa [repetition] using log_primePow_eq_repetitionLength p m
-  rw [hlog]
-  norm_cast
+  rw [log_primePow_eq_repetitionLength p m]
 
 /-- Finite repetition sums therefore coincide term-by-term with the corresponding finite
 prime-power heat tower. -/
