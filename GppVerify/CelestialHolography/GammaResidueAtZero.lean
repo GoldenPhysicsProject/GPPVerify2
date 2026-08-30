@@ -15,6 +15,7 @@ turns the residue limit into ordinary continuity of Gamma at `1`.
 namespace GppGammaResidueAtZero
 
 open Filter Set
+open scoped Topology
 
 /-- Real Gamma is continuous at `1`, as an immediate consequence of Mathlib's
 real differentiability theorem away from the nonpositive integer poles. -/
@@ -45,7 +46,20 @@ theorem tendsto_mul_realGamma_zero :
   have hε0 : ε ≠ 0 := by simpa using hε
   exact (Real.Gamma_add_one hε0).symm
 
+/-- The same Gamma residue holds on the physically relevant positive-regulator
+neighborhood `ε → 0⁺`.  This removes a filter mismatch with the raised-box DCT,
+whose one-channel majorant requires `0 ≤ ε`. -/
+theorem tendsto_mul_realGamma_zero_pos :
+    Tendsto (fun ε : ℝ => ε * Real.Gamma ε)
+      (𝓝[>] 0) (nhds 1) := by
+  apply tendsto_mul_realGamma_zero.mono_left
+  apply nhdsWithin_mono
+  intro ε hε
+  simp only [mem_compl_iff, mem_singleton_iff]
+  exact ne_of_gt hε
+
 end GppGammaResidueAtZero
 
 #print axioms GppGammaResidueAtZero.continuousAt_realGamma_one
 #print axioms GppGammaResidueAtZero.tendsto_mul_realGamma_zero
+#print axioms GppGammaResidueAtZero.tendsto_mul_realGamma_zero_pos
