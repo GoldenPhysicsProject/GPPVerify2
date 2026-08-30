@@ -45,7 +45,7 @@ theorem nestedSimplexIntegral_eq_reduced
   rw [Set.uIoc_of_le (by norm_num : (0 : ℝ) ≤ 1)] at hx
   by_cases hx1 : x = 1
   · subst x
-    have hne : ((((3 - δ : ℝ) : ℂ) - 1)) ≠ 0 := by
+    have hne : ((3 : ℂ) - (δ : ℂ) - 1) ≠ 0 := by
       intro h
       have hre := congrArg Complex.re h
       simp at hre
