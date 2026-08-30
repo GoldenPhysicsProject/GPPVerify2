@@ -32,6 +32,10 @@ noncomputable def primeFisherMass (beta : ℝ) : ℝ :=
 noncomputable def primeFisherProbability (beta : ℝ) (n : ℕ) : ℝ :=
   fisherWeight beta n / primeFisherMass beta
 
+/-- Expectation with respect to the normalized countable prime-Fisher ensemble. -/
+noncomputable def primeFisherExpectation (beta : ℝ) (f : ℕ → ℝ) : ℝ :=
+  ∑' n : ℕ, primeFisherProbability beta n * f n
+
 /-- The total Fisher mass is strictly positive on the thermodynamic half-line. -/
 theorem primeFisherMass_pos {beta : ℝ} (hbeta : 1 < beta) :
     0 < primeFisherMass beta := by
@@ -65,9 +69,24 @@ theorem summable_primeFisherProbability {beta : ℝ} (hbeta : 1 < beta) :
     simpa using summable_fisherWeight_mul_log_pow 0 hbeta
   simpa only [primeFisherProbability] using hs.div_const (primeFisherMass beta)
 
+/-- **Normalized raw-moment bridge.** Every logarithmic expectation under the
+prime-Fisher probability distribution is exactly the corresponding unnormalized
+countable Fisher moment divided by the total mass. This is the direct bridge from
+the existing Hankel/Fisher moment hierarchy to probability expectations. -/
+theorem primeFisherExpectation_log_pow_eq_moment_div_mass
+    (r : ℕ) (beta : ℝ) :
+    primeFisherExpectation beta (fun n : ℕ => (Real.log n) ^ r) =
+      infiniteMoment (fisherWeight beta) Real.log r / primeFisherMass beta := by
+  unfold primeFisherExpectation primeFisherProbability infiniteMoment
+  rw [← tsum_div_const]
+  apply tsum_congr
+  intro n
+  ring
+
 end GppPrimeFisherProbability
 
 #print axioms GppPrimeFisherProbability.primeFisherMass_pos
 #print axioms GppPrimeFisherProbability.primeFisherProbability_nonneg
 #print axioms GppPrimeFisherProbability.primeFisherProbability_tsum_eq_one
 #print axioms GppPrimeFisherProbability.summable_primeFisherProbability
+#print axioms GppPrimeFisherProbability.primeFisherExpectation_log_pow_eq_moment_div_mass
