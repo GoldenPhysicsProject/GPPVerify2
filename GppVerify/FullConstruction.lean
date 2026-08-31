@@ -56,10 +56,11 @@ import GppVerify.RiemannHypothesis.PrimeFisherCenteredGeometry
 import GppVerify.RiemannHypothesis.PrimeFisherCenteredDeterminant
 import GppVerify.RiemannHypothesis.ZetaGibbsCenteredMomentBridge
 
--- Exact sech / Wiener-Hopf / Gamma chamber structure
+-- Exact sech / Wiener-Hopf / Gamma / Mehler-Fock spectral structure
 import GppVerify.RiemannHypothesis.SechSixthIntegral
 import GppVerify.CelestialHolography.WienerHopfGammaChamberPositiveFactor
 import GppVerify.CelestialHolography.WienerHopfGammaChamberHierarchy
+import GppVerify.CelestialHolography.MehlerFockGammaCollapsedWeight
 
 -- Scalar-box regulator, simplex majorant closure, and physical convergence
 import GppVerify.CelestialHolography.RaisedBoxSimplexGammaClosure
