@@ -45,7 +45,7 @@ jobs:
       - name: Get Mathlib cache
         run: lake exe cache get || true
 
-      - name: Check changed Lean files
+      - name: Check changed Lean modules
         shell: bash
         run: |
           set -euo pipefail
@@ -64,8 +64,10 @@ jobs:
             printf 'Changed Lean files:\n%s\n' "${FILES[*]}"
             for file in "${FILES[@]}"; do
               [[ -f "$file" ]] || continue
-              echo "=== $file ==="
-              lake env lean "$file" 2>&1 | tee -a /tmp/build.log
+              module="${file%.lean}"
+              module="${module//\//.}"
+              echo "=== $module ==="
+              lake build "$module" 2>&1 | tee -a /tmp/build.log
             done
           fi
           if grep -F "declaration uses 'sorry'" /tmp/build.log; then
