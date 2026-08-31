@@ -12,7 +12,7 @@ The endpoint certificate `x ^ (-δ)` is interval-integrable for `δ < 1`, and
 
 has norm bounded by that endpoint singularity on `[0,1]`.  This file packages
 those two facts into the interval-integrability statement needed by the final
-nested Fubini/Tonelli and dominated-convergence layer.
+nested Fubini/Tonelli and dominated-convergence layer on the pinned Mathlib API.
 -/
 
 namespace GppRaisedBoxRealOuterIntegrability
@@ -39,7 +39,7 @@ theorem outer_kernel_intervalIntegrable {δ : ℝ} (hδ : δ < 1) :
 regulator-majorant hypotheses even though outer integrability itself only uses
 `δ < 1`. -/
 theorem outer_kernel_intervalIntegrable_physical
-    {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1) :
+    {δ : ℝ} (_hδ0 : 0 < δ) (hδ1 : δ < 1) :
     IntervalIntegrable
       (fun x : ℝ => x ^ (-δ : ℝ) * (1 - x) ^ (2 - δ : ℝ))
       volume 0 1 :=
