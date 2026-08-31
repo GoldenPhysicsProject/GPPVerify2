@@ -32,9 +32,16 @@ theorem gamma_product_eq_collapsedWeight (lam : ℝ) :
           Complex.Gamma (((1 : ℂ) / 2) - (lam : ℂ) * I)) =
       ((collapsedWeight lam : ℝ) : ℂ) := by
   rw [GppGammaHalfModulus.gamma_half_add_mul_gamma_half_sub]
-  norm_cast
-  unfold collapsedWeight
-  ring
+  have hreal :
+      lam ^ 2 * (Real.pi / Real.cosh (Real.pi * lam)) = collapsedWeight lam := by
+    unfold collapsedWeight
+    ring
+  calc
+    ((lam : ℂ) ^ 2) * (((Real.pi / Real.cosh (Real.pi * lam) : ℝ) : ℂ)) =
+        (((lam ^ 2 * (Real.pi / Real.cosh (Real.pi * lam)) : ℝ)) : ℂ) := by
+          norm_cast
+    _ = ((collapsedWeight lam : ℝ) : ℂ) :=
+      congrArg (fun r : ℝ => (r : ℂ)) hreal
 
 /-- Closed Wiener--Hopf / Mehler--Fock / Gamma bridge away from the origin. -/
 theorem wienerHopf_mul_mehlerFock_eq_gamma_product_of_sinh_ne_zero
