@@ -39,16 +39,17 @@ theorem outer_kernel_le_endpoint
     x ^ (-δ : ℝ) * (1 - x) ^ (2 - δ : ℝ) ≤ x ^ (-δ : ℝ) := by
   have hfac : (1 - x) ^ (2 - δ : ℝ) ≤ 1 :=
     post_middle_factor_le_one hδ hx0 hx1
-  have hxpow : 0 ≤ x ^ (-δ : ℝ) := by positivity
+  have hxpow : 0 ≤ x ^ (-δ : ℝ) := Real.rpow_nonneg hx0 (-δ)
   nlinarith
 
 /-- The outer real kernel is nonnegative on the unit interval. -/
 theorem outer_kernel_nonneg
     {δ x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1) :
     0 ≤ x ^ (-δ : ℝ) * (1 - x) ^ (2 - δ : ℝ) := by
-  have h1 : 0 ≤ x ^ (-δ : ℝ) := by positivity
-  have h2 : 0 ≤ (1 - x) ^ (2 - δ : ℝ) := by positivity
-  positivity
+  have hbase : 0 ≤ 1 - x := by linarith
+  have h1 : 0 ≤ x ^ (-δ : ℝ) := Real.rpow_nonneg hx0 (-δ)
+  have h2 : 0 ≤ (1 - x) ^ (2 - δ : ℝ) := Real.rpow_nonneg hbase (2 - δ)
+  exact mul_nonneg h1 h2
 
 /-- DCT-ready norm domination: on the unit interval the norm of the real outer
 kernel is bounded by the integrable endpoint singularity.  This is the exact
