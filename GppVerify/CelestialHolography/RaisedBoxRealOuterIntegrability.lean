@@ -23,7 +23,7 @@ open GppRaisedBoxRealMajorantIntegrability
 open GppRaisedBoxRealOuterDomination
 
 /-- The real outer Beta kernel left after the exact `x3` and `x2` integrations
-is Lebesgue interval-integrable throughout the physical range `δ < 1`. -/
+is Lebesgue interval-integrable throughout the range `δ < 1`. -/
 theorem outer_kernel_intervalIntegrable {δ : ℝ} (hδ : δ < 1) :
     IntervalIntegrable
       (fun x : ℝ => x ^ (-δ : ℝ) * (1 - x) ^ (2 - δ : ℝ))
@@ -35,6 +35,17 @@ theorem outer_kernel_intervalIntegrable {δ : ℝ} (hδ : δ < 1) :
       simpa [Set.uIoc_of_le (show (0 : ℝ) ≤ 1 by norm_num)] using hx
     exact norm_outer_kernel_le_endpoint hδ hx'.1.le hx'.2
 
+/-- Physical raised-box specialization.  The strict lower bound is part of the
+regulator-majorant hypotheses even though outer integrability itself only uses
+`δ < 1`. -/
+theorem outer_kernel_intervalIntegrable_physical
+    {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1) :
+    IntervalIntegrable
+      (fun x : ℝ => x ^ (-δ : ℝ) * (1 - x) ^ (2 - δ : ℝ))
+      volume 0 1 :=
+  outer_kernel_intervalIntegrable hδ1
+
 end GppRaisedBoxRealOuterIntegrability
 
 #print axioms GppRaisedBoxRealOuterIntegrability.outer_kernel_intervalIntegrable
+#print axioms GppRaisedBoxRealOuterIntegrability.outer_kernel_intervalIntegrable_physical
