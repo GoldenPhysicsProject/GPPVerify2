@@ -1,12 +1,7 @@
 name: Codex Gibbs differential thermodynamics
 
 on:
-  push:
-    branches:
-      - codex/lean-workbench
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 concurrency:
   group: codex-gibbs-differential-${{ github.ref }}
