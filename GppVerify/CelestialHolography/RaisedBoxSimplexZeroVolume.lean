@@ -20,12 +20,13 @@ open GppRaisedBoxSimplexGammaClosure
 theorem nestedSimplexIntegral_zero :
     nestedSimplexIntegral 0 = (1 / 6 : ℂ) := by
   rw [nestedSimplexIntegral_eq_gamma_ratio (by norm_num : (0 : ℝ) < 1)]
+  have h1raw := Complex.Gamma_nat_eq_factorial 0
+  have h4raw := Complex.Gamma_nat_eq_factorial 3
   have h1 : Gamma (1 : ℂ) = 1 := by
-    simpa using (Complex.Gamma_nat_eq_factorial 0)
+    convert h1raw using 1 <;> norm_num
   have h4 : Gamma (4 : ℂ) = 6 := by
-    simpa using (Complex.Gamma_nat_eq_factorial 3)
-  rw [h1, h4]
-  norm_num
+    convert h4raw using 1 <;> norm_num
+  norm_num [h1, h4]
 
 end GppRaisedBoxSimplexZeroVolume
 
