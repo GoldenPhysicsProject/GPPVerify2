@@ -55,6 +55,8 @@ import GppVerify.RiemannHypothesis.PrimeResponseTransferOperator
 -- Strict normalized prime-Fisher and zeta-Gibbs fluctuation geometry / thermodynamics
 import GppVerify.RiemannHypothesis.PrimeFisherCenteredGeometry
 import GppVerify.RiemannHypothesis.PrimeFisherCenteredDeterminant
+import GppVerify.RiemannHypothesis.TwoParameterFisherDeterminant
+import GppVerify.RiemannHypothesis.PrimeFisherTwoParameterStrict
 import GppVerify.RiemannHypothesis.ZetaGibbsCenteredMomentBridge
 import GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
 
