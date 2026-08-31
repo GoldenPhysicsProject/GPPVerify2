@@ -50,8 +50,18 @@ theorem outer_kernel_nonneg
   have h2 : 0 ≤ (1 - x) ^ (2 - δ : ℝ) := by positivity
   positivity
 
+/-- DCT-ready norm domination: on the unit interval the norm of the real outer
+kernel is bounded by the integrable endpoint singularity.  This is the exact
+shape required by `Integrable.mono'`/dominated-convergence packaging. -/
+theorem norm_outer_kernel_le_endpoint
+    {δ x : ℝ} (hδ : δ < 1) (hx0 : 0 ≤ x) (hx1 : x ≤ 1) :
+    ‖x ^ (-δ : ℝ) * (1 - x) ^ (2 - δ : ℝ)‖ ≤ x ^ (-δ : ℝ) := by
+  rw [Real.norm_eq_abs, abs_of_nonneg (outer_kernel_nonneg hx0 hx1)]
+  exact outer_kernel_le_endpoint hδ hx0 hx1
+
 end GppRaisedBoxRealOuterDomination
 
 #print axioms GppRaisedBoxRealOuterDomination.post_middle_factor_le_one
 #print axioms GppRaisedBoxRealOuterDomination.outer_kernel_le_endpoint
 #print axioms GppRaisedBoxRealOuterDomination.outer_kernel_nonneg
+#print axioms GppRaisedBoxRealOuterDomination.norm_outer_kernel_le_endpoint
