@@ -66,6 +66,7 @@ import GppVerify.CelestialHolography.MehlerFockGammaCollapsedWeight
 -- Scalar-box regulator, simplex majorant closure, and physical convergence
 import GppVerify.CelestialHolography.RaisedBoxSimplexGammaClosure
 import GppVerify.CelestialHolography.RaisedBoxConcreteVolumeClosure
+import GppVerify.CelestialHolography.RaisedBoxRealMajorantIntegrability
 import GppVerify.CelestialHolography.ScalarBoxRegulatorAlgebra
 import GppVerify.CelestialHolography.PositiveRegulatorEventuallySmall
 import GppVerify.CelestialHolography.ScalarBoxAutomaticRegulatorConvergence
