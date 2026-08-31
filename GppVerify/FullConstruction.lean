@@ -21,6 +21,7 @@ import GppVerify.NumberTheory.ShadowEulerFiniteCore
 import GppVerify.RiemannHypothesis.CelestialRiemannAffineBridge
 import GppVerify.CelestialHolography.PositiveRealPrincipalSeries
 import GppVerify.CelestialHolography.CompletedZetaPrincipalSeriesResponse
+import GppVerify.CelestialHolography.CompletedZetaDilationUnitaryBridge
 
 -- Global completion / logarithmic-derivative separation
 import GppVerify.RiemannHypothesis.GlobalCompletedFactorization
