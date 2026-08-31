@@ -51,16 +51,18 @@ import GppVerify.RiemannHypothesis.LocalEulerShadowColligation
 import GppVerify.RiemannHypothesis.PrimeResponseContraction
 import GppVerify.RiemannHypothesis.PrimeResponseTransferOperator
 
--- Strict normalized prime-Fisher fluctuation geometry
+-- Strict normalized prime-Fisher and zeta-Gibbs fluctuation geometry
 import GppVerify.RiemannHypothesis.PrimeFisherCenteredGeometry
 import GppVerify.RiemannHypothesis.PrimeFisherCenteredDeterminant
+import GppVerify.RiemannHypothesis.ZetaGibbsCenteredMomentBridge
 
 -- Exact sech / Wiener-Hopf / Gamma chamber structure
 import GppVerify.RiemannHypothesis.SechSixthIntegral
 import GppVerify.CelestialHolography.WienerHopfGammaChamberPositiveFactor
 import GppVerify.CelestialHolography.WienerHopfGammaChamberHierarchy
 
--- Scalar-box regulator and physical convergence
+-- Scalar-box regulator, simplex majorant closure, and physical convergence
+import GppVerify.CelestialHolography.RaisedBoxSimplexGammaClosure
 import GppVerify.CelestialHolography.ScalarBoxRegulatorAlgebra
 import GppVerify.CelestialHolography.PositiveRegulatorEventuallySmall
 import GppVerify.CelestialHolography.ScalarBoxAutomaticRegulatorConvergence
