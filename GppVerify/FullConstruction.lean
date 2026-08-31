@@ -51,10 +51,11 @@ import GppVerify.RiemannHypothesis.LocalEulerShadowColligation
 import GppVerify.RiemannHypothesis.PrimeResponseContraction
 import GppVerify.RiemannHypothesis.PrimeResponseTransferOperator
 
--- Strict normalized prime-Fisher and zeta-Gibbs fluctuation geometry
+-- Strict normalized prime-Fisher and zeta-Gibbs fluctuation geometry / thermodynamics
 import GppVerify.RiemannHypothesis.PrimeFisherCenteredGeometry
 import GppVerify.RiemannHypothesis.PrimeFisherCenteredDeterminant
 import GppVerify.RiemannHypothesis.ZetaGibbsCenteredMomentBridge
+import GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
 
 -- Exact sech / Wiener-Hopf / Gamma / Mehler-Fock spectral structure
 import GppVerify.RiemannHypothesis.SechSixthIntegral
