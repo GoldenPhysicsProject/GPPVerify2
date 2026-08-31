@@ -63,6 +63,7 @@ import GppVerify.CelestialHolography.WienerHopfGammaChamberHierarchy
 
 -- Scalar-box regulator, simplex majorant closure, and physical convergence
 import GppVerify.CelestialHolography.RaisedBoxSimplexGammaClosure
+import GppVerify.CelestialHolography.RaisedBoxConcreteVolumeClosure
 import GppVerify.CelestialHolography.ScalarBoxRegulatorAlgebra
 import GppVerify.CelestialHolography.PositiveRegulatorEventuallySmall
 import GppVerify.CelestialHolography.ScalarBoxAutomaticRegulatorConvergence
