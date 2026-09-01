@@ -25,6 +25,35 @@ open GppFiniteVandermondeExpansionKernel
 open GppFiniteMomentFactorization
 open GppFiniteFisherMomentBridge
 
+/-- Weighted form of the squared three-point Vandermonde expansion.  Writing
+all eighteen channels already in separable `(pᵢ xᵢ^a)(pⱼ xⱼ^b)(pₖ xₖ^c)`
+form lets the finite triple sums be collapsed by
+`triple_monomial_factorization` without commutative simp rearranging binders. -/
+theorem weighted_vandermonde_sq_expansion
+    (pi pj pk a b c : ℝ) :
+    pi * pj * pk * (((a - b) * (a - c) * (b - c)) ^ 2) =
+      (pi*a^4)*(pj*b^2)*(pk*c^0)
+      - 2*(pi*a^4)*(pj*b^1)*(pk*c^1)
+      + (pi*a^4)*(pj*b^0)*(pk*c^2)
+      - 2*(pi*a^3)*(pj*b^3)*(pk*c^0)
+      + 2*(pi*a^3)*(pj*b^2)*(pk*c^1)
+      + 2*(pi*a^3)*(pj*b^1)*(pk*c^2)
+      - 2*(pi*a^3)*(pj*b^0)*(pk*c^3)
+      + (pi*a^2)*(pj*b^4)*(pk*c^0)
+      + 2*(pi*a^2)*(pj*b^3)*(pk*c^1)
+      - 6*(pi*a^2)*(pj*b^2)*(pk*c^2)
+      + 2*(pi*a^2)*(pj*b^1)*(pk*c^3)
+      + (pi*a^2)*(pj*b^0)*(pk*c^4)
+      - 2*(pi*a^1)*(pj*b^4)*(pk*c^1)
+      + 2*(pi*a^1)*(pj*b^3)*(pk*c^2)
+      + 2*(pi*a^1)*(pj*b^2)*(pk*c^3)
+      - 2*(pi*a^1)*(pj*b^1)*(pk*c^4)
+      + (pi*a^0)*(pj*b^4)*(pk*c^2)
+      - 2*(pi*a^0)*(pj*b^3)*(pk*c^3)
+      + (pi*a^0)*(pj*b^2)*(pk*c^4) := by
+  rw [vandermonde_sq_expansion]
+  ring
+
 /-- The ordered finite Vandermonde energy equals the cubic raw-moment
 discriminant for arbitrary finite weighted support. No positivity or
 normalization assumption is required. -/
@@ -34,10 +63,11 @@ theorem orderedVandermondeEnergy_eq_momentDiscriminant
       momentDiscriminant
         (rawMoment p x 0) (rawMoment p x 1) (rawMoment p x 2)
         (rawMoment p x 3) (rawMoment p x 4) := by
-  unfold orderedVandermondeEnergy momentDiscriminant rawMoment
-  simp_rw [vandermonde_sq_expansion]
+  unfold orderedVandermondeEnergy momentDiscriminant
+  simp_rw [weighted_vandermonde_sq_expansion]
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib,
     Finset.sum_mul, Finset.mul_sum]
+  simp_rw [triple_monomial_factorization]
   ring
 
 /-- The total mass `m₀ = rawMoment p x 0` is nonnegative whenever all weights
@@ -125,6 +155,7 @@ theorem orderedVandermondeEnergy_eq_six_fisherDet
 
 end GppFiniteFisherVandermondeIdentity
 
+#print axioms GppFiniteFisherVandermondeIdentity.weighted_vandermonde_sq_expansion
 #print axioms GppFiniteFisherVandermondeIdentity.orderedVandermondeEnergy_eq_momentDiscriminant
 #print axioms GppFiniteFisherVandermondeIdentity.rawMoment_zero_nonneg
 #print axioms GppFiniteFisherVandermondeIdentity.rawMoment_zero_pos_of_witness
