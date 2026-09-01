@@ -25,32 +25,32 @@ open GppFiniteVandermondeExpansionKernel
 open GppFiniteMomentFactorization
 open GppFiniteFisherMomentBridge
 
-/-- Weighted form of the squared three-point Vandermonde expansion.  Writing
-all eighteen channels already in separable `(pᵢ xᵢ^a)(pⱼ xⱼ^b)(pₖ xₖ^c)`
-form lets the finite triple sums be collapsed by
-`triple_monomial_factorization` without commutative simp rearranging binders. -/
+/-- Weighted form of the squared three-point Vandermonde expansion, with every
+integer coefficient kept outside a separable triple monomial.  This form is
+chosen so `triple_monomial_factorization_smul` can collapse every channel
+without commutative simp rearranging finite-sum binders. -/
 theorem weighted_vandermonde_sq_expansion
     (pi pj pk a b c : ℝ) :
     pi * pj * pk * (((a - b) * (a - c) * (b - c)) ^ 2) =
-      (pi*a^4)*(pj*b^2)*(pk*c^0)
-      - 2*(pi*a^4)*(pj*b^1)*(pk*c^1)
-      + (pi*a^4)*(pj*b^0)*(pk*c^2)
-      - 2*(pi*a^3)*(pj*b^3)*(pk*c^0)
-      + 2*(pi*a^3)*(pj*b^2)*(pk*c^1)
-      + 2*(pi*a^3)*(pj*b^1)*(pk*c^2)
-      - 2*(pi*a^3)*(pj*b^0)*(pk*c^3)
-      + (pi*a^2)*(pj*b^4)*(pk*c^0)
-      + 2*(pi*a^2)*(pj*b^3)*(pk*c^1)
-      - 6*(pi*a^2)*(pj*b^2)*(pk*c^2)
-      + 2*(pi*a^2)*(pj*b^1)*(pk*c^3)
-      + (pi*a^2)*(pj*b^0)*(pk*c^4)
-      - 2*(pi*a^1)*(pj*b^4)*(pk*c^1)
-      + 2*(pi*a^1)*(pj*b^3)*(pk*c^2)
-      + 2*(pi*a^1)*(pj*b^2)*(pk*c^3)
-      - 2*(pi*a^1)*(pj*b^1)*(pk*c^4)
-      + (pi*a^0)*(pj*b^4)*(pk*c^2)
-      - 2*(pi*a^0)*(pj*b^3)*(pk*c^3)
-      + (pi*a^0)*(pj*b^2)*(pk*c^4) := by
+      1 * ((pi*a^4)*(pj*b^2)*(pk*c^0))
+      - 2 * ((pi*a^4)*(pj*b^1)*(pk*c^1))
+      + 1 * ((pi*a^4)*(pj*b^0)*(pk*c^2))
+      - 2 * ((pi*a^3)*(pj*b^3)*(pk*c^0))
+      + 2 * ((pi*a^3)*(pj*b^2)*(pk*c^1))
+      + 2 * ((pi*a^3)*(pj*b^1)*(pk*c^2))
+      - 2 * ((pi*a^3)*(pj*b^0)*(pk*c^3))
+      + 1 * ((pi*a^2)*(pj*b^4)*(pk*c^0))
+      + 2 * ((pi*a^2)*(pj*b^3)*(pk*c^1))
+      - 6 * ((pi*a^2)*(pj*b^2)*(pk*c^2))
+      + 2 * ((pi*a^2)*(pj*b^1)*(pk*c^3))
+      + 1 * ((pi*a^2)*(pj*b^0)*(pk*c^4))
+      - 2 * ((pi*a^1)*(pj*b^4)*(pk*c^1))
+      + 2 * ((pi*a^1)*(pj*b^3)*(pk*c^2))
+      + 2 * ((pi*a^1)*(pj*b^2)*(pk*c^3))
+      - 2 * ((pi*a^1)*(pj*b^1)*(pk*c^4))
+      + 1 * ((pi*a^0)*(pj*b^4)*(pk*c^2))
+      - 2 * ((pi*a^0)*(pj*b^3)*(pk*c^3))
+      + 1 * ((pi*a^0)*(pj*b^2)*(pk*c^4)) := by
   rw [vandermonde_sq_expansion]
   ring
 
@@ -65,9 +65,8 @@ theorem orderedVandermondeEnergy_eq_momentDiscriminant
         (rawMoment p x 3) (rawMoment p x 4) := by
   unfold orderedVandermondeEnergy momentDiscriminant
   simp_rw [weighted_vandermonde_sq_expansion]
-  simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib,
-    Finset.sum_mul, Finset.mul_sum]
-  simp_rw [triple_monomial_factorization]
+  simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib]
+  simp_rw [triple_monomial_factorization_smul]
   ring
 
 /-- The total mass `m₀ = rawMoment p x 0` is nonnegative whenever all weights
