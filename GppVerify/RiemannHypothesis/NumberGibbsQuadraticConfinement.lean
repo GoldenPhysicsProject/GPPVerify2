@@ -50,9 +50,10 @@ lemma eventually_numberGibbsWeight_le_gibbsWeight_two
   calc
     numberGibbsWeight β η n
         ≤ Real.exp (-2 * numberLogEnergy n) := by
-          unfold numberGibbsWeight
           apply Real.exp_le_exp.mpr
-          nlinarith
+          change -β * numberLogEnergy n - η * numberLogEnergy n ^ 2 ≤
+            -2 * numberLogEnergy n
+          nlinarith [hquad]
     _ = gibbsWeight 2 n := exp_zeta_eq_gibbsWeight 2 n
 
 /-- Any fixed logarithmic moment of the quadratically confined family is
@@ -67,9 +68,10 @@ lemma summable_numberGibbs_moment_of_quadratic
   have hp : 0 ≤ numberLogEnergy n ^ r :=
     pow_nonneg (numberLogEnergy_nonneg n) r
   have hm := mul_le_mul_of_nonneg_right hn hp
-  have hf : 0 ≤ numberGibbsWeight β η n * numberLogEnergy n ^ r :=
-    mul_nonneg (numberGibbsWeight_nonneg β η n) hp
-  simpa [Real.norm_eq_abs, abs_of_nonneg hf, numberLogEnergy, logEnergy] using hm
+  have hw : 0 ≤ numberGibbsWeight β η n := numberGibbsWeight_nonneg β η n
+  have hL : 0 ≤ numberLogEnergy n := numberLogEnergy_nonneg n
+  simpa [Real.norm_eq_abs, abs_of_nonneg hw, abs_of_nonneg hL,
+    numberLogEnergy, logEnergy] using hm
 
 /-- For every real `β` and every strictly positive quadratic confinement
 parameter `η`, the infinite mass-aware two-parameter number-Gibbs Fisher
