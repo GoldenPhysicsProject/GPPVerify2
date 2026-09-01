@@ -6,7 +6,7 @@ import Mathlib.Tactic
 # Zeta-half-plane summability wedge for the confined number-Gibbs family
 
 For `η ≥ 0`, the quadratic factor can only decrease
-`exp (-β log(n+1))`.  Hence the ordinary zeta-Gibbs moment estimates for
+`exp (-β log(n+1))`. Hence the ordinary zeta-Gibbs moment estimates for
 `β > 1` dominate all moments through order four, making the strict Fisher
 specialization unconditional on this half-plane.
 -/
@@ -36,6 +36,7 @@ lemma exp_zeta_eq_gibbsWeight (β : ℝ) (n : ℕ) :
     Real.exp (-β * numberLogEnergy n) = gibbsWeight β n := by
   unfold numberLogEnergy gibbsWeight
   have hx : 0 < (n + 1 : ℝ) := by positivity
+  simp only [Nat.cast_add, Nat.cast_one]
   rw [Real.rpow_def_of_pos hx, one_div, ← Real.exp_neg]
   congr 1
   ring
@@ -69,16 +70,22 @@ theorem numberGibbs_fisherNumerator_infinite_pos_of_one_lt_beta
       (infiniteMoment (numberGibbsWeight β η) numberLogEnergy 2)
       (infiniteMoment (numberGibbsWeight β η) numberLogEnergy 3)
       (infiniteMoment (numberGibbsWeight β η) numberLogEnergy 4) := by
+  have hz0 : Summable (fun n : ℕ => gibbsWeight β n * logEnergy n ^ 0) := by
+    simpa using summable_gibbsWeight hβ
+  have hz1 : Summable (fun n : ℕ => gibbsWeight β n * logEnergy n ^ 1) := by
+    simpa using summable_gibbsWeight_mul_logEnergy hβ
+  have hz2 : Summable (fun n : ℕ => gibbsWeight β n * logEnergy n ^ 2) :=
+    summable_gibbsWeight_mul_logEnergy_sq hβ
+  have hz3 : Summable (fun n : ℕ => gibbsWeight β n * logEnergy n ^ 3) :=
+    summable_gibbsWeight_mul_logEnergy_cube hβ
+  have hz4 : Summable (fun n : ℕ => gibbsWeight β n * logEnergy n ^ 4) :=
+    summable_gibbsWeight_mul_logEnergy_fourth hβ
   apply numberGibbs_fisherNumerator_infinite_pos β η
-  · exact summable_numberGibbs_moment_of_zeta β η 0 hη (summable_gibbsWeight hβ)
-  · exact summable_numberGibbs_moment_of_zeta β η 1 hη
-      (summable_gibbsWeight_mul_logEnergy hβ)
-  · exact summable_numberGibbs_moment_of_zeta β η 2 hη
-      (summable_gibbsWeight_mul_logEnergy_sq hβ)
-  · exact summable_numberGibbs_moment_of_zeta β η 3 hη
-      (summable_gibbsWeight_mul_logEnergy_cube hβ)
-  · exact summable_numberGibbs_moment_of_zeta β η 4 hη
-      (summable_gibbsWeight_mul_logEnergy_fourth hβ)
+  · exact summable_numberGibbs_moment_of_zeta β η 0 hη hz0
+  · exact summable_numberGibbs_moment_of_zeta β η 1 hη hz1
+  · exact summable_numberGibbs_moment_of_zeta β η 2 hη hz2
+  · exact summable_numberGibbs_moment_of_zeta β η 3 hη hz3
+  · exact summable_numberGibbs_moment_of_zeta β η 4 hη hz4
 
 end GppNumberGibbsTwoParameterZetaWedge
 
