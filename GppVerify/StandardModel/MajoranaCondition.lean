@@ -5,115 +5,71 @@ import Mathlib.Data.Matrix.Notation
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 /-!
-# Majorana Condition from T-Boundary
+# Majorana / orientation algebra: surviving exact layer
 
-Sources:
-- zitterbewegung_T_boundary_FINAL.tex: thm:majorana, cor:neutrino, pred:massless
-- twistor_googly_dtoupin_v81.tex: thm:majorana (Penrose-twistor version)
+Historical provenance:
+- `zitterbewegung_T_boundary_FINAL.tex`
+- `twistor_googly_dtoupin_v81.tex`
 
-The T-boundary in ONON cosmology is the time-reversal surface at t=0.
-Fermions satisfying the T-boundary condition ψ = Cψ̄ are Majorana fermions.
-This forces:
-1. Neutrinos are their own antiparticles (Majorana condition)
-2. Lightest neutrino is massless (no T-boundary mass term)
-3. Dark matter is mirror-image baryonic matter
+Chronology correction (2026-09-01): those manuscripts attempted to derive a
+chirality exchange from ordinary Wigner time reversal. That step is invalid:
+under Wigner `T`, both spin and momentum reverse, so helicity is preserved.
+Consequently the former `True := trivial` scaffolds asserting that a T-boundary
+forces Majorana neutrinos, a massless lightest neutrino, an inverted hierarchy,
+neutrino delocalisation, or mirror-baryon abundance have been removed rather
+than retained as fake Mathlib gaps.
+
+What survives here is finite-dimensional algebra plus the elementary Dirac
+zitterbewegung phase periodicity. No theorem below identifies celestial shadow,
+charge conjugation, parity, proper-time reversal, and Wigner time reversal.
 -/
 
 namespace GppMajorana
 
 /-! ## Basic field identities -/
 
-/-- The charge-conjugation epsilon matrix ε = [[0,1],[-1,0]]: for a
-    2-component (Weyl) spinor, charge conjugation acts as ψ ↦ ε ψ̄. This
-    is the same antisymmetric matrix as the Grassmannian chart transition
-    (`GrassmannianMass.lean`), the orientation map τ = Aε/det(A)
-    (`MassOrientationCoupling.lean`), and Wigner time reversal
-    T = iσ_y K (`HalfFlipProposition.lean`) -- one matrix, four readings. -/
+/-- The antisymmetric epsilon matrix `ε = [[0,1],[-1,0]]`.
+
+The same 2x2 matrix occurs in several constructions, but equality of matrix
+representatives does not identify the corresponding physical operations.
+Charge conjugation, the Grassmannian chart map, and the matrix part of Wigner
+`T` must retain their distinct conjugation/representation data. -/
 def epsilon : Matrix (Fin 2) (Fin 2) ℂ := !![0, 1; -1, 0]
 
-/-- Charge conjugation's matrix part satisfies ε² = -1: the finite
-    algebraic fact underlying "C² = -1 for Dirac spinors" (the full
-    statement also involves the antiunitary complex-conjugation factor,
-    not formalized here -- see `HalfFlipProposition.lean`'s treatment of
-    the analogous antiunitary structure for Wigner time reversal). -/
+/-- Exact finite-dimensional identity `ε² = -I`. -/
 theorem epsilon_sq : epsilon * epsilon = -1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp (config := { decide := true })
       [epsilon, Matrix.mul_apply, Fin.sum_univ_two, Matrix.neg_apply, Matrix.one_apply]
 
-/-- ε is invertible: det ε = 1 ≠ 0. -/
+/-- `ε` is invertible: `det ε = 1`. -/
 theorem epsilon_det : epsilon.det = 1 := by
   simp [epsilon, Matrix.det_fin_two_of]
 
-/-- Exact matrix component of charge-conjugation squaring: ε² = -I.
-The full antiunitary spinor statement additionally requires the conjugation
-operator and its interaction with the spinor representation; that stronger
-claim remains outside this theorem. -/
+/-- Legacy theorem name for the matrix component only.
+The full charge-conjugation operator includes conjugation and representation
+structure not formalized by this statement. -/
 theorem charge_conjugation_sq : epsilon * epsilon = -1 :=
   epsilon_sq
 
-/-- Majorana condition: ψ = Cψ̄ is self-consistent for Weyl spinors -/
-theorem majorana_self_consistency : True := trivial
--- SOURCE: zitterbewegung paper, thm:majorana
--- The T-boundary condition ψ|_{t=0} = ψ̄|_{t=0} forces ψ = Cψ̄.
--- MATHLIB GAP: Spinor bundles not in Mathlib 4.19.0.
+/-! ## Zitterbewegung arithmetic -/
 
-/-- Twistor version: Majorana condition from Penrose-Ward transform -/
-theorem majorana_from_penrose_ward : True := trivial
--- SOURCE: twistor_googly_dtoupin_v81.tex, thm:majorana
--- The twistor half-form ∧¹ condition on the googly line bundle forces
--- the Majorana condition. MATHLIB GAP: Twistor geometry not in Mathlib.
+/-- The standard free-Dirac zitterbewegung angular-frequency factor
+`ω = 2m` is positive for positive mass in natural units. -/
+theorem zitterbewegung_frequency (m : ℝ) (hm : 0 < m) : 2 * m > 0 := by
+  linarith
 
-/-! ## Neutrino physics predictions -/
-
-/-- Lightest neutrino is massless.
-    SOURCE: zitterbewegung paper, pred:massless.
-    ARGUMENT: The lightest neutrino has no T-boundary mass term because
-    no Majorana mass can be written without violating T-boundary symmetry.
-    The two heavier generations acquire Dirac masses from Yukawa couplings. -/
-theorem lightest_neutrino_massless : True := trivial
--- MATHLIB GAP: Yukawa coupling theory + T-boundary spectral analysis.
-
-/-- Inverted hierarchy from T-boundary: two massive, one massless -/
-theorem neutrino_inverted_hierarchy : True := trivial
--- SOURCE: zitterbewegung paper, cor:neutrino
--- MATHLIB GAP: Neutrino mass matrix spectral theory.
-
-/-- Neutrino delocalisation: ψ is supported across T-boundary -/
-theorem neutrino_delocalisation : True := trivial
--- SOURCE: zitterbewegung paper, cor:neutrino
--- ARGUMENT: The T-boundary Dirac equation has solutions extending
--- continuously across t=0. MATHLIB GAP: T-boundary PDE theory.
-
-/-! ## Mirror matter -/
-
-/-- T-image of baryon sector = mirror baryon sector -/
-theorem T_image_baryons : True := trivial
--- SOURCE: zitterbewegung paper, thm:dm-bound
--- ARGUMENT: T-reversal maps the pre-Big-Bang sector to the post-Big-Bang sector.
--- Mirror baryons are the T-image of ordinary baryons.
--- MATHLIB GAP: T-reversal operator on QFT Hilbert space.
-
-/-- Mirror baryon abundance ≥ ordinary baryon abundance -/
-theorem mirror_baryon_abundance : True := trivial
--- SOURCE: zitterbewegung paper, thm:dm-bound
--- The argument is: T-reflection is an isometry, so ρ_mirror ≥ ρ_baryon.
--- MATHLIB GAP: Cosmological Boltzmann equation not in Mathlib.
-
-/-! ## Zitterbewegung period -/
-
-/-- Zitterbewegung angular frequency ω = 2mc²/ℏ = 2m (natural units) -/
-theorem zitterbewegung_frequency (m : ℝ) (hm : 0 < m) : 2 * m > 0 := by linarith
-
-/-- Zitterbewegung period T_zbw = π/m (half-period = π/(2m)) -/
+/-- The corresponding period `π/m` is positive for positive mass. -/
 theorem zitterbewegung_period (m : ℝ) (hm : 0 < m) :
-    Real.pi / m > 0 := by positivity
+    Real.pi / m > 0 := by
+  positivity
 
-/-- The exact phase-return statement behind the T-boundary oscillation period:
-    for nonzero mass, the phase `exp(i * 2m t)` returns to one at `t = π/m`.
-    This retires the former `True := trivial` scaffold for the elementary
-    oscillatory core; no PDE or spinor-bundle claim is smuggled into it. -/
+/-- Exact phase return for the free-Dirac interference frequency:
+`exp(i * 2m * (π/m)) = 1` for nonzero mass.
+
+This proves only the elementary oscillatory identity. It does not identify the
+negative-energy component with a cosmological mirror sector. -/
 theorem T_boundary_oscillation_period (m : ℝ) (hm : m ≠ 0) :
     Complex.exp (((2 * m * (Real.pi / m) : ℝ) : ℂ) * Complex.I) = 1 := by
   have hphase : 2 * m * (Real.pi / m) = 2 * Real.pi := by
@@ -124,9 +80,7 @@ theorem T_boundary_oscillation_period (m : ℝ) (hm : m ≠ 0) :
 
 /-! ## Summary -/
 
-/-- Honest summary of the finite-dimensional algebra actually certified in this
-module.  The stronger Majorana/neutrino/cosmology statements above remain
-separate scaffolds until their spinor, PDE, and QFT infrastructure is built. -/
+/-- Honest summary of the finite-dimensional algebra certified here. -/
 theorem majorana_summary :
     epsilon * epsilon = -1 ∧ epsilon.det = 1 :=
   ⟨epsilon_sq, epsilon_det⟩
