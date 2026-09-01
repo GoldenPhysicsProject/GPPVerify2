@@ -18,6 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Source sorry gate
+        run: python3 scripts/check_sorries.py
+
       - name: Install elan
         run: |
           curl -sSfL https://github.com/leanprover/elan/releases/latest/download/elan-x86_64-unknown-linux-gnu.tar.gz | tar xz
@@ -44,7 +47,7 @@ jobs:
       - name: Full build
         run: set -o pipefail && lake build 2>&1 | tee /tmp/build.log
 
-      - name: Sorry gate
+      - name: Build-log sorry gate
         run: |
           if grep -F "declaration uses 'sorry'" /tmp/build.log; then
             echo "::error::A declaration uses 'sorry'."
