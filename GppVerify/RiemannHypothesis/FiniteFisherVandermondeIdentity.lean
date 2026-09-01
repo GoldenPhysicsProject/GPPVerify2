@@ -34,27 +34,11 @@ theorem orderedVandermondeEnergy_eq_momentDiscriminant
       momentDiscriminant
         (rawMoment p x 0) (rawMoment p x 1) (rawMoment p x 2)
         (rawMoment p x 3) (rawMoment p x 4) := by
-  let S : ℕ → ℕ → ℕ → ℝ := fun a b c =>
-    ∑ i : Fin n, ∑ j : Fin n, ∑ k : Fin n,
-      (p i * x i ^ a) * (p j * x j ^ b) * (p k * x k ^ c)
-  have hfac (a b c : ℕ) :
-      S a b c = rawMoment p x a * rawMoment p x b * rawMoment p x c := by
-    simpa [S] using triple_monomial_factorization p x a b c
-  have h024 := hfac 0 2 4
-  have h123 := hfac 1 2 3
-  have h222 := hfac 2 2 2
-  have h033 := hfac 0 3 3
-  have h114 := hfac 1 1 4
-  unfold orderedVandermondeEnergy momentDiscriminant
+  unfold orderedVandermondeEnergy momentDiscriminant rawMoment
   simp_rw [vandermonde_sq_expansion]
-  simp_rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
-  dsimp [S] at h024 h123 h222 h033 h114
-  -- After pointwise polynomial expansion, all nineteen monomials collapse by
-  -- permutation symmetry of the ordered triple sum to the five raw-moment
-  -- products above. `ring_nf` supplies only scalar normalization; the finite
-  -- moment factorization identities supply the substantive sum equalities.
-  ring_nf at h024 h123 h222 h033 h114 ⊢
-  linear_combination 6 * h024 + 12 * h123 - 6 * h222 - 6 * h033 - 6 * h114
+  simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib,
+    Finset.sum_mul, Finset.mul_sum]
+  ring
 
 /-- The total mass `m₀ = rawMoment p x 0` is nonnegative whenever all weights
 are nonnegative. -/
