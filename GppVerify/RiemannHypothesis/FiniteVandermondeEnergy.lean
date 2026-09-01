@@ -84,11 +84,14 @@ theorem weighted_vandermonde_sq_le_orderedVandermondeEnergy
         ∑ c : Fin n,
           p i * p j * p c *
             (((x i - x j) * (x i - x c) * (x j - x c)) ^ 2) := by
-    apply Finset.single_le_sum
-    · intro c hc
-      exact weighted_vandermonde_sq_nonneg
-        (p i) (p j) (p c) (x i) (x j) (x c) (hp i) (hp j) (hp c)
-    · exact Finset.mem_univ k
+    refine Finset.single_le_sum
+      (s := Finset.univ)
+      (f := fun c : Fin n =>
+        p i * p j * p c *
+          (((x i - x j) * (x i - x c) * (x j - x c)) ^ 2)) ?_ (Finset.mem_univ k)
+    intro c hc
+    exact weighted_vandermonde_sq_nonneg
+      (p i) (p j) (p c) (x i) (x j) (x c) (hp i) (hp j) (hp c)
   have hj :
       (∑ c : Fin n,
           p i * p j * p c *
@@ -96,13 +99,17 @@ theorem weighted_vandermonde_sq_le_orderedVandermondeEnergy
         ∑ b : Fin n, ∑ c : Fin n,
           p i * p b * p c *
             (((x i - x b) * (x i - x c) * (x b - x c)) ^ 2) := by
-    apply Finset.single_le_sum
-    · intro b hb
-      apply Finset.sum_nonneg
-      intro c hc
-      exact weighted_vandermonde_sq_nonneg
-        (p i) (p b) (p c) (x i) (x b) (x c) (hp i) (hp b) (hp c)
-    · exact Finset.mem_univ j
+    refine Finset.single_le_sum
+      (s := Finset.univ)
+      (f := fun b : Fin n =>
+        ∑ c : Fin n,
+          p i * p b * p c *
+            (((x i - x b) * (x i - x c) * (x b - x c)) ^ 2)) ?_ (Finset.mem_univ j)
+    intro b hb
+    apply Finset.sum_nonneg
+    intro c hc
+    exact weighted_vandermonde_sq_nonneg
+      (p i) (p b) (p c) (x i) (x b) (x c) (hp i) (hp b) (hp c)
   have hi :
       (∑ b : Fin n, ∑ c : Fin n,
           p i * p b * p c *
@@ -110,15 +117,19 @@ theorem weighted_vandermonde_sq_le_orderedVandermondeEnergy
         ∑ a : Fin n, ∑ b : Fin n, ∑ c : Fin n,
           p a * p b * p c *
             (((x a - x b) * (x a - x c) * (x b - x c)) ^ 2) := by
-    apply Finset.single_le_sum
-    · intro a ha
-      apply Finset.sum_nonneg
-      intro b hb
-      apply Finset.sum_nonneg
-      intro c hc
-      exact weighted_vandermonde_sq_nonneg
-        (p a) (p b) (p c) (x a) (x b) (x c) (hp a) (hp b) (hp c)
-    · exact Finset.mem_univ i
+    refine Finset.single_le_sum
+      (s := Finset.univ)
+      (f := fun a : Fin n =>
+        ∑ b : Fin n, ∑ c : Fin n,
+          p a * p b * p c *
+            (((x a - x b) * (x a - x c) * (x b - x c)) ^ 2)) ?_ (Finset.mem_univ i)
+    intro a ha
+    apply Finset.sum_nonneg
+    intro b hb
+    apply Finset.sum_nonneg
+    intro c hc
+    exact weighted_vandermonde_sq_nonneg
+      (p a) (p b) (p c) (x a) (x b) (x c) (hp a) (hp b) (hp c)
   exact hk.trans (hj.trans hi)
 
 /-- **Strict finite Vandermonde witness.** If all weights are nonnegative and
