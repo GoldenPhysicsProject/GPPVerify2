@@ -47,7 +47,7 @@ theorem orderedVandermondeEnergy_eq_momentDiscriminant
   have h114 := hfac 1 1 4
   unfold orderedVandermondeEnergy momentDiscriminant
   simp_rw [vandermonde_sq_expansion]
-  simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib]
+  simp_rw [Finset.sum_add_distrib, Finset.sum_sub_distrib]
   dsimp [S] at h024 h123 h222 h033 h114
   -- After pointwise polynomial expansion, all nineteen monomials collapse by
   -- permutation symmetry of the ordered triple sum to the five raw-moment
