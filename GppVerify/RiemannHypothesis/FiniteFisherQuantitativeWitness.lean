@@ -87,3 +87,5 @@ end GppFiniteFisherQuantitativeWitness
 #print axioms GppFiniteFisherQuantitativeWitness.weight_le_rawMoment_zero
 #print axioms GppFiniteFisherQuantitativeWitness.weighted_vandermonde_witness_le_six_fisherNumerator
 #print axioms GppFiniteFisherQuantitativeWitness.weighted_vandermonde_witness_div_six_le_fisherNumerator
+
+-- CI recheck marker after the pinned-Lean repair of `FiniteMomentFactorization`.
