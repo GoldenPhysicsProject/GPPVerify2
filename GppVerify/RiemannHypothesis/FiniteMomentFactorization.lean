@@ -23,7 +23,10 @@ theorem triple_monomial_factorization
       (p i * x i ^ a) * (p j * x j ^ b) * (p k * x k ^ c)) =
       rawMoment p x a * rawMoment p x b * rawMoment p x c := by
   unfold rawMoment
-  simp [Finset.sum_mul, Finset.mul_sum, mul_assoc, mul_left_comm, mul_comm]
+  -- Expand products of finite sums in their native ordered form.  Avoid
+  -- commutative simp lemmas here: under Lean 4.19 they can canonicalize the
+  -- two outer binders differently and leave a spurious `a`/`b` swap goal.
+  simp [Finset.sum_mul, Finset.mul_sum, mul_assoc]
 
 end GppFiniteMomentFactorization
 
