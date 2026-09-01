@@ -82,10 +82,40 @@ theorem weighted_vandermonde_witness_div_six_le_fisherNumerator
   have h := weighted_vandermonde_witness_le_six_fisherNumerator p x hp i j k
   nlinarith
 
+/-- A positive three-state witness at pairwise distinct observable values forces
+strict positivity of the complete finite Fisher numerator.  Unlike a bare
+strictness argument, this theorem factors through the quantitative lower bound
+above, so the same selected witness can later be kept fixed along an increasing
+sequence of finite truncations. -/
+theorem fisherNumerator_pos_of_positive_distinct_witness
+    {n : ℕ} (p x : Fin n → ℝ)
+    (hp : ∀ a, 0 ≤ p a) (i j k : Fin n)
+    (hpi : 0 < p i) (hpj : 0 < p j) (hpk : 0 < p k)
+    (hij : x i ≠ x j) (hik : x i ≠ x k) (hjk : x j ≠ x k) :
+    0 < fisherNumerator
+      (rawMoment p x 0) (rawMoment p x 1) (rawMoment p x 2)
+      (rawMoment p x 3) (rawMoment p x 4) := by
+  have hdij : x i - x j ≠ 0 := sub_ne_zero.mpr hij
+  have hdik : x i - x k ≠ 0 := sub_ne_zero.mpr hik
+  have hdjk : x j - x k ≠ 0 := sub_ne_zero.mpr hjk
+  have hv : (x i - x j) * (x i - x k) * (x j - x k) ≠ 0 :=
+    mul_ne_zero (mul_ne_zero hdij hdik) hdjk
+  have hsq :
+      0 < (((x i - x j) * (x i - x k) * (x j - x k)) ^ 2) :=
+    sq_pos_of_ne_zero hv
+  have hw :
+      0 < (p i *
+        (p i * p j * p k *
+          (((x i - x j) * (x i - x k) * (x j - x k)) ^ 2))) / 6 := by
+    positivity
+  exact lt_of_lt_of_le hw
+    (weighted_vandermonde_witness_div_six_le_fisherNumerator p x hp i j k)
+
 end GppFiniteFisherQuantitativeWitness
 
 #print axioms GppFiniteFisherQuantitativeWitness.weight_le_rawMoment_zero
 #print axioms GppFiniteFisherQuantitativeWitness.weighted_vandermonde_witness_le_six_fisherNumerator
 #print axioms GppFiniteFisherQuantitativeWitness.weighted_vandermonde_witness_div_six_le_fisherNumerator
+#print axioms GppFiniteFisherQuantitativeWitness.fisherNumerator_pos_of_positive_distinct_witness
 
 -- CI recheck marker after the pinned-Lean repair of `FiniteMomentFactorization`.
