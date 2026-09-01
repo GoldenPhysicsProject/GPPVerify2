@@ -23,10 +23,30 @@ theorem triple_monomial_factorization
       (p i * x i ^ a) * (p j * x j ^ b) * (p k * x k ^ c)) =
       rawMoment p x a * rawMoment p x b * rawMoment p x c := by
   unfold rawMoment
-  -- Expand products of finite sums in their native ordered form.  Avoid
-  -- commutative simp lemmas here: under Lean 4.19 they can canonicalize the
-  -- two outer binders differently and leave a spurious `a`/`b` swap goal.
-  simp [Finset.sum_mul, Finset.mul_sum, mul_assoc]
+  -- Collapse the three ordered sums one binder at a time.  This deliberately
+  -- avoids commutative simp normalization, which can permute the outer binders
+  -- under Lean 4.19 and leave a false-looking exponent-swap subgoal.
+  calc
+    (∑ i : Fin n, ∑ j : Fin n, ∑ k : Fin n,
+        (p i * x i ^ a) * (p j * x j ^ b) * (p k * x k ^ c)) =
+      ∑ i : Fin n, ∑ j : Fin n,
+        ((p i * x i ^ a) * (p j * x j ^ b)) *
+          (∑ k : Fin n, p k * x k ^ c) := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            apply Finset.sum_congr rfl
+            intro j hj
+            rw [Finset.mul_sum]
+    _ = ∑ i : Fin n,
+        ((p i * x i ^ a) * (∑ j : Fin n, p j * x j ^ b)) *
+          (∑ k : Fin n, p k * x k ^ c) := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            rw [← Finset.sum_mul, ← Finset.mul_sum]
+    _ = (∑ i : Fin n, p i * x i ^ a) *
+          (∑ j : Fin n, p j * x j ^ b) *
+          (∑ k : Fin n, p k * x k ^ c) := by
+            rw [← Finset.sum_mul, ← Finset.sum_mul]
 
 end GppFiniteMomentFactorization
 
