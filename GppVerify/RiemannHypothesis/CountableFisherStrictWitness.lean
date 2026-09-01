@@ -37,9 +37,8 @@ theorem fisherNumerator_infinite_ge_of_eventually_partial_ge
       (infiniteMoment w x 0) (infiniteMoment w x 1)
       (infiniteMoment w x 2) (infiniteMoment w x 3)
       (infiniteMoment w x 4) := by
-  apply le_of_tendsto
-    (fisherNumerator_partial_tendsto_infinite w x h0 h1 h2 h3 h4)
-  exact hge
+  exact ge_of_tendsto
+    (fisherNumerator_partial_tendsto_infinite w x h0 h1 h2 h3 h4) hge
 
 /-- A strictly positive eventual finite-prefix witness yields strict positivity
 of the countable mass-aware Fisher numerator. -/
