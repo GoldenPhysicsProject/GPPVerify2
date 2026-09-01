@@ -50,6 +50,20 @@ theorem rawMoment_zero_nonneg
   simp only [pow_zero, mul_one]
   exact Finset.sum_nonneg fun i _ => hp i
 
+/-- The total mass is strictly positive as soon as one finite-support weight is
+strictly positive. -/
+theorem rawMoment_zero_pos_of_witness
+    {n : ℕ} (p x : Fin n → ℝ)
+    (hp : ∀ i, 0 ≤ p i)
+    (i : Fin n) (hpi : 0 < p i) :
+    0 < rawMoment p x 0 := by
+  unfold rawMoment
+  simp only [pow_zero, mul_one]
+  apply Finset.sum_pos'
+  · intro a ha
+    exact hp a
+  · exact ⟨i, Finset.mem_univ i, hpi⟩
+
 /-- General finite-support Fisher positivity without a normalization
 assumption. For nonnegative weights, the division-free covariance determinant
 numerator is nonnegative.
@@ -70,6 +84,32 @@ theorem fisherNumerator_nonneg
   rw [← orderedVandermondeEnergy_eq_momentDiscriminant p x] at hbridge
   nlinarith [mul_nonneg hm0 hE]
 
+/-- **Strict finite-support Fisher positivity from one three-point witness.**
+For nonnegative weights, one ordered triple with positive weights and three
+pairwise distinct observable values makes the full mass-aware Fisher numerator
+strictly positive. This is the finite-prefix persistence theorem needed for a
+strict countable Fisher limit: once a prefix contains the witness, adding more
+nonnegative states cannot destroy strictness of the Vandermonde energy. -/
+theorem fisherNumerator_pos_of_witness
+    {n : ℕ} (p x : Fin n → ℝ)
+    (hp : ∀ a, 0 ≤ p a)
+    (i j k : Fin n)
+    (hpi : 0 < p i) (hpj : 0 < p j) (hpk : 0 < p k)
+    (hij : x i ≠ x j) (hik : x i ≠ x k) (hjk : x j ≠ x k) :
+    0 < fisherNumerator
+      (rawMoment p x 0) (rawMoment p x 1) (rawMoment p x 2)
+      (rawMoment p x 3) (rawMoment p x 4) := by
+  have hm0 : 0 < rawMoment p x 0 :=
+    rawMoment_zero_pos_of_witness p x hp i hpi
+  have hE : 0 < orderedVandermondeEnergy p x :=
+    orderedVandermondeEnergy_pos_of_witness p x hp i j k
+      hpi hpj hpk hij hik hjk
+  have hbridge := six_fisherNumerator_eq_mass_mul_momentDiscriminant
+    (rawMoment p x 0) (rawMoment p x 1) (rawMoment p x 2)
+    (rawMoment p x 3) (rawMoment p x 4)
+  rw [← orderedVandermondeEnergy_eq_momentDiscriminant p x] at hbridge
+  nlinarith [mul_pos hm0 hE]
+
 /-- For normalized finite weights, the ordered Vandermonde energy is exactly
 six times the Fisher covariance determinant. -/
 theorem orderedVandermondeEnergy_eq_six_fisherDet
@@ -86,5 +126,7 @@ end GppFiniteFisherVandermondeIdentity
 
 #print axioms GppFiniteFisherVandermondeIdentity.orderedVandermondeEnergy_eq_momentDiscriminant
 #print axioms GppFiniteFisherVandermondeIdentity.rawMoment_zero_nonneg
+#print axioms GppFiniteFisherVandermondeIdentity.rawMoment_zero_pos_of_witness
 #print axioms GppFiniteFisherVandermondeIdentity.fisherNumerator_nonneg
+#print axioms GppFiniteFisherVandermondeIdentity.fisherNumerator_pos_of_witness
 #print axioms GppFiniteFisherVandermondeIdentity.orderedVandermondeEnergy_eq_six_fisherDet
