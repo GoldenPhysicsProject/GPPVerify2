@@ -70,8 +70,10 @@ lemma summable_numberGibbs_moment_of_quadratic
   have hm := mul_le_mul_of_nonneg_right hn hp
   have hw : 0 ≤ numberGibbsWeight β η n := numberGibbsWeight_nonneg β η n
   have hL : 0 ≤ numberLogEnergy n := numberLogEnergy_nonneg n
-  simpa [Real.norm_eq_abs, abs_of_nonneg hw, abs_of_nonneg hL,
-    numberLogEnergy, logEnergy] using hm
+  have hlog : 0 ≤ Real.log ((n : ℝ) + 1) := by
+    simpa [numberLogEnergy] using hL
+  simpa [Real.norm_eq_abs, abs_of_nonneg hw, numberLogEnergy, logEnergy,
+    abs_of_nonneg hlog] using hm
 
 /-- For every real `β` and every strictly positive quadratic confinement
 parameter `η`, the infinite mass-aware two-parameter number-Gibbs Fisher
