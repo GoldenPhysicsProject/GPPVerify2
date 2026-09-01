@@ -6,7 +6,7 @@ import Mathlib.Tactic
 # Countable Fisher strict witness bridge
 
 This module packages the final topological step needed for strict countable
-Fisher positivity.  Once a fixed positive lower witness is known for all
+Fisher positivity. Once a fixed positive lower witness is known for all
 sufficiently large finite prefixes, convergence of the mass-aware Fisher
 numerator transfers that witness unchanged to the countable limit.
 
@@ -18,6 +18,7 @@ namespace GppCountableFisherStrictWitness
 
 open Filter
 open GppCountableFisherMomentLimit
+open GppFiniteFisherMomentBridge
 
 /-- Any eventual lower bound for the finite-prefix mass-aware Fisher numerator
 survives the countable moment limit. -/
@@ -65,7 +66,7 @@ theorem fisherNumerator_infinite_pos_of_eventually_partial_ge
 
 /-- The quantitative finite witness specializes directly to a `Finset.range N`
 truncation whenever the three selected natural-number states occur in that
-prefix.  This is the exact finite bookkeeping lemma needed for a fixed witness
+prefix. This is the exact finite bookkeeping lemma needed for a fixed witness
 in a countable model. -/
 theorem fixed_three_state_witness_le_partial_fisherNumerator
     (w x : ℕ → ℝ) (hw : ∀ n, 0 ≤ w n)
@@ -87,7 +88,7 @@ theorem fixed_three_state_witness_le_partial_fisherNumerator
   simpa only [GppCountableFisherMomentLimit.rawMoment_fin_eq_partialMoment] using h
 
 /-- A fixed three-state quantitative witness lower-bounds every sufficiently
-large prefix.  The witness constant does not decay with the truncation size. -/
+large prefix. The witness constant does not decay with the truncation size. -/
 theorem eventually_fixed_three_state_witness_le_partial_fisherNumerator
     (w x : ℕ → ℝ) (hw : ∀ n, 0 ≤ w n) (i j k : ℕ) :
     ∀ᶠ N : ℕ in atTop,
@@ -100,14 +101,18 @@ theorem eventually_fixed_three_state_witness_le_partial_fisherNumerator
           (partialMoment w x 4 N) := by
   filter_upwards [eventually_ge_atTop (Nat.succ (max i (max j k)))] with N hN
   apply fixed_three_state_witness_le_partial_fisherNumerator w x hw
-  · omega
-  · omega
-  · omega
+  · exact lt_of_lt_of_le (Nat.lt_succ_of_le (Nat.le_max_left i (max j k))) hN
+  · exact lt_of_lt_of_le
+      (Nat.lt_succ_of_le
+        (le_trans (Nat.le_max_left j k) (Nat.le_max_right i (max j k)))) hN
+  · exact lt_of_lt_of_le
+      (Nat.lt_succ_of_le
+        (le_trans (Nat.le_max_right j k) (Nat.le_max_right i (max j k)))) hN
 
 /-- **Fixed-witness countable strictness.** One positive three-state witness at
 pairwise distinct observable values, together with summability of raw moments
 through order four, forces strict positivity of the countable mass-aware Fisher
-numerator.  No prefix normalization and no separate eventual-bound hypothesis
+numerator. No prefix normalization and no separate eventual-bound hypothesis
 are needed. -/
 theorem fisherNumerator_infinite_pos_of_fixed_positive_distinct_witness
     (w x : ℕ → ℝ) (hw : ∀ n, 0 ≤ w n) (i j k : ℕ)
