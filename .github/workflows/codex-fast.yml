@@ -5,6 +5,7 @@ on:
     branches: ["codex/lean-workbench"]
     paths:
       - 'GppVerify/**/*.lean'
+      - 'scripts/check_sorries.py'
       - 'lakefile.toml'
       - 'lean-toolchain'
       - '.github/workflows/codex-fast.yml'
@@ -21,6 +22,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
+
+      - name: Source sorry gate
+        run: python3 scripts/check_sorries.py
 
       - name: Install elan
         run: |
@@ -59,16 +63,16 @@ jobs:
             mapfile -t FILES < <(git diff --name-only "$BEFORE" "$GITHUB_SHA" -- 'GppVerify/**/*.lean')
             if ((${#FILES[@]} == 0)); then
               echo 'No Lean source changed.'
-              exit 0
+            else
+              printf 'Changed Lean files:\n%s\n' "${FILES[*]}"
+              for file in "${FILES[@]}"; do
+                [[ -f "$file" ]] || continue
+                module="${file%.lean}"
+                module="${module//\//.}"
+                echo "=== $module ==="
+                lake build "$module" 2>&1 | tee -a /tmp/build.log
+              done
             fi
-            printf 'Changed Lean files:\n%s\n' "${FILES[*]}"
-            for file in "${FILES[@]}"; do
-              [[ -f "$file" ]] || continue
-              module="${file%.lean}"
-              module="${module//\//.}"
-              echo "=== $module ==="
-              lake build "$module" 2>&1 | tee -a /tmp/build.log
-            done
           fi
           if grep -F "declaration uses 'sorry'" /tmp/build.log; then
             echo "::error::A changed declaration uses 'sorry'."
