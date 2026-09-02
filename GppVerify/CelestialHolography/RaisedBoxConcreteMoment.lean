@@ -1,6 +1,7 @@
 import GppVerify.CelestialHolography.RaisedBoxPointwiseLimit
 import GppVerify.CelestialHolography.RaisedBoxSimplexMajorantAlgebra
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.Tactic
 
 /-!
@@ -79,6 +80,29 @@ theorem stripIntegrand_measurable (ε S T x1 : ℝ) :
   exact (integrand_measurable_x2_x3 ε S T x1).indicator
     (measurableSet_innerSimplexStrip x1)
 
+/-- Product integration turns the jointly measurable strip integrand into a
+strongly measurable function of the remaining middle coordinate.  This is the
+parameter-measurability input required by the middle dominated-convergence
+step, obtained without treating the variable endpoint as a primitive. -/
+theorem stripInnerIntegral_stronglyMeasurable (ε S T x1 : ℝ) :
+    StronglyMeasurable
+      (fun x2 : ℝ =>
+        ∫ x3 : ℝ,
+          ((innerSimplexStrip x1).indicator
+            (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) (x2, x3)) := by
+  exact
+    (stripIntegrand_measurable ε S T x1).stronglyMeasurable.integral_prod_right'
+
+/-- In particular, the parameterized inner strip integral is Borel measurable
+in the middle simplex coordinate. -/
+theorem stripInnerIntegral_measurable (ε S T x1 : ℝ) :
+    Measurable
+      (fun x2 : ℝ =>
+        ∫ x3 : ℝ,
+          ((innerSimplexStrip x1).indicator
+            (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) (x2, x3)) := by
+  exact (stripInnerIntegral_stronglyMeasurable ε S T x1).measurable
+
 /-- Standard affine volume of the three-simplex, written in the same iterated
 coordinates used by the physical Feynman parameter integral. -/
 noncomputable def simplexVolume : ℝ :=
@@ -154,6 +178,8 @@ end GppRaisedBoxConcreteMoment
 #print axioms GppRaisedBoxConcreteMoment.integrand_measurable_x2_x3
 #print axioms GppRaisedBoxConcreteMoment.measurableSet_innerSimplexStrip
 #print axioms GppRaisedBoxConcreteMoment.stripIntegrand_measurable
+#print axioms GppRaisedBoxConcreteMoment.stripInnerIntegral_stronglyMeasurable
+#print axioms GppRaisedBoxConcreteMoment.stripInnerIntegral_measurable
 #print axioms GppRaisedBoxConcreteMoment.simplexMoment_zero
 #print axioms GppRaisedBoxConcreteMoment.Q_pos
 #print axioms GppRaisedBoxConcreteMoment.integrand_tendsto_one
