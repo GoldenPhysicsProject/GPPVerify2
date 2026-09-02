@@ -33,6 +33,39 @@ theorem stripInnerIntegral_eq_IccIndicatorIntegral
   filter_upwards [] with x3
   exact stripIntegrand_section_eq_Icc_indicator ε S T x1 x2 x3
 
+/-- On the middle simplex range, the measurable closed-interval indicator
+integral is exactly the oriented interval integral used in the original nested
+raised-box moment.  The only endpoint difference is the null singleton at
+`x3 = 0`, discharged by Mathlib's `integral_Icc_eq_integral_Ioc`. -/
+theorem IccIndicatorIntegral_eq_intervalIntegral
+    (ε S T x1 x2 : ℝ)
+    (hx2 : x2 ∈ Set.Icc (0 : ℝ) (1 - x1)) :
+    (∫ x3 : ℝ,
+      (Set.Icc (0 : ℝ) (1 - x1 - x2)).indicator
+        (fun y : ℝ => integrand ε S T x1 x2 y) x3) =
+    ∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2), integrand ε S T x1 x2 x3 := by
+  have hle : (0 : ℝ) ≤ 1 - x1 - x2 := by
+    rcases hx2 with ⟨_, hx2hi⟩
+    linarith
+  rw [MeasureTheory.integral_indicator measurableSet_Icc]
+  rw [MeasureTheory.integral_Icc_eq_integral_Ioc]
+  rw [← intervalIntegral.integral_of_le hle]
+
+/-- Combining the measurable strip representation with the endpoint-null
+conversion gives the exact variable-endpoint inner integral used by the middle
+DCT. -/
+theorem stripInnerIntegral_eq_intervalIntegral
+    (ε S T x1 x2 : ℝ)
+    (hx2 : x2 ∈ Set.Icc (0 : ℝ) (1 - x1)) :
+    (∫ x3 : ℝ,
+      ((innerSimplexStrip x1).indicator
+        (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) (x2, x3)) =
+    ∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2), integrand ε S T x1 x2 x3 := by
+  rw [stripInnerIntegral_eq_IccIndicatorIntegral]
+  exact IccIndicatorIntegral_eq_intervalIntegral ε S T x1 x2 hx2
+
 end GppRaisedBoxStripIntegralBridge
 
 #print axioms GppRaisedBoxStripIntegralBridge.stripInnerIntegral_eq_IccIndicatorIntegral
+#print axioms GppRaisedBoxStripIntegralBridge.IccIndicatorIntegral_eq_intervalIntegral
+#print axioms GppRaisedBoxStripIntegralBridge.stripInnerIntegral_eq_intervalIntegral
