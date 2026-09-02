@@ -93,6 +93,35 @@ theorem stripInnerIntegral_stronglyMeasurable (ε S T x1 : ℝ) :
   exact
     (stripIntegrand_measurable ε S T x1).stronglyMeasurable.integral_prod_right'
 
+/-- At fixed middle coordinate `x2`, the measurable two-dimensional affine strip
+is exactly the closed interval `0 ≤ x3 ≤ 1 - x1 - x2` in the innermost
+coordinate.  This pointwise section identity is the bridge between the Fubini
+strip representation and the original variable-endpoint interval integral. -/
+theorem stripIntegrand_section_eq_Icc_indicator
+    (ε S T x1 x2 x3 : ℝ) :
+    ((innerSimplexStrip x1).indicator
+      (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) (x2, x3) =
+      (Set.Icc (0 : ℝ) (1 - x1 - x2)).indicator
+        (fun y : ℝ => integrand ε S T x1 x2 y) x3 := by
+  by_cases hstrip : (x2, x3) ∈ innerSimplexStrip x1
+  · have hstrip' : 0 ≤ x3 ∧ x2 + x3 ≤ 1 - x1 := by
+      simpa [innerSimplexStrip] using hstrip
+    have hx3 : x3 ∈ Set.Icc (0 : ℝ) (1 - x1 - x2) := by
+      constructor
+      · exact hstrip'.1
+      · linarith [hstrip'.2]
+    simp [Set.indicator_of_mem hstrip, Set.indicator_of_mem hx3]
+  · have hx3 : x3 ∉ Set.Icc (0 : ℝ) (1 - x1 - x2) := by
+      intro hx3
+      apply hstrip
+      have hx3' : 0 ≤ x3 ∧ x3 ≤ 1 - x1 - x2 := by
+        simpa only [Set.mem_Icc] using hx3
+      simp only [innerSimplexStrip, Set.mem_setOf_eq]
+      constructor
+      · exact hx3'.1
+      · linarith [hx3'.2]
+    simp [Set.indicator_of_not_mem hstrip, Set.indicator_of_not_mem hx3]
+
 /-- Standard affine volume of the three-simplex, written in the same iterated
 coordinates used by the physical Feynman parameter integral. -/
 noncomputable def simplexVolume : ℝ :=
@@ -169,6 +198,7 @@ end GppRaisedBoxConcreteMoment
 #print axioms GppRaisedBoxConcreteMoment.measurableSet_innerSimplexStrip
 #print axioms GppRaisedBoxConcreteMoment.stripIntegrand_measurable
 #print axioms GppRaisedBoxConcreteMoment.stripInnerIntegral_stronglyMeasurable
+#print axioms GppRaisedBoxConcreteMoment.stripIntegrand_section_eq_Icc_indicator
 #print axioms GppRaisedBoxConcreteMoment.simplexMoment_zero
 #print axioms GppRaisedBoxConcreteMoment.Q_pos
 #print axioms GppRaisedBoxConcreteMoment.integrand_tendsto_one
