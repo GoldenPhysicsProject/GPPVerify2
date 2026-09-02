@@ -1,10 +1,11 @@
 import GppVerify.CelestialHolography.RaisedBoxStripIntegralBridge
 import GppVerify.CelestialHolography.RaisedBoxInnerDCT
 import GppVerify.CelestialHolography.RaisedBoxRealMajorantSliceIntegral
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.Tactic
 
 /-!
-# Raised-box middle-coordinate measurability
+# Raised-box middle-coordinate measurability and dominated convergence
 
 The measurable product-strip representation gives strong measurability of the
 innermost integral as a function of `x2`.  On the physical middle simplex range,
@@ -13,14 +14,15 @@ transfers the product-measure certificate to the interval-integral function used
 by the second dominated-convergence step.
 
 It also packages the norm of that inner integral under the same one-channel
-majorant used in the certified inner DCT.  This is the direct domination
-interface needed by the middle dominated-convergence theorem.
+majorant used in the certified inner DCT and then performs the middle-coordinate
+DCT.  For fixed `x1 > 0`, the explicit slice majorant is bounded by a constant,
+so no additional endpoint-singular integrability theorem is needed at this stage.
 -/
 
 namespace GppRaisedBoxMiddleMeasurability
 
 open Filter Set MeasureTheory
-open scoped Interval
+open scoped Interval Topology
 open GppRaisedBoxConcreteMoment
 open GppRaisedBoxStripIntegralBridge
 open GppRaisedBoxRealMajorantSlice
@@ -115,8 +117,86 @@ theorem intervalInnerIntegral_norm_le_explicitMajorant
       rw [integral_channel_zero_to hδ1 hS.le hx1.le hL]
       simp
 
+/-- For fixed `x1` in the strict simplex interior, the explicit middle majorant
+is bounded by an `x2`-independent constant.  This removes all middle-coordinate
+integrability bookkeeping from the second DCT; the only singular dependence is
+in `x1`, which is handled by the outer layer. -/
+theorem intervalInnerIntegral_norm_le_middleConstant
+    {δ ε S T x1 x2 : ℝ}
+    (hδ0 : 0 < δ) (hδ1 : δ < 1)
+    (hε0 : 0 ≤ ε) (hεδ : ε ≤ δ)
+    (hS : 0 < S) (hT : 0 < T)
+    (hx1 : 0 < x1) (hx2 : 0 ≤ x2) (hx12 : x1 + x2 ≤ 1) :
+    ‖∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+        integrand ε S T x1 x2 x3‖ ≤
+      1 + (S * x1) ^ (-δ : ℝ) / (1 - δ) := by
+  have hL0 : 0 ≤ 1 - x1 - x2 := by linarith
+  have hL1 : 1 - x1 - x2 ≤ 1 := by linarith
+  have hexp0 : 0 ≤ 1 - δ := by linarith
+  have hrpow : (1 - x1 - x2) ^ (1 - δ : ℝ) ≤ 1 := by
+    exact Real.rpow_le_one hL0 hL1 hexp0
+  have hcoeff : 0 ≤ (S * x1) ^ (-δ : ℝ) :=
+    Real.rpow_nonneg (mul_nonneg hS.le hx1.le) _
+  have hden : 0 < 1 - δ := by linarith
+  have hbase := intervalInnerIntegral_norm_le_explicitMajorant
+    hδ0 hδ1 hε0 hεδ hS hT hx1 hx2 hx12
+  calc
+    ‖∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+        integrand ε S T x1 x2 x3‖ ≤
+      (1 - x1 - x2) +
+        (S * x1) ^ (-δ : ℝ) *
+          ((1 - x1 - x2) ^ (1 - δ : ℝ) / (1 - δ)) := hbase
+    _ ≤ 1 + (S * x1) ^ (-δ : ℝ) * (1 / (1 - δ)) := by
+      gcongr
+    _ = 1 + (S * x1) ^ (-δ : ℝ) / (1 - δ) := by
+      rw [div_eq_mul_inv]
+
+/-- Second dominated-convergence step for the raised scalar box.  For a fixed
+strict `x1` slice, regulator removal commutes with the `x2` integration. -/
+theorem middle_interval_tendsto_inner_one
+    {δ S T x1 : ℝ}
+    (hδ0 : 0 < δ) (hδ1 : δ < 1)
+    (hS : 0 < S) (hT : 0 < T)
+    (hx1 : 0 < x1) (hx1lt : x1 < 1) :
+    Tendsto
+      (fun ε : ℝ =>
+        ∫ x2 : ℝ in (0 : ℝ)..(1 - x1),
+          ∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+            integrand ε S T x1 x2 x3)
+      (𝓝[Set.Icc 0 δ] 0)
+      (nhds
+        (∫ x2 : ℝ in (0 : ℝ)..(1 - x1),
+          ∫ _x3 : ℝ in (0 : ℝ)..(1 - x1 - x2), (1 : ℝ))) := by
+  have hL : 0 < 1 - x1 := by linarith
+  have hMeas :
+      ∀ᶠ ε : ℝ in 𝓝[Set.Icc 0 δ] 0,
+        AEStronglyMeasurable
+          (fun x2 : ℝ =>
+            ∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+              integrand ε S T x1 x2 x3)
+          (volume.restrict (Set.uIoc (0 : ℝ) (1 - x1))) := by
+    filter_upwards with ε
+    exact intervalInnerIntegral_aestronglyMeasurable hx1lt.le
+  apply intervalIntegral.tendsto_integral_filter_of_dominated_convergence
+    (bound := fun _x2 : ℝ => 1 + (S * x1) ^ (-δ : ℝ) / (1 - δ))
+  · exact hMeas
+  · filter_upwards [self_mem_nhdsWithin] with ε hε
+    refine Filter.Eventually.of_forall ?_
+    intro x2
+    intro hx2mem
+    rw [Set.uIoc_of_le hL.le] at hx2mem
+    exact intervalInnerIntegral_norm_le_middleConstant
+      hδ0 hδ1 hε.1 hε.2 hS hT hx1 hx2mem.1.le (by linarith)
+  · exact intervalIntegrable_const
+  · filter_upwards [ae_restrict_mem measurableSet_uIoc] with x2 hx2mem
+    rw [Set.uIoc_of_le hL.le] at hx2mem
+    exact GppRaisedBoxInnerDCT.inner_interval_tendsto_one
+      hδ0 hδ1 hS hT hx1 hx2mem.1 (by linarith)
+
 end GppRaisedBoxMiddleMeasurability
 
 #print axioms GppRaisedBoxMiddleMeasurability.intervalInnerIntegral_aestronglyMeasurable
 #print axioms GppRaisedBoxMiddleMeasurability.intervalInnerIntegral_norm_le_integratedMajorant
 #print axioms GppRaisedBoxMiddleMeasurability.intervalInnerIntegral_norm_le_explicitMajorant
+#print axioms GppRaisedBoxMiddleMeasurability.intervalInnerIntegral_norm_le_middleConstant
+#print axioms GppRaisedBoxMiddleMeasurability.middle_interval_tendsto_inner_one
