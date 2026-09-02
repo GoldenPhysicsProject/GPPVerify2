@@ -50,7 +50,7 @@ theorem inner_interval_tendsto_one
       (fun x3 : ℝ => 1 + (S * x1 * x3) ^ (-δ : ℝ))
       volume 0 (1 - x1 - x2) := by
     exact intervalIntegrable_const.add
-      (channel_inner_intervalIntegrable hδ1 hS.le hx1.le)
+      (channel_inner_intervalIntegrable hδ1 hS.le hx1.le hL.le)
   apply intervalIntegral.tendsto_integral_filter_of_dominated_convergence
     (bound := fun x3 : ℝ => 1 + (S * x1 * x3) ^ (-δ : ℝ))
   · exact hMeas
