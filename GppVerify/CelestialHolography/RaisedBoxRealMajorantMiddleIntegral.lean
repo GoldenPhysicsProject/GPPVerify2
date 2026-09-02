@@ -38,7 +38,21 @@ theorem integral_affine_post_inner_of_delta_lt_one
       L ^ (2 - δ : ℝ) / (2 - δ) :=
   integral_affine_post_inner (by linarith)
 
+/-- After the exact `x3` integration, the channel coefficient `(S*x1)^(-δ)`
+is constant in the middle variable and therefore survives unchanged through
+the `x2` integration.  This packages the singular part of the two-step
+majorant into the exact form needed by the outer DCT layer. -/
+theorem integral_scaled_affine_post_inner
+    {δ S x1 L : ℝ} (hδ : δ < 1) :
+    (∫ x : ℝ in 0..L,
+        (S * x1) ^ (-δ : ℝ) * (L - x) ^ (1 - δ : ℝ)) =
+      (S * x1) ^ (-δ : ℝ) *
+        (L ^ (2 - δ : ℝ) / (2 - δ)) := by
+  rw [intervalIntegral.integral_const_mul]
+  rw [integral_affine_post_inner_of_delta_lt_one hδ]
+
 end GppRaisedBoxRealMajorantMiddleIntegral
 
 #print axioms GppRaisedBoxRealMajorantMiddleIntegral.integral_affine_post_inner
 #print axioms GppRaisedBoxRealMajorantMiddleIntegral.integral_affine_post_inner_of_delta_lt_one
+#print axioms GppRaisedBoxRealMajorantMiddleIntegral.integral_scaled_affine_post_inner
