@@ -35,7 +35,7 @@ theorem intervalInnerIntegral_aestronglyMeasurable
     {ε S T x1 : ℝ} (hx1 : x1 ≤ 1) :
     AEStronglyMeasurable
       (fun x2 : ℝ =>
-        ∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+        ∫ x3 in (0 : ℝ)..(1 - x1 - x2),
           integrand ε S T x1 x2 x3)
       (volume.restrict (Set.uIoc (0 : ℝ) (1 - x1))) := by
   have hstrip :
@@ -61,9 +61,9 @@ theorem intervalInnerIntegral_norm_le_integratedMajorant
     (hε0 : 0 ≤ ε) (hεδ : ε ≤ δ)
     (hS : 0 < S) (hT : 0 < T)
     (hx1 : 0 < x1) (hx2 : 0 ≤ x2) (hx12 : x1 + x2 ≤ 1) :
-    ‖∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+    ‖∫ x3 in (0 : ℝ)..(1 - x1 - x2),
         integrand ε S T x1 x2 x3‖ ≤
-      ∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+      ∫ x3 in (0 : ℝ)..(1 - x1 - x2),
         (1 + (S * x1 * x3) ^ (-δ : ℝ)) := by
   have hL : 0 ≤ 1 - x1 - x2 := by linarith
   have hMajInt : IntervalIntegrable
@@ -96,16 +96,16 @@ theorem intervalInnerIntegral_norm_le_explicitMajorant
     (hε0 : 0 ≤ ε) (hεδ : ε ≤ δ)
     (hS : 0 < S) (hT : 0 < T)
     (hx1 : 0 < x1) (hx2 : 0 ≤ x2) (hx12 : x1 + x2 ≤ 1) :
-    ‖∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+    ‖∫ x3 in (0 : ℝ)..(1 - x1 - x2),
         integrand ε S T x1 x2 x3‖ ≤
       (1 - x1 - x2) +
         (S * x1) ^ (-δ : ℝ) *
           ((1 - x1 - x2) ^ (1 - δ : ℝ) / (1 - δ)) := by
   have hL : 0 ≤ 1 - x1 - x2 := by linarith
   calc
-    ‖∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+    ‖∫ x3 in (0 : ℝ)..(1 - x1 - x2),
         integrand ε S T x1 x2 x3‖ ≤
-        ∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+        ∫ x3 in (0 : ℝ)..(1 - x1 - x2),
           (1 + (S * x1 * x3) ^ (-δ : ℝ)) :=
       intervalInnerIntegral_norm_le_integratedMajorant
         hδ0 hδ1 hε0 hεδ hS hT hx1 hx2 hx12
@@ -127,7 +127,7 @@ theorem intervalInnerIntegral_norm_le_middleConstant
     (hε0 : 0 ≤ ε) (hεδ : ε ≤ δ)
     (hS : 0 < S) (hT : 0 < T)
     (hx1 : 0 < x1) (hx2 : 0 ≤ x2) (hx12 : x1 + x2 ≤ 1) :
-    ‖∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+    ‖∫ x3 in (0 : ℝ)..(1 - x1 - x2),
         integrand ε S T x1 x2 x3‖ ≤
       1 + (S * x1) ^ (-δ : ℝ) / (1 - δ) := by
   have hL0 : 0 ≤ 1 - x1 - x2 := by linarith
@@ -141,7 +141,7 @@ theorem intervalInnerIntegral_norm_le_middleConstant
   have hbase := intervalInnerIntegral_norm_le_explicitMajorant
     hδ0 hδ1 hε0 hεδ hS hT hx1 hx2 hx12
   calc
-    ‖∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+    ‖∫ x3 in (0 : ℝ)..(1 - x1 - x2),
         integrand ε S T x1 x2 x3‖ ≤
       (1 - x1 - x2) +
         (S * x1) ^ (-δ : ℝ) *
@@ -160,19 +160,19 @@ theorem middle_interval_tendsto_inner_one
     (hx1 : 0 < x1) (hx1lt : x1 < 1) :
     Tendsto
       (fun ε : ℝ =>
-        ∫ x2 : ℝ in (0 : ℝ)..(1 - x1),
-          ∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+        ∫ x2 in (0 : ℝ)..(1 - x1),
+          ∫ x3 in (0 : ℝ)..(1 - x1 - x2),
             integrand ε S T x1 x2 x3)
       (𝓝[Set.Icc 0 δ] 0)
       (nhds
-        (∫ x2 : ℝ in (0 : ℝ)..(1 - x1),
-          ∫ _x3 : ℝ in (0 : ℝ)..(1 - x1 - x2), (1 : ℝ))) := by
+        (∫ x2 in (0 : ℝ)..(1 - x1),
+          ∫ _x3 in (0 : ℝ)..(1 - x1 - x2), (1 : ℝ))) := by
   have hL : 0 < 1 - x1 := by linarith
   have hMeas :
       ∀ᶠ ε : ℝ in 𝓝[Set.Icc 0 δ] 0,
         AEStronglyMeasurable
           (fun x2 : ℝ =>
-            ∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
+            ∫ x3 in (0 : ℝ)..(1 - x1 - x2),
               integrand ε S T x1 x2 x3)
           (volume.restrict (Set.uIoc (0 : ℝ) (1 - x1))) := by
     filter_upwards with ε
