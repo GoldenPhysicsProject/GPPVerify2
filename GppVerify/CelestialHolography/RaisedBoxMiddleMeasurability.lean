@@ -28,7 +28,13 @@ theorem intervalInnerIntegral_aestronglyMeasurable
         ∫ x3 : ℝ in (0 : ℝ)..(1 - x1 - x2),
           integrand ε S T x1 x2 x3)
       (volume.restrict (Set.uIoc (0 : ℝ) (1 - x1))) := by
-  have hstrip :=
+  have hstrip :
+      AEStronglyMeasurable
+        (fun x2 : ℝ =>
+          ∫ x3 : ℝ,
+            ((innerSimplexStrip x1).indicator
+              (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) (x2, x3))
+        (volume.restrict (Set.uIoc (0 : ℝ) (1 - x1))) :=
     (stripInnerIntegral_stronglyMeasurable ε S T x1).aestronglyMeasurable.restrict
   apply hstrip.congr
   filter_upwards [ae_restrict_mem measurableSet_uIoc] with x2 hx2
