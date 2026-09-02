@@ -1,6 +1,6 @@
 import GppVerify.CelestialHolography.RaisedBoxConcreteMoment
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
-import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+import Mathlib.MeasureTheory.Measure.Typeclasses.NoAtoms
 import Mathlib.Tactic
 
 /-!
@@ -10,7 +10,7 @@ The scalar-box proof is organized as nested interval dominated convergence.
 At the innermost stage, for fixed strict-interior `x₁,x₂`, the only point of
 `Ioc 0 (1-x₁-x₂)` where strict simplex interior can fail is the upper endpoint.
 Lebesgue measure is nonatomic, so that single endpoint may be discarded almost
-everywhere.  This file packages exactly the AE pointwise-convergence hypothesis
+everywhere. This file packages exactly the AE pointwise-convergence hypothesis
 needed by the first interval-DCT step.
 -/
 
@@ -31,7 +31,9 @@ theorem integrand_tendsto_one_ae_inner
       x3 ∈ Set.Ioc (0 : ℝ) (1 - x1 - x2) →
         Tendsto (fun ε : ℝ => integrand ε S T x1 x2 x3)
           (nhds 0) (nhds 1) := by
-  filter_upwards [Measure.ae_ne volume (1 - x1 - x2)] with x3 hx3ne
+  have hne : ∀ᵐ x3 : ℝ ∂volume, x3 ≠ 1 - x1 - x2 := by
+    simpa using (Set.countable_singleton (1 - x1 - x2)).ae_not_mem volume
+  filter_upwards [hne] with x3 hx3ne
   intro hx3mem
   have hx3pos : 0 < x3 := hx3mem.1
   have hx3lt : x3 < 1 - x1 - x2 := lt_of_le_of_ne hx3mem.2 hx3ne
