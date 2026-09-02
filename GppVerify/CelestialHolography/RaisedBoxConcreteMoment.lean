@@ -34,6 +34,16 @@ def Q (S T x1 x2 x3 : ℝ) : ℝ :=
 noncomputable def integrand (ε S T x1 x2 x3 : ℝ) : ℝ :=
   (Q S T x1 x2 x3) ^ (-ε : ℝ)
 
+/-- For fixed external parameters the concrete real-power integrand is Borel
+measurable in the innermost affine coordinate.  This is the measure-theoretic
+input needed by the first dominated-convergence step. -/
+theorem integrand_measurable_x3 (ε S T x1 x2 : ℝ) :
+    Measurable (fun x3 : ℝ => integrand ε S T x1 x2 x3) := by
+  unfold integrand
+  apply Measurable.pow_const
+  unfold Q x4
+  fun_prop
+
 /-- Standard affine volume of the three-simplex, written in the same iterated
 coordinates used by the physical Feynman parameter integral. -/
 noncomputable def simplexVolume : ℝ :=
@@ -105,6 +115,7 @@ theorem integrand_le_one_channel_majorant
 
 end GppRaisedBoxConcreteMoment
 
+#print axioms GppRaisedBoxConcreteMoment.integrand_measurable_x3
 #print axioms GppRaisedBoxConcreteMoment.simplexMoment_zero
 #print axioms GppRaisedBoxConcreteMoment.Q_pos
 #print axioms GppRaisedBoxConcreteMoment.integrand_tendsto_one
