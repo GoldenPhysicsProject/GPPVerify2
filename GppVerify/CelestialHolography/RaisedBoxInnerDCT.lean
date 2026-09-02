@@ -32,9 +32,9 @@ theorem inner_interval_tendsto_one
     (hx12 : x1 + x2 < 1) :
     Tendsto
       (fun ε : ℝ =>
-        ∫ x3 : ℝ in 0 .. (1 - x1 - x2), integrand ε S T x1 x2 x3)
+        ∫ x3 in (0 : ℝ)..(1 - x1 - x2), integrand ε S T x1 x2 x3)
       (𝓝[Set.Icc 0 δ] 0)
-      (nhds (∫ _x3 : ℝ in 0 .. (1 - x1 - x2), (1 : ℝ))) := by
+      (nhds (∫ _x3 in (0 : ℝ)..(1 - x1 - x2), (1 : ℝ))) := by
   have hL : 0 < 1 - x1 - x2 := by linarith
   have hMajInt : IntervalIntegrable
       (fun x3 : ℝ => 1 + (S * x1 * x3) ^ (-δ : ℝ))
