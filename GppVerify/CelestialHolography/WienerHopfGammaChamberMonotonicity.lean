@@ -67,8 +67,34 @@ theorem rhoGamma_succ_re_eq_iff (k : ℕ) (x : ℝ) :
     rw [hfac]
     ring
 
+/-- For a nonzero chamber index, chamber `k` is a strict local maximum of the
+real Gamma spectral density exactly when the transition coordinate `2 x^2`
+lies strictly between `k` and `k+1`. -/
+theorem rhoGamma_re_strict_local_max_iff
+    {k : ℕ} (hk : 0 < k) (x : ℝ) :
+    ((rhoGamma (k - 1) x).re < (rhoGamma k x).re ∧
+      (rhoGamma (k + 1) x).re < (rhoGamma k x).re) ↔
+      ((k : ℝ) < 2 * x ^ 2 ∧ 2 * x ^ 2 < (k : ℝ) + 1) := by
+  have hkm1 : k - 1 + 1 = k := Nat.sub_add_cancel hk
+  constructor
+  · rintro ⟨hleft, hright⟩
+    have hleft' := (rhoGamma_re_lt_succ_iff (k - 1) x).1 (by simpa [hkm1] using hleft)
+    have hright' := (rhoGamma_succ_re_lt_iff k x).1 hright
+    constructor
+    · norm_num at hleft' ⊢
+      simpa [hkm1] using hleft'
+    · exact hright'
+  · rintro ⟨hleft, hright⟩
+    constructor
+    · have h := (rhoGamma_re_lt_succ_iff (k - 1) x).2 (by
+        norm_num
+        simpa [hkm1] using hleft)
+      simpa [hkm1] using h
+    · exact (rhoGamma_succ_re_lt_iff k x).2 hright
+
 end GppWienerHopfGammaChamberMonotonicity
 
 #print axioms GppWienerHopfGammaChamberMonotonicity.rhoGamma_re_lt_succ_iff
 #print axioms GppWienerHopfGammaChamberMonotonicity.rhoGamma_succ_re_lt_iff
 #print axioms GppWienerHopfGammaChamberMonotonicity.rhoGamma_succ_re_eq_iff
+#print axioms GppWienerHopfGammaChamberMonotonicity.rhoGamma_re_strict_local_max_iff
