@@ -44,6 +44,17 @@ theorem integrand_measurable_x3 (ε S T x1 x2 : ℝ) :
   unfold Q x4
   fun_prop
 
+/-- For fixed regulator, invariants, and outer simplex coordinate, the raised-box
+integrand is jointly Borel measurable in the two inner affine coordinates.
+This is the product-measure input needed to replace the variable endpoint
+`x3 ≤ 1 - x1 - x2` by a measurable simplex-strip indicator and invoke Fubini. -/
+theorem integrand_measurable_x2_x3 (ε S T x1 : ℝ) :
+    Measurable (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2) := by
+  unfold integrand
+  apply Measurable.pow_const
+  unfold Q x4
+  fun_prop
+
 /-- Standard affine volume of the three-simplex, written in the same iterated
 coordinates used by the physical Feynman parameter integral. -/
 noncomputable def simplexVolume : ℝ :=
@@ -116,6 +127,7 @@ theorem integrand_le_one_channel_majorant
 end GppRaisedBoxConcreteMoment
 
 #print axioms GppRaisedBoxConcreteMoment.integrand_measurable_x3
+#print axioms GppRaisedBoxConcreteMoment.integrand_measurable_x2_x3
 #print axioms GppRaisedBoxConcreteMoment.simplexMoment_zero
 #print axioms GppRaisedBoxConcreteMoment.Q_pos
 #print axioms GppRaisedBoxConcreteMoment.integrand_tendsto_one
