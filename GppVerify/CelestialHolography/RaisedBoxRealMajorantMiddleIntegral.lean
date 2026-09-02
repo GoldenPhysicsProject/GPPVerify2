@@ -20,7 +20,7 @@ expected second denominator.  The hypothesis `δ < 2` is sharp for this one
 endpoint integral; the physical majorant later uses the stronger `δ < 1`. -/
 theorem integral_affine_post_inner
     {δ L : ℝ} (hδ : δ < 2) :
-    (∫ x : ℝ in 0..L, (L - x) ^ (1 - δ : ℝ)) =
+    (∫ x in (0 : ℝ)..L, (L - x) ^ (1 - δ : ℝ)) =
       L ^ (2 - δ : ℝ) / (2 - δ) := by
   rw [integral_comp_sub_right (fun y : ℝ => y ^ (1 - δ : ℝ))]
   simp only [sub_self, sub_zero]
@@ -34,7 +34,7 @@ theorem integral_affine_post_inner
 /-- Physical-range specialization used by the raised-box majorant. -/
 theorem integral_affine_post_inner_of_delta_lt_one
     {δ L : ℝ} (hδ : δ < 1) :
-    (∫ x : ℝ in 0..L, (L - x) ^ (1 - δ : ℝ)) =
+    (∫ x in (0 : ℝ)..L, (L - x) ^ (1 - δ : ℝ)) =
       L ^ (2 - δ : ℝ) / (2 - δ) :=
   integral_affine_post_inner (by linarith)
 
@@ -44,7 +44,7 @@ the `x2` integration.  This packages the singular part of the two-step
 majorant into the exact form needed by the outer DCT layer. -/
 theorem integral_scaled_affine_post_inner
     {δ S x1 L : ℝ} (hδ : δ < 1) :
-    (∫ x : ℝ in 0..L,
+    (∫ x in (0 : ℝ)..L,
         (S * x1) ^ (-δ : ℝ) * (L - x) ^ (1 - δ : ℝ)) =
       (S * x1) ^ (-δ : ℝ) *
         (L ^ (2 - δ : ℝ) / (2 - δ)) := by
