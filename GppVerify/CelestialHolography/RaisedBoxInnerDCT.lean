@@ -6,15 +6,10 @@ import Mathlib.Tactic
 /-!
 # First dominated-convergence step for the raised scalar box
 
-This file assembles the already-certified inner-slice ingredients into the
-actual interval dominated-convergence statement.  The regulator approaches
-zero through `Icc 0 δ`, matching the physical nonnegative regulator and the
+This file assembles the certified inner-slice ingredients into the actual
+interval dominated-convergence statement.  The regulator approaches zero
+through `Icc 0 δ`, matching the physical nonnegative regulator and the
 one-channel majorant hypotheses.
-
-The sole remaining local input is AE strong measurability of the concrete
-`Real.rpow` integrand on the restricted interval.  Keeping that hypothesis
-explicit isolates the exact next measure-theory obligation rather than hiding
-it behind an axiom or a surrogate estimate.
 -/
 
 namespace GppRaisedBoxInnerDCT
@@ -34,12 +29,7 @@ theorem inner_interval_tendsto_one
     (hδ0 : 0 < δ) (hδ1 : δ < 1)
     (hS : 0 < S) (hT : 0 < T)
     (hx1 : 0 < x1) (hx2 : 0 < x2)
-    (hx12 : x1 + x2 < 1)
-    (hMeas :
-      ∀ᶠ ε : ℝ in 𝓝[Set.Icc 0 δ] 0,
-        AEStronglyMeasurable
-          (fun x3 : ℝ => integrand ε S T x1 x2 x3)
-          (volume.restrict (Set.uIoc 0 (1 - x1 - x2)))) :
+    (hx12 : x1 + x2 < 1) :
     Tendsto
       (fun ε : ℝ =>
         ∫ x3 : ℝ in 0..(1 - x1 - x2), integrand ε S T x1 x2 x3)
@@ -51,6 +41,13 @@ theorem inner_interval_tendsto_one
       volume 0 (1 - x1 - x2) := by
     exact intervalIntegrable_const.add
       (channel_inner_intervalIntegrable hδ1 hS.le hx1.le hL.le)
+  have hMeas :
+      ∀ᶠ ε : ℝ in 𝓝[Set.Icc 0 δ] 0,
+        AEStronglyMeasurable
+          (fun x3 : ℝ => integrand ε S T x1 x2 x3)
+          (volume.restrict (Set.uIoc 0 (1 - x1 - x2))) := by
+    filter_upwards with ε
+    exact (integrand_measurable_x3 ε S T x1 x2).aestronglyMeasurable.restrict
   apply intervalIntegral.tendsto_integral_filter_of_dominated_convergence
     (bound := fun x3 : ℝ => 1 + (S * x1 * x3) ^ (-δ : ℝ))
   · exact hMeas
