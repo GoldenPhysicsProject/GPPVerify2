@@ -55,6 +55,30 @@ theorem integrand_measurable_x2_x3 (ε S T x1 : ℝ) :
   unfold Q x4
   fun_prop
 
+/-- The closed affine strip representing the two inner simplex coordinates for
+fixed `x1`.  Writing the variable endpoint as a measurable set is the clean
+product-measure replacement for the nested bound `0 ≤ x3 ≤ 1 - x1 - x2`. -/
+def innerSimplexStrip (x1 : ℝ) : Set (ℝ × ℝ) :=
+  {p | 0 ≤ p.2 ∧ p.1 + p.2 ≤ 1 - x1}
+
+/-- The inner simplex strip is Borel measurable. -/
+theorem measurableSet_innerSimplexStrip (x1 : ℝ) :
+    MeasurableSet (innerSimplexStrip x1) := by
+  unfold innerSimplexStrip
+  exact
+    (measurableSet_le measurable_const measurable_snd).inter
+      (measurableSet_le (measurable_fst.add measurable_snd) measurable_const)
+
+/-- Extending the two-inner-coordinate integrand by zero off the affine simplex
+strip preserves Borel measurability.  This is the exact input needed by
+product-measure/Fubini lemmas such as `integral_prod_right'`. -/
+theorem stripIntegrand_measurable (ε S T x1 : ℝ) :
+    Measurable
+      ((innerSimplexStrip x1).indicator
+        (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) := by
+  exact (integrand_measurable_x2_x3 ε S T x1).indicator
+    (measurableSet_innerSimplexStrip x1)
+
 /-- Standard affine volume of the three-simplex, written in the same iterated
 coordinates used by the physical Feynman parameter integral. -/
 noncomputable def simplexVolume : ℝ :=
@@ -128,6 +152,8 @@ end GppRaisedBoxConcreteMoment
 
 #print axioms GppRaisedBoxConcreteMoment.integrand_measurable_x3
 #print axioms GppRaisedBoxConcreteMoment.integrand_measurable_x2_x3
+#print axioms GppRaisedBoxConcreteMoment.measurableSet_innerSimplexStrip
+#print axioms GppRaisedBoxConcreteMoment.stripIntegrand_measurable
 #print axioms GppRaisedBoxConcreteMoment.simplexMoment_zero
 #print axioms GppRaisedBoxConcreteMoment.Q_pos
 #print axioms GppRaisedBoxConcreteMoment.integrand_tendsto_one
