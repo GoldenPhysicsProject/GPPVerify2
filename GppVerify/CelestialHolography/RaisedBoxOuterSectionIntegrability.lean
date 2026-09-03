@@ -1,0 +1,87 @@
+import GppVerify.CelestialHolography.RaisedBoxOuterFiberBridge
+import GppVerify.CelestialHolography.RaisedBoxRealMajorantSlice
+import Mathlib.Tactic
+
+/-!
+# Raised-box outer section integrability
+
+This file supplies the first analytic half of the final product-integrability
+certificate.  For every physical `x2` slice at fixed interior `x1`, the
+innermost raised-box integrand is interval-integrable by the certified
+one-channel endpoint majorant.  Extending that slice by zero off its affine
+interval therefore gives an integrable whole-line section, exactly in the form
+required by `MeasureTheory.integrable_prod_iff`.
+-/
+
+namespace GppRaisedBoxOuterSectionIntegrability
+
+open MeasureTheory
+open scoped Interval
+open GppRaisedBoxConcreteMoment
+open GppRaisedBoxRealMajorantSlice
+
+/-- The concrete raised-box integrand is interval-integrable on every physical
+innermost affine slice whenever the regulator lies in `0 ≤ ε ≤ δ < 1`.
+This strengthens the previously certified norm-of-integral estimate to the
+actual integrability certificate needed by Fubini. -/
+theorem integrand_inner_intervalIntegrable
+    {δ ε S T x1 x2 : ℝ}
+    (hδ0 : 0 < δ) (hδ1 : δ < 1)
+    (hε0 : 0 ≤ ε) (hεδ : ε ≤ δ)
+    (hS : 0 < S) (hT : 0 < T)
+    (hx1 : 0 < x1) (hx2 : 0 ≤ x2) (hx12 : x1 + x2 ≤ 1) :
+    IntervalIntegrable
+      (fun x3 : ℝ => integrand ε S T x1 x2 x3)
+      volume 0 (1 - x1 - x2) := by
+  have hL : 0 ≤ 1 - x1 - x2 := by linarith
+  have hMajInt : IntervalIntegrable
+      (fun x3 : ℝ => 1 + (S * x1 * x3) ^ (-δ : ℝ))
+      volume 0 (1 - x1 - x2) := by
+    exact intervalIntegrable_const.add
+      (channel_inner_intervalIntegrable hδ1 hS.le hx1.le hL)
+  apply hMajInt.mono_fun'
+  · exact (integrand_measurable_x3 ε S T x1 x2).aestronglyMeasurable.restrict
+  · filter_upwards [ae_restrict_mem measurableSet_uIoc] with x3 hx3mem
+    rw [Set.uIoc_of_le hL] at hx3mem
+    have hx3 : 0 < x3 := hx3mem.1
+    have hxsum : x1 + x2 + x3 ≤ 1 := by linarith
+    have hQ : 0 < Q S T x1 x2 x3 := by
+      unfold Q
+      positivity
+    have hnonneg : 0 ≤ integrand ε S T x1 x2 x3 := by
+      unfold integrand
+      exact Real.rpow_nonneg hQ.le _
+    rw [Real.norm_eq_abs, abs_of_nonneg hnonneg]
+    exact integrand_le_one_channel_majorant
+      hS hT hx1 hx2 hx3 hxsum hε0 hεδ hδ0
+
+/-- The zero extension of a physical `x3` slice of the measurable inner strip
+is integrable on the whole real line.  This is precisely the first conjunct in
+`integrable_prod_iff` for the two-dimensional simplex section. -/
+theorem strip_section_integrable
+    {δ ε S T x1 x2 : ℝ}
+    (hδ0 : 0 < δ) (hδ1 : δ < 1)
+    (hε0 : 0 ≤ ε) (hεδ : ε ≤ δ)
+    (hS : 0 < S) (hT : 0 < T)
+    (hx1 : 0 < x1) (hx2 : 0 ≤ x2) (hx12 : x1 + x2 ≤ 1) :
+    Integrable
+      (fun x3 : ℝ =>
+        ((innerSimplexStrip x1).indicator
+          (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) (x2, x3)) := by
+  have hL : 0 ≤ 1 - x1 - x2 := by linarith
+  have hInterval := integrand_inner_intervalIntegrable
+    hδ0 hδ1 hε0 hεδ hS hT hx1 hx2 hx12
+  have hOn : IntegrableOn
+      (fun x3 : ℝ => integrand ε S T x1 x2 x3)
+      (Set.Icc (0 : ℝ) (1 - x1 - x2)) :=
+    (intervalIntegrable_iff_integrableOn_Icc_of_le hL).mp hInterval
+  have hIndicator : Integrable
+      ((Set.Icc (0 : ℝ) (1 - x1 - x2)).indicator
+        (fun x3 : ℝ => integrand ε S T x1 x2 x3)) :=
+    hOn.integrable_indicator measurableSet_Icc
+  simpa only [stripIntegrand_section_eq_Icc_indicator] using hIndicator
+
+end GppRaisedBoxOuterSectionIntegrability
+
+#print axioms GppRaisedBoxOuterSectionIntegrability.integrand_inner_intervalIntegrable
+#print axioms GppRaisedBoxOuterSectionIntegrability.strip_section_integrable
