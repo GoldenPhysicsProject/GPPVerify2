@@ -71,21 +71,31 @@ theorem intervalInnerIntegral_norm_le_integratedMajorant
       volume 0 (1 - x1 - x2) := by
     exact intervalIntegrable_const.add
       (channel_inner_intervalIntegrable hδ1 hS.le hx1.le hL)
-  apply intervalIntegral.norm_integral_le_of_norm_le hL
-  · filter_upwards with x3
-    intro hx3mem
+  have hAE : ∀ᵐ x3 : ℝ ∂volume.restrict (Set.uIoc (0 : ℝ) (1 - x1 - x2)),
+      ‖integrand ε S T x1 x2 x3‖ ≤ 1 + (S * x1 * x3) ^ (-δ : ℝ) := by
+    filter_upwards [ae_restrict_mem measurableSet_uIoc] with x3 hx3mem
+    rw [Set.uIoc_of_le hL] at hx3mem
     have hx3 : 0 < x3 := hx3mem.1
+    have hx3le : x3 ≤ 1 - x1 - x2 := hx3mem.2
     have hxsum : x1 + x2 + x3 ≤ 1 := by linarith
-    have hQ : 0 < Q S T x1 x2 x3 := by
+    have hslack : 0 ≤ 1 - x1 - x2 - x3 := by linarith
+    have hQ : 0 ≤ Q S T x1 x2 x3 := by
       unfold Q
       positivity
     have hnonneg : 0 ≤ integrand ε S T x1 x2 x3 := by
       unfold integrand
-      exact Real.rpow_nonneg hQ.le _
+      exact Real.rpow_nonneg hQ _
     rw [Real.norm_eq_abs, abs_of_nonneg hnonneg]
     exact integrand_le_one_channel_majorant
       hS hT hx1 hx2 hx3 hxsum hε0 hεδ hδ0
-  · exact hMajInt
+  have hAbs := intervalIntegral.norm_integral_le_of_norm_le hAE hMajInt
+  have hMajNonneg : 0 ≤
+      ∫ x3 in (0 : ℝ)..(1 - x1 - x2),
+        (1 + (S * x1 * x3) ^ (-δ : ℝ)) := by
+    apply intervalIntegral.integral_nonneg_of_forall hL
+    intro x3
+    exact add_nonneg zero_le_one (Real.rpow_nonneg (by positivity) _)
+  simpa [abs_of_nonneg hMajNonneg] using hAbs
 
 /-- Explicit form of the previous norm bound after evaluating the singular
 endpoint integral.  This is the middle-DCT majorant before integrating in `x2`.
@@ -149,7 +159,7 @@ theorem intervalInnerIntegral_norm_le_middleConstant
     _ ≤ 1 + (S * x1) ^ (-δ : ℝ) * (1 / (1 - δ)) := by
       gcongr
     _ = 1 + (S * x1) ^ (-δ : ℝ) / (1 - δ) := by
-      rw [div_eq_mul_inv]
+      simp [div_eq_mul_inv]
 
 /-- Second dominated-convergence step for the raised scalar box.  For a fixed
 strict `x1` slice, regulator removal commutes with the `x2` integration. -/
@@ -181,17 +191,22 @@ theorem middle_interval_tendsto_inner_one
     (bound := fun _x2 : ℝ => 1 + (S * x1) ^ (-δ : ℝ) / (1 - δ))
   · exact hMeas
   · filter_upwards [self_mem_nhdsWithin] with ε hε
-    refine Filter.Eventually.of_forall ?_
+    refine Eventually.of_forall ?_
     intro x2
     intro hx2mem
     rw [Set.uIoc_of_le hL.le] at hx2mem
+    have hx2hi : x2 ≤ 1 - x1 := hx2mem.2
+    have hx12 : x1 + x2 ≤ 1 := by linarith
     exact intervalInnerIntegral_norm_le_middleConstant
-      hδ0 hδ1 hε.1 hε.2 hS hT hx1 hx2mem.1.le (by linarith)
+      hδ0 hδ1 hε.1 hε.2 hS hT hx1 hx2mem.1.le hx12
   · exact intervalIntegrable_const
-  · filter_upwards [ae_restrict_mem measurableSet_uIoc] with x2 hx2mem
+  · filter_upwards [] with x2
+    intro hx2mem
     rw [Set.uIoc_of_le hL.le] at hx2mem
+    have hx2hi : x2 ≤ 1 - x1 := hx2mem.2
+    have hx12 : x1 + x2 ≤ 1 := by linarith
     exact GppRaisedBoxInnerDCT.inner_interval_tendsto_one
-      hδ0 hδ1 hS hT hx1 hx2mem.1 (by linarith)
+      hδ0 hδ1 hS hT hx1 hx2mem.1 hx12
 
 end GppRaisedBoxMiddleMeasurability
 
