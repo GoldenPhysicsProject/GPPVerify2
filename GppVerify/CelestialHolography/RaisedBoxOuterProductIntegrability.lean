@@ -28,8 +28,7 @@ open GppRaisedBoxOuterFiberBridge
 open GppRaisedBoxOuterMeasurability
 
 /-- For fixed strict outer coordinate, the physical variable-endpoint inner
-integral is interval-integrable in the middle coordinate.  This is exactly the
-scalar quantity that the section norm integral reduces to by nonnegativity. -/
+integral is interval-integrable in the middle coordinate. -/
 theorem intervalInnerIntegral_intervalIntegrable
     {δ ε S T x1 : ℝ}
     (hδ0 : 0 < δ) (hδ1 : δ < 1)
@@ -48,13 +47,13 @@ theorem intervalInnerIntegral_intervalIntegrable
   · exact intervalInnerIntegral_aestronglyMeasurable hx1lt.le
   · filter_upwards [ae_restrict_mem measurableSet_uIoc] with x2 hx2
     rw [Set.uIoc_of_le hL] at hx2
+    have hx2le : x2 ≤ 1 - x1 := hx2.2
+    have hx12 : x1 + x2 ≤ 1 := by linarith
     exact intervalInnerIntegral_norm_le_middleConstant
-      hδ0 hδ1 hε0 hεδ hS hT hx1 hx2.1.le (by linarith)
+      hδ0 hδ1 hε0 hεδ hS hT hx1 hx2.1.le hx12
 
 /-- Zero-extending the physical middle integral outside its compact affine
-interval gives a globally integrable function.  This is the target shape of the
-second `integrable_prod_iff` conjunct after applying the certified section
-norm-integral identity. -/
+interval gives a globally integrable function. -/
 theorem IccIndicator_intervalInnerIntegral_integrable
     {δ ε S T x1 : ℝ}
     (hδ0 : 0 < δ) (hδ1 : δ < 1)
@@ -78,11 +77,7 @@ theorem IccIndicator_intervalInnerIntegral_integrable
   exact hOn.integrable_indicator measurableSet_Icc
 
 /-- For every strict physical outer coordinate, the complete two-dimensional
-full-simplex fiber is Bochner integrable.  This closes the analytic hypothesis
-left abstract in `fullSimplexFiberIntegral_eq_iteratedStrip`: section
-integrability is supplied by the certified one-channel endpoint bound, while
-integrability of the section norms is exactly the compact middle-coordinate
-majorant proved above. -/
+full-simplex fiber is Bochner integrable. -/
 theorem fullSimplexFiber_integrable
     {δ ε S T x1 : ℝ}
     (hδ0 : 0 < δ) (hδ1 : δ < 1)
@@ -105,19 +100,21 @@ theorem fullSimplexFiber_integrable
   have hSections : ∀ᵐ x2 : ℝ, Integrable (fun x3 : ℝ => f (x2, x3)) := by
     filter_upwards [] with x2
     by_cases hx2 : x2 ∈ Set.Icc (0 : ℝ) (1 - x1)
-    · have hStrip := strip_section_integrable
-        hδ0 hδ1 hε0 hεδ hS hT hx1 hx2.1 (by linarith [hx2.2])
+    · have hx12 : x1 + x2 ≤ 1 := by linarith [hx2.2]
+      have hStrip := strip_section_integrable
+        hδ0 hδ1 hε0 hεδ hS hT hx1 hx2.1 hx12
       apply hStrip.congr
       filter_upwards [] with x3
-      simpa [f, Set.indicator_of_mem hx2] using
-        (fullSimplexIndicator_section_factor ε S T hx1mem
-          (x2 := x2) (x3 := x3)).symm
-    · have hZero : Integrable (fun _x3 : ℝ => (0 : ℝ)) := integrable_zero
+      dsimp [f]
+      rw [fullSimplexIndicator_section_factor ε S T hx1mem]
+      simp [Set.indicator_of_mem hx2]
+    · have hZero : Integrable (fun _x3 : ℝ => (0 : ℝ)) volume :=
+        integrable_zero ℝ ℝ volume
       apply hZero.congr
       filter_upwards [] with x3
-      simpa [f, Set.indicator_of_not_mem hx2] using
-        (fullSimplexIndicator_section_factor ε S T hx1mem
-          (x2 := x2) (x3 := x3))
+      dsimp [f]
+      rw [fullSimplexIndicator_section_factor ε S T hx1mem]
+      simp [Set.indicator_of_not_mem hx2]
   have hNormEq :
       (fun x2 : ℝ => ∫ x3 : ℝ, ‖f (x2, x3)‖) =
         (Set.Icc (0 : ℝ) (1 - x1)).indicator
@@ -127,6 +124,7 @@ theorem fullSimplexFiber_integrable
     funext x2
     by_cases hx2 : x2 ∈ Set.Icc (0 : ℝ) (1 - x1)
     · rw [Set.indicator_of_mem hx2]
+      have hx12 : x1 + x2 ≤ 1 := by linarith [hx2.2]
       calc
         (∫ x3 : ℝ, ‖f (x2, x3)‖) =
             ∫ x3 : ℝ,
@@ -134,18 +132,19 @@ theorem fullSimplexFiber_integrable
                 (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) (x2, x3)‖ := by
           apply integral_congr_ae
           filter_upwards [] with x3
+          dsimp [f]
           rw [fullSimplexIndicator_section_factor ε S T hx1mem]
-          simp [f, Set.indicator_of_mem hx2]
+          simp [Set.indicator_of_mem hx2]
         _ = ∫ x3 in (0 : ℝ)..(1 - x1 - x2),
               integrand ε S T x1 x2 x3 :=
           strip_section_norm_integral_eq_intervalIntegral
-            hS hT hx1 hx2.1 (by linarith [hx2.2])
+            hS hT hx1 hx2.1 hx12
     · rw [Set.indicator_of_not_mem hx2]
       have hfzero : ∀ x3 : ℝ, f (x2, x3) = 0 := by
         intro x3
-        simpa [f, Set.indicator_of_not_mem hx2] using
-          (fullSimplexIndicator_section_factor ε S T hx1mem
-            (x2 := x2) (x3 := x3))
+        dsimp [f]
+        rw [fullSimplexIndicator_section_factor ε S T hx1mem]
+        simp [Set.indicator_of_not_mem hx2]
       simp_rw [hfzero]
       simp
   have hNormInt : Integrable (fun x2 : ℝ => ∫ x3 : ℝ, ‖f (x2, x3)‖) := by
