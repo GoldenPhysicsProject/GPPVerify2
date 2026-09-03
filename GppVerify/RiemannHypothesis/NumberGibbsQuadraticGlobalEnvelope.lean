@@ -92,7 +92,7 @@ lemma summable_global_derivative_envelope
     Summable (fun n : ℕ =>
       Real.exp ((B + 2) ^ 2 / (4 * η₀)) *
         (gibbsWeight 2 n * logEnergy n ^ r)) := by
-  exact hz2.const_mul _
+  exact Summable.mul_left _ hz2
 
 end GppNumberGibbsQuadraticGlobalEnvelope
 
