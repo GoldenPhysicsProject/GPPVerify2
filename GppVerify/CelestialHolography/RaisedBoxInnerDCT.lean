@@ -57,6 +57,7 @@ theorem inner_interval_tendsto_one
     intro hx3mem
     rw [Set.uIoc_of_le hL.le] at hx3mem
     have hx3 : 0 < x3 := hx3mem.1
+    have hx3upper : x3 ≤ 1 - x1 - x2 := hx3mem.2
     have hxsum : x1 + x2 + x3 ≤ 1 := by linarith
     have hx4 : 0 ≤ x4 x1 x2 x3 := by
       unfold x4
