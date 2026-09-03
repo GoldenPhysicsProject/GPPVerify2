@@ -31,14 +31,16 @@ def fullSimplexSet : Set (ℝ × (ℝ × ℝ)) :=
 /-- The grouped affine three-simplex is Borel measurable. -/
 theorem measurableSet_fullSimplexSet : MeasurableSet fullSimplexSet := by
   unfold fullSimplexSet
+  have hx1 : Measurable (fun p : ℝ × (ℝ × ℝ) => p.1) := measurable_fst
+  have hx2 : Measurable (fun p : ℝ × (ℝ × ℝ) => p.2.1) :=
+    measurable_fst.comp measurable_snd
+  have hx3 : Measurable (fun p : ℝ × (ℝ × ℝ) => p.2.2) :=
+    measurable_snd.comp measurable_snd
   exact
-    (((measurableSet_le measurable_const measurable_fst).inter
-      (measurableSet_le measurable_const (measurable_fst.comp measurable_snd))).inter
-      (measurableSet_le measurable_const (measurable_snd.comp measurable_snd))).inter
-      (measurableSet_le
-        ((measurable_fst.add (measurable_fst.comp measurable_snd)).add
-          (measurable_snd.comp measurable_snd))
-        measurable_const)
+    (((measurableSet_le measurable_const hx1).inter
+      (measurableSet_le measurable_const hx2)).inter
+      (measurableSet_le measurable_const hx3)).inter
+      (measurableSet_le ((hx1.add hx2).add hx3) measurable_const)
 
 /-- The raised-box integrand is jointly Borel measurable in all three affine
 simplex coordinates. -/
