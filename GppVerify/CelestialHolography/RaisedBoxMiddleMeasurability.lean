@@ -92,10 +92,11 @@ theorem intervalInnerIntegral_norm_le_integratedMajorant
   have hMajNonneg : 0 ≤
       ∫ x3 in (0 : ℝ)..(1 - x1 - x2),
         (1 + (S * x1 * x3) ^ (-δ : ℝ)) := by
-    apply intervalIntegral.integral_nonneg_of_forall hL
-    intro x3
+    apply intervalIntegral.integral_nonneg_of_ae_restrict hL
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with x3 hx3mem
+    have hx3 : 0 ≤ x3 := hx3mem.1
     have hprod : 0 ≤ S * x1 * x3 := by
-      exact mul_nonneg (mul_nonneg hS.le hx1.le) (by linarith)
+      exact mul_nonneg (mul_nonneg hS.le hx1.le) hx3
     exact add_nonneg zero_le_one (Real.rpow_nonneg hprod _)
   simpa [abs_of_nonneg hMajNonneg] using hAbs
 
