@@ -16,6 +16,7 @@ No Fubini or integrability hypothesis is needed for this factorization.
 
 namespace GppRaisedBoxOuterFiberBridge
 
+open MeasureTheory
 open GppRaisedBoxConcreteMoment
 open GppRaisedBoxOuterMeasurability
 
@@ -78,7 +79,48 @@ theorem fullSimplexIndicator_section_factor
         Set.indicator_of_mem hx2, Set.indicator_of_not_mem hstrip]
     · simp [Set.indicator_of_not_mem hfull, Set.indicator_of_not_mem hx2]
 
+/-- Once the full two-dimensional section is known to be integrable, Fubini
+identifies its product integral exactly with the outer closed-interval indicator
+of the already-certified measurable inner strip integral.  This theorem isolates
+the remaining analytic obligation cleanly: only the `Integrable` certificate is
+left to prove from the raised-box majorant. -/
+theorem fullSimplexFiberIntegral_eq_iteratedStrip
+    (ε S T x1 : ℝ)
+    (hx1 : x1 ∈ Set.Icc (0 : ℝ) 1)
+    (hInt : Integrable
+      (fun p : ℝ × ℝ =>
+        (fullSimplexSet.indicator
+          (fun q : ℝ × (ℝ × ℝ) =>
+            integrand ε S T q.1 q.2.1 q.2.2)) (x1, p))) :
+    (∫ p : ℝ × ℝ,
+      (fullSimplexSet.indicator
+        (fun q : ℝ × (ℝ × ℝ) =>
+          integrand ε S T q.1 q.2.1 q.2.2)) (x1, p)) =
+      ∫ x2 : ℝ,
+        (Set.Icc (0 : ℝ) (1 - x1)).indicator
+          (fun y : ℝ =>
+            ∫ x3 : ℝ,
+              ((innerSimplexStrip x1).indicator
+                (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2))
+                (y, x3)) x2 := by
+  rw [MeasureTheory.Measure.volume_eq_prod ℝ ℝ]
+  rw [MeasureTheory.integral_prod hInt]
+  apply MeasureTheory.integral_congr_ae
+  filter_upwards [] with x2
+  by_cases hx2 : x2 ∈ Set.Icc (0 : ℝ) (1 - x1)
+  · rw [Set.indicator_of_mem hx2]
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards [] with x3
+    simpa [Set.indicator_of_mem hx2] using
+      (fullSimplexIndicator_section_factor ε S T hx1 (x2 := x2) (x3 := x3))
+  · rw [Set.indicator_of_not_mem hx2]
+    apply MeasureTheory.integral_congr_ae
+    filter_upwards [] with x3
+    simpa [Set.indicator_of_not_mem hx2] using
+      (fullSimplexIndicator_section_factor ε S T hx1 (x2 := x2) (x3 := x3))
+
 end GppRaisedBoxOuterFiberBridge
 
 #print axioms GppRaisedBoxOuterFiberBridge.fullSimplexSet_section_iff
 #print axioms GppRaisedBoxOuterFiberBridge.fullSimplexIndicator_section_factor
+#print axioms GppRaisedBoxOuterFiberBridge.fullSimplexFiberIntegral_eq_iteratedStrip
