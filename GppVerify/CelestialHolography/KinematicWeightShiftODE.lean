@@ -39,7 +39,6 @@ theorem pHat_eq_inv_cosh_sq (x : ℝ) :
   rw [Real.tanh_eq_sinh_div_cosh]
   have hc : Real.cosh (x / 2) ≠ 0 := (Real.cosh_pos (x / 2)).ne'
   field_simp [hc]
-  nlinarith [Real.cosh_sq_sub_sinh_sq (x / 2)]
 
 /-- Exact derivative of the normalized Fourier partner. -/
 theorem hasDerivAt_pHat (x : ℝ) :
@@ -66,8 +65,17 @@ theorem weightShift_ode (x : ℝ) :
   rw [(hasDerivAt_pHat x).deriv]
   simp only [pHat_zero]
   unfold pHat
-  have hx : x = x / 2 + x / 2 := by ring
-  rw [hx, Real.sinh_add, Real.tanh_eq_sinh_div_cosh]
+  have hrhs :
+      (1 / 4 : ℝ) * (1 - Real.tanh (x / 2) ^ 2) - 1 / 4 =
+        -(1 / 4 : ℝ) * Real.tanh (x / 2) ^ 2 := by
+    ring
+  rw [hrhs]
+  have hsinh :
+      Real.sinh x =
+        2 * Real.sinh (x / 2) * Real.cosh (x / 2) := by
+    rw [show x = x / 2 + x / 2 by ring, Real.sinh_add]
+    ring
+  rw [hsinh, Real.tanh_eq_sinh_div_cosh]
   have hc : Real.cosh (x / 2) ≠ 0 := (Real.cosh_pos (x / 2)).ne'
   field_simp [hc]
   ring
