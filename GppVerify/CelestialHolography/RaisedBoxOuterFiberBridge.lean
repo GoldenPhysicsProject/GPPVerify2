@@ -121,10 +121,12 @@ theorem fullSimplexFiberIntegral_eq_iteratedStrip
     simpa [f, Set.indicator_of_mem hx2] using
       (fullSimplexIndicator_section_factor ε S T hx1 (x2 := x2) (x3 := x3))
   · rw [Set.indicator_of_not_mem hx2]
-    apply MeasureTheory.integral_congr_ae
-    filter_upwards [] with x3
-    simpa [f, Set.indicator_of_not_mem hx2] using
-      (fullSimplexIndicator_section_factor ε S T hx1 (x2 := x2) (x3 := x3))
+    have hfzero : ∀ x3 : ℝ, f (x2, x3) = 0 := by
+      intro x3
+      simpa [f, Set.indicator_of_not_mem hx2] using
+        (fullSimplexIndicator_section_factor ε S T hx1 (x2 := x2) (x3 := x3))
+    simp_rw [hfzero]
+    simp
 
 end GppRaisedBoxOuterFiberBridge
 
