@@ -56,6 +56,40 @@ lemma eventually_numberGibbsWeight_le_gibbsWeight_two
           nlinarith [hquad]
     _ = gibbsWeight 2 n := exp_zeta_eq_gibbsWeight 2 n
 
+/-- Uniform version of quadratic tail domination.  On every parameter region
+`β ≥ -B`, `η ≥ η₀ > 0`, one common arithmetic tail is dominated by the same
+fixed zeta weight of exponent `2`.  This is the local-uniform estimate needed
+for differentiation under the countable partition sum: compact parameter
+neighborhoods may be enclosed in such a region, and logarithmic derivative
+factors can then be handled by the existing zeta-moment summability lemmas. -/
+lemma eventually_numberGibbsWeight_le_gibbsWeight_two_uniform
+    (B η₀ β η : ℝ) (hη₀ : 0 < η₀) (hβ : -B ≤ β) (hη : η₀ ≤ η) :
+    ∀ᶠ n : ℕ in atTop, numberGibbsWeight β η n ≤ gibbsWeight 2 n := by
+  filter_upwards
+      [numberLogEnergy_tendsto_atTop.eventually_ge_atTop ((B + 2) / η₀)] with n hn
+  have hL : 0 ≤ numberLogEnergy n := numberLogEnergy_nonneg n
+  have hB : B + 2 ≤ η₀ * numberLogEnergy n := by
+    have h := (div_le_iff₀ hη₀).mp hn
+    simpa [mul_comm] using h
+  have hlin0 : 2 - β ≤ B + 2 := by
+    linarith
+  have hlin1 : η₀ * numberLogEnergy n ≤ η * numberLogEnergy n := by
+    exact mul_le_mul_of_nonneg_right hη hL
+  have hlinear : 2 - β ≤ η * numberLogEnergy n :=
+    hlin0.trans (hB.trans hlin1)
+  have hquad : (2 - β) * numberLogEnergy n ≤
+      η * (numberLogEnergy n) ^ 2 := by
+    have h := mul_le_mul_of_nonneg_right hlinear hL
+    nlinarith
+  calc
+    numberGibbsWeight β η n
+        ≤ Real.exp (-2 * numberLogEnergy n) := by
+          apply Real.exp_le_exp.mpr
+          change -β * numberLogEnergy n - η * numberLogEnergy n ^ 2 ≤
+            -2 * numberLogEnergy n
+          nlinarith [hquad]
+    _ = gibbsWeight 2 n := exp_zeta_eq_gibbsWeight 2 n
+
 /-- Any fixed logarithmic moment of the quadratically confined family is
 summable once the corresponding exponent-`2` zeta moment is summable. -/
 lemma summable_numberGibbs_moment_of_quadratic
@@ -106,4 +140,5 @@ theorem numberGibbs_fisherNumerator_infinite_pos_of_eta_pos
 
 end GppNumberGibbsQuadraticConfinement
 
+#print axioms GppNumberGibbsQuadraticConfinement.eventually_numberGibbsWeight_le_gibbsWeight_two_uniform
 #print axioms GppNumberGibbsQuadraticConfinement.numberGibbs_fisherNumerator_infinite_pos_of_eta_pos
