@@ -60,7 +60,7 @@ theorem hasDerivAt_Z_beta_raw
       B η b η 1 hη hβlower le_rfl n
     have hw0 : 0 ≤ numberGibbsWeight b η n := numberGibbsWeight_nonneg b η n
     have hL0 : 0 ≤ numberLogEnergy n := by
-      unfold numberLogEnergy logEnergy
+      unfold numberLogEnergy
       apply Real.log_nonneg
       exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
     dsimp [g']
