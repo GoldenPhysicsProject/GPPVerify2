@@ -90,6 +90,25 @@ lemma eventually_numberGibbsWeight_le_gibbsWeight_two_uniform
           nlinarith [hquad]
     _ = gibbsWeight 2 n := exp_zeta_eq_gibbsWeight 2 n
 
+/-- The same compact-parameter tail works after multiplying by any fixed
+logarithmic derivative factor.  This is the direct Weierstrass/M-test input for
+termwise differentiation of the two-parameter partition sum: the derivatives
+only change the power of `log (n+1)`, while the common exponent-`2` envelope is
+independent of `(β,η)` inside the region. -/
+lemma eventually_numberGibbs_moment_le_gibbs_moment_two_uniform
+    (B η₀ β η : ℝ) (r : ℕ)
+    (hη₀ : 0 < η₀) (hβ : -B ≤ β) (hη : η₀ ≤ η) :
+    ∀ᶠ n : ℕ in atTop,
+      numberGibbsWeight β η n * numberLogEnergy n ^ r ≤
+        gibbsWeight 2 n * logEnergy n ^ r := by
+  filter_upwards
+      [eventually_numberGibbsWeight_le_gibbsWeight_two_uniform
+        B η₀ β η hη₀ hβ hη] with n hn
+  have hp : 0 ≤ numberLogEnergy n ^ r :=
+    pow_nonneg (numberLogEnergy_nonneg n) r
+  have hm := mul_le_mul_of_nonneg_right hn hp
+  simpa [numberLogEnergy, logEnergy] using hm
+
 /-- Any fixed logarithmic moment of the quadratically confined family is
 summable once the corresponding exponent-`2` zeta moment is summable. -/
 lemma summable_numberGibbs_moment_of_quadratic
@@ -141,4 +160,5 @@ theorem numberGibbs_fisherNumerator_infinite_pos_of_eta_pos
 end GppNumberGibbsQuadraticConfinement
 
 #print axioms GppNumberGibbsQuadraticConfinement.eventually_numberGibbsWeight_le_gibbsWeight_two_uniform
+#print axioms GppNumberGibbsQuadraticConfinement.eventually_numberGibbs_moment_le_gibbs_moment_two_uniform
 #print axioms GppNumberGibbsQuadraticConfinement.numberGibbs_fisherNumerator_infinite_pos_of_eta_pos
