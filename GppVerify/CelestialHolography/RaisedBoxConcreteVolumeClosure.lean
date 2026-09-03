@@ -1,4 +1,5 @@
 import GppVerify.CelestialHolography.RaisedBoxConcreteMoment
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Tactic
 
 /-!
@@ -19,9 +20,8 @@ volume exactly `1/6`. -/
 theorem simplexVolume_eq_one_sixth :
     simplexVolume = (1 / 6 : ℝ) := by
   unfold simplexVolume
-  simp only [intervalIntegral.integral_const]
-  norm_num
-  ring_nf
+  simp [intervalIntegral.integral_id]
+  ring
 
 /-- Consequently the concrete raised-box moment at zero regulator is exactly
 `1/6`. -/
