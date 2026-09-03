@@ -103,28 +103,27 @@ theorem fullSimplexFiberIntegral_eq_iteratedStrip
               ((innerSimplexStrip x1).indicator
                 (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2))
                 (y, x3)) x2 := by
-  have hIntProd : Integrable
-      (fun p : ℝ × ℝ =>
-        (fullSimplexSet.indicator
-          (fun q : ℝ × (ℝ × ℝ) =>
-            integrand ε S T q.1 q.2.1 q.2.2)) (x1, p))
-      (volume.prod volume) := by
+  let f : ℝ × ℝ → ℝ := fun p =>
+    (fullSimplexSet.indicator
+      (fun q : ℝ × (ℝ × ℝ) =>
+        integrand ε S T q.1 q.2.1 q.2.2)) (x1, p)
+  have hIntProd : Integrable f (volume.prod volume) := by
     rw [← MeasureTheory.Measure.volume_eq_prod ℝ ℝ]
     exact hInt
   rw [MeasureTheory.Measure.volume_eq_prod ℝ ℝ]
-  rw [MeasureTheory.integral_prod hIntProd]
+  rw [MeasureTheory.integral_prod f hIntProd]
   apply MeasureTheory.integral_congr_ae
   filter_upwards [] with x2
   by_cases hx2 : x2 ∈ Set.Icc (0 : ℝ) (1 - x1)
   · rw [Set.indicator_of_mem hx2]
     apply MeasureTheory.integral_congr_ae
     filter_upwards [] with x3
-    simpa [Set.indicator_of_mem hx2] using
+    simpa [f, Set.indicator_of_mem hx2] using
       (fullSimplexIndicator_section_factor ε S T hx1 (x2 := x2) (x3 := x3))
   · rw [Set.indicator_of_not_mem hx2]
     apply MeasureTheory.integral_congr_ae
     filter_upwards [] with x3
-    simpa [Set.indicator_of_not_mem hx2] using
+    simpa [f, Set.indicator_of_not_mem hx2] using
       (fullSimplexIndicator_section_factor ε S T hx1 (x2 := x2) (x3 := x3))
 
 end GppRaisedBoxOuterFiberBridge
