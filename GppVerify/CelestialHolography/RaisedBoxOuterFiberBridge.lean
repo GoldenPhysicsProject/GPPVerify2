@@ -31,6 +31,10 @@ theorem fullSimplexSet_section_iff
   constructor
   · intro h
     rcases h with ⟨⟨⟨hx10', hx20⟩, hx30⟩, hsum⟩
+    change 0 ≤ x1 at hx10'
+    change 0 ≤ x2 at hx20
+    change 0 ≤ x3 at hx30
+    change x1 + x2 + x3 ≤ 1 at hsum
     constructor
     · constructor
       · exact hx20
@@ -39,7 +43,11 @@ theorem fullSimplexSet_section_iff
       · exact hx30
       · linarith
   · rintro ⟨⟨hx20, hx2hi⟩, hx30, h23⟩
-    exact ⟨⟨⟨hx10, hx20⟩, hx30⟩, by linarith⟩
+    change 0 ≤ x3 at hx30
+    change x2 + x3 ≤ 1 - x1 at h23
+    exact ⟨⟨⟨hx10, hx20⟩, hx30⟩, by
+      change x1 + x2 + x3 ≤ 1
+      linarith⟩
 
 /-- Pointwise factorization of the full-simplex indicator along a physical
 outer section.  This is the algebraic interface needed before applying Fubini
