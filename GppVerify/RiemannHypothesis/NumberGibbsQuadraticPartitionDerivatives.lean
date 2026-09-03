@@ -52,16 +52,17 @@ theorem hasDerivAt_Z_beta_raw
   have hbound : ∀ n b, b ∈ U → ‖g' n b‖ ≤ d n := by
     intro n b hb
     have hβlower : -B ≤ b := by
-      have hβabs : -|β| ≤ β := neg_abs_le β
-      dsimp [U] at hb
-      dsimp [B]
-      linarith
+      calc
+        -B = -(|β| + 1) := by rfl
+        _ ≤ β - 1 := by linarith [neg_abs_le β]
+        _ ≤ b := le_of_lt hb.1
     have henv := numberGibbs_moment_le_const_mul_gibbs_moment_two_uniform
       B η b η 1 hη hβlower le_rfl n
     have hw0 : 0 ≤ numberGibbsWeight b η n := numberGibbsWeight_nonneg b η n
-    have hL0 : 0 ≤ numberLogEnergy n := numberLogEnergy_nonneg n
+    have hL0 : 0 ≤ numberLogEnergy n := by
+      simpa [numberLogEnergy, logEnergy] using logEnergy_nonneg n
     dsimp [g']
-    rw [Real.norm_eq_abs, abs_mul, abs_neg, abs_of_nonneg hw0, abs_of_nonneg hL0]
+    rw [abs_mul, abs_neg, abs_of_nonneg hw0, abs_of_nonneg hL0]
     simpa [d, C, pow_one, numberLogEnergy, logEnergy] using henv
 
   have hbase_mem : β ∈ U := by
