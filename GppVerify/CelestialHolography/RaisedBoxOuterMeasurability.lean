@@ -24,9 +24,13 @@ open GppRaisedBoxConcreteMoment
 
 /-- The standard affine three-simplex, grouped as `x1 × (x2 × x3)` so that
 `integral_prod_right'` integrates the two inner coordinates as one product
-fiber. -/
+fiber.  It is written directly as an intersection of four half-spaces so that
+the measurability proof has exactly the same set expression. -/
 def fullSimplexSet : Set (ℝ × (ℝ × ℝ)) :=
-  {p | 0 ≤ p.1 ∧ 0 ≤ p.2.1 ∧ 0 ≤ p.2.2 ∧ p.1 + p.2.1 + p.2.2 ≤ 1}
+  {p | 0 ≤ p.1} ∩
+    {p | 0 ≤ p.2.1} ∩
+      {p | 0 ≤ p.2.2} ∩
+        {p | p.1 + p.2.1 + p.2.2 ≤ 1}
 
 /-- The grouped affine three-simplex is Borel measurable. -/
 theorem measurableSet_fullSimplexSet : MeasurableSet fullSimplexSet := by
@@ -39,10 +43,10 @@ theorem measurableSet_fullSimplexSet : MeasurableSet fullSimplexSet := by
   have hzero : Measurable (fun _ : ℝ × (ℝ × ℝ) => (0 : ℝ)) := measurable_const
   have hone : Measurable (fun _ : ℝ × (ℝ × ℝ) => (1 : ℝ)) := measurable_const
   exact
-    (((measurableSet_le hzero hx1).inter
-      (measurableSet_le hzero hx2)).inter
-      (measurableSet_le hzero hx3)).inter
-      (measurableSet_le ((hx1.add hx2).add hx3) hone)
+    (measurableSet_le hzero hx1).inter
+      ((measurableSet_le hzero hx2).inter
+        ((measurableSet_le hzero hx3).inter
+          (measurableSet_le ((hx1.add hx2).add hx3) hone)))
 
 /-- The raised-box integrand is jointly Borel measurable in all three affine
 simplex coordinates. -/
