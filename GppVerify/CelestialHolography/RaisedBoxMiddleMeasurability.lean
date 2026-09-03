@@ -94,7 +94,9 @@ theorem intervalInnerIntegral_norm_le_integratedMajorant
         (1 + (S * x1 * x3) ^ (-δ : ℝ)) := by
     apply intervalIntegral.integral_nonneg_of_forall hL
     intro x3
-    exact add_nonneg zero_le_one (Real.rpow_nonneg (by positivity) _)
+    have hprod : 0 ≤ S * x1 * x3 := by
+      exact mul_nonneg (mul_nonneg hS.le hx1.le) (by linarith)
+    exact add_nonneg zero_le_one (Real.rpow_nonneg hprod _)
   simpa [abs_of_nonneg hMajNonneg] using hAbs
 
 /-- Explicit form of the previous norm bound after evaluating the singular
