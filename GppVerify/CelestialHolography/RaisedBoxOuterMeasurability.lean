@@ -36,11 +36,13 @@ theorem measurableSet_fullSimplexSet : MeasurableSet fullSimplexSet := by
     measurable_fst.comp measurable_snd
   have hx3 : Measurable (fun p : ℝ × (ℝ × ℝ) => p.2.2) :=
     measurable_snd.comp measurable_snd
+  have hzero : Measurable (fun _ : ℝ × (ℝ × ℝ) => (0 : ℝ)) := measurable_const
+  have hone : Measurable (fun _ : ℝ × (ℝ × ℝ) => (1 : ℝ)) := measurable_const
   exact
-    (((measurableSet_le measurable_const hx1).inter
-      (measurableSet_le measurable_const hx2)).inter
-      (measurableSet_le measurable_const hx3)).inter
-      (measurableSet_le ((hx1.add hx2).add hx3) measurable_const)
+    (((measurableSet_le hzero hx1).inter
+      (measurableSet_le hzero hx2)).inter
+      (measurableSet_le hzero hx3)).inter
+      (measurableSet_le ((hx1.add hx2).add hx3) hone)
 
 /-- The raised-box integrand is jointly Borel measurable in all three affine
 simplex coordinates. -/
