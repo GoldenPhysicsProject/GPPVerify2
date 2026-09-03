@@ -106,7 +106,7 @@ theorem strip_section_norm_integral_eq_intervalIntegral
       filter_upwards [] with x3
       rw [stripIntegrand_section_eq_Icc_indicator]
       by_cases hx3 : x3 ∈ Set.Icc (0 : ℝ) (1 - x1 - x2)
-      · rw [Set.indicator_of_mem hx3, Set.indicator_of_mem hx3]
+      · rw [Set.indicator_of_mem hx3]
         have hx30 : 0 ≤ x3 := hx3.1
         have hx3hi : x3 ≤ 1 - x1 - x2 := hx3.2
         have hslack : 0 ≤ 1 - x1 - x2 - x3 := by linarith
