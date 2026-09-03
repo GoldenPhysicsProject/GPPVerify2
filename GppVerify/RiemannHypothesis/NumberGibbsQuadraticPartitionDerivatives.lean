@@ -77,6 +77,20 @@ theorem hasDerivAt_Z_beta_raw
     hd isOpen_Ioo isPreconnected_Ioo hderiv hbound hbase_mem hbase hbase_mem
   simpa [Z, g, g'] using H
 
+/-- The inverse-temperature derivative is exactly minus the first raw
+log-energy moment.  This is the thermodynamic identity `∂β Z = -M1`, now at the
+actual countable partition-function level rather than only termwise. -/
+theorem hasDerivAt_Z_beta
+    (β : ℝ) {η : ℝ} (hη : 0 < η) :
+    HasDerivAt (fun b : ℝ => Z b η) (-M1 β η) β := by
+  convert hasDerivAt_Z_beta_raw β hη using 1
+  unfold M1
+  rw [← tsum_neg]
+  apply tsum_congr
+  intro n
+  ring
+
 end GppNumberGibbsQuadraticPartitionDerivatives
 
 #print axioms GppNumberGibbsQuadraticPartitionDerivatives.hasDerivAt_Z_beta_raw
+#print axioms GppNumberGibbsQuadraticPartitionDerivatives.hasDerivAt_Z_beta
