@@ -7,8 +7,8 @@ import Mathlib.Tactic
 
 The uniform quadratic-confinement estimates already provide common summable
 log-moment envelopes on compact parameter regions.  This file isolates the
-other ingredient needed for termwise differentiation: the exact derivative of
-each Gibbs summand with respect to each parameter.
+other ingredient needed for termwise differentiation: the exact first and
+second derivatives of each Gibbs summand with respect to the two parameters.
 -/
 
 namespace GppNumberGibbsQuadraticTermDerivatives
@@ -44,7 +44,41 @@ theorem numberGibbsWeight_hasDerivAt_eta
   have h := (Real.hasDerivAt_exp (-β * L - η * L ^ 2)).comp η hinner
   simpa [numberGibbsWeight, numberLogEnergy, L] using h
 
+/-- The second `β` derivative of one Gibbs summand contributes the positive
+square of the log-energy.  This is the termwise `ββ` Hessian entry. -/
+theorem numberGibbsWeight_beta_deriv_hasDerivAt_beta
+    (β η : ℝ) (n : ℕ) :
+    HasDerivAt
+      (fun b : ℝ => numberGibbsWeight b η n * (-numberLogEnergy n))
+      (numberGibbsWeight β η n * numberLogEnergy n ^ 2) β := by
+  have h := (numberGibbsWeight_hasDerivAt_beta β η n).mul_const (-numberLogEnergy n)
+  convert h using 1 <;> ring
+
+/-- The mixed `η` derivative of the `β` derivative contributes the cube of the
+log-energy.  Equality of the opposite mixed order is immediate from the same
+closed-form summand and can be promoted after countable differentiation. -/
+theorem numberGibbsWeight_beta_deriv_hasDerivAt_eta
+    (β η : ℝ) (n : ℕ) :
+    HasDerivAt
+      (fun e : ℝ => numberGibbsWeight β e n * (-numberLogEnergy n))
+      (numberGibbsWeight β η n * numberLogEnergy n ^ 3) η := by
+  have h := (numberGibbsWeight_hasDerivAt_eta β η n).mul_const (-numberLogEnergy n)
+  convert h using 1 <;> ring
+
+/-- The second `η` derivative of one Gibbs summand contributes the fourth power
+of the log-energy.  This is the termwise `ηη` Hessian entry. -/
+theorem numberGibbsWeight_eta_deriv_hasDerivAt_eta
+    (β η : ℝ) (n : ℕ) :
+    HasDerivAt
+      (fun e : ℝ => numberGibbsWeight β e n * (-(numberLogEnergy n) ^ 2))
+      (numberGibbsWeight β η n * numberLogEnergy n ^ 4) η := by
+  have h := (numberGibbsWeight_hasDerivAt_eta β η n).mul_const (-(numberLogEnergy n) ^ 2)
+  convert h using 1 <;> ring
+
 end GppNumberGibbsQuadraticTermDerivatives
 
 #print axioms GppNumberGibbsQuadraticTermDerivatives.numberGibbsWeight_hasDerivAt_beta
 #print axioms GppNumberGibbsQuadraticTermDerivatives.numberGibbsWeight_hasDerivAt_eta
+#print axioms GppNumberGibbsQuadraticTermDerivatives.numberGibbsWeight_beta_deriv_hasDerivAt_beta
+#print axioms GppNumberGibbsQuadraticTermDerivatives.numberGibbsWeight_beta_deriv_hasDerivAt_eta
+#print axioms GppNumberGibbsQuadraticTermDerivatives.numberGibbsWeight_eta_deriv_hasDerivAt_eta
