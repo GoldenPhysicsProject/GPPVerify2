@@ -44,13 +44,15 @@ theorem integrand_inner_intervalIntegrable
   · filter_upwards [ae_restrict_mem measurableSet_uIoc] with x3 hx3mem
     rw [Set.uIoc_of_le hL] at hx3mem
     have hx3 : 0 < x3 := hx3mem.1
+    have hx3le : x3 ≤ 1 - x1 - x2 := hx3mem.2
     have hxsum : x1 + x2 + x3 ≤ 1 := by linarith
-    have hQ : 0 < Q S T x1 x2 x3 := by
+    have hslack : 0 ≤ 1 - x1 - x2 - x3 := by linarith
+    have hQ : 0 ≤ Q S T x1 x2 x3 := by
       unfold Q
       positivity
     have hnonneg : 0 ≤ integrand ε S T x1 x2 x3 := by
       unfold integrand
-      exact Real.rpow_nonneg hQ.le _
+      exact Real.rpow_nonneg hQ _
     rw [Real.norm_eq_abs, abs_of_nonneg hnonneg]
     exact integrand_le_one_channel_majorant
       hS hT hx1 hx2 hx3 hxsum hε0 hεδ hδ0
