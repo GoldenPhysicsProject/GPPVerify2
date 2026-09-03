@@ -103,8 +103,16 @@ theorem fullSimplexFiberIntegral_eq_iteratedStrip
               ((innerSimplexStrip x1).indicator
                 (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2))
                 (y, x3)) x2 := by
+  have hIntProd : Integrable
+      (fun p : ℝ × ℝ =>
+        (fullSimplexSet.indicator
+          (fun q : ℝ × (ℝ × ℝ) =>
+            integrand ε S T q.1 q.2.1 q.2.2)) (x1, p))
+      (volume.prod volume) := by
+    rw [← MeasureTheory.Measure.volume_eq_prod ℝ ℝ]
+    exact hInt
   rw [MeasureTheory.Measure.volume_eq_prod ℝ ℝ]
-  rw [MeasureTheory.integral_prod hInt]
+  rw [MeasureTheory.integral_prod hIntProd]
   apply MeasureTheory.integral_congr_ae
   filter_upwards [] with x2
   by_cases hx2 : x2 ∈ Set.Icc (0 : ℝ) (1 - x1)
