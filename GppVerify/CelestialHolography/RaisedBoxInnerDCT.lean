@@ -84,7 +84,9 @@ theorem inner_interval_tendsto_one
       exact inf_le_left
   · have heq : x1 + x2 = 1 := le_antisymm hx12 (not_lt.mp hstrict)
     have hzero : 1 - x1 - x2 = 0 := by linarith
-    simp [hzero]
+    rw [hzero]
+    simp only [intervalIntegral.integral_same]
+    exact tendsto_const_nhds
 
 end GppRaisedBoxInnerDCT
 
