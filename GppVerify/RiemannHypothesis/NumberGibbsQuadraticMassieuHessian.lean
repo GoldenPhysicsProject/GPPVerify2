@@ -19,17 +19,49 @@ open GppNumberGibbsQuadraticPartitionDerivatives
 open GppNumberGibbsQuadraticMomentDerivatives
 open GppNumberGibbsQuadraticMassieuDerivatives
 
-/-- Variance entry of the normalized `(L,L^2)` covariance matrix. -/
+/-- Variance entry of the normalized `(L,L^2)` covariance matrix, written over
+its common denominator. -/
 noncomputable def fisherBB (β η : ℝ) : ℝ :=
-  M2 β η / Z β η - (M1 β η / Z β η) ^ 2
+  (M2 β η * Z β η - M1 β η * M1 β η) / Z β η ^ 2
 
-/-- Mixed covariance entry of the normalized `(L,L^2)` covariance matrix. -/
+/-- Mixed covariance entry of the normalized `(L,L^2)` covariance matrix,
+written over its common denominator. -/
 noncomputable def fisherBE (β η : ℝ) : ℝ :=
-  M3 β η / Z β η - (M1 β η * M2 β η) / Z β η ^ 2
+  (M3 β η * Z β η - M1 β η * M2 β η) / Z β η ^ 2
 
-/-- Variance entry for `L^2`. -/
+/-- Variance entry for `L^2`, written over its common denominator. -/
 noncomputable def fisherEE (β η : ℝ) : ℝ :=
-  M4 β η / Z β η - (M2 β η / Z β η) ^ 2
+  (M4 β η * Z β η - M2 β η * M2 β η) / Z β η ^ 2
+
+/-- The common-denominator definition agrees with the usual normalized
+variance formula. -/
+theorem fisherBB_eq_covariance (β η : ℝ) :
+    fisherBB β η = M2 β η / Z β η - (M1 β η / Z β η) ^ 2 := by
+  by_cases hZ : Z β η = 0
+  · simp [fisherBB, hZ]
+  · unfold fisherBB
+    field_simp [hZ]
+    ring
+
+/-- The common-denominator mixed entry agrees with the usual normalized
+covariance formula. -/
+theorem fisherBE_eq_covariance (β η : ℝ) :
+    fisherBE β η = M3 β η / Z β η - (M1 β η * M2 β η) / Z β η ^ 2 := by
+  by_cases hZ : Z β η = 0
+  · simp [fisherBE, hZ]
+  · unfold fisherBE
+    field_simp [hZ]
+    ring
+
+/-- The common-denominator definition agrees with the normalized `L^2`
+variance formula. -/
+theorem fisherEE_eq_covariance (β η : ℝ) :
+    fisherEE β η = M4 β η / Z β η - (M2 β η / Z β η) ^ 2 := by
+  by_cases hZ : Z β η = 0
+  · simp [fisherEE, hZ]
+  · unfold fisherEE
+    field_simp [hZ]
+    ring
 
 /-- `∂β ⟨L⟩ = -Var(L)`. -/
 theorem hasDerivAt_internalEnergy_beta
@@ -40,7 +72,7 @@ theorem hasDerivAt_internalEnergy_beta
   convert H using 1
   · simp [internalEnergy]
   · unfold fisherBB
-    field_simp [hZne] <;> ring
+    ring
 
 /-- `∂η ⟨L⟩ = -Cov(L,L²)`. -/
 theorem hasDerivAt_internalEnergy_eta
@@ -51,7 +83,7 @@ theorem hasDerivAt_internalEnergy_eta
   convert H using 1
   · simp [internalEnergy]
   · unfold fisherBE
-    field_simp [hZne] <;> ring
+    ring
 
 /-- `∂β ⟨L²⟩ = -Cov(L,L²)`. -/
 theorem hasDerivAt_quadraticEnergy_beta
@@ -62,7 +94,7 @@ theorem hasDerivAt_quadraticEnergy_beta
   convert H using 1
   · simp [quadraticEnergy]
   · unfold fisherBE
-    field_simp [hZne] <;> ring
+    ring
 
 /-- `∂η ⟨L²⟩ = -Var(L²)`. -/
 theorem hasDerivAt_quadraticEnergy_eta
@@ -73,7 +105,7 @@ theorem hasDerivAt_quadraticEnergy_eta
   convert H using 1
   · simp [quadraticEnergy]
   · unfold fisherEE
-    field_simp [hZne] <;> ring
+    ring
 
 /-- The inverse-temperature second derivative of `log Z` is `Var(L)`. -/
 theorem hasDerivAt_negInternalEnergy_beta
@@ -101,6 +133,9 @@ theorem hasDerivAt_negQuadraticEnergy_eta
 
 end GppNumberGibbsQuadraticMassieuHessian
 
+#print axioms GppNumberGibbsQuadraticMassieuHessian.fisherBB_eq_covariance
+#print axioms GppNumberGibbsQuadraticMassieuHessian.fisherBE_eq_covariance
+#print axioms GppNumberGibbsQuadraticMassieuHessian.fisherEE_eq_covariance
 #print axioms GppNumberGibbsQuadraticMassieuHessian.hasDerivAt_internalEnergy_beta
 #print axioms GppNumberGibbsQuadraticMassieuHessian.hasDerivAt_internalEnergy_eta
 #print axioms GppNumberGibbsQuadraticMassieuHessian.hasDerivAt_quadraticEnergy_beta
