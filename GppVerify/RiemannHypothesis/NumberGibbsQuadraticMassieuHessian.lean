@@ -25,7 +25,7 @@ noncomputable def fisherBB (β η : ℝ) : ℝ :=
 
 /-- Mixed covariance entry of the normalized `(L,L^2)` covariance matrix. -/
 noncomputable def fisherBE (β η : ℝ) : ℝ :=
-  M3 β η / Z β η - (M1 β η * M2 β η) / Z β η ^ 2
+  M3 β η / Z β η - (M1 β η * M2 β η) / Z β eta ^ 2
 
 /-- Variance entry for `L^2`. -/
 noncomputable def fisherEE (β η : ℝ) : ℝ :=
@@ -41,7 +41,6 @@ theorem hasDerivAt_internalEnergy_beta
   · simp [internalEnergy]
   · unfold fisherBB
     field_simp [hZne]
-    ring
 
 /-- `∂η ⟨L⟩ = -Cov(L,L²)`. -/
 theorem hasDerivAt_internalEnergy_eta
@@ -53,7 +52,6 @@ theorem hasDerivAt_internalEnergy_eta
   · simp [internalEnergy]
   · unfold fisherBE
     field_simp [hZne]
-    ring
 
 /-- `∂β ⟨L²⟩ = -Cov(L,L²)`. -/
 theorem hasDerivAt_quadraticEnergy_beta
@@ -65,7 +63,6 @@ theorem hasDerivAt_quadraticEnergy_beta
   · simp [quadraticEnergy]
   · unfold fisherBE
     field_simp [hZne]
-    ring
 
 /-- `∂η ⟨L²⟩ = -Var(L²)`. -/
 theorem hasDerivAt_quadraticEnergy_eta
@@ -77,7 +74,6 @@ theorem hasDerivAt_quadraticEnergy_eta
   · simp [quadraticEnergy]
   · unfold fisherEE
     field_simp [hZne]
-    ring
 
 /-- The inverse-temperature second derivative of `log Z` is `Var(L)`. -/
 theorem hasDerivAt_negInternalEnergy_beta
