@@ -85,7 +85,11 @@ theorem simplexMoment_tendsto_simplexVolume
       rw [Set.uIoc_of_le (show (0 : ℝ) ≤ 1 by norm_num)] at hx1
       by_cases hxone : x1 = 1
       · subst x1
-        simp [F, B]
+        simp only [F, intervalIntegral.integral_same, norm_zero, B, mul_one]
+        have hpow : 0 ≤ S ^ (-δ : ℝ) :=
+          (Real.rpow_pos_of_pos hS (-δ)).le
+        have hden : 0 ≤ 1 - δ := (sub_pos.mpr hδ1).le
+        exact add_nonneg zero_le_one (div_nonneg hpow hden)
       · exact nestedInnerIntegral_norm_le_outerMajorant
           hδ0 hδ1 hε.1 hε.2 hS hT hx1.1 (lt_of_le_of_ne hx1.2 hxone)
     · exact middleConstant_outer_intervalIntegrable hδ0 hδ1 hS
@@ -94,7 +98,8 @@ theorem simplexMoment_tendsto_simplexVolume
       rw [Set.uIoc_of_le (show (0 : ℝ) ≤ 1 by norm_num)] at hx1
       by_cases hxone : x1 = 1
       · subst x1
-        simp [F, F0]
+        simp only [F, F0, intervalIntegral.integral_same]
+        exact tendsto_const_nhds
       · exact middle_interval_tendsto_inner_one
           hδ0 hδ1 hS hT hx1.1 (lt_of_le_of_ne hx1.2 hxone)
   simpa [F, F0, simplexMoment, simplexVolume] using hTend
