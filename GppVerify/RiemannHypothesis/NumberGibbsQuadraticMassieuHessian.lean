@@ -40,7 +40,7 @@ theorem hasDerivAt_internalEnergy_beta
   convert H using 1
   · simp [internalEnergy]
   · unfold fisherBB
-    field_simp [hZne]
+    field_simp [hZne] <;> ring
 
 /-- `∂η ⟨L⟩ = -Cov(L,L²)`. -/
 theorem hasDerivAt_internalEnergy_eta
@@ -51,7 +51,7 @@ theorem hasDerivAt_internalEnergy_eta
   convert H using 1
   · simp [internalEnergy]
   · unfold fisherBE
-    field_simp [hZne]
+    field_simp [hZne] <;> ring
 
 /-- `∂β ⟨L²⟩ = -Cov(L,L²)`. -/
 theorem hasDerivAt_quadraticEnergy_beta
@@ -62,7 +62,7 @@ theorem hasDerivAt_quadraticEnergy_beta
   convert H using 1
   · simp [quadraticEnergy]
   · unfold fisherBE
-    field_simp [hZne]
+    field_simp [hZne] <;> ring
 
 /-- `∂η ⟨L²⟩ = -Var(L²)`. -/
 theorem hasDerivAt_quadraticEnergy_eta
@@ -73,7 +73,7 @@ theorem hasDerivAt_quadraticEnergy_eta
   convert H using 1
   · simp [quadraticEnergy]
   · unfold fisherEE
-    field_simp [hZne]
+    field_simp [hZne] <;> ring
 
 /-- The inverse-temperature second derivative of `log Z` is `Var(L)`. -/
 theorem hasDerivAt_negInternalEnergy_beta
