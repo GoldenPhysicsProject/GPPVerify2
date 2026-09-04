@@ -40,7 +40,9 @@ theorem simplexVolume_eq_one_sixth :
       (∫ x2 in (0 : ℝ)..(1 - x1), (1 - x1 - x2)) =
           (∫ x2 in (0 : ℝ)..(1 - x1), (1 - x1 : ℝ)) -
             (∫ x2 in (0 : ℝ)..(1 - x1), x2) := by
-              rw [intervalIntegral.integral_sub]
+              rw [intervalIntegral.integral_sub
+                intervalIntegral.intervalIntegrable_const
+                intervalIntegral.intervalIntegrable_id]
       _ = (1 - x1) ^ 2 / 2 := by
         rw [hconst, hid]
         ring
@@ -69,7 +71,13 @@ theorem simplexVolume_eq_one_sixth :
         (∫ _x1 in (0 : ℝ)..1, (1 / 2 : ℝ)) -
           (∫ x1 in (0 : ℝ)..1, x1) +
             (∫ x1 in (0 : ℝ)..1, x1 ^ 2 / 2) := by
-              rw [intervalIntegral.integral_add, intervalIntegral.integral_sub]
+              rw [intervalIntegral.integral_add
+                (intervalIntegral.intervalIntegrable_const.sub
+                  intervalIntegral.intervalIntegrable_id)
+                ((intervalIntegral.intervalIntegrable_pow 2).div_const 2),
+                intervalIntegral.integral_sub
+                  intervalIntegral.intervalIntegrable_const
+                  intervalIntegral.intervalIntegrable_id]
     _ = (1 / 6 : ℝ) := by
       rw [h0, h1, h2]
       norm_num
