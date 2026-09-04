@@ -16,6 +16,9 @@ nested Feynman-parameter coordinates.
 For `0 < δ < 1`, `S,T > 0`, and `ε -> 0` through `0 ≤ ε ≤ δ`, this closes
 
   simplexMoment ε S T -> simplexVolume = 1/6.
+
+The module is also the direct changed-Lean certification target for the complete
+raised-box dependency chain, including the concrete `1/6` normalization.
 -/
 
 namespace GppRaisedBoxOuterDCTClosure
