@@ -5,7 +5,7 @@ import Mathlib.Tactic
 # Thermodynamics of the quadratically confined number-Gibbs family
 
 For arbitrary real `β` and strictly positive `η`, quadratic log-confinement makes the
-partition function and the first two log-energy moments absolutely summable.  This file
+partition function and the first four log-energy moments absolutely summable.  This file
 packages the corresponding normalized observables and the exact two-parameter Gibbs
 entropy/Legendre identities.  No differentiability of the partition function is used here.
 -/
@@ -27,6 +27,14 @@ noncomputable def M1 (β η : ℝ) : ℝ :=
 /-- Second raw log-energy moment. -/
 noncomputable def M2 (β η : ℝ) : ℝ :=
   ∑' n : ℕ, numberGibbsWeight β η n * numberLogEnergy n ^ 2
+
+/-- Third raw log-energy moment. -/
+noncomputable def M3 (β η : ℝ) : ℝ :=
+  ∑' n : ℕ, numberGibbsWeight β η n * numberLogEnergy n ^ 3
+
+/-- Fourth raw log-energy moment. -/
+noncomputable def M4 (β η : ℝ) : ℝ :=
+  ∑' n : ℕ, numberGibbsWeight β η n * numberLogEnergy n ^ 4
 
 /-- Mean log-energy. -/
 noncomputable def internalEnergy (β η : ℝ) : ℝ := M1 β η / Z β η
