@@ -85,7 +85,10 @@ theorem simplexMoment_tendsto_simplexVolume
       rw [Set.uIoc_of_le (show (0 : ℝ) ≤ 1 by norm_num)] at hx1
       by_cases hxone : x1 = 1
       · subst x1
-        simp only [F, intervalIntegral.integral_same, norm_zero, B, mul_one]
+        have hF1 : F ε 1 = 0 := by
+          simp [F]
+        rw [hF1]
+        simp only [norm_zero, B, mul_one]
         have hpow : 0 ≤ S ^ (-δ : ℝ) :=
           (Real.rpow_pos_of_pos hS (-δ)).le
         have hden : 0 ≤ 1 - δ := (sub_pos.mpr hδ1).le
@@ -98,8 +101,17 @@ theorem simplexMoment_tendsto_simplexVolume
       rw [Set.uIoc_of_le (show (0 : ℝ) ≤ 1 by norm_num)] at hx1
       by_cases hxone : x1 = 1
       · subst x1
-        simp only [F, F0, intervalIntegral.integral_same]
-        exact tendsto_const_nhds
+        change Tendsto (fun ε : ℝ => F ε 1)
+          (𝓝[Set.Icc 0 δ] 0) (nhds (F0 1))
+        have hF1 : ∀ ε : ℝ, F ε 1 = 0 := by
+          intro ε
+          simp [F]
+        have hF01 : F0 1 = 0 := by
+          simp [F0]
+        simpa only [hF1, hF01] using
+          (tendsto_const_nhds :
+            Tendsto (fun _ : ℝ => (0 : ℝ))
+              (𝓝[Set.Icc 0 δ] 0) (nhds 0))
       · exact middle_interval_tendsto_inner_one
           hδ0 hδ1 hS hT hx1.1 (lt_of_le_of_ne hx1.2 hxone)
   simpa [F, F0, simplexMoment, simplexVolume] using hTend
