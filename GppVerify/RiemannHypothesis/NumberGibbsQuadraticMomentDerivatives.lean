@@ -77,7 +77,6 @@ theorem hasDerivAt_M1_beta
   unfold M2
   rw [← tsum_neg]
   apply tsum_congr
-  intro n
 
 /-- `∂η M1 = -M3` throughout the confined region `η > 0`. -/
 theorem hasDerivAt_M1_eta
@@ -129,7 +128,6 @@ theorem hasDerivAt_M1_eta
   unfold M3
   rw [← tsum_neg]
   apply tsum_congr
-  intro n
 
 /-- `∂β M2 = -M3` throughout the confined region `η > 0`. -/
 theorem hasDerivAt_M2_beta
@@ -180,7 +178,6 @@ theorem hasDerivAt_M2_beta
   unfold M3
   rw [← tsum_neg]
   apply tsum_congr
-  intro n
 
 /-- `∂η M2 = -M4` throughout the confined region `η > 0`. -/
 theorem hasDerivAt_M2_eta
@@ -232,7 +229,6 @@ theorem hasDerivAt_M2_eta
   unfold M4
   rw [← tsum_neg]
   apply tsum_congr
-  intro n
 
 end GppNumberGibbsQuadraticMomentDerivatives
 
