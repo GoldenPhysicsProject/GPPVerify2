@@ -102,8 +102,22 @@ theorem simplexMoment_tendsto_one_sixth
   simpa [simplexVolume_eq_one_sixth] using
     simplexMoment_tendsto_simplexVolume hδ0 hδ1 hS hT
 
+/-- Public scalar-box regulator endpoint.  This theorem intentionally repeats
+the physical `1/6` target under a stable name so downstream cut/dispersion work
+need not depend on the internal simplex-volume normalization theorem. -/
+theorem scalarBox_regulator_tendsto_one_sixth
+    {δ S T : ℝ}
+    (hδ0 : 0 < δ) (hδ1 : δ < 1)
+    (hS : 0 < S) (hT : 0 < T) :
+    Tendsto
+      (fun ε : ℝ => simplexMoment ε S T)
+      (𝓝[Set.Icc 0 δ] 0)
+      (nhds (1 / 6 : ℝ)) :=
+  simplexMoment_tendsto_one_sixth hδ0 hδ1 hS hT
+
 end GppRaisedBoxOuterDCTClosure
 
 #print axioms GppRaisedBoxOuterDCTClosure.restrict_uIoc_zero_one_eq_restrict_Ioo
 #print axioms GppRaisedBoxOuterDCTClosure.simplexMoment_tendsto_simplexVolume
 #print axioms GppRaisedBoxOuterDCTClosure.simplexMoment_tendsto_one_sixth
+#print axioms GppRaisedBoxOuterDCTClosure.scalarBox_regulator_tendsto_one_sixth
