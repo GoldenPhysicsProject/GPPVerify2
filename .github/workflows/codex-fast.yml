@@ -42,9 +42,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .lake
-          key: lake-${{ hashFiles('lakefile.toml', 'lean-toolchain') }}-${{ runner.os }}
+          key: lake-v3-${{ hashFiles('lakefile.toml', 'lean-toolchain') }}-${{ runner.os }}
           restore-keys: |
-            lake-${{ hashFiles('lakefile.toml', 'lean-toolchain') }}-
+            lake-v3-${{ hashFiles('lakefile.toml', 'lean-toolchain') }}-
 
       - name: Get Mathlib cache
         run: lake exe cache get || true
