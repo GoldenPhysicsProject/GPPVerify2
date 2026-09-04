@@ -1,5 +1,5 @@
 import GppVerify.CelestialHolography.RaisedBoxConcreteMoment
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegralEqImproper
 import Mathlib.Tactic
 
 /-!
@@ -7,13 +7,12 @@ import Mathlib.Tactic
 
 This file closes the normalization gap between the actual real affine-simplex
 volume used by `simplexMoment` and the auxiliary complex Beta/Gamma reduction.
-The concrete nested interval integral is evaluated directly by the fundamental
-theorem of calculus, avoiding version-sensitive special-function integral lemmas.
+The concrete nested interval integral is evaluated directly from the pinned
+Mathlib polynomial integral theorem `integral_pow`.
 -/
 
 namespace GppRaisedBoxConcreteVolumeClosure
 
-open Set MeasureTheory
 open scoped Interval
 open GppRaisedBoxConcreteMoment
 
@@ -25,41 +24,54 @@ theorem simplexVolume_eq_one_sixth :
       (∫ x2 in (0 : ℝ)..(1 - x1), (1 - x1 - x2)) =
         (1 - x1) ^ 2 / 2 := by
     intro x1
-    let F : ℝ → ℝ := fun x2 => (1 - x1) * x2 - x2 ^ 2 / 2
-    have hF : ∀ x2 ∈ Set.uIcc (0 : ℝ) (1 - x1),
-        HasDerivAt F (1 - x1 - x2) x2 := by
-      intro x2 hx2
-      dsimp [F]
-      convert (by fun_prop : HasDerivAt
-        (fun y : ℝ => (1 - x1) * y - y ^ 2 / 2) _ x2) using 1 <;> ring
-    have hint : IntervalIntegrable (fun x2 : ℝ => 1 - x1 - x2)
-        volume 0 (1 - x1) :=
-      (continuous_const.sub continuous_id).intervalIntegrable
+    have hconst :
+        (∫ _x2 in (0 : ℝ)..(1 - x1), (1 - x1 : ℝ)) =
+          (1 - x1) * (1 - x1) := by
+      simp
+    have hid :
+        (∫ x2 in (0 : ℝ)..(1 - x1), x2) =
+          (1 - x1) ^ 2 / 2 := by
+      rw [show (fun x2 : ℝ => x2) = (fun x2 : ℝ => x2 ^ (1 : ℕ)) by
+        funext x2
+        simp]
+      rw [integral_pow]
+      ring
     calc
       (∫ x2 in (0 : ℝ)..(1 - x1), (1 - x1 - x2)) =
-          F (1 - x1) - F 0 :=
-        intervalIntegral.integral_eq_sub_of_hasDerivAt hF hint
+          (∫ x2 in (0 : ℝ)..(1 - x1), (1 - x1 : ℝ)) -
+            (∫ x2 in (0 : ℝ)..(1 - x1), x2) := by
+              rw [intervalIntegral.integral_sub]
       _ = (1 - x1) ^ 2 / 2 := by
-        dsimp [F]
+        rw [hconst, hid]
         ring
   unfold simplexVolume
   simp only [intervalIntegral.integral_const]
   simp_rw [hinner]
-  let G : ℝ → ℝ := fun x1 => x1 / 2 - x1 ^ 2 / 2 + x1 ^ 3 / 6
-  have hG : ∀ x1 ∈ Set.uIcc (0 : ℝ) 1,
-      HasDerivAt G ((1 - x1) ^ 2 / 2) x1 := by
-    intro x1 hx1
-    dsimp [G]
-    convert (by fun_prop : HasDerivAt
-      (fun y : ℝ => y / 2 - y ^ 2 / 2 + y ^ 3 / 6) _ x1) using 1 <;> ring
-  have hout : IntervalIntegrable (fun x1 : ℝ => (1 - x1) ^ 2 / 2)
-      volume 0 1 := by
-    fun_prop
+  have hpoly : ∀ x1 : ℝ,
+      (1 - x1) ^ 2 / 2 = 1 / 2 - x1 + x1 ^ 2 / 2 := by
+    intro x1
+    ring
+  simp_rw [hpoly]
+  have h0 : (∫ _x1 in (0 : ℝ)..1, (1 / 2 : ℝ)) = 1 / 2 := by
+    norm_num
+  have h1 : (∫ x1 in (0 : ℝ)..1, x1) = 1 / 2 := by
+    rw [show (fun x1 : ℝ => x1) = (fun x1 : ℝ => x1 ^ (1 : ℕ)) by
+      funext x1
+      simp]
+    rw [integral_pow]
+    norm_num
+  have h2 : (∫ x1 in (0 : ℝ)..1, x1 ^ 2 / 2) = 1 / 6 := by
+    rw [intervalIntegral.integral_div]
+    rw [integral_pow]
+    norm_num
   calc
-    (∫ x1 in (0 : ℝ)..1, (1 - x1) ^ 2 / 2) = G 1 - G 0 :=
-      intervalIntegral.integral_eq_sub_of_hasDerivAt hG hout
+    (∫ x1 in (0 : ℝ)..1, (1 / 2 - x1 + x1 ^ 2 / 2)) =
+        (∫ _x1 in (0 : ℝ)..1, (1 / 2 : ℝ)) -
+          (∫ x1 in (0 : ℝ)..1, x1) +
+            (∫ x1 in (0 : ℝ)..1, x1 ^ 2 / 2) := by
+              rw [intervalIntegral.integral_add, intervalIntegral.integral_sub]
     _ = (1 / 6 : ℝ) := by
-      dsimp [G]
+      rw [h0, h1, h2]
       norm_num
 
 /-- Consequently the concrete raised-box moment at zero regulator is exactly
