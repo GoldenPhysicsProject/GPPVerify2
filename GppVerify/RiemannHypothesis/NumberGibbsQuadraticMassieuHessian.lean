@@ -25,7 +25,7 @@ noncomputable def fisherBB (β η : ℝ) : ℝ :=
 
 /-- Mixed covariance entry of the normalized `(L,L^2)` covariance matrix. -/
 noncomputable def fisherBE (β η : ℝ) : ℝ :=
-  M3 β η / Z β η - (M1 β η * M2 β η) / Z β eta ^ 2
+  M3 β η / Z β η - (M1 β η * M2 β η) / Z β η ^ 2
 
 /-- Variance entry for `L^2`. -/
 noncomputable def fisherEE (β η : ℝ) : ℝ :=
