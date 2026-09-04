@@ -40,7 +40,8 @@ theorem restrict_uIoc_zero_one_eq_restrict_Ioo :
     volume.restrict (Set.uIoc (0 : ℝ) 1) =
       volume.restrict (Set.Ioo (0 : ℝ) 1) := by
   rw [Set.uIoc_of_le (show (0 : ℝ) ≤ 1 by norm_num)]
-  exact Measure.restrict_congr_set Set.Ioo_ae_eq_Ioc
+  exact (Measure.restrict_congr_set
+    (Ioo_ae_eq_Ioc : Set.Ioo (0 : ℝ) 1 =ᵐ[volume] Set.Ioc 0 1)).symm
 
 /-- Final outer dominated-convergence theorem: the concrete raised-box simplex
 moment tends to the zero-regulator affine simplex volume. -/
@@ -79,15 +80,23 @@ theorem simplexMoment_tendsto_simplexVolume
       (bound := B)
     · exact hMeas
     · filter_upwards [self_mem_nhdsWithin] with ε hε
-      rw [hμ]
-      filter_upwards [ae_restrict_mem measurableSet_Ioo] with x1 hx1
-      exact nestedInnerIntegral_norm_le_outerMajorant
-        hδ0 hδ1 hε.1 hε.2 hS hT hx1.1 hx1.2
+      filter_upwards with x1
+      intro hx1
+      rw [Set.uIoc_of_le (show (0 : ℝ) ≤ 1 by norm_num)] at hx1
+      by_cases hxone : x1 = 1
+      · subst x1
+        simp [F, B]
+      · exact nestedInnerIntegral_norm_le_outerMajorant
+          hδ0 hδ1 hε.1 hε.2 hS hT hx1.1 (lt_of_le_of_ne hx1.2 hxone)
     · exact middleConstant_outer_intervalIntegrable hδ0 hδ1 hS
-    · rw [hμ]
-      filter_upwards [ae_restrict_mem measurableSet_Ioo] with x1 hx1
-      exact middle_interval_tendsto_inner_one
-        hδ0 hδ1 hS hT hx1.1 hx1.2
+    · filter_upwards with x1
+      intro hx1
+      rw [Set.uIoc_of_le (show (0 : ℝ) ≤ 1 by norm_num)] at hx1
+      by_cases hxone : x1 = 1
+      · subst x1
+        simp [F, F0]
+      · exact middle_interval_tendsto_inner_one
+          hδ0 hδ1 hS hT hx1.1 (lt_of_le_of_ne hx1.2 hxone)
   simpa [F, F0, simplexMoment, simplexVolume] using hTend
 
 /-- Concrete regulator closure of the raised scalar box simplex moment. -/
