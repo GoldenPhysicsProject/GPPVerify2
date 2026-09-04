@@ -69,9 +69,7 @@ theorem hasDerivAt_internalEnergy_beta
     HasDerivAt (fun b : ℝ => internalEnergy b η) (-fisherBB β η) β := by
   have hZne : Z β η ≠ 0 := ne_of_gt (Z_pos β hη)
   have H := (hasDerivAt_M1_beta β hη).div (hasDerivAt_Z_beta β hη) hZne
-  convert H using 1
-  · simp [internalEnergy]
-  · unfold fisherBB
+  convert H using 1 <;> simp [internalEnergy, fisherBB] <;> ring
 
 /-- `∂η ⟨L⟩ = -Cov(L,L²)`. -/
 theorem hasDerivAt_internalEnergy_eta
@@ -79,9 +77,7 @@ theorem hasDerivAt_internalEnergy_eta
     HasDerivAt (fun e : ℝ => internalEnergy β e) (-fisherBE β η) η := by
   have hZne : Z β η ≠ 0 := ne_of_gt (Z_pos β hη)
   have H := (hasDerivAt_M1_eta β hη).div (hasDerivAt_Z_eta β hη) hZne
-  convert H using 1
-  · simp [internalEnergy]
-  · unfold fisherBE
+  convert H using 1 <;> simp [internalEnergy, fisherBE] <;> ring
 
 /-- `∂β ⟨L²⟩ = -Cov(L,L²)`. -/
 theorem hasDerivAt_quadraticEnergy_beta
@@ -89,9 +85,7 @@ theorem hasDerivAt_quadraticEnergy_beta
     HasDerivAt (fun b : ℝ => quadraticEnergy b η) (-fisherBE β η) β := by
   have hZne : Z β η ≠ 0 := ne_of_gt (Z_pos β hη)
   have H := (hasDerivAt_M2_beta β hη).div (hasDerivAt_Z_beta β hη) hZne
-  convert H using 1
-  · simp [quadraticEnergy]
-  · unfold fisherBE
+  convert H using 1 <;> simp [quadraticEnergy, fisherBE] <;> ring
 
 /-- `∂η ⟨L²⟩ = -Var(L²)`. -/
 theorem hasDerivAt_quadraticEnergy_eta
@@ -99,9 +93,7 @@ theorem hasDerivAt_quadraticEnergy_eta
     HasDerivAt (fun e : ℝ => quadraticEnergy β e) (-fisherEE β η) η := by
   have hZne : Z β η ≠ 0 := ne_of_gt (Z_pos β hη)
   have H := (hasDerivAt_M2_eta β hη).div (hasDerivAt_Z_eta β hη) hZne
-  convert H using 1
-  · simp [quadraticEnergy]
-  · unfold fisherEE
+  convert H using 1 <;> simp [quadraticEnergy, fisherEE] <;> ring
 
 /-- The inverse-temperature second derivative of `log Z` is `Var(L)`. -/
 theorem hasDerivAt_negInternalEnergy_beta
