@@ -14,6 +14,7 @@ namespace GppNumberGibbsQuadraticCenteredMoments
 open GppNumberGibbsTwoParameterStrict
 open GppNumberGibbsQuadraticThermodynamics
 open GppNumberGibbsQuadraticNormalizedMoments
+open GppNumberGibbsQuadraticCurvatureSquareBridge
 
 /-- The algebraic third centered moment is the honest normalized countable
 expectation of `(L-⟨L⟩)^3`. -/
