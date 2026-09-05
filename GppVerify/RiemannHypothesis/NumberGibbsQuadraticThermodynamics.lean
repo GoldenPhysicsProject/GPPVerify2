@@ -1,11 +1,11 @@
-import GppVerify.RiemannHypothesis.NumberGibbsQuadraticConfinement
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticCurvatureSummability
 import Mathlib.Tactic
 
 /-!
 # Thermodynamics of the quadratically confined number-Gibbs family
 
 For arbitrary real `β` and strictly positive `η`, quadratic log-confinement makes the
-partition function and the first four log-energy moments absolutely summable.  This file
+partition function and the first six log-energy moments absolutely summable.  This file
 packages the corresponding normalized observables and the exact two-parameter Gibbs
 entropy/Legendre identities.  No differentiability of the partition function is used here.
 -/
@@ -14,6 +14,7 @@ namespace GppNumberGibbsQuadraticThermodynamics
 
 open GppNumberGibbsTwoParameterStrict
 open GppNumberGibbsQuadraticConfinement
+open GppNumberGibbsQuadraticCurvatureSummability
 open GppZetaGibbsSummability
 
 /-- Quadratically confined partition function. -/
@@ -36,6 +37,14 @@ noncomputable def M3 (β η : ℝ) : ℝ :=
 noncomputable def M4 (β η : ℝ) : ℝ :=
   ∑' n : ℕ, numberGibbsWeight β η n * numberLogEnergy n ^ 4
 
+/-- Fifth raw log-energy moment. -/
+noncomputable def M5 (β η : ℝ) : ℝ :=
+  ∑' n : ℕ, numberGibbsWeight β η n * numberLogEnergy n ^ 5
+
+/-- Sixth raw log-energy moment. -/
+noncomputable def M6 (β η : ℝ) : ℝ :=
+  ∑' n : ℕ, numberGibbsWeight β η n * numberLogEnergy n ^ 6
+
 /-- Mean log-energy. -/
 noncomputable def internalEnergy (β η : ℝ) : ℝ := M1 β η / Z β η
 
@@ -57,6 +66,18 @@ theorem summable_numberGibbsWeight
     simpa using summable_gibbsWeight htwo
   have h := summable_numberGibbs_moment_of_quadratic β η 0 hη hz0
   simpa using h
+
+/-- The fifth raw moment integrand is absolutely summable throughout the confined domain. -/
+theorem summable_M5_integrand
+    (β : ℝ) {η : ℝ} (hη : 0 < η) :
+    Summable (fun n : ℕ => numberGibbsWeight β η n * numberLogEnergy n ^ 5) := by
+  exact summable_numberGibbs_moment_fifth_of_eta_pos β hη
+
+/-- The sixth raw moment integrand is absolutely summable throughout the confined domain. -/
+theorem summable_M6_integrand
+    (β : ℝ) {η : ℝ} (hη : 0 < η) :
+    Summable (fun n : ℕ => numberGibbsWeight β η n * numberLogEnergy n ^ 6) := by
+  exact summable_numberGibbs_moment_sixth_of_eta_pos β hη
 
 /-- The quadratically confined partition function is strictly positive for every real `β`. -/
 theorem Z_pos (β : ℝ) {η : ℝ} (hη : 0 < η) : 0 < Z β η := by
@@ -112,6 +133,8 @@ theorem quadratic_gibbs_legendre_package
 end GppNumberGibbsQuadraticThermodynamics
 
 #print axioms GppNumberGibbsQuadraticThermodynamics.summable_numberGibbsWeight
+#print axioms GppNumberGibbsQuadraticThermodynamics.summable_M5_integrand
+#print axioms GppNumberGibbsQuadraticThermodynamics.summable_M6_integrand
 #print axioms GppNumberGibbsQuadraticThermodynamics.Z_pos
 #print axioms GppNumberGibbsQuadraticThermodynamics.entropy_sub_conjugate_terms_eq_logZ
 #print axioms GppNumberGibbsQuadraticThermodynamics.entropy_eq_beta_mul_internalEnergy_sub_freeEnergy_add_quadratic
