@@ -84,8 +84,8 @@ theorem probability_centered_firstMoment_eq_zero
   calc
     (∑' n : ℕ, probability β η n * centeredLogEnergy β η n) =
         ∑' n : ℕ,
-          probability β η n * numberLogEnergy n +
-            (-μ) * probability β η n := by
+          (probability β η n * numberLogEnergy n +
+            (-μ) * probability β η n) := by
       apply tsum_congr
       intro n
       unfold centeredLogEnergy internalEnergy
@@ -116,9 +116,9 @@ theorem probability_centered_secondMoment
   calc
     (∑' n : ℕ, probability β η n * centeredLogEnergy β η n ^ 2) =
         ∑' n : ℕ,
-          probability β η n * numberLogEnergy n ^ 2 +
+          (probability β η n * numberLogEnergy n ^ 2 +
           (-2 * μ) * (probability β η n * numberLogEnergy n) +
-          (μ ^ 2) * probability β η n := by
+          (μ ^ 2) * probability β η n) := by
       apply tsum_congr
       intro n
       unfold centeredLogEnergy internalEnergy
