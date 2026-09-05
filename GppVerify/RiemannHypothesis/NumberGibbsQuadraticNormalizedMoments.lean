@@ -5,7 +5,7 @@ import Mathlib.Tactic
 # Normalized raw moments for the quadratically confined number Gibbs family
 
 This file gives the actual countable probability normalization and normalized
-raw log-energy moments through order six.  It is the analytic API needed for
+raw log-energy moments through order six. It is the analytic API needed for
 the final centered sixth-order `tsum` expansion in the curvature proof.
 -/
 
@@ -117,30 +117,6 @@ theorem probability_sixthMoment (β η : ℝ) :
       rw [tsum_div_const]
     _ = M6 β η / Z β η := by rfl
 
-private theorem summable_raw_one (β : ℝ) {η : ℝ} (hη : 0 < η) :
-    Summable (fun n : ℕ => numberGibbsWeight β η n * numberLogEnergy n) := by
-  have htwo : (1 : ℝ) < 2 := by norm_num
-  exact summable_numberGibbs_moment_of_quadratic β η 1 hη
-    (summable_gibbsWeight_mul_logEnergy htwo)
-
-private theorem summable_raw_two (β : ℝ) {η : ℝ} (hη : 0 < η) :
-    Summable (fun n : ℕ => numberGibbsWeight β η n * numberLogEnergy n ^ 2) := by
-  have htwo : (1 : ℝ) < 2 := by norm_num
-  exact summable_numberGibbs_moment_of_quadratic β η 2 hη
-    (summable_gibbsWeight_mul_logEnergy_sq htwo)
-
-private theorem summable_raw_three (β : ℝ) {η : ℝ} (hη : 0 < η) :
-    Summable (fun n : ℕ => numberGibbsWeight β η n * numberLogEnergy n ^ 3) := by
-  have htwo : (1 : ℝ) < 2 := by norm_num
-  exact summable_numberGibbs_moment_of_quadratic β η 3 hη
-    (summable_gibbsWeight_mul_logEnergy_cube htwo)
-
-private theorem summable_raw_four (β : ℝ) {η : ℝ} (hη : 0 < η) :
-    Summable (fun n : ℕ => numberGibbsWeight β η n * numberLogEnergy n ^ 4) := by
-  have htwo : (1 : ℝ) < 2 := by norm_num
-  exact summable_numberGibbs_moment_of_quadratic β η 4 hη
-    (summable_gibbsWeight_mul_logEnergy_fourth htwo)
-
 /-- Normalized probability weights are summable. -/
 theorem summable_probability (β : ℝ) {η : ℝ} (hη : 0 < η) :
     Summable (fun n : ℕ => probability β η n) := by
@@ -150,7 +126,11 @@ theorem summable_probability (β : ℝ) {η : ℝ} (hη : 0 < η) :
 /-- Normalized first-moment integrand is summable. -/
 theorem summable_probability_one (β : ℝ) {η : ℝ} (hη : 0 < η) :
     Summable (fun n : ℕ => probability β η n * numberLogEnergy n) := by
-  have h := (summable_raw_one β hη).div_const (Z β η)
+  have htwo : (1 : ℝ) < 2 := by norm_num
+  have hz1 : Summable (fun n : ℕ => gibbsWeight 2 n * logEnergy n ^ 1) := by
+    simpa using summable_gibbsWeight_mul_logEnergy htwo
+  have hraw := summable_numberGibbs_moment_of_quadratic β η 1 hη hz1
+  have h := hraw.div_const (Z β η)
   refine h.congr ?_
   intro n
   unfold probability
@@ -159,7 +139,11 @@ theorem summable_probability_one (β : ℝ) {η : ℝ} (hη : 0 < η) :
 /-- Normalized second-moment integrand is summable. -/
 theorem summable_probability_two (β : ℝ) {η : ℝ} (hη : 0 < η) :
     Summable (fun n : ℕ => probability β η n * numberLogEnergy n ^ 2) := by
-  have h := (summable_raw_two β hη).div_const (Z β η)
+  have htwo : (1 : ℝ) < 2 := by norm_num
+  have hz2 : Summable (fun n : ℕ => gibbsWeight 2 n * logEnergy n ^ 2) :=
+    summable_gibbsWeight_mul_logEnergy_sq htwo
+  have hraw := summable_numberGibbs_moment_of_quadratic β η 2 hη hz2
+  have h := hraw.div_const (Z β η)
   refine h.congr ?_
   intro n
   unfold probability
@@ -168,7 +152,11 @@ theorem summable_probability_two (β : ℝ) {η : ℝ} (hη : 0 < η) :
 /-- Normalized third-moment integrand is summable. -/
 theorem summable_probability_three (β : ℝ) {η : ℝ} (hη : 0 < η) :
     Summable (fun n : ℕ => probability β η n * numberLogEnergy n ^ 3) := by
-  have h := (summable_raw_three β hη).div_const (Z β η)
+  have htwo : (1 : ℝ) < 2 := by norm_num
+  have hz3 : Summable (fun n : ℕ => gibbsWeight 2 n * logEnergy n ^ 3) :=
+    summable_gibbsWeight_mul_logEnergy_cube htwo
+  have hraw := summable_numberGibbs_moment_of_quadratic β η 3 hη hz3
+  have h := hraw.div_const (Z β η)
   refine h.congr ?_
   intro n
   unfold probability
@@ -177,7 +165,11 @@ theorem summable_probability_three (β : ℝ) {η : ℝ} (hη : 0 < η) :
 /-- Normalized fourth-moment integrand is summable. -/
 theorem summable_probability_four (β : ℝ) {η : ℝ} (hη : 0 < η) :
     Summable (fun n : ℕ => probability β η n * numberLogEnergy n ^ 4) := by
-  have h := (summable_raw_four β hη).div_const (Z β η)
+  have htwo : (1 : ℝ) < 2 := by norm_num
+  have hz4 : Summable (fun n : ℕ => gibbsWeight 2 n * logEnergy n ^ 4) :=
+    summable_gibbsWeight_mul_logEnergy_fourth htwo
+  have hraw := summable_numberGibbs_moment_of_quadratic β η 4 hη hz4
+  have h := hraw.div_const (Z β η)
   refine h.congr ?_
   intro n
   unfold probability
