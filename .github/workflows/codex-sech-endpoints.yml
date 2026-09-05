@@ -1,10 +1,7 @@
 name: Codex sech convolution endpoints
 
 on:
-  push:
-    branches: ["codex/lean-workbench"]
-  pull_request:
-    branches: ["main", "codex/lean-workbench"]
+  workflow_dispatch:
 
 concurrency:
   group: codex-sech-endpoints-${{ github.workflow }}-${{ github.ref }}

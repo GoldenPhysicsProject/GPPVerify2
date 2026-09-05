@@ -2,9 +2,10 @@ name: Build
 
 on:
   push:
-    branches: ["main", "codex/lean-workbench"]
+    branches: ["main"]
   pull_request:
-    branches: ["main", "codex/lean-workbench"]
+    branches: ["main"]
+  workflow_dispatch:
 
 concurrency:
   group: build-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
@@ -14,17 +15,17 @@ jobs:
   build:
     name: lake build
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
+      - name: Source sorry gate
+        run: python3 scripts/check_sorries.py
+
       - name: Install elan
         run: |
-          curl -sSfL \
-            https://github.com/leanprover/elan/releases/latest/download/elan-x86_64-unknown-linux-gnu.tar.gz \
-            | tar xz
+          curl -sSfL https://github.com/leanprover/elan/releases/latest/download/elan-x86_64-unknown-linux-gnu.tar.gz | tar xz
           ./elan-init -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
       - name: Cache Lean toolchain
         uses: actions/cache@v4
@@ -43,141 +44,26 @@ jobs:
       - name: Get Mathlib cache
         run: lake exe cache get || true
 
-      # Scalar-box/Spence gates run first because this is the active analytic frontier.
-      # The full build and every other theorem gate still run once these pass.
-      - name: Codex scalar-box regulator endpoint check
-        run: set -o pipefail && lake build GppVerify.CelestialHolography.ScalarBoxRegulatorBounds 2>&1 | tee /tmp/scalar-box.log
-
-      - name: Codex scalar-box logarithm series kernel check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxLogSeriesKernel
-
-      - name: Codex scalar-box Spence endpoint constant check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceConstant
-
-      - name: Codex scalar-box dilogarithm endpoint continuity check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogEndpointContinuity
-
-      - name: Codex scalar-box Spence derivative kernel check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceDerivativeKernel
-
-      - name: Codex scalar-box Spence constancy check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceConstancy
-
-      - name: Codex scalar-box real Spence identity check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxSpenceIdentity
-
-      - name: Codex scalar-box real inversion kernel check
-        run: lake build GppVerify.CelestialHolography.RegulatedBoxDilogInversionKernel
-
-      - name: Codex sech-convolution primitive check
-        run: lake build GppVerify.CelestialHolography.SechConvolutionPrimitive
-
-      - name: Codex prime Hankel theorem check
-        run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelGram.lean
-
-      - name: Codex prime Hankel root-escape check
-        run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelRootEscape.lean
-
-      - name: Build strict-Gram dependency
-        run: lake build GppVerify.RiemannHypothesis.PrimeHankelRootEscape
-
-      - name: Codex strict finite Hankel Gram check
-        run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelFiniteGramStrict.lean
-
-      - name: Build infinite-lift dependency
-        run: lake build GppVerify.RiemannHypothesis.PrimeHankelFiniteGramStrict
-
-      - name: Codex infinite Hankel lift check
-        run: lake env lean GppVerify/RiemannHypothesis/PrimeHankelInfiniteLift.lean
-
-      - name: Codex Fisher Hankel specialization check
-        run: lake build GppVerify.RiemannHypothesis.PrimeHankelFisherSpecialization
-
-      - name: Codex von Mangoldt all-log summability check
-        run: lake build GppVerify.RiemannHypothesis.VonMangoldtCumulantSummability
-
-      - name: Codex Fisher log-moment summability check
-        run: lake build GppVerify.RiemannHypothesis.PrimeFisherMomentSummability
-
-      - name: Codex Fisher polynomial-square summability check
-        run: lake build GppVerify.RiemannHypothesis.PrimeHankelPolynomialSummability
-
-      - name: Codex all-order strict Fisher Gram check
-        run: lake build GppVerify.RiemannHypothesis.PrimeHankelAllOrderStrict
-
-      - name: Codex strict zeta Gibbs thermodynamics check
-        run: lake build GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
-
-      - name: Codex massive-vector 5D Ward reconstruction check
-        run: lake build GppVerify.CelestialHolography.MassiveVectorWardReconstruction
-
-      - name: Codex half-density Hermitian shadow check
-        run: lake build GppVerify.RiemannHypothesis.ScaleShadowHalfDensity
-
-      - name: Codex Gamma Wiener-Hopf real-axis check
-        run: lake build GppVerify.QuantumGravity.GammaWienerHopfFactor
-
-      - name: Codex Gamma phase symmetry check
-        run: lake build GppVerify.QuantumGravity.GammaWienerHopfPhaseSymmetry
-
-      - name: Build radial-bridge dependency
-        run: lake build GppVerify.RiemannHypothesis.EulerFactorLogDeriv
-
-      - name: Codex prime Poisson radial bridge check
-        run: lake env lean GppVerify/RiemannHypothesis/PrimePoissonRadialBridge.lean
-
-      - name: Build prime Poisson radial bridge
-        run: lake build GppVerify.RiemannHypothesis.PrimePoissonRadialBridge
-
-      - name: Codex radial positive-type check
-        run: lake env lean GppVerify/RiemannHypothesis/PrimePoissonRadialPositiveType.lean
-
-      - name: Build radial positive-type theorem
-        run: lake build GppVerify.RiemannHypothesis.PrimePoissonRadialPositiveType
-
-      - name: Build finite-prime bridge
-        run: lake build GppVerify.RiemannHypothesis.FinitePrimePoissonSum
-
-      - name: Codex finite-prime positive-type check
-        run: lake env lean GppVerify/RiemannHypothesis/FinitePrimePoissonPositiveType.lean
-
-      - name: Upload scalar-box diagnostic
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: scalar-box-diagnostic
-          path: /tmp/scalar-box.log
-          if-no-files-found: ignore
-
-      - name: Build
+      - name: Full build
         run: set -o pipefail && lake build 2>&1 | tee /tmp/build.log
 
-      - name: Sorry gate (FAILS the build)
+      - name: Build-log sorry gate
         run: |
-          echo "=== Sorry gate ==="
-          if grep -F "declaration uses 'sorry'" /tmp/build.log /tmp/scalar-box.log; then
-            echo "::error::A declaration uses 'sorry'. Standing rule: no sorry ever committed."
+          if grep -F "declaration uses 'sorry'" /tmp/build.log; then
+            echo "::error::A declaration uses 'sorry'."
             exit 1
           fi
-          echo "OK — no declaration uses 'sorry'."
 
       - name: Axiom audit
         run: |
-          echo "=== Axiom audit ==="
           lake env lean scripts/check_axioms.lean | tee /tmp/axioms.log
           if grep -F "sorryAx" /tmp/axioms.log; then
             echo "::error::A flagship theorem depends on sorryAx."
             exit 1
           fi
 
-      - name: Stub census (informational — does NOT fail)
+      - name: Stub census
         run: |
-          echo "=== Open-result stubs: theorem _ : True := trivial ==="
           TOTAL=$(grep -rn ": True := trivial" GppVerify/ --include="*.lean" | wc -l)
-          echo "Total stubs: $TOTAL"
-          echo "--- per file ---"
-          grep -rc ": True := trivial" GppVerify/ --include="*.lean" \
-            | grep -v ':0$' | sort -t: -k2 -rn
-          echo
-          echo "NOTE: a file can report 0 sorries and 0 axioms and still be mostly stubs."
-          echo "Quote all three numbers (sorry / axiom / stub) in any status claim."
+          echo "Open-result stubs: $TOTAL"
+          grep -rc ": True := trivial" GppVerify/ --include="*.lean" | grep -v ':0$' | sort -t: -k2 -rn || true
