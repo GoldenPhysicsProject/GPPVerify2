@@ -16,6 +16,7 @@ countable Gibbs `tsum`s.
 namespace GppNumberGibbsQuadraticCenteredMoments
 
 open GppFiniteFisherMomentBridge
+open GppNumberGibbsTwoParameterStrict
 open GppNumberGibbsQuadraticThermodynamics
 open GppNumberGibbsQuadraticNormalizedMoments
 open GppNumberGibbsQuadraticCurvatureSquareBridge
@@ -92,7 +93,7 @@ theorem probability_centered_firstMoment_eq_zero
       ring
     _ = (∑' n : ℕ, probability β η n * numberLogEnergy n) +
         (-μ) * (∑' n : ℕ, probability β η n) := by
-      rw [tsum_add h1 h0c]
+      rw [h1.tsum_add h0c]
       simp only [tsum_mul_left]
     _ = M1 β η / Z β η + (-μ) * 1 := by
       rw [probability_firstMoment, probability_tsum_eq_one β hη]
@@ -126,7 +127,7 @@ theorem probability_centered_secondMoment
     _ = (∑' n : ℕ, probability β η n * numberLogEnergy n ^ 2) +
         (-2 * μ) * (∑' n : ℕ, probability β η n * numberLogEnergy n) +
         (μ ^ 2) * (∑' n : ℕ, probability β η n) := by
-      rw [tsum_add (h2.add h1c) h0c, tsum_add h2 h1c]
+      rw [(h2.add h1c).tsum_add h0c, h2.tsum_add h1c]
       simp only [tsum_mul_left]
     _ = M2 β η / Z β η + (-2 * μ) * (M1 β η / Z β η) + μ ^ 2 := by
       rw [probability_secondMoment, probability_firstMoment,
