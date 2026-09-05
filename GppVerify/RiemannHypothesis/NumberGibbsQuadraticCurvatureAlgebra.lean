@@ -59,7 +59,6 @@ theorem scalarCurvature_eq_half_sub
         (1 - centeredGramDet m2 m3 m4 m5 m6 / metricDet m2 m3 m4 ^ 2) := by
   unfold scalarCurvature
   field_simp [hD]
-  ring
 
 /-- Algebraic curvature ceiling.  Once the centered degree-three moment Gram
 determinant is known nonnegative, strict metric nondegeneracy implies `R ≤ 1/2`.
