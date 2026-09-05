@@ -7,7 +7,9 @@ import Mathlib.Tactic
 The confined two-parameter number-Gibbs family already has a strictly positive
 leading covariance response and strictly positive covariance determinant.  This
 file packages those certified Sylvester inequalities as strict positivity of the
-full quadratic form on every nonzero tangent direction.
+full quadratic form on every nonzero tangent direction, and records the exact
+separation statement that the fluctuation norm vanishes only for the zero
+tangent vector.
 -/
 
 namespace GppNumberGibbsQuadraticMassieuMetric
@@ -50,6 +52,39 @@ theorem massieuFisher_quadratic_form_pos
       nlinarith
     simpa [A, B, C] using hq
 
+/-- The exact fluctuation norm is nonnegative on every tangent vector. -/
+theorem massieuFisher_quadratic_form_nonneg
+    (β : ℝ) {η : ℝ} (hη : 0 < η) (a b : ℝ) :
+    0 ≤ fisherBB β η * a ^ 2 +
+        2 * fisherBE β η * a * b +
+        fisherEE β η * b ^ 2 := by
+  by_cases hzero : a = 0 ∧ b = 0
+  · rcases hzero with ⟨rfl, rfl⟩
+    simp
+  · have hab : a ≠ 0 ∨ b ≠ 0 := by
+      simpa [not_and_or] using hzero
+    exact (massieuFisher_quadratic_form_pos β hη a b hab).le
+
+/-- Pointwise metric separation: the Massieu/Fisher fluctuation norm vanishes
+exactly on the zero tangent vector. -/
+theorem massieuFisher_quadratic_form_eq_zero_iff
+    (β : ℝ) {η : ℝ} (hη : 0 < η) (a b : ℝ) :
+    fisherBB β η * a ^ 2 +
+        2 * fisherBE β η * a * b +
+        fisherEE β η * b ^ 2 = 0 ↔
+      a = 0 ∧ b = 0 := by
+  constructor
+  · intro hq
+    by_contra hzero
+    have hab : a ≠ 0 ∨ b ≠ 0 := by
+      simpa [not_and_or] using hzero
+    have hpos := massieuFisher_quadratic_form_pos β hη a b hab
+    linarith
+  · rintro ⟨rfl, rfl⟩
+    simp
+
 end GppNumberGibbsQuadraticMassieuMetric
 
 #print axioms GppNumberGibbsQuadraticMassieuMetric.massieuFisher_quadratic_form_pos
+#print axioms GppNumberGibbsQuadraticMassieuMetric.massieuFisher_quadratic_form_nonneg
+#print axioms GppNumberGibbsQuadraticMassieuMetric.massieuFisher_quadratic_form_eq_zero_iff
