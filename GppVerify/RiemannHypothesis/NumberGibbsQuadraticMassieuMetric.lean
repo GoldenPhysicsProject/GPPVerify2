@@ -62,7 +62,11 @@ theorem massieuFisher_quadratic_form_nonneg
   · rcases hzero with ⟨rfl, rfl⟩
     simp
   · have hab : a ≠ 0 ∨ b ≠ 0 := by
-      simpa [not_and_or] using hzero
+      by_cases ha : a = 0
+      · right
+        intro hb
+        exact hzero ⟨ha, hb⟩
+      · exact Or.inl ha
     exact (massieuFisher_quadratic_form_pos β hη a b hab).le
 
 /-- Pointwise metric separation: the Massieu/Fisher fluctuation norm vanishes
@@ -77,7 +81,11 @@ theorem massieuFisher_quadratic_form_eq_zero_iff
   · intro hq
     by_contra hzero
     have hab : a ≠ 0 ∨ b ≠ 0 := by
-      simpa [not_and_or] using hzero
+      by_cases ha : a = 0
+      · right
+        intro hb
+        exact hzero ⟨ha, hb⟩
+      · exact Or.inl ha
     have hpos := massieuFisher_quadratic_form_pos β hη a b hab
     linarith
   · rintro ⟨rfl, rfl⟩
