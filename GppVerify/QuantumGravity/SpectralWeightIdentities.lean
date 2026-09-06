@@ -15,6 +15,11 @@ This file records two further identities it satisfies.
 * `one_div_P_tendsto_tprod`: the reciprocal `1/P(λ)` is the Weierstrass product
   `∏ₙ(1+λ²/n²)` as a `Tendsto` statement, an immediate restatement of
   `GppSinhWeierstrass.tendsto_prod_one_add_sq_div` for `λ ≠ 0`.
+* `principal_series_normalized_mean` / `principal_series_normalized_variance`: the exact
+  algebraic normalization consequence of the analytically established principal-series
+  digamma moments `A₀ = 1/4`, `A₁ = A₂ = 1/8`.  These theorems deliberately take the
+  three moment evaluations as hypotheses; they do not claim to formalize the integral
+  evaluations themselves.
 -/
 
 namespace GppSpectralWeight
@@ -75,5 +80,46 @@ theorem one_div_P_tendsto_tprod {lam : ℝ} (hlam : lam ≠ 0) :
     rw [mul_comm (π * lam), mul_div_assoc, div_self hpine, mul_one]
   rw [heq] at hdiv
   rwa [hval]
+
+/-- Normalize a raw spectral moment by the zeroth moment. -/
+def normalizedMoment (a0 ak : ℝ) : ℝ := ak / a0
+
+/-- Variance reconstructed from the first three raw moments. -/
+def varianceFromRawMoments (a0 a1 a2 : ℝ) : ℝ :=
+  normalizedMoment a0 a2 - (normalizedMoment a0 a1) ^ 2
+
+/-- The principal-series digamma variable has normalized mean `1/2` once the exact
+    analytic raw moments `A₀ = 1/4` and `A₁ = 1/8` are supplied. -/
+theorem principal_series_normalized_mean
+    {a0 a1 : ℝ} (h0 : a0 = (1 : ℝ) / 4) (h1 : a1 = (1 : ℝ) / 8) :
+    normalizedMoment a0 a1 = (1 : ℝ) / 2 := by
+  rw [h0, h1]
+  norm_num [normalizedMoment]
+
+/-- The normalized second raw moment is `1/2` from `A₀ = 1/4`, `A₂ = 1/8`. -/
+theorem principal_series_normalized_second_moment
+    {a0 a2 : ℝ} (h0 : a0 = (1 : ℝ) / 4) (h2 : a2 = (1 : ℝ) / 8) :
+    normalizedMoment a0 a2 = (1 : ℝ) / 2 := by
+  rw [h0, h2]
+  norm_num [normalizedMoment]
+
+/-- **Exact normalized fluctuation law.** From the analytically established raw moments
+    `A₀ = 1/4`, `A₁ = A₂ = 1/8`, the normalized variance is exactly `1/4`.
+    In particular the standard deviation equals the mean (`1/2`). -/
+theorem principal_series_normalized_variance
+    {a0 a1 a2 : ℝ}
+    (h0 : a0 = (1 : ℝ) / 4) (h1 : a1 = (1 : ℝ) / 8) (h2 : a2 = (1 : ℝ) / 8) :
+    varianceFromRawMoments a0 a1 a2 = (1 : ℝ) / 4 := by
+  rw [h0, h1, h2]
+  norm_num [varianceFromRawMoments, normalizedMoment]
+
+/-- The exact principal-series variance is strictly positive, hence this normalized
+    spectral observable is nondegenerate. -/
+theorem principal_series_normalized_variance_pos
+    {a0 a1 a2 : ℝ}
+    (h0 : a0 = (1 : ℝ) / 4) (h1 : a1 = (1 : ℝ) / 8) (h2 : a2 = (1 : ℝ) / 8) :
+    0 < varianceFromRawMoments a0 a1 a2 := by
+  rw [principal_series_normalized_variance h0 h1 h2]
+  norm_num
 
 end GppSpectralWeight
