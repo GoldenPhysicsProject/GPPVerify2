@@ -108,6 +108,35 @@ theorem continuousStepFactor_radial_difference
   field_simp [hc0, hlin]
   ring
 
+/-- Pairwise alignment identity behind the covariance proof for radial chamber
+ordering.  The product of the likelihood-ratio increment and radial increment is an
+explicit positive coefficient times a square. -/
+theorem continuousStepFactor_pair_alignment
+    (c x y : ℝ) (hc : 0 < c) :
+    (continuousStepFactor c y - continuousStepFactor c x) * (y ^ 2 - x ^ 2) =
+      2 / (c * (2 * c + 1)) * (y ^ 2 - x ^ 2) ^ 2 := by
+  rw [continuousStepFactor_radial_difference c x y hc]
+  ring
+
+/-- The pairwise chamber-ordering kernel is nonnegative everywhere on `c>0`.  This is
+the exact algebraic sign input needed by the iid symmetrization formula for covariance. -/
+theorem continuousStepFactor_pair_alignment_nonneg
+    (c x y : ℝ) (hc : 0 < c) :
+    0 ≤ (continuousStepFactor c y - continuousStepFactor c x) * (y ^ 2 - x ^ 2) := by
+  rw [continuousStepFactor_pair_alignment c x y hc]
+  positivity
+
+/-- Away from equal radial squares, the pairwise chamber-ordering kernel is strictly
+positive. -/
+theorem continuousStepFactor_pair_alignment_pos
+    (c x y : ℝ) (hc : 0 < c) (hxy : x ^ 2 ≠ y ^ 2) :
+    0 < (continuousStepFactor c y - continuousStepFactor c x) * (y ^ 2 - x ^ 2) := by
+  rw [continuousStepFactor_pair_alignment c x y hc]
+  have hcoef : 0 < 2 / (c * (2 * c + 1)) := by positivity
+  have hsq : 0 < (y ^ 2 - x ^ 2) ^ 2 := by
+    positivity
+  exact mul_pos hcoef hsq
+
 /-- Radial square ordering is transported monotonically by the chamber step factor. -/
 theorem continuousStepFactor_mono_sq
     (c x y : ℝ) (hc : 0 < c) (hxy : x ^ 2 ≤ y ^ 2) :
