@@ -133,8 +133,9 @@ theorem continuousStepFactor_pair_alignment_pos
     0 < (continuousStepFactor c y - continuousStepFactor c x) * (y ^ 2 - x ^ 2) := by
   rw [continuousStepFactor_pair_alignment c x y hc]
   have hcoef : 0 < 2 / (c * (2 * c + 1)) := by positivity
+  have hdiff : y ^ 2 - x ^ 2 ≠ 0 := sub_ne_zero.mpr (Ne.symm hxy)
   have hsq : 0 < (y ^ 2 - x ^ 2) ^ 2 := by
-    positivity
+    simpa [pow_two] using (mul_self_pos.mpr hdiff)
   exact mul_pos hcoef hsq
 
 /-- Radial square ordering is transported monotonically by the chamber step factor. -/
