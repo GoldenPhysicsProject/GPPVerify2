@@ -21,7 +21,7 @@ separate theorem obligation.
 namespace GppSpectralRhoContinuousStep
 
 /-- Real-parameter step factor for the continuous Gamma chamber. -/
-def continuousStepFactor (c x : ℝ) : ℝ :=
+noncomputable def continuousStepFactor (c x : ℝ) : ℝ :=
   2 * (c ^ 2 + x ^ 2) / (c * (2 * c + 1))
 
 /-- The real continuous step factor is strictly positive on the physical chamber `c>0`. -/
@@ -73,7 +73,8 @@ theorem continuousStepFactor_gt_one_iff
   rw [← sub_pos]
   rw [continuousStepFactor_sub_one c x hc]
   have hden : 0 < c * (2 * c + 1) := by positivity
-  exact (div_pos_iff_of_pos_right hden)
+  rw [div_pos_iff_of_pos_right hden]
+  nlinarith
 
 /-- Below the crossing threshold the continuous chamber step factor is less than one. -/
 theorem continuousStepFactor_lt_one_iff
@@ -82,6 +83,7 @@ theorem continuousStepFactor_lt_one_iff
   rw [← sub_neg]
   rw [continuousStepFactor_sub_one c x hc]
   have hden : 0 < c * (2 * c + 1) := by positivity
-  exact (div_neg_iff_of_pos_right hden)
+  rw [div_lt_iff₀ hden]
+  nlinarith
 
 end GppSpectralRhoContinuousStep
