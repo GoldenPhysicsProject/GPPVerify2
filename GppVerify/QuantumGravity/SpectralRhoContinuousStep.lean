@@ -71,24 +71,17 @@ theorem continuousStepFactor_gt_one_iff
     (c x : ℝ) (hc : 0 < c) :
     1 < continuousStepFactor c x ↔ c < 2 * x ^ 2 := by
   have hden : 0 < c * (2 * c + 1) := by positivity
-  calc
-    1 < continuousStepFactor c x ↔ 0 < continuousStepFactor c x - 1 := by linarith
-    _ ↔ 0 < (2 * x ^ 2 - c) / (c * (2 * c + 1)) := by
-      rw [continuousStepFactor_sub_one c x hc]
-    _ ↔ 0 < 2 * x ^ 2 - c := div_pos_iff_of_pos_right hden
-    _ ↔ c < 2 * x ^ 2 := by linarith
+  unfold continuousStepFactor
+  rw [lt_div_iff₀ hden]
+  nlinarith
 
 /-- Below the crossing threshold the continuous chamber step factor is less than one. -/
 theorem continuousStepFactor_lt_one_iff
     (c x : ℝ) (hc : 0 < c) :
     continuousStepFactor c x < 1 ↔ 2 * x ^ 2 < c := by
   have hden : 0 < c * (2 * c + 1) := by positivity
-  calc
-    continuousStepFactor c x < 1 ↔ continuousStepFactor c x - 1 < 0 := by linarith
-    _ ↔ (2 * x ^ 2 - c) / (c * (2 * c + 1)) < 0 := by
-      rw [continuousStepFactor_sub_one c x hc]
-    _ ↔ 2 * x ^ 2 - c < 0 := by
-      exact (div_lt_iff₀ hden)
-    _ ↔ 2 * x ^ 2 < c := by linarith
+  unfold continuousStepFactor
+  rw [div_lt_iff₀ hden]
+  nlinarith
 
 end GppSpectralRhoContinuousStep
