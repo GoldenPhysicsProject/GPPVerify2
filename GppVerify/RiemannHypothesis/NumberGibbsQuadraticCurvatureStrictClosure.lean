@@ -33,16 +33,12 @@ open GppPrimeHankelInfiniteLift
 theorem numberLogEnergy_injective : Function.Injective numberLogEnergy := by
   intro a b hab
   unfold numberLogEnergy at hab
-  have ha : 0 < (((a + 1 : ℕ) : ℝ)) := by positivity
-  have hb : 0 < (((b + 1 : ℕ) : ℝ)) := by positivity
-  have hcast : (((a + 1 : ℕ) : ℝ)) = (((b + 1 : ℕ) : ℝ)) := by
-    calc
-      (((a + 1 : ℕ) : ℝ)) = Real.exp (Real.log (((a + 1 : ℕ) : ℝ))) :=
-        (Real.exp_log ha).symm
-      _ = Real.exp (Real.log (((b + 1 : ℕ) : ℝ))) := by rw [hab]
-      _ = (((b + 1 : ℕ) : ℝ)) := Real.exp_log hb
-  have hs : a + 1 = b + 1 := by exact_mod_cast hcast
-  omega
+  have hcast : (a : ℝ) + 1 = (b : ℝ) + 1 := by
+    have h := congrArg Real.exp hab
+    rw [Real.exp_log (by positivity), Real.exp_log (by positivity)] at h
+    exact h
+  have habr : (a : ℝ) = (b : ℝ) := by linarith
+  exact_mod_cast habr
 
 /-- Subtracting the Gibbs mean preserves distinctness of the logarithmic support. -/
 theorem centeredLogEnergy_injective (β η : ℝ) :
@@ -114,7 +110,7 @@ private theorem summable_probability_centered_four
 
 private theorem summable_probability_centered_five
     (β : ℝ) {η : ℝ} (hη : 0 < η) :
-    Summable (fun n : ℕ => probability β η n * centeredLogEnergy β η n ^ 5) := by
+    Summable (fun n : ℕ => probability β eta n * centeredLogEnergy β η n ^ 5) := by
   let μ : ℝ := M1 β η / Z β η
   have h5 := summable_probability_five β hη
   have h4c := (summable_probability_four β hη).mul_left (-5 * μ)
