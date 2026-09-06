@@ -24,6 +24,21 @@ namespace GppSpectralRhoContinuousStep
 def continuousStepFactor (c x : ℝ) : ℝ :=
   2 * (c ^ 2 + x ^ 2) / (c * (2 * c + 1))
 
+/-- The real continuous step factor is strictly positive on the physical chamber `c>0`. -/
+theorem continuousStepFactor_pos
+    (c x : ℝ) (hc : 0 < c) :
+    0 < continuousStepFactor c x := by
+  unfold continuousStepFactor
+  positivity
+
+/-- At the integer chamber `c=k+1`, the continuous step is exactly the previously
+certified discrete Gamma-density step factor. -/
+theorem continuousStepFactor_nat_succ
+    (k : ℕ) (x : ℝ) :
+    continuousStepFactor ((k : ℝ) + 1) x = GppSpectralRho.rhoStepFactor k x := by
+  unfold continuousStepFactor GppSpectralRho.rhoStepFactor
+  ring
+
 /-- The step-factor defect from one has numerator exactly `2*x^2-c`. -/
 theorem continuousStepFactor_sub_one
     (c x : ℝ) (hc : 0 < c) :
