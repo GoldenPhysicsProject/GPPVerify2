@@ -11,6 +11,12 @@ The representation-theoretic shadow/helicity bridge is now proved below by impor
 `CelestialShadowHelicity`.  The genuinely twistor-geometric Penrose--Ward and sheaf
 cohomology identifications remain explicit infrastructure gaps rather than being
 mistaken for consequences of elementary algebra.
+
+Chronology correction: older manuscripts proposed identifying the googly/shadow map
+with physical time reversal.  Later mass-orientation work distinguishes celestial
+shadow `(Delta,J) ↦ (2-Delta,-J)` from Wigner time reversal and from internal charge
+conjugation.  Accordingly the obsolete `googly_resolution_T_image : True` placeholder
+has been removed rather than preserved as a proof target.
 -/
 
 namespace GppTwistorGoogly
@@ -49,9 +55,6 @@ theorem sd_cohomology : True := trivial
 
 /-- The geometric map between the two cohomology groups is still open. -/
 theorem googly_map_on_cohomology : True := trivial
-
-/-- Identifying that geometric map specifically with time reversal remains open. -/
-theorem googly_resolution_T_image : True := trivial
 
 /-! ## Exact celestial shadow / helicity content -/
 
