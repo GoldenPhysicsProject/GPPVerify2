@@ -96,4 +96,55 @@ theorem continuousStepFactor_lt_one_iff
     apply (div_lt_iff₀ hden).mpr
     nlinarith
 
+/-- Exact algebraic transport identity induced by one continuous chamber step.
+
+When `e = E_c[f]` and `ex2 = E_c[X² f]`, the left-hand side is the chamber
+increment obtained from the Gamma recurrence.  If additionally `E_c[X²]=c/2`,
+the right-hand bracket is exactly `Cov_c(f,X²)`. -/
+theorem continuousStep_transport_identity
+    (c e ex2 : ℝ) (hc : 0 < c) :
+    2 * (c ^ 2 * e + ex2) / (c * (2 * c + 1)) - e =
+      2 / (c * (2 * c + 1)) * (ex2 - (c / 2) * e) := by
+  have hc0 : c ≠ 0 := ne_of_gt hc
+  have hlin : 2 * c + 1 ≠ 0 := by nlinarith
+  field_simp [hc0, hlin]
+  ring
+
+/-- Rearranged all-moment step relation.  Analytically, setting
+`e=M_{2m}(c)`, `enext=M_{2m}(c+1)`, and `ex2=M_{2m+2}(c)` gives the exact
+even-moment recurrence. -/
+theorem continuousStep_moment_rearrange
+    (c e enext ex2 : ℝ) (hc : 0 < c)
+    (hstep : enext = 2 * (c ^ 2 * e + ex2) / (c * (2 * c + 1))) :
+    ex2 = c * (2 * c + 1) / 2 * enext - c ^ 2 * e := by
+  have hc0 : c ≠ 0 := ne_of_gt hc
+  have hlin : 2 * c + 1 ≠ 0 := by nlinarith
+  rw [hstep]
+  field_simp [hc0, hlin]
+  ring
+
+/-- Normalization of two consecutive chambers forces the second moment `c/2` from
+the step recurrence alone. -/
+theorem continuousStep_normalization_forces_second_moment
+    (c m2 : ℝ) (hc : 0 < c)
+    (hstep : (1 : ℝ) = 2 * (c ^ 2 + m2) / (c * (2 * c + 1))) :
+    m2 = c / 2 := by
+  have hc0 : c ≠ 0 := ne_of_gt hc
+  have hlin : 2 * c + 1 ≠ 0 := by nlinarith
+  field_simp [hc0, hlin] at hstep
+  nlinarith
+
+/-- A nonnegative covariance bracket forces monotone chamber transport.  This is the
+algebraic core of radial stochastic ordering; the analytic layer only has to prove
+that the relevant covariance bracket is nonnegative. -/
+theorem continuousStep_transport_mono
+    (c e ex2 : ℝ) (hc : 0 < c)
+    (hcov : 0 ≤ ex2 - (c / 2) * e) :
+    e ≤ 2 * (c ^ 2 * e + ex2) / (c * (2 * c + 1)) := by
+  have hcoef : 0 < 2 / (c * (2 * c + 1)) := by positivity
+  have hrhs : 0 ≤ 2 / (c * (2 * c + 1)) * (ex2 - (c / 2) * e) :=
+    mul_nonneg (le_of_lt hcoef) hcov
+  have hid := continuousStep_transport_identity c e ex2 hc
+  linarith
+
 end GppSpectralRhoContinuousStep
