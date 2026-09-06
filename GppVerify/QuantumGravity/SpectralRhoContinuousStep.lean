@@ -66,7 +66,12 @@ theorem continuousStepFactor_lt_one_iff
     continuousStepFactor c x < 1 ↔ 2 * x ^ 2 < c := by
   have hden : 0 < c * (2 * c + 1) := by positivity
   unfold continuousStepFactor
-  rw [div_lt_one hden]
-  constructor <;> intro h <;> nlinarith
+  constructor
+  · intro h
+    have h' := (div_lt_iff₀ hden).mp h
+    nlinarith
+  · intro h
+    apply (div_lt_iff₀ hden).2
+    nlinarith
 
 end GppSpectralRhoContinuousStep
