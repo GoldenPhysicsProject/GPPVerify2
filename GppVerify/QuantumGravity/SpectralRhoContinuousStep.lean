@@ -72,8 +72,14 @@ theorem continuousStepFactor_gt_one_iff
     1 < continuousStepFactor c x ↔ c < 2 * x ^ 2 := by
   have hden : 0 < c * (2 * c + 1) := by positivity
   unfold continuousStepFactor
-  rw [lt_div_iff₀ hden]
-  nlinarith
+  constructor
+  · intro h
+    have h' : c * (2 * c + 1) < 2 * (c ^ 2 + x ^ 2) :=
+      (lt_div_iff₀ hden).mp h
+    nlinarith
+  · intro h
+    apply (lt_div_iff₀ hden).mpr
+    nlinarith
 
 /-- Below the crossing threshold the continuous chamber step factor is less than one. -/
 theorem continuousStepFactor_lt_one_iff
@@ -81,7 +87,13 @@ theorem continuousStepFactor_lt_one_iff
     continuousStepFactor c x < 1 ↔ 2 * x ^ 2 < c := by
   have hden : 0 < c * (2 * c + 1) := by positivity
   unfold continuousStepFactor
-  rw [div_lt_iff₀ hden]
-  nlinarith
+  constructor
+  · intro h
+    have h' : 2 * (c ^ 2 + x ^ 2) < 1 * (c * (2 * c + 1)) :=
+      (div_lt_iff₀ hden).mp h
+    nlinarith
+  · intro h
+    apply (div_lt_iff₀ hden).mpr
+    nlinarith
 
 end GppSpectralRhoContinuousStep
