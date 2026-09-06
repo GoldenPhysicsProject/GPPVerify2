@@ -74,8 +74,8 @@ theorem continuousStepFactor_gt_one_iff
   unfold continuousStepFactor
   constructor
   · intro h
-    have h' : c * (2 * c + 1) < 2 * (c ^ 2 + x ^ 2) :=
-      (lt_div_iff₀ hden).mp h
+    have h' : c * (2 * c + 1) < 2 * (c ^ 2 + x ^ 2) := by
+      simpa using (lt_div_iff₀ hden).mp h
     nlinarith
   · intro h
     apply (lt_div_iff₀ hden).mpr
