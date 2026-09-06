@@ -160,7 +160,7 @@ theorem probability_cubicResidualSquare_eq_residualSqMoment
       probability β η n *
         (cubicResidualValue β η m2 m3 m4 m5 n) ^ 2) =
       ∑' n : ℕ,
-        (A ^ 2) * probability β η n
+        ((A ^ 2) * probability β η n
           + (2 * A * B) *
               (probability β η n * centeredLogEnergy β η n)
           + (B ^ 2 + 2 * A * C) *
@@ -172,7 +172,7 @@ theorem probability_cubicResidualSquare_eq_residualSqMoment
           + (2 * C * D) *
               (probability β η n * centeredLogEnergy β η n ^ 5)
           + (D ^ 2) *
-              (probability β η n * centeredLogEnergy β η n ^ 6) := by
+              (probability β η n * centeredLogEnergy β η n ^ 6)) := by
         apply tsum_congr
         intro n
         unfold cubicResidualValue
@@ -211,7 +211,7 @@ theorem probability_cubicResidualSquare_eq_residualSqMoment
           probability_centered_fourthMoment β hη,
           probability_centered_fifthMoment β hη,
           probability_centered_sixthMoment β hη]
-        rfl
+        simp [m2, m3, m4, m5, m6]
     _ = residualSqMoment m2 m3 m4 m5 m6 := by
         exact cubicResidual_centeredMoment_expansion m2 m3 m4 m5 m6
 
