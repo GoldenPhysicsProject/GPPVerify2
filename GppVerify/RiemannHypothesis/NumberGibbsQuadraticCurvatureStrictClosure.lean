@@ -110,7 +110,7 @@ private theorem summable_probability_centered_four
 
 private theorem summable_probability_centered_five
     (β : ℝ) {η : ℝ} (hη : 0 < η) :
-    Summable (fun n : ℕ => probability β eta n * centeredLogEnergy β η n ^ 5) := by
+    Summable (fun n : ℕ => probability β η n * centeredLogEnergy β η n ^ 5) := by
   let μ : ℝ := M1 β η / Z β η
   have h5 := summable_probability_five β hη
   have h4c := (summable_probability_four β hη).mul_left (-5 * μ)
