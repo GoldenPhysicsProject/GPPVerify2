@@ -96,6 +96,40 @@ theorem continuousStepFactor_lt_one_iff
     apply (div_lt_iff₀ hden).mpr
     nlinarith
 
+/-- Exact radial difference of two continuous chamber step factors.  This makes
+explicit that the likelihood-ratio tilt is affine in `x²`. -/
+theorem continuousStepFactor_radial_difference
+    (c x y : ℝ) (hc : 0 < c) :
+    continuousStepFactor c y - continuousStepFactor c x =
+      2 / (c * (2 * c + 1)) * (y ^ 2 - x ^ 2) := by
+  have hc0 : c ≠ 0 := ne_of_gt hc
+  have hlin : 2 * c + 1 ≠ 0 := by nlinarith
+  unfold continuousStepFactor
+  field_simp [hc0, hlin]
+  ring
+
+/-- Radial square ordering is transported monotonically by the chamber step factor. -/
+theorem continuousStepFactor_mono_sq
+    (c x y : ℝ) (hc : 0 < c) (hxy : x ^ 2 ≤ y ^ 2) :
+    continuousStepFactor c x ≤ continuousStepFactor c y := by
+  have hcoef : 0 < 2 / (c * (2 * c + 1)) := by positivity
+  have hs : 0 ≤ y ^ 2 - x ^ 2 := sub_nonneg.mpr hxy
+  have hp : 0 ≤ 2 / (c * (2 * c + 1)) * (y ^ 2 - x ^ 2) :=
+    mul_nonneg (le_of_lt hcoef) hs
+  have hid := continuousStepFactor_radial_difference c x y hc
+  linarith
+
+/-- Strict radial square ordering gives strict step-factor ordering. -/
+theorem continuousStepFactor_strict_mono_sq
+    (c x y : ℝ) (hc : 0 < c) (hxy : x ^ 2 < y ^ 2) :
+    continuousStepFactor c x < continuousStepFactor c y := by
+  have hcoef : 0 < 2 / (c * (2 * c + 1)) := by positivity
+  have hs : 0 < y ^ 2 - x ^ 2 := sub_pos.mpr hxy
+  have hp : 0 < 2 / (c * (2 * c + 1)) * (y ^ 2 - x ^ 2) :=
+    mul_pos hcoef hs
+  have hid := continuousStepFactor_radial_difference c x y hc
+  linarith
+
 /-- Exact algebraic transport identity induced by one continuous chamber step.
 
 When `e = E_c[f]` and `ex2 = E_c[X² f]`, the left-hand side is the chamber
@@ -144,6 +178,17 @@ theorem continuousStep_transport_mono
   have hcoef : 0 < 2 / (c * (2 * c + 1)) := by positivity
   have hrhs : 0 ≤ 2 / (c * (2 * c + 1)) * (ex2 - (c / 2) * e) :=
     mul_nonneg (le_of_lt hcoef) hcov
+  have hid := continuousStep_transport_identity c e ex2 hc
+  linarith
+
+/-- A strictly positive covariance bracket forces a strict chamber increase. -/
+theorem continuousStep_transport_strict
+    (c e ex2 : ℝ) (hc : 0 < c)
+    (hcov : 0 < ex2 - (c / 2) * e) :
+    e < 2 * (c ^ 2 * e + ex2) / (c * (2 * c + 1)) := by
+  have hcoef : 0 < 2 / (c * (2 * c + 1)) := by positivity
+  have hrhs : 0 < 2 / (c * (2 * c + 1)) * (ex2 - (c / 2) * e) :=
+    mul_pos hcoef hcov
   have hid := continuousStep_transport_identity c e ex2 hc
   linarith
 
