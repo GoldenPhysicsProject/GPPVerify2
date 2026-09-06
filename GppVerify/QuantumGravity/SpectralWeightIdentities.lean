@@ -45,10 +45,6 @@ theorem planck_form {lam : ℝ} (hlam : 0 < lam) :
   have ha0 : Real.exp (π * lam) ≠ 0 := (Real.exp_pos _).ne'
   have haM1 : Real.exp (π * lam) - 1 ≠ 0 := by linarith
   have haP1 : Real.exp (π * lam) + 1 ≠ 0 := by linarith
-  -- Each auxiliary identity below has denominators that are only ever the plain atoms
-  -- `Real.exp (π*lam)`, `Real.exp (π*lam) - 1`, `Real.exp (π*lam) + 1` — never their
-  -- product re-expanded to `a^2 - 1`, which `field_simp` cannot relate back to `haM1`/`haP1`
-  -- once its internal `ring_nf` normalization re-expands the product.
   have hA : Real.exp (π * lam) - (Real.exp (π * lam))⁻¹
       = (Real.exp (π * lam) - 1) * (Real.exp (π * lam) + 1) / Real.exp (π * lam) := by
     field_simp
@@ -82,10 +78,10 @@ theorem one_div_P_tendsto_tprod {lam : ℝ} (hlam : lam ≠ 0) :
   rwa [hval]
 
 /-- Normalize a raw spectral moment by the zeroth moment. -/
-def normalizedMoment (a0 ak : ℝ) : ℝ := ak / a0
+noncomputable def normalizedMoment (a0 ak : ℝ) : ℝ := ak / a0
 
 /-- Variance reconstructed from the first three raw moments. -/
-def varianceFromRawMoments (a0 a1 a2 : ℝ) : ℝ :=
+noncomputable def varianceFromRawMoments (a0 a1 a2 : ℝ) : ℝ :=
   normalizedMoment a0 a2 - (normalizedMoment a0 a1) ^ 2
 
 /-- The principal-series digamma variable has normalized mean `1/2` once the exact
