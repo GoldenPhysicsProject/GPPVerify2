@@ -197,6 +197,30 @@ theorem compensatedLevyKernel_le_two_mul_density {c t x : ℝ} (hc : 0 ≤ c) :
   have hnu : 0 ≤ levyDensity c x := levyDensity_nonneg_global hc
   exact mul_le_mul_of_nonneg_right hcos hnu
 
+/-- Quadratic cancellation makes the compensated kernel globally bounded.
+The exact bound `t^2 c / (2 pi)` is the near-origin domination needed for the
+Lévy integral, obtained from `1 - cos y ≤ y^2/2` and the global quadratic
+density majorant above. -/
+theorem compensatedLevyKernel_le_uniform {c t x : ℝ} (hc : 0 ≤ c) :
+    compensatedLevyKernel c t x ≤ t ^ 2 * c / (2 * Real.pi) := by
+  unfold compensatedLevyKernel
+  have hcos : 1 - Real.cos (t * x) ≤ (t * x) ^ 2 / 2 := by
+    linarith [Real.one_sub_sq_div_two_le_cos (t * x)]
+  have hnu : 0 ≤ levyDensity c x := levyDensity_nonneg_global hc
+  have hfirst :
+      (1 - Real.cos (t * x)) * levyDensity c x ≤
+        ((t * x) ^ 2 / 2) * levyDensity c x :=
+    mul_le_mul_of_nonneg_right hcos hnu
+  have hsq := sq_abs_mul_levyDensity_le (c := c) (x := x) hc
+  have hscale : 0 ≤ t ^ 2 / 2 := by positivity
+  have hsecond := mul_le_mul_of_nonneg_left hsq hscale
+  calc
+    (1 - Real.cos (t * x)) * levyDensity c x
+        ≤ ((t * x) ^ 2 / 2) * levyDensity c x := hfirst
+    _ = (t ^ 2 / 2) * (|x| ^ 2 * levyDensity c x) := by rw [sq_abs]; ring
+    _ ≤ (t ^ 2 / 2) * (c / Real.pi) := hsecond
+    _ = t ^ 2 * c / (2 * Real.pi) := by field_simp [Real.pi_ne_zero]; ring
+
 /-- The compensated kernel vanishes at the spatial origin under totalized division. -/
 theorem compensatedLevyKernel_at_zero (c t : ℝ) :
     compensatedLevyKernel c t 0 = 0 := by
@@ -221,4 +245,5 @@ end GppContinuousSechLevyKernel
 #print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_neg_space
 #print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_nonneg
 #print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_le_two_mul_density
+#print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_le_uniform
 #print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_at_zero
