@@ -48,6 +48,10 @@ theorem levyDensity_add (c d x : ℝ) :
 theorem levyDensity_zero (x : ℝ) : levyDensity 0 x = 0 := by
   simp [levyDensity]
 
+/-- At the spatial origin Lean's totalized division gives the removable value zero. -/
+theorem levyDensity_at_zero (c : ℝ) : levyDensity c 0 = 0 := by
+  simp [levyDensity]
+
 /-- The candidate Lévy density is spatially even. -/
 theorem levyDensity_neg (c x : ℝ) : levyDensity c (-x) = levyDensity c x := by
   simp [levyDensity]
@@ -67,8 +71,15 @@ theorem levyDensity_nonneg {c x : ℝ} (hc : 0 ≤ c) (hx : x ≠ 0) :
   unfold levyDensity
   have hxabs : 0 < |x| := abs_pos.mpr hx
   have hsinh : 0 < Real.sinh (Real.pi * |x|) := by
-    exact Real.sinh_pos_iff.mpr (mul_pos Real.pi_pos hxabs)
-  exact div_nonneg hc (le_of_lt (mul_pos hxabs hsinh))
+    exact Real.sinh_pos_iff hc (le_of_lt (mul_pos hxabs hsinh))
+
+/-- A nonnegative chamber parameter gives a globally nonnegative totalized density. -/
+theorem levyDensity_nonneg_global {c x : ℝ} (hc : 0 ≤ c) :
+    0 ≤ levyDensity c x := by
+  by_cases hx : x = 0
+  · subst x
+    rw [levyDensity_at_zero]
+  · exact levyDensity_nonneg hc hx
 
 /-- The pointwise Lévy exponent kernel is additive in the chamber parameter. -/
 theorem levyExponentKernel_add (c d t x : ℝ) :
@@ -99,12 +110,23 @@ theorem levyExponentKernel_nonpos {c t x : ℝ} (hc : 0 ≤ c) (hx : x ≠ 0) :
   have hnu : 0 ≤ levyDensity c x := levyDensity_nonneg hc hx
   exact mul_nonpos_of_nonpos_of_nonneg hcos hnu
 
+/-- The totalized pointwise Lévy exponent kernel is globally nonpositive. -/
+theorem levyExponentKernel_nonpos_global {c t x : ℝ} (hc : 0 ≤ c) :
+    levyExponentKernel c t x ≤ 0 := by
+  unfold levyExponentKernel
+  have hcos : Real.cos (t * x) - 1 ≤ 0 := sub_nonpos.mpr (Real.cos_le_one (t * x))
+  have hnu : 0 ≤ levyDensity c x := levyDensity_nonneg_global hc
+  exact mul_nonpos_of_nonpos_of_nonneg hcos hnu
+
 end GppContinuousSechLevyKernel
 
 #print axioms GppContinuousSechLevyKernel.levyDensity_add
+#print axioms GppContinuousSechLevyKernel.levyDensity_at_zero
 #print axioms GppContinuousSechLevyKernel.levyDensity_pos
 #print axioms GppContinuousSechLevyKernel.levyDensity_nonneg
+#print axioms GppContinuousSechLevyKernel.levyDensity_nonneg_global
 #print axioms GppContinuousSechLevyKernel.levyExponentKernel_add
 #print axioms GppContinuousSechLevyKernel.levyExponentKernel_neg_frequency
 #print axioms GppContinuousSechLevyKernel.levyExponentKernel_neg_space
 #print axioms GppContinuousSechLevyKernel.levyExponentKernel_nonpos
+#print axioms GppContinuousSechLevyKernel.levyExponentKernel_nonpos_global
