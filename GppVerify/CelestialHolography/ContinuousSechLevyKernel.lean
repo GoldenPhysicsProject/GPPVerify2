@@ -71,7 +71,8 @@ theorem levyDensity_nonneg {c x : ℝ} (hc : 0 ≤ c) (hx : x ≠ 0) :
   unfold levyDensity
   have hxabs : 0 < |x| := abs_pos.mpr hx
   have hsinh : 0 < Real.sinh (Real.pi * |x|) := by
-    exact Real.sinh_pos_iff hc (le_of_lt (mul_pos hxabs hsinh))
+    exact Real.sinh_pos_iff.mpr (mul_pos Real.pi_pos hxabs)
+  exact div_nonneg hc (le_of_lt (mul_pos hxabs hsinh))
 
 /-- A nonnegative chamber parameter gives a globally nonnegative totalized density. -/
 theorem levyDensity_nonneg_global {c x : ℝ} (hc : 0 ≤ c) :
