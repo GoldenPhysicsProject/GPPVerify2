@@ -17,9 +17,10 @@ The analytic identity
   `log Phi_c(t) = ∫ (cos(t*x)-1) nu_c(x) dx`
 
 is deliberately *not* asserted here.  The present file formalizes only the
-parameter-additive, reflection, and pointwise sign properties of the candidate
-density and its Lévy exponent kernel.  These are reusable prerequisites for a
-later Lévy-integrability and integral-identification theorem.
+parameter-additive, reflection, pointwise sign, and elementary majorant
+properties of the candidate density and its Lévy exponent kernel.  These are
+reusable prerequisites for a later Lévy-integrability and integral-identification
+theorem.
 
 Important analytic boundary: `nu_c(x)` behaves like `c / (pi * x^2)` at the
 origin, so the density itself is not locally integrable there for `c > 0`.
@@ -85,6 +86,33 @@ theorem levyDensity_nonneg_global {c x : ℝ} (hc : 0 ≤ c) :
   · subst x
     rw [levyDensity_at_zero]
   · exact levyDensity_nonneg hc hx
+
+/-- The quadratic compensation has the global elementary majorant `c / pi`.
+This is stronger than a merely local bound and is the near-origin half of the
+Lévy weighted-integrability estimate. -/
+theorem sq_abs_mul_levyDensity_le {c x : ℝ} (hc : 0 ≤ c) :
+    |x| ^ 2 * levyDensity c x ≤ c / Real.pi := by
+  by_cases hx : x = 0
+  · subst x
+    simp [levyDensity, Real.pi_pos.le]
+  · have hxabs : 0 < |x| := abs_pos.mpr hx
+    have harg : 0 ≤ Real.pi * |x| := le_of_lt (mul_pos Real.pi_pos hxabs)
+    have hsinhLower : Real.pi * |x| ≤ Real.sinh (Real.pi * |x|) :=
+      (Real.self_le_sinh_iff).2 harg
+    have hsinh : 0 < Real.sinh (Real.pi * |x|) :=
+      Real.sinh_pos_iff.mpr (mul_pos Real.pi_pos hxabs)
+    have hden : 0 < |x| * Real.sinh (Real.pi * |x|) := mul_pos hxabs hsinh
+    have hscaled :
+        (c * |x|) * (Real.pi * |x|) ≤
+          (c * |x|) * Real.sinh (Real.pi * |x|) :=
+      mul_le_mul_of_nonneg_left hsinhLower (mul_nonneg hc (abs_nonneg x))
+    unfold levyDensity
+    rw [mul_div_assoc]
+    rw [div_le_div_iff₀ hden Real.pi_pos]
+    calc
+      (|x| ^ 2 * c) * Real.pi = (c * |x|) * (Real.pi * |x|) := by ring
+      _ ≤ (c * |x|) * Real.sinh (Real.pi * |x|) := hscaled
+      _ = c * (|x| * Real.sinh (Real.pi * |x|)) := by ring
 
 /-- The pointwise Lévy exponent kernel is additive in the chamber parameter. -/
 theorem levyExponentKernel_add (c d t x : ℝ) :
@@ -170,6 +198,7 @@ end GppContinuousSechLevyKernel
 #print axioms GppContinuousSechLevyKernel.levyDensity_pos
 #print axioms GppContinuousSechLevyKernel.levyDensity_nonneg
 #print axioms GppContinuousSechLevyKernel.levyDensity_nonneg_global
+#print axioms GppContinuousSechLevyKernel.sq_abs_mul_levyDensity_le
 #print axioms GppContinuousSechLevyKernel.levyExponentKernel_add
 #print axioms GppContinuousSechLevyKernel.levyExponentKernel_neg_frequency
 #print axioms GppContinuousSechLevyKernel.levyExponentKernel_neg_space
