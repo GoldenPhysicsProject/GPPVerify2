@@ -186,6 +186,17 @@ theorem compensatedLevyKernel_nonneg {c t x : ℝ} (hc : 0 ≤ c) :
   have hnu : 0 ≤ levyDensity c x := levyDensity_nonneg_global hc
   exact mul_nonneg hcos hnu
 
+/-- The compensated kernel is globally dominated by twice the Lévy density.
+This is the tail-side elementary majorant: it combines with exponential decay
+of `levyDensity` away from the origin. -/
+theorem compensatedLevyKernel_le_two_mul_density {c t x : ℝ} (hc : 0 ≤ c) :
+    compensatedLevyKernel c t x ≤ 2 * levyDensity c x := by
+  unfold compensatedLevyKernel
+  have hcos : 1 - Real.cos (t * x) ≤ 2 := by
+    linarith [Real.neg_one_le_cos (t * x)]
+  have hnu : 0 ≤ levyDensity c x := levyDensity_nonneg_global hc
+  exact mul_le_mul_of_nonneg_right hcos hnu
+
 /-- The compensated kernel vanishes at the spatial origin under totalized division. -/
 theorem compensatedLevyKernel_at_zero (c t : ℝ) :
     compensatedLevyKernel c t 0 = 0 := by
@@ -209,4 +220,5 @@ end GppContinuousSechLevyKernel
 #print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_neg_frequency
 #print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_neg_space
 #print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_nonneg
+#print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_le_two_mul_density
 #print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_at_zero
