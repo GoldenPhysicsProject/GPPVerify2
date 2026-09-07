@@ -35,6 +35,10 @@ def covarianceNumerator (w g y : Fin n → ℝ) : ℝ :=
 def pairwiseAlignmentEnergy (w g y : Fin n → ℝ) : ℝ :=
   ∑ i, ∑ j, (w i * w j) * ((g i - g j) * (y i - y j))
 
+/-- Covariance after normalizing the finite weight family by its total mass. -/
+noncomputable def normalizedCovariance (w g y : Fin n → ℝ) : ℝ :=
+  covarianceNumerator w g y / (totalWeight w)^2
+
 /-- Exact finite weighted covariance symmetrization. -/
 theorem pairwiseAlignmentEnergy_eq_two_covarianceNumerator
     (w g y : Fin n → ℝ) :
@@ -67,5 +71,21 @@ theorem covarianceNumerator_nonneg_of_pairwise_alignment
     pairwiseAlignmentEnergy_nonneg w g y hw halign
   rw [pairwiseAlignmentEnergy_eq_two_covarianceNumerator] at henergy
   nlinarith
+
+/-- Finite weighted Chebyshev covariance inequality after normalization.
+The positive-total-mass hypothesis is the finite analogue of working with a
+probability measure and records the nondegenerate normalization needed for the
+continuous Gamma-chamber lift. -/
+theorem normalizedCovariance_nonneg_of_pairwise_alignment
+    (w g y : Fin n → ℝ)
+    (hw : ∀ i, 0 ≤ w i)
+    (hW : 0 < totalWeight w)
+    (halign : ∀ i j, 0 ≤ (g i - g j) * (y i - y j)) :
+    0 ≤ normalizedCovariance w g y := by
+  unfold normalizedCovariance
+  have hnum : 0 ≤ covarianceNumerator w g y :=
+    covarianceNumerator_nonneg_of_pairwise_alignment w g y hw halign
+  have hden : 0 ≤ (totalWeight w)^2 := sq_nonneg (totalWeight w)
+  exact div_nonneg hnum hden
 
 end GppFiniteWeightedCovarianceSymmetrization
