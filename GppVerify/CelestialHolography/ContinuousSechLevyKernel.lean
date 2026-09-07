@@ -38,6 +38,10 @@ noncomputable def levyDensity (c x : ℝ) : ℝ :=
 noncomputable def levyExponentKernel (c t x : ℝ) : ℝ :=
   (Real.cos (t * x) - 1) * levyDensity c x
 
+/-- Positive-sign compensated kernel used in the Lévy integral. -/
+noncomputable def compensatedLevyKernel (c t x : ℝ) : ℝ :=
+  (1 - Real.cos (t * x)) * levyDensity c x
+
 /-- The candidate Lévy density is exactly additive in the chamber parameter. -/
 theorem levyDensity_add (c d x : ℝ) :
     levyDensity (c + d) x = levyDensity c x + levyDensity d x := by
@@ -119,6 +123,46 @@ theorem levyExponentKernel_nonpos_global {c t x : ℝ} (hc : 0 ≤ c) :
   have hnu : 0 ≤ levyDensity c x := levyDensity_nonneg_global hc
   exact mul_nonpos_of_nonpos_of_nonneg hcos hnu
 
+/-- The positive-sign compensated kernel is exactly the negative exponent kernel. -/
+theorem compensatedLevyKernel_eq_neg (c t x : ℝ) :
+    compensatedLevyKernel c t x = -levyExponentKernel c t x := by
+  unfold compensatedLevyKernel levyExponentKernel
+  ring
+
+/-- The compensated kernel is additive in the chamber parameter. -/
+theorem compensatedLevyKernel_add (c d t x : ℝ) :
+    compensatedLevyKernel (c + d) t x =
+      compensatedLevyKernel c t x + compensatedLevyKernel d t x := by
+  unfold compensatedLevyKernel
+  rw [levyDensity_add]
+  ring
+
+/-- Frequency reflection leaves the compensated kernel unchanged. -/
+theorem compensatedLevyKernel_neg_frequency (c t x : ℝ) :
+    compensatedLevyKernel c (-t) x = compensatedLevyKernel c t x := by
+  unfold compensatedLevyKernel
+  rw [show (-t) * x = -(t * x) by ring, Real.cos_neg]
+
+/-- Spatial reflection leaves the compensated kernel unchanged. -/
+theorem compensatedLevyKernel_neg_space (c t x : ℝ) :
+    compensatedLevyKernel c t (-x) = compensatedLevyKernel c t x := by
+  unfold compensatedLevyKernel
+  rw [levyDensity_neg]
+  rw [show t * (-x) = -(t * x) by ring, Real.cos_neg]
+
+/-- For nonnegative chamber parameter, the compensated Lévy kernel is globally nonnegative. -/
+theorem compensatedLevyKernel_nonneg {c t x : ℝ} (hc : 0 ≤ c) :
+    0 ≤ compensatedLevyKernel c t x := by
+  unfold compensatedLevyKernel
+  have hcos : 0 ≤ 1 - Real.cos (t * x) := sub_nonneg.mpr (Real.cos_le_one (t * x))
+  have hnu : 0 ≤ levyDensity c x := levyDensity_nonneg_global hc
+  exact mul_nonneg hcos hnu
+
+/-- The compensated kernel vanishes at the spatial origin under totalized division. -/
+theorem compensatedLevyKernel_at_zero (c t : ℝ) :
+    compensatedLevyKernel c t 0 = 0 := by
+  simp [compensatedLevyKernel, levyDensity_at_zero]
+
 end GppContinuousSechLevyKernel
 
 #print axioms GppContinuousSechLevyKernel.levyDensity_add
@@ -131,3 +175,9 @@ end GppContinuousSechLevyKernel
 #print axioms GppContinuousSechLevyKernel.levyExponentKernel_neg_space
 #print axioms GppContinuousSechLevyKernel.levyExponentKernel_nonpos
 #print axioms GppContinuousSechLevyKernel.levyExponentKernel_nonpos_global
+#print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_eq_neg
+#print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_add
+#print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_neg_frequency
+#print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_neg_space
+#print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_nonneg
+#print axioms GppContinuousSechLevyKernel.compensatedLevyKernel_at_zero
