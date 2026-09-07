@@ -1,18 +1,5 @@
 import GppVerify
 
-/-!
-# GPPVerify full construction umbrella
-
-`GppVerify.lean` is the historical root module. During rapid research, a number of
-proved modules were added behind focused CI lanes without immediately becoming imports
-of that root. This umbrella makes the current integration frontier import-connected.
-
-The repository's ordinary `lake build` remains the stronger file-level compilation gate:
-it builds the full `GppVerify` Lean library. Building this module additionally checks
-that the active proved construction can coexist in one import graph. No marker theorem
-is needed: successful elaboration of the imports is the gate.
--/
-
 -- Hadamard / Shadow-Euler finite algebra
 import GppVerify.NumberTheory.HadamardShadowPairAlgebra
 import GppVerify.NumberTheory.ShadowEulerFiniteCore
@@ -89,3 +76,16 @@ import GppVerify.CelestialHolography.TwoFlowScalarStateSum
 
 -- Quantum-information / Standard-Model finite cores
 import GppVerify.StandardModel.UniversalNotFidelity
+
+/-!
+# GPPVerify full construction umbrella
+
+`GppVerify.lean` is the historical root module. During rapid research, a number of
+proved modules were added behind focused CI lanes without immediately becoming imports
+of that root. This umbrella makes the current integration frontier import-connected.
+
+The repository's ordinary `lake build` remains the stronger file-level compilation gate:
+it builds the full `GppVerify` Lean library. Building this module additionally checks
+that the active proved construction can coexist in one import graph. No marker theorem
+is needed: successful elaboration of the imports is the gate.
+-/
