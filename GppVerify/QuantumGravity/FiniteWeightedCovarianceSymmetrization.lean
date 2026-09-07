@@ -88,4 +88,20 @@ theorem normalizedCovariance_nonneg_of_pairwise_alignment
   have hden : 0 ≤ (totalWeight w)^2 := sq_nonneg (totalWeight w)
   exact div_nonneg hnum hden
 
+/-- Strict pairwise alignment energy forces strict normalized covariance whenever
+the total mass is positive.  This isolates the strictness step independently of
+how positivity of the pairwise energy is established. -/
+theorem normalizedCovariance_pos_of_pairwiseAlignmentEnergy_pos
+    (w g y : Fin n → ℝ)
+    (hW : 0 < totalWeight w)
+    (henergy : 0 < pairwiseAlignmentEnergy w g y) :
+    0 < normalizedCovariance w g y := by
+  have hEq := pairwiseAlignmentEnergy_eq_two_covarianceNumerator w g y
+  have hnum : 0 < covarianceNumerator w g y := by
+    nlinarith
+  have hden : 0 < (totalWeight w)^2 := by
+    simpa [pow_two] using mul_pos hW hW
+  unfold normalizedCovariance
+  exact div_pos hnum hden
+
 end GppFiniteWeightedCovarianceSymmetrization
