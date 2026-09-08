@@ -42,9 +42,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .lake
-          key: lake-v3-${{ hashFiles('lakefile.toml', 'lean-toolchain') }}-${{ runner.os }}
+          # Reuse the same project cache namespace as the full Build workflow.
+          # A separate `lake-v3-*` namespace forced deep changed modules to
+          # rebuild the whole GPP dependency graph and made the smoke lane
+          # slower/less reliable than the full certification build.
+          key: lake-${{ hashFiles('lakefile.toml', 'lean-toolchain') }}-${{ runner.os }}
           restore-keys: |
-            lake-v3-${{ hashFiles('lakefile.toml', 'lean-toolchain') }}-
+            lake-${{ hashFiles('lakefile.toml', 'lean-toolchain') }}-
 
       - name: Get Mathlib cache
         run: lake exe cache get || true
