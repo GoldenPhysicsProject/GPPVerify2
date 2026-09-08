@@ -1,4 +1,5 @@
 import GppVerify.CelestialHolography.ContinuousSechLevyFrequencyDerivativeMajorant
+import Mathlib.Analysis.Calculus.ParametricIntegral
 
 /-!
 # Frequency differentiability of the continuous sech Lévy kernel
@@ -14,14 +15,16 @@ is differentiable in the frequency parameter `t`, with exact derivative
 The parameter-uniform Cauchy majorant from
 `ContinuousSechLevyFrequencyDerivativeMajorant` also implies that, for every
 fixed frequency, the derivative kernel is genuinely Lebesgue integrable in `x`.
-This is the final integrability input before a dominated differentiation theorem
-can exchange the frequency derivative with the spatial integral.
+Combining these facts with Mathlib's dominated parametric-integral theorem gives
+the actual differentiation-under-the-integral identity.
 -/
 
 namespace GppContinuousSechLevyFrequencyDifferentiability
 
 open MeasureTheory
 open GppContinuousSechLevyKernel
+open GppContinuousSechLevyMeasurability
+open GppContinuousSechLevyIntegrable
 open GppContinuousSechLevyFrequencyDerivative
 open GppContinuousSechLevyFrequencyDerivativeMajorant
 
@@ -82,8 +85,66 @@ theorem integrable_frequencyDerivativeKernel {c t : ℝ} (hc : 0 ≤ c) :
     abs_of_nonneg (mul_nonneg hC hinv)]
   exact hmaj
 
+/-- The spatial integral of the compensated Lévy kernel is differentiable in frequency,
+with derivative equal to the spatial integral of the pointwise derivative kernel.
+
+The domination is genuinely local-uniform: on the unit frequency ball around `t`, the
+fixed Cauchy majorant uses the window `T = |t| + 1`. -/
+theorem hasDerivAt_integral_compensatedLevyKernel_frequency {c t : ℝ} (hc : 0 ≤ c) :
+    HasDerivAt
+      (fun u : ℝ => ∫ x : ℝ, compensatedLevyKernel c u x)
+      (∫ x : ℝ, frequencyDerivativeKernel c t x) t := by
+  let T : ℝ := |t| + 1
+  let bound : ℝ → ℝ := fun x =>
+    frequencyDerivativeCauchyConstant c T * (1 + x ^ 2)⁻¹
+  have hT : 0 ≤ T := by
+    dsimp [T]
+    positivity
+  have hFmeas : ∀ᶠ u in 𝓝 t,
+      AEStronglyMeasurable (fun x : ℝ => compensatedLevyKernel c u x) := by
+    filter_upwards with u
+    exact aestronglyMeasurable_compensatedLevyKernel c u
+  have hFint : Integrable (fun x : ℝ => compensatedLevyKernel c t x) :=
+    integrable_compensatedLevyKernel hc
+  have hF'meas : AEStronglyMeasurable
+      (fun x : ℝ => frequencyDerivativeKernel c t x) :=
+    aestronglyMeasurable_frequencyDerivativeKernel c t
+  have hboundInt : Integrable bound := by
+    dsimp [bound]
+    exact integrable_frequencyDerivativeCauchyMajorant c T
+  have hbound : ∀ᵐ x : ℝ,
+      ∀ u ∈ Metric.ball t (1 : ℝ),
+        ‖frequencyDerivativeKernel c u x‖ ≤ bound x := by
+    filter_upwards with x
+    intro u hu
+    have hut : |u| ≤ T := by
+      have hudist : |u - t| < 1 := by
+        simpa [Real.dist_eq] using hu
+      have huabs : |u| ≤ |u - t| + |t| := by
+        calc
+          |u| = |(u - t) + t| := by ring_nf
+          _ ≤ |u - t| + |t| := abs_add _ _
+      dsimp [T]
+      linarith
+    have hmaj := abs_frequencyDerivativeKernel_le_cauchy
+      (c := c) (T := T) (t := u) (x := x) hc hut
+    simpa [bound, Real.norm_eq_abs] using hmaj
+  have hdiff : ∀ᵐ x : ℝ,
+      ∀ u ∈ Metric.ball t (1 : ℝ),
+        HasDerivAt (fun v : ℝ => compensatedLevyKernel c v x)
+          (frequencyDerivativeKernel c u x) u := by
+    filter_upwards with x
+    intro u hu
+    exact hasDerivAt_compensatedLevyKernel_frequency c x u
+  exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (F := fun u : ℝ => fun x : ℝ => compensatedLevyKernel c u x)
+    (F' := fun u : ℝ => fun x : ℝ => frequencyDerivativeKernel c u x)
+    (x₀ := t) (bound := bound) (μ := volume) (ε := (1 : ℝ))
+    (by norm_num) hFmeas hFint hF'meas hbound hboundInt hdiff).2
+
 end GppContinuousSechLevyFrequencyDifferentiability
 
 #print axioms GppContinuousSechLevyFrequencyDifferentiability.hasDerivAt_compensatedLevyKernel_frequency
 #print axioms GppContinuousSechLevyFrequencyDifferentiability.measurable_frequencyDerivativeKernel
 #print axioms GppContinuousSechLevyFrequencyDifferentiability.integrable_frequencyDerivativeKernel
+#print axioms GppContinuousSechLevyFrequencyDifferentiability.hasDerivAt_integral_compensatedLevyKernel_frequency
