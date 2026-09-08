@@ -35,8 +35,31 @@ theorem eighth_cumulant (c : ℝ) :
         - 630 * (c / 2) ^ 4 = 17 * c / 8 := by
   ring
 
+/-- The certified second-cumulant polynomial is additive in the chamber parameter. -/
+theorem second_cumulant_add (c d : ℝ) :
+    (c + d) / 2 = c / 2 + d / 2 := by
+  ring
+
+/-- The certified fourth-cumulant polynomial is additive in the chamber parameter. -/
+theorem fourth_cumulant_add (c d : ℝ) :
+    (c + d) / 4 = c / 4 + d / 4 := by
+  ring
+
+/-- The certified sixth-cumulant polynomial is additive in the chamber parameter. -/
+theorem sixth_cumulant_add (c d : ℝ) :
+    (c + d) / 2 = c / 2 + d / 2 := by
+  ring
+
+/-- The certified eighth-cumulant polynomial is additive in the chamber parameter. -/
+theorem eighth_cumulant_add (c d : ℝ) :
+    17 * (c + d) / 8 = 17 * c / 8 + 17 * d / 8 := by
+  ring
+
 end GppSpectralRhoContinuousCumulants
 
 #print axioms GppSpectralRhoContinuousCumulants.fourth_cumulant
 #print axioms GppSpectralRhoContinuousCumulants.sixth_cumulant
 #print axioms GppSpectralRhoContinuousCumulants.eighth_cumulant
+#print axioms GppSpectralRhoContinuousCumulants.fourth_cumulant_add
+#print axioms GppSpectralRhoContinuousCumulants.sixth_cumulant_add
+#print axioms GppSpectralRhoContinuousCumulants.eighth_cumulant_add
