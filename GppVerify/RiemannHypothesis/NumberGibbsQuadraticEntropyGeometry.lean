@@ -1,4 +1,4 @@
-import GppVerify.RiemannHypothesis.NumberGibbsQuadraticMassieuHessian
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticMassieuMetric
 import Mathlib.Tactic
 
 /-!
@@ -15,8 +15,8 @@ the exact Massieu and moment derivative laws imply
 
 Thus the entropy gradient is the negative Fisher/covariance matrix applied to the
 natural-parameter vector.  Contracting with `(β,η)` gives the radial entropy-response
-quadratic form.  Positivity/strictness can be supplied separately from covariance
-positivity; the identities in this file are unconditional on the confined domain `η>0`.
+quadratic form.  Since the confined Fisher matrix is already strictly positive definite,
+the radial entropy response is strictly negative throughout `η>0`.
 -/
 
 namespace GppNumberGibbsQuadraticEntropyGeometry
@@ -24,6 +24,7 @@ namespace GppNumberGibbsQuadraticEntropyGeometry
 open GppNumberGibbsQuadraticThermodynamics
 open GppNumberGibbsQuadraticMassieuDerivatives
 open GppNumberGibbsQuadraticMassieuHessian
+open GppNumberGibbsQuadraticMassieuMetric
 
 /-- The `β` entropy derivative is minus the first component of the Fisher matrix
 applied to the natural-parameter vector `(β,η)`. -/
@@ -65,8 +66,29 @@ theorem radial_entropy_gradient_eq_neg_fisher_quadratic
         η ^ 2 * fisherEE β η) := by
   ring
 
+/-- On the genuinely confined domain, the radial entropy response in natural-parameter
+space is strictly negative.  This is the differential form of entropy loss along a
+positive scaling of `(β,η)`, and is exactly minus the Fisher fluctuation norm. -/
+theorem radial_entropy_gradient_neg
+    (β : ℝ) {η : ℝ} (hη : 0 < η) :
+    β * (-(β * fisherBB β η + η * fisherBE β η)) +
+        η * (-(β * fisherBE β η + η * fisherEE β η)) < 0 := by
+  have hq :
+      0 < fisherBB β η * β ^ 2 +
+          2 * fisherBE β η * β * η +
+          fisherEE β η * η ^ 2 := by
+    exact massieuFisher_quadratic_form_pos β hη β η (Or.inr (ne_of_gt hη))
+  rw [radial_entropy_gradient_eq_neg_fisher_quadratic]
+  have hq' :
+      0 < β ^ 2 * fisherBB β η +
+          2 * β * η * fisherBE β η +
+          η ^ 2 * fisherEE β η := by
+    nlinarith
+  exact neg_lt_zero.mpr hq'
+
 end GppNumberGibbsQuadraticEntropyGeometry
 
 #print axioms GppNumberGibbsQuadraticEntropyGeometry.hasDerivAt_entropy_beta
 #print axioms GppNumberGibbsQuadraticEntropyGeometry.hasDerivAt_entropy_eta
 #print axioms GppNumberGibbsQuadraticEntropyGeometry.radial_entropy_gradient_eq_neg_fisher_quadratic
+#print axioms GppNumberGibbsQuadraticEntropyGeometry.radial_entropy_gradient_neg
