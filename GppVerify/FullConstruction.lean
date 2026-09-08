@@ -70,6 +70,7 @@ import GppVerify.CelestialHolography.WienerHopfGammaChamberHierarchy
 import GppVerify.CelestialHolography.MehlerFockGammaCollapsedWeight
 import GppVerify.QuantumGravity.SpectralRhoChamberProduct
 import GppVerify.QuantumGravity.SpectralRhoMehlerFockBridge
+import GppVerify.QuantumGravity.SpectralWeightMomentFamily
 
 -- Scalar-box regulator, simplex majorant closure, and physical convergence
 import GppVerify.CelestialHolography.RaisedBoxSimplexGammaClosure
