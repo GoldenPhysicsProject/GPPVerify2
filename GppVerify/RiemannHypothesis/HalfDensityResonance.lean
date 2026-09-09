@@ -36,8 +36,24 @@ theorem square_resonance :
     (2 : ℝ)⁻¹ - 3 / 2 = -(2 : ℝ) / 2 := by
   norm_num
 
+/-- Among positive natural-number channel labels, the resonance equation has exactly
+the primitive and prime-square solutions.  This is the discrete selection statement
+behind the two exceptional critical-half-density sectors. -/
+theorem nat_resonance_unique {n m : ℕ} (hn : 0 < n) (hm : 0 < m)
+    (h : n * (3 - m) = 2) :
+    (n = 1 ∧ m = 1) ∨ (n = 2 ∧ m = 2) := by
+  have hn_le : n ≤ 2 := by
+    exact Nat.le_of_dvd (by norm_num) ⟨3 - m, h⟩
+  have hm_le : m ≤ 2 := by
+    by_contra hnot
+    have h3 : 3 ≤ m := by omega
+    have hz : 3 - m = 0 := Nat.sub_eq_zero_of_le h3
+    simp [hz] at h
+  interval_cases n <;> interval_cases m <;> norm_num at hn hm h ⊢
+
 end GppHalfDensityResonance
 
 #print axioms GppHalfDensityResonance.exponent_resonance_iff
 #print axioms GppHalfDensityResonance.primitive_resonance
 #print axioms GppHalfDensityResonance.square_resonance
+#print axioms GppHalfDensityResonance.nat_resonance_unique
