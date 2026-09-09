@@ -16,7 +16,8 @@ Dividing by `y` gives the pointwise continuous Levy density
 
 The tail beginning with odd mode `N` is also exact: it is the full kernel multiplied
 by `exp (-2 N t)`, hence at chamber scale its relative truncation factor is
-`exp (-2 pi N y)`.
+`exp (-2 pi N y)`.  The same exact factor persists after dividing by `y`, so the
+pointwise Levy-density tail is formalized as well.
 
 This is only the exact odd-mode-to-hyperbolic-kernel summation.  It does not assert
 existence of a Levy process, a Levy--Khintchine integral, or identification with the
@@ -99,6 +100,19 @@ theorem chamber_levy_density_from_odd_modes (a : ℝ) {y : ℝ} (hy : 0 < y) :
   rw [tsum_chamber_odd_rates a hy]
   field_simp
 
+/-- The exact tail identity persists after division by the spatial coordinate: the
+odd-mode Levy-density tail is the full chamber Levy density multiplied by
+`exp (-2 pi N y)`. -/
+theorem chamber_levy_density_tail_from_odd_modes
+    (a : ℝ) (N : ℕ) {y : ℝ} (hy : 0 < y) :
+    (∑' n : ℕ,
+      2 * a * Real.exp (-((2 * ((N : ℝ) + (n : ℝ)) + 1) * Real.pi) * y)) / y =
+      (a / (y * Real.sinh (Real.pi * y))) *
+        Real.exp (-(2 * (N : ℝ) * Real.pi) * y) := by
+  rw [tsum_chamber_odd_rates_tail a N hy]
+  have hy0 : y ≠ 0 := ne_of_gt hy
+  field_simp [hy0]
+
 end GppOddModeLevyKernel
 
 #print axioms GppOddModeLevyKernel.tsum_two_exp_odd
@@ -107,3 +121,4 @@ end GppOddModeLevyKernel
 #print axioms GppOddModeLevyKernel.tsum_chamber_odd_rates
 #print axioms GppOddModeLevyKernel.tsum_chamber_odd_rates_tail
 #print axioms GppOddModeLevyKernel.chamber_levy_density_from_odd_modes
+#print axioms GppOddModeLevyKernel.chamber_levy_density_tail_from_odd_modes
