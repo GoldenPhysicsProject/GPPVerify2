@@ -53,9 +53,32 @@ theorem nat_resonance_unique {n m : ℕ} (hn : 0 < n) (hm : 0 < m)
   have hm_le : m ≤ 2 := by omega
   interval_cases n <;> interval_cases m <;> norm_num at hn hm h ⊢
 
+/-- Every smooth Möbius correction from `n = 3` onward has critical-half-density
+power strictly below `-1`, so its continuum tail is beyond the logarithmic
+integrability threshold. -/
+theorem higher_mobius_exponent_lt_neg_one {n : ℕ} (hn : 3 ≤ n) :
+    1 / (n : ℝ) - 3 / 2 < -1 := by
+  have hn3r : (3 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hnpos : (0 : ℝ) < (n : ℝ) := lt_of_lt_of_le (by norm_num) hn3r
+  have h2n : (2 : ℝ) < (n : ℝ) := lt_of_lt_of_le (by norm_num) hn3r
+  have hfrac : (2 : ℝ) / (n : ℝ) < 1 := (div_lt_one hnpos).2 h2n
+  have htwo : 2 * (1 / (n : ℝ)) < 1 := by
+    rw [two_mul, one_div, ← two_mul]
+    simpa [div_eq_mul_inv] using hfrac
+  linarith
+
+/-- Every prime-repetition channel from `m = 3` onward also has scaling power
+strictly below `-1`. -/
+theorem higher_repetition_exponent_lt_neg_one {m : ℕ} (hm : 3 ≤ m) :
+    -(m : ℝ) / 2 < -1 := by
+  have hm3r : (3 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+  linarith
+
 end GppHalfDensityResonance
 
 #print axioms GppHalfDensityResonance.exponent_resonance_iff
 #print axioms GppHalfDensityResonance.primitive_resonance
 #print axioms GppHalfDensityResonance.square_resonance
 #print axioms GppHalfDensityResonance.nat_resonance_unique
+#print axioms GppHalfDensityResonance.higher_mobius_exponent_lt_neg_one
+#print axioms GppHalfDensityResonance.higher_repetition_exponent_lt_neg_one
