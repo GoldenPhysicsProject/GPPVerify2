@@ -71,7 +71,7 @@ theorem prod_weierstrass_odd_mul_half_eq_full (x : ℝ) (N : ℕ) :
     (∏ k in Finset.range N,
         ((1 : ℝ) + x ^ 2 / (((2 * k + 1 : ℕ) : ℝ) ^ 2))) *
       (∏ k in Finset.range N,
-        ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2)) =
+        ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2))) =
       ∏ j in Finset.range (2 * N),
         ((1 : ℝ) + x ^ 2 / (((j + 1 : ℕ) : ℝ) ^ 2)) := by
   rw [← prod_weierstrass_even_rescale x N]
