@@ -67,10 +67,27 @@ theorem higher_mobius_exponent_lt_neg_one {n : ℕ} (hn : 3 ≤ n) :
     simpa [div_eq_mul_inv] using hfrac
   linarith
 
+/-- The smooth Möbius tail has a uniform margin beyond the logarithmic threshold:
+its largest post-exceptional exponent occurs at `n = 3` and equals `-7/6`. -/
+theorem higher_mobius_exponent_le_neg_seven_sixths {n : ℕ} (hn : 3 ≤ n) :
+    1 / (n : ℝ) - 3 / 2 ≤ -(7 : ℝ) / 6 := by
+  have hn3r : (3 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hnpos : (0 : ℝ) < (n : ℝ) := lt_of_lt_of_le (by norm_num) hn3r
+  have hfrac : (1 : ℝ) / (n : ℝ) ≤ 1 / 3 := by
+    rw [div_le_iff₀ hnpos]
+    nlinarith
+  linarith
+
 /-- Every prime-repetition channel from `m = 3` onward also has scaling power
 strictly below `-1`. -/
 theorem higher_repetition_exponent_lt_neg_one {m : ℕ} (hm : 3 ≤ m) :
     -(m : ℝ) / 2 < -1 := by
+  have hm3r : (3 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+  linarith
+
+/-- The repetition tail has the sharper uniform bound `-m/2 ≤ -3/2` for `m ≥ 3`. -/
+theorem higher_repetition_exponent_le_neg_three_halves {m : ℕ} (hm : 3 ≤ m) :
+    -(m : ℝ) / 2 ≤ -(3 : ℝ) / 2 := by
   have hm3r : (3 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
   linarith
 
@@ -81,4 +98,6 @@ end GppHalfDensityResonance
 #print axioms GppHalfDensityResonance.square_resonance
 #print axioms GppHalfDensityResonance.nat_resonance_unique
 #print axioms GppHalfDensityResonance.higher_mobius_exponent_lt_neg_one
+#print axioms GppHalfDensityResonance.higher_mobius_exponent_le_neg_seven_sixths
 #print axioms GppHalfDensityResonance.higher_repetition_exponent_lt_neg_one
+#print axioms GppHalfDensityResonance.higher_repetition_exponent_le_neg_three_halves
