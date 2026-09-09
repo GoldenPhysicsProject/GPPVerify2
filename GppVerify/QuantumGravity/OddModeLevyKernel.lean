@@ -62,9 +62,16 @@ theorem tsum_scaled_two_exp_odd_tail (a : ℝ) (N : ℕ) {t : ℝ} (ht : 0 < t) 
             (2 * a * Real.exp (-(2 * (n : ℝ) + 1) * t))) := by
           apply tsum_congr
           intro n
-          rw [← Real.exp_add]
-          congr 1
-          ring
+          calc
+            2 * a * Real.exp (-(2 * ((N : ℝ) + (n : ℝ)) + 1) * t) =
+                2 * a *
+                  (Real.exp (-(2 * (N : ℝ)) * t) *
+                    Real.exp (-(2 * (n : ℝ) + 1) * t)) := by
+                      rw [← Real.exp_add]
+                      congr 2
+                      ring
+            _ = Real.exp (-(2 * (N : ℝ)) * t) *
+                  (2 * a * Real.exp (-(2 * (n : ℝ) + 1) * t)) := by ring
     _ = Real.exp (-(2 * (N : ℝ)) * t) *
         (∑' n : ℕ, 2 * a * Real.exp (-(2 * (n : ℝ) + 1) * t)) := by
           rw [← tsum_mul_left]
@@ -79,7 +86,12 @@ theorem tsum_chamber_odd_rates (a : ℝ) {y : ℝ} (hy : 0 < y) :
       2 * a * Real.exp (-((2 * (n : ℝ) + 1) * Real.pi) * y)) =
       a / Real.sinh (Real.pi * y) := by
   have ht : 0 < Real.pi * y := mul_pos Real.pi_pos hy
-  simpa [mul_assoc] using tsum_scaled_two_exp_odd a ht
+  have h := tsum_scaled_two_exp_odd a ht
+  convert h using 1
+  apply tsum_congr
+  intro n
+  congr 2
+  ring
 
 /-- At chamber scale, the exact tail beginning at odd mode `N` is the full numerator
 kernel times `exp (-2 pi N y)`. -/
@@ -89,7 +101,14 @@ theorem tsum_chamber_odd_rates_tail (a : ℝ) (N : ℕ) {y : ℝ} (hy : 0 < y) :
       (a / Real.sinh (Real.pi * y)) *
         Real.exp (-(2 * (N : ℝ) * Real.pi) * y) := by
   have ht : 0 < Real.pi * y := mul_pos Real.pi_pos hy
-  simpa [mul_assoc] using tsum_scaled_two_exp_odd_tail a N ht
+  have h := tsum_scaled_two_exp_odd_tail a N ht
+  convert h using 1
+  · apply tsum_congr
+    intro n
+    congr 2
+    ring
+  · congr 2
+    ring
 
 /-- Dividing the summed odd-mode numerator by `y` gives the pointwise continuous
 chamber Levy density `a / (y * sinh(pi y))`. -/
@@ -98,7 +117,11 @@ theorem chamber_levy_density_from_odd_modes (a : ℝ) {y : ℝ} (hy : 0 < y) :
       2 * a * Real.exp (-((2 * (n : ℝ) + 1) * Real.pi) * y)) / y =
       a / (y * Real.sinh (Real.pi * y)) := by
   rw [tsum_chamber_odd_rates a hy]
-  field_simp
+  have hy0 : y ≠ 0 := ne_of_gt hy
+  have hs0 : Real.sinh (Real.pi * y) ≠ 0 := by
+    exact ne_of_gt (Real.sinh_pos_iff.mpr (mul_pos Real.pi_pos hy))
+  field_simp [hy0, hs0]
+  ring
 
 /-- The exact tail identity persists after division by the spatial coordinate: the
 odd-mode Levy-density tail is the full chamber Levy density multiplied by
@@ -111,7 +134,10 @@ theorem chamber_levy_density_tail_from_odd_modes
         Real.exp (-(2 * (N : ℝ) * Real.pi) * y) := by
   rw [tsum_chamber_odd_rates_tail a N hy]
   have hy0 : y ≠ 0 := ne_of_gt hy
-  field_simp [hy0]
+  have hs0 : Real.sinh (Real.pi * y) ≠ 0 := by
+    exact ne_of_gt (Real.sinh_pos_iff.mpr (mul_pos Real.pi_pos hy))
+  field_simp [hy0, hs0]
+  ring
 
 end GppOddModeLevyKernel
 
