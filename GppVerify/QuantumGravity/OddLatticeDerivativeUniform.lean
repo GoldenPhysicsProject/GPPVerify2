@@ -97,11 +97,18 @@ theorem chamberDerivativeTerm_eq_scaled_oddDerivativeTerm
     4 * a * t / (((2 * (n : ℝ) + 1) * Real.pi) ^ 2 + t ^ 2) =
       (2 * a / Real.pi) * oddDerivativeTerm n (t / Real.pi) := by
   have hodd : 0 < 2 * (n : ℝ) + 1 := by positivity
-  have hpi : 0 < Real.pi := Real.pi_pos
-  have hleft : (((2 * (n : ℝ) + 1) * Real.pi) ^ 2 + t ^ 2) ≠ 0 := by
-    positivity
-  have hright : ((2 * (n : ℝ) + 1) ^ 2 + (t / Real.pi) ^ 2) ≠ 0 := by
-    positivity
+  have hscaled : 0 < (2 * (n : ℝ) + 1) * Real.pi :=
+    mul_pos hodd Real.pi_pos
+  have hleftpos :
+      0 < ((2 * (n : ℝ) + 1) * Real.pi) ^ 2 + t ^ 2 :=
+    add_pos_of_pos_of_nonneg (sq_pos_of_pos hscaled) (sq_nonneg t)
+  have hrightpos :
+      0 < (2 * (n : ℝ) + 1) ^ 2 + (t / Real.pi) ^ 2 :=
+    add_pos_of_pos_of_nonneg (sq_pos_of_pos hodd) (sq_nonneg (t / Real.pi))
+  have hleft : (((2 * (n : ℝ) + 1) * Real.pi) ^ 2 + t ^ 2) ≠ 0 :=
+    ne_of_gt hleftpos
+  have hright : ((2 * (n : ℝ) + 1) ^ 2 + (t / Real.pi) ^ 2) ≠ 0 :=
+    ne_of_gt hrightpos
   rw [oddDerivativeTerm]
   field_simp [Real.pi_ne_zero, hleft, hright]
   ring
