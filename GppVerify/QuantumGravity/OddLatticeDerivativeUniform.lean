@@ -84,8 +84,31 @@ theorem tendstoUniformlyOn_oddDerivativeTerm
     (summable_oddDerivativeMajorant T hT)
     (fun n x hx => norm_oddDerivativeTerm_le_majorant T hT n x hx)
 
+/-- The corrected chamber-frequency derivative summand is exactly a rescaling
+of the already controlled odd-lattice derivative term.  This fixes the
+normalization used in the continuous `sech^(2a)` Levy exponent:
+
+`4 a t / (((2n+1)π)^2+t^2) = (2a/π) f_n(t/π)`.
+
+The statement is purely algebraic and does not assume the still-open `tanh`
+identification of the infinite sum. -/
+theorem chamberDerivativeTerm_eq_scaled_oddDerivativeTerm
+    (a t : ℝ) (n : ℕ) :
+    4 * a * t / (((2 * (n : ℝ) + 1) * Real.pi) ^ 2 + t ^ 2) =
+      (2 * a / Real.pi) * oddDerivativeTerm n (t / Real.pi) := by
+  have hodd : 0 < 2 * (n : ℝ) + 1 := by positivity
+  have hpi : 0 < Real.pi := Real.pi_pos
+  have hleft : (((2 * (n : ℝ) + 1) * Real.pi) ^ 2 + t ^ 2) ≠ 0 := by
+    positivity
+  have hright : ((2 * (n : ℝ) + 1) ^ 2 + (t / Real.pi) ^ 2) ≠ 0 := by
+    positivity
+  rw [oddDerivativeTerm]
+  field_simp [Real.pi_ne_zero, hleft, hright]
+  ring
+
 end GppOddLatticeDerivativeUniform
 
 #print axioms GppOddLatticeDerivativeUniform.summable_oddDerivativeMajorant
 #print axioms GppOddLatticeDerivativeUniform.norm_oddDerivativeTerm_le_majorant
 #print axioms GppOddLatticeDerivativeUniform.tendstoUniformlyOn_oddDerivativeTerm
+#print axioms GppOddLatticeDerivativeUniform.chamberDerivativeTerm_eq_scaled_oddDerivativeTerm
