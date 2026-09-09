@@ -73,7 +73,6 @@ import GppVerify.QuantumGravity.SpectralRhoChamberProduct
 import GppVerify.QuantumGravity.SpectralRhoMehlerFockBridge
 import GppVerify.QuantumGravity.SpectralWeightMomentFamily
 import GppVerify.QuantumGravity.OddLatticeDerivativeUniform
-import GppVerify.QuantumGravity.OddModeLevyKernel
 
 -- Scalar-box regulator, simplex majorant closure, and physical convergence
 import GppVerify.CelestialHolography.RaisedBoxSimplexGammaClosure
