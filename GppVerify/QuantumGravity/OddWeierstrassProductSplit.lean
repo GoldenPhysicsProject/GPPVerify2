@@ -52,8 +52,35 @@ theorem prod_weierstrass_even_rescale (x : ℝ) (N : ℕ) :
   intro k hk
   exact weierstrass_even_factor_rescale x k
 
+/-- The positive-denominator Weierstrass product through `2N` factors exactly
+    into its odd and even positive-denominator subproducts. -/
+theorem prod_weierstrass_odd_mul_even (x : ℝ) (N : ℕ) :
+    (∏ k in Finset.range N,
+        ((1 : ℝ) + x ^ 2 / (((2 * k + 1 : ℕ) : ℝ) ^ 2))) *
+      (∏ k in Finset.range N,
+        ((1 : ℝ) + x ^ 2 / (((2 * k + 2 : ℕ) : ℝ) ^ 2))) =
+      ∏ j in Finset.range (2 * N),
+        ((1 : ℝ) + x ^ 2 / (((j + 1 : ℕ) : ℝ) ^ 2)) := by
+  simpa [Nat.add_assoc] using
+    (prod_range_even_mul_odd
+      (fun j : ℕ => (1 : ℝ) + x ^ 2 / (((j + 1 : ℕ) : ℝ) ^ 2)) N)
+
+/-- Exact finite quotient precursor: the odd positive-denominator product times
+    the ordinary half-argument product equals the full product through `2N`. -/
+theorem prod_weierstrass_odd_mul_half_eq_full (x : ℝ) (N : ℕ) :
+    (∏ k in Finset.range N,
+        ((1 : ℝ) + x ^ 2 / (((2 * k + 1 : ℕ) : ℝ) ^ 2))) *
+      (∏ k in Finset.range N,
+        ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2)) =
+      ∏ j in Finset.range (2 * N),
+        ((1 : ℝ) + x ^ 2 / (((j + 1 : ℕ) : ℝ) ^ 2)) := by
+  rw [← prod_weierstrass_even_rescale x N]
+  exact prod_weierstrass_odd_mul_even x N
+
 end GppOddWeierstrassProductSplit
 
 #print axioms GppOddWeierstrassProductSplit.prod_range_even_mul_odd
 #print axioms GppOddWeierstrassProductSplit.weierstrass_even_factor_rescale
 #print axioms GppOddWeierstrassProductSplit.prod_weierstrass_even_rescale
+#print axioms GppOddWeierstrassProductSplit.prod_weierstrass_odd_mul_even
+#print axioms GppOddWeierstrassProductSplit.prod_weierstrass_odd_mul_half_eq_full
