@@ -41,7 +41,19 @@ theorem weierstrass_even_factor_rescale (x : ℝ) (k : ℕ) :
   field_simp [hk]
   ring
 
+/-- The product over the even positive denominators `2,4,...,2N` is exactly
+    the ordinary Weierstrass product at half the argument. -/
+theorem prod_weierstrass_even_rescale (x : ℝ) (N : ℕ) :
+    (∏ k in Finset.range N,
+        ((1 : ℝ) + x ^ 2 / (((2 * k + 2 : ℕ) : ℝ) ^ 2))) =
+      ∏ k in Finset.range N,
+        ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2)) := by
+  apply Finset.prod_congr rfl
+  intro k hk
+  exact weierstrass_even_factor_rescale x k
+
 end GppOddWeierstrassProductSplit
 
 #print axioms GppOddWeierstrassProductSplit.prod_range_even_mul_odd
 #print axioms GppOddWeierstrassProductSplit.weierstrass_even_factor_rescale
+#print axioms GppOddWeierstrassProductSplit.prod_weierstrass_even_rescale
