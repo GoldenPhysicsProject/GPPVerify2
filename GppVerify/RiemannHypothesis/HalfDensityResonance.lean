@@ -78,6 +78,13 @@ theorem higher_mobius_exponent_le_neg_seven_sixths {n : ℕ} (hn : 3 ≤ n) :
     nlinarith
   linarith
 
+/-- Quantitative form of the smooth-tail gap: after the exceptional sectors, the
+Möbius exponent lies at least `1/6` below the logarithmic `-1` threshold. -/
+theorem higher_mobius_integrability_gap_ge_one_sixth {n : ℕ} (hn : 3 ≤ n) :
+    (-(1 : ℝ)) - (1 / (n : ℝ) - 3 / 2) ≥ 1 / 6 := by
+  have h := higher_mobius_exponent_le_neg_seven_sixths hn
+  linarith
+
 /-- Every prime-repetition channel from `m = 3` onward also has scaling power
 strictly below `-1`. -/
 theorem higher_repetition_exponent_lt_neg_one {m : ℕ} (hm : 3 ≤ m) :
@@ -91,6 +98,13 @@ theorem higher_repetition_exponent_le_neg_three_halves {m : ℕ} (hm : 3 ≤ m) 
   have hm3r : (3 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
   linarith
 
+/-- Quantitative form of the repetition-tail gap: every `m ≥ 3` exponent lies at
+least `1/2` below the logarithmic `-1` threshold. -/
+theorem higher_repetition_integrability_gap_ge_one_half {m : ℕ} (hm : 3 ≤ m) :
+    (-(1 : ℝ)) - (-(m : ℝ) / 2) ≥ 1 / 2 := by
+  have h := higher_repetition_exponent_le_neg_three_halves hm
+  linarith
+
 end GppHalfDensityResonance
 
 #print axioms GppHalfDensityResonance.exponent_resonance_iff
@@ -99,5 +113,7 @@ end GppHalfDensityResonance
 #print axioms GppHalfDensityResonance.nat_resonance_unique
 #print axioms GppHalfDensityResonance.higher_mobius_exponent_lt_neg_one
 #print axioms GppHalfDensityResonance.higher_mobius_exponent_le_neg_seven_sixths
+#print axioms GppHalfDensityResonance.higher_mobius_integrability_gap_ge_one_sixth
 #print axioms GppHalfDensityResonance.higher_repetition_exponent_lt_neg_one
 #print axioms GppHalfDensityResonance.higher_repetition_exponent_le_neg_three_halves
+#print axioms GppHalfDensityResonance.higher_repetition_integrability_gap_ge_one_half
