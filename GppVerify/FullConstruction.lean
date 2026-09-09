@@ -52,6 +52,9 @@ import GppVerify.RiemannHypothesis.LocalEulerShadowColligation
 import GppVerify.RiemannHypothesis.PrimeResponseContraction
 import GppVerify.RiemannHypothesis.PrimeResponseTransferOperator
 
+-- Exceptional primitive / double-prime boundary counterterm pairing
+import GppVerify.RiemannHypothesis.PrimitiveSquareLogCounterterm
+
 -- Strict normalized prime-Fisher and zeta-Gibbs fluctuation geometry / thermodynamics
 import GppVerify.RiemannHypothesis.PrimeFisherCenteredGeometry
 import GppVerify.RiemannHypothesis.PrimeFisherCenteredDeterminant
