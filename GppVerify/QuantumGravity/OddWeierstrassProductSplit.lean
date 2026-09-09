@@ -77,6 +77,31 @@ theorem prod_weierstrass_odd_mul_half_eq_full (x : ℝ) (N : ℕ) :
   rw [← prod_weierstrass_even_rescale x N]
   exact prod_weierstrass_odd_mul_even x N
 
+/-- Every finite half-argument Weierstrass product is strictly positive. -/
+theorem prod_weierstrass_half_pos (x : ℝ) (N : ℕ) :
+    0 < ∏ k in Finset.range N,
+      ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2)) := by
+  apply Finset.prod_pos
+  intro k hk
+  have hden : 0 < (((k + 1 : ℕ) : ℝ) ^ 2) := by positivity
+  have hterm : 0 ≤ (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2) :=
+    div_nonneg (sq_nonneg (x / 2)) (le_of_lt hden)
+  linarith
+
+/-- Literal finite quotient identity for the odd Weierstrass subproduct. -/
+theorem prod_weierstrass_odd_eq_full_div_half (x : ℝ) (N : ℕ) :
+    (∏ k in Finset.range N,
+        ((1 : ℝ) + x ^ 2 / (((2 * k + 1 : ℕ) : ℝ) ^ 2))) =
+      (∏ j in Finset.range (2 * N),
+          ((1 : ℝ) + x ^ 2 / (((j + 1 : ℕ) : ℝ) ^ 2)) /
+        ∏ k in Finset.range N,
+          ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2)) := by
+  have hpos := prod_weierstrass_half_pos x N
+  have hne : (∏ k in Finset.range N,
+      ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2)) ≠ 0) := ne_of_gt hpos
+  apply (eq_div_iff hne).2
+  exact prod_weierstrass_odd_mul_half_eq_full x N
+
 end GppOddWeierstrassProductSplit
 
 #print axioms GppOddWeierstrassProductSplit.prod_range_even_mul_odd
@@ -84,3 +109,5 @@ end GppOddWeierstrassProductSplit
 #print axioms GppOddWeierstrassProductSplit.prod_weierstrass_even_rescale
 #print axioms GppOddWeierstrassProductSplit.prod_weierstrass_odd_mul_even
 #print axioms GppOddWeierstrassProductSplit.prod_weierstrass_odd_mul_half_eq_full
+#print axioms GppOddWeierstrassProductSplit.prod_weierstrass_half_pos
+#print axioms GppOddWeierstrassProductSplit.prod_weierstrass_odd_eq_full_div_half
