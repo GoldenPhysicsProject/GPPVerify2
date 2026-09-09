@@ -86,9 +86,23 @@ theorem radial_entropy_gradient_neg
     nlinarith
   exact neg_lt_zero.mpr hq'
 
+/-- The confined number-Gibbs entropy has no stationary point in natural-parameter
+space: its two coordinate derivative values cannot vanish simultaneously when `η>0`.
+This follows without any curvature sign assumption, solely from strict Fisher
+positive-definiteness and the radial entropy identity. -/
+theorem entropy_gradient_values_not_both_zero
+    (β : ℝ) {η : ℝ} (hη : 0 < η) :
+    ¬ ((-(β * fisherBB β η + η * fisherBE β η) = 0) ∧
+       (-(β * fisherBE β η + η * fisherEE β η) = 0)) := by
+  intro hzero
+  have hneg := radial_entropy_gradient_neg β hη
+  rw [hzero.1, hzero.2] at hneg
+  norm_num at hneg
+
 end GppNumberGibbsQuadraticEntropyGeometry
 
 #print axioms GppNumberGibbsQuadraticEntropyGeometry.hasDerivAt_entropy_beta
 #print axioms GppNumberGibbsQuadraticEntropyGeometry.hasDerivAt_entropy_eta
 #print axioms GppNumberGibbsQuadraticEntropyGeometry.radial_entropy_gradient_eq_neg_fisher_quadratic
 #print axioms GppNumberGibbsQuadraticEntropyGeometry.radial_entropy_gradient_neg
+#print axioms GppNumberGibbsQuadraticEntropyGeometry.entropy_gradient_values_not_both_zero
