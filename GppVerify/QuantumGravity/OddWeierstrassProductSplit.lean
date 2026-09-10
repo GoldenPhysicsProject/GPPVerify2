@@ -92,10 +92,10 @@ theorem prod_weierstrass_half_pos (x : ℝ) (N : ℕ) :
 theorem prod_weierstrass_odd_eq_full_div_half (x : ℝ) (N : ℕ) :
     (∏ k in Finset.range N,
         ((1 : ℝ) + x ^ 2 / (((2 * k + 1 : ℕ) : ℝ) ^ 2))) =
-      (∏ j in Finset.range (2 * N),
-          ((1 : ℝ) + x ^ 2 / (((j + 1 : ℕ) : ℝ) ^ 2)) /
+      ((∏ j in Finset.range (2 * N),
+          ((1 : ℝ) + x ^ 2 / (((j + 1 : ℕ) : ℝ) ^ 2))) /
         ∏ k in Finset.range N,
-          ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2)) := by
+          ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2))) := by
   have hpos := prod_weierstrass_half_pos x N
   have hne : (∏ k in Finset.range N,
       ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2)) ≠ 0) := ne_of_gt hpos
