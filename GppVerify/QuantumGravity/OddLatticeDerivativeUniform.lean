@@ -1,5 +1,6 @@
 import Mathlib.Analysis.PSeries
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+import Mathlib.Analysis.NormedSpace.FunctionSeries
 import Mathlib.Tactic
 
 /-!
@@ -28,11 +29,11 @@ open Filter Set Topology
 open scoped BigOperators
 
 /-- The odd-lattice logarithmic-derivative summand. -/
-def oddDerivativeTerm (n : ℕ) (x : ℝ) : ℝ :=
+noncomputable def oddDerivativeTerm (n : ℕ) (x : ℝ) : ℝ :=
   2 * x / ((2 * (n : ℝ) + 1) ^ 2 + x ^ 2)
 
 /-- The logarithm of the corresponding positive odd Weierstrass factor. -/
-def oddLogTerm (n : ℕ) (x : ℝ) : ℝ :=
+noncomputable def oddLogTerm (n : ℕ) (x : ℝ) : ℝ :=
   Real.log (1 + x ^ 2 / ((2 * (n : ℝ) + 1) ^ 2))
 
 /-- Each finite odd-factor logarithm has exactly the expected rational derivative. -/
@@ -40,7 +41,7 @@ theorem hasDerivAt_oddLogTerm (n : ℕ) (x : ℝ) :
     HasDerivAt (oddLogTerm n) (oddDerivativeTerm n x) x := by
   have hc : 0 < (2 * (n : ℝ) + 1) ^ 2 := by positivity
   have hx2 : HasDerivAt (fun y : ℝ => y ^ 2) (2 * x) x := by
-    convert (hasDerivAt_id x).pow 2 using 1 <;> ring
+    convert (hasDerivAt_id x).pow 2 using 1 <;> simp [id] <;> ring
   have hinner :
       HasDerivAt
         (fun y : ℝ => 1 + y ^ 2 / ((2 * (n : ℝ) + 1) ^ 2))
@@ -62,15 +63,18 @@ theorem hasDerivAt_oddLogPartialSum (N : ℕ) (x : ℝ) :
     (fun n _ => hasDerivAt_oddLogTerm n x)
 
 /-- The standard p-series majorant used on `[-T,T]`. -/
-def oddDerivativeMajorant (T : ℝ) (n : ℕ) : ℝ :=
+noncomputable def oddDerivativeMajorant (T : ℝ) (n : ℕ) : ℝ :=
   2 * T / ((n : ℝ) + 1) ^ 2
 
 /-- For nonnegative `T`, the compact majorant is summable. -/
 theorem summable_oddDerivativeMajorant (T : ℝ) (hT : 0 ≤ T) :
     Summable (oddDerivativeMajorant T) := by
+  have hf : Summable (fun n : ℕ => 1 / (n : ℝ) ^ 2) := hasSum_zeta_two.summable
+  have hshift : Summable (fun n : ℕ => 1 / (((n + 1 : ℕ) : ℝ) ^ 2)) :=
+    (summable_nat_add_iff 1).mpr hf
   have hbase : Summable (fun n : ℕ => 1 / (((n : ℝ) + 1) ^ 2)) := by
-    rw [← summable_nat_add_iff 1]
-    simpa using (summable_one_div_nat_pow.mpr (by norm_num : 1 < (2 : ℕ)))
+    convert hshift using 1 with n
+    norm_num
   have hmul := hbase.mul_left (2 * T)
   simpa [oddDerivativeMajorant, div_eq_mul_inv, mul_assoc] using hmul
 
