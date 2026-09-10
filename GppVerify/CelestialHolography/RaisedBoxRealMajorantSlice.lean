@@ -24,14 +24,15 @@ theorem channel_neg_rpow_factor
     (hS : 0 ≤ S) (hx1 : 0 ≤ x1) (hx3 : 0 ≤ x3) :
     (S * x1 * x3) ^ (-δ : ℝ) =
       (S * x1) ^ (-δ : ℝ) * x3 ^ (-δ : ℝ) := by
-  rw [← mul_assoc]
-  exact Real.mul_rpow (mul_nonneg hS hx1) hx3 (-δ)
+  exact Real.mul_rpow (mul_nonneg hS hx1) hx3
 
-/-- For every affine inner simplex slice `[0,L]`, the singular channel is
-interval-integrable as a function of `x3`. -/
+/-- For every nonnegative affine inner simplex slice `[0,L]`, the singular
+channel is interval-integrable as a function of `x3`.  The condition `0 ≤ L`
+is essential: it ensures the whole interval lies in the nonnegative region
+where the real-power product factorization applies. -/
 theorem channel_inner_intervalIntegrable
     {S x1 δ L : ℝ}
-    (hδ : δ < 1) (hS : 0 ≤ S) (hx1 : 0 ≤ x1) :
+    (hδ : δ < 1) (hS : 0 ≤ S) (hx1 : 0 ≤ x1) (hL : 0 ≤ L) :
     IntervalIntegrable
       (fun x3 : ℝ => (S * x1 * x3) ^ (-δ : ℝ)) volume 0 L := by
   have hbase : IntervalIntegrable
@@ -41,12 +42,9 @@ theorem channel_inner_intervalIntegrable
       (fun x3 : ℝ => (S * x1) ^ (-δ : ℝ) * x3 ^ (-δ : ℝ)) volume 0 L :=
     hbase.const_mul ((S * x1) ^ (-δ : ℝ))
   apply hscaled.congr
-  intro x3 hx3
-  have hx3nonneg : 0 ≤ x3 := by
-    rw [Set.uIcc_of_le] at hx3
-    · exact hx3.1
-    · positivity
-  exact (channel_neg_rpow_factor hS hx1 hx3nonneg).symm
+  filter_upwards [ae_restrict_mem measurableSet_uIoc] with x3 hx3
+  rw [Set.uIoc_of_le hL] at hx3
+  exact (channel_neg_rpow_factor hS hx1 hx3.1.le).symm
 
 end GppRaisedBoxRealMajorantSlice
 

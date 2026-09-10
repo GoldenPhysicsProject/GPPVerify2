@@ -1,9 +1,6 @@
 name: Codex Weil interpolation bridge
 
 on:
-  push:
-    branches:
-      - codex/lean-workbench
   workflow_dispatch:
 
 concurrency:

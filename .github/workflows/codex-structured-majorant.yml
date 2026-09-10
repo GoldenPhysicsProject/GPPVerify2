@@ -1,8 +1,6 @@
 name: Codex structured scalar-box majorant
 
 on:
-  push:
-    branches: ["codex/lean-workbench"]
   workflow_dispatch:
 
 concurrency:

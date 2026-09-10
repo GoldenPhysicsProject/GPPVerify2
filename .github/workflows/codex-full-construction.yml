@@ -1,10 +1,7 @@
 name: Codex full construction
 
 on:
-  push:
-    branches: ["main", "codex/lean-workbench"]
-  pull_request:
-    branches: ["main", "codex/lean-workbench"]
+  workflow_dispatch:
 
 concurrency:
   group: full-construction-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}

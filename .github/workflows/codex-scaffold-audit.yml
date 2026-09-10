@@ -1,10 +1,6 @@
 name: Codex axiom and scaffold audit
 
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [codex/lean-workbench]
   workflow_dispatch:
 
 jobs:
@@ -12,13 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Run ranked axiom/scaffold census
         run: python3 scripts/audit_scaffolds.py
-
       - name: Write machine-readable census
         run: python3 scripts/audit_scaffolds.py --json > scaffold-audit.json
-
       - name: Upload census artifact
         uses: actions/upload-artifact@v4
         with:

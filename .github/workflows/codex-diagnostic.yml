@@ -1,8 +1,6 @@
 name: Codex focused diagnostics
 
 on:
-  push:
-    branches: ["codex/lean-workbench"]
   workflow_dispatch:
 
 concurrency:

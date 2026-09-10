@@ -39,7 +39,8 @@ theorem rawMoment_fin_eq_partialMoment
     (w x : ℕ → ℝ) (r N : ℕ) :
     rawMoment (fun i : Fin N => w i) (fun i : Fin N => x i) r =
       partialMoment w x r N := by
-  simp [rawMoment, partialMoment, Fin.sum_univ_eq_sum_range]
+  unfold rawMoment partialMoment
+  rw [← Fin.sum_univ_eq_sum_range]
 
 /-- A summable weighted raw moment is the limit of its finite range truncations. -/
 theorem partialMoment_tendsto_infiniteMoment
@@ -143,9 +144,9 @@ theorem fisherNumerator_infinite_nonneg_of_partial_nonneg
       (infiniteMoment w x 0) (infiniteMoment w x 1)
       (infiniteMoment w x 2) (infiniteMoment w x 3)
       (infiniteMoment w x 4) := by
-  apply le_of_tendsto
+  exact ge_of_tendsto
     (fisherNumerator_partial_tendsto_infinite w x h0 h1 h2 h3 h4)
-  exact Filter.Eventually.of_forall hfin
+    (Filter.Eventually.of_forall hfin)
 
 /-- Pointwise nonnegative weights automatically supply the finite positivity
 hypothesis, so the countable mass-aware Fisher numerator is nonnegative. -/

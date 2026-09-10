@@ -41,6 +41,10 @@ log-energy response. -/
 noncomputable def zetaEntropy (β : ℝ) : ℝ :=
   zetaLogPartition β + β * zetaMeanEnergy β
 
+/-- Helmholtz free energy in inverse-temperature coordinates, `F = -log Z / β`. -/
+noncomputable def zetaFreeEnergy (β : ℝ) : ℝ :=
+  -zetaLogPartition β / β
+
 /-- The zeta Gibbs partition is at least its `n=0` Gibbs term, which is exactly one. -/
 theorem one_le_Z {β : ℝ} (hβ : 1 < β) :
     1 ≤ Z β := by
@@ -109,6 +113,34 @@ theorem hasDerivAt_zetaEntropy
   rw [← hcoef]
   simpa only [zetaEntropy] using hS
 
+/-- The Helmholtz free-energy derivative is exactly `S/β²` on the honest Gibbs axis. -/
+theorem hasDerivAt_zetaFreeEnergy
+    {β : ℝ} (hβ : 1 < β) :
+    HasDerivAt zetaFreeEnergy (zetaEntropy β / β ^ 2) β := by
+  have hβ0 : β ≠ 0 := by linarith
+  have hnegA := (hasDerivAt_zetaLogPartition hβ).neg
+  have hquot := hnegA.div (hasDerivAt_id β) hβ0
+  have hcoef :
+      (zetaMeanEnergy β * β - (-zetaLogPartition β) * 1) / β ^ 2 =
+        zetaEntropy β / β ^ 2 := by
+    unfold zetaEntropy
+    ring
+  rw [← hcoef]
+  simpa [zetaFreeEnergy] using hquot
+
+/-- Derivative form of the Helmholtz relation `F' = S/β²`. -/
+theorem deriv_zetaFreeEnergy_eq_entropy_div_beta_sq
+    {β : ℝ} (hβ : 1 < β) :
+    deriv zetaFreeEnergy β = zetaEntropy β / β ^ 2 := by
+  exact (hasDerivAt_zetaFreeEnergy hβ).deriv
+
+/-- The Helmholtz free energy is nondecreasing with inverse temperature on `β>1`. -/
+theorem deriv_zetaFreeEnergy_nonneg
+    {β : ℝ} (hβ : 1 < β) :
+    0 ≤ deriv zetaFreeEnergy β := by
+  rw [deriv_zetaFreeEnergy_eq_entropy_div_beta_sq hβ]
+  exact div_nonneg (zetaEntropy_nonneg hβ) (sq_nonneg β)
+
 /-- Consequently the zeta Gibbs entropy is strictly decreasing with inverse temperature
 throughout the honest Gibbs domain. -/
 theorem deriv_zetaEntropy_neg
@@ -168,6 +200,9 @@ end GppZetaGibbsEntropyDerivative
 #print axioms GppZetaGibbsEntropyDerivative.zetaMeanEnergy_nonneg
 #print axioms GppZetaGibbsEntropyDerivative.zetaEntropy_nonneg
 #print axioms GppZetaGibbsEntropyDerivative.hasDerivAt_zetaEntropy
+#print axioms GppZetaGibbsEntropyDerivative.hasDerivAt_zetaFreeEnergy
+#print axioms GppZetaGibbsEntropyDerivative.deriv_zetaFreeEnergy_eq_entropy_div_beta_sq
+#print axioms GppZetaGibbsEntropyDerivative.deriv_zetaFreeEnergy_nonneg
 #print axioms GppZetaGibbsEntropyDerivative.deriv_zetaEntropy_neg
 #print axioms GppZetaGibbsEntropyDerivative.deriv_zetaEntropy_eq_neg_heatCapacity_div_beta
 #print axioms GppZetaGibbsEntropyDerivative.heatCapacity_eq_neg_beta_mul_deriv_zetaEntropy

@@ -55,29 +55,20 @@ theorem haar_invariant_under_automorphism
     (μ : Measure G) [μ.IsHaarMeasure]
     (φ : G ≃* G) (hφ : Continuous φ) (hφsymm : Continuous φ.symm) :
     Measure.map φ μ = μ := by
-  -- Step 1: map φ μ is a Haar measure
-  -- Use MulEquiv.isHaarMeasure_map (no cocompact properness condition needed)
   haveI hmap : (Measure.map (φ : G → G) μ).IsHaarMeasure :=
     MulEquiv.isHaarMeasure_map μ φ hφ hφsymm
-  -- Step 2: Regular instances (automatic for Haar on compact second-countable groups)
-  haveI hμ_reg  : Regular μ                         := inferInstance
+  haveI hμ_reg  : Regular μ := inferInstance
   haveI hν_reg  : Regular (Measure.map (φ : G → G) μ) := inferInstance
-  -- Step 3: Any two regular left-invariant measures on G differ by a scalar c : ℝ≥0
   have heq : Measure.map (φ : G → G) μ =
       haarScalarFactor (Measure.map (φ : G → G) μ) μ • μ :=
     isMulLeftInvariant_eq_smul_of_regular (Measure.map (φ : G → G) μ) μ
-  -- Reduce to showing the scalar equals 1
   suffices hc : haarScalarFactor (Measure.map (φ : G → G) μ) μ = 1 by
     rw [heq, hc, one_smul]
-  -- Step 4: φ is bijective, so total mass is preserved
   have hmass : (Measure.map (φ : G → G) μ) Set.univ = μ Set.univ := by
     simp [Measure.map_apply hφ.measurable MeasurableSet.univ]
-  -- μ(univ) is strictly positive (IsOpen.measure_pos: returns 0 < μ U)
   have hpos : (0 : ENNReal) < μ Set.univ :=
     isOpen_univ.measure_pos μ Set.univ_nonempty
-  -- μ(univ) is finite
   have hfin : μ Set.univ < ⊤ := measure_lt_top μ Set.univ
-  -- From heq at univ: (c : ENNReal) * μ(univ) = μ(univ)
   have hcμ : (haarScalarFactor (Measure.map (φ : G → G) μ) μ : ENNReal) *
       μ Set.univ = μ Set.univ :=
     calc (haarScalarFactor (Measure.map (φ : G → G) μ) μ : ENNReal) * μ Set.univ
@@ -85,7 +76,6 @@ theorem haar_invariant_under_automorphism
             simp [Measure.smul_apply]
       _ = (Measure.map (φ : G → G) μ) Set.univ := by rw [← heq]
       _ = μ Set.univ := hmass
-  -- Step 5: Cancel μ(univ) via division: c = (c * μ univ) / μ univ = μ univ / μ univ = 1
   have hne  : μ Set.univ ≠ 0 := hpos.ne'
   have htop : μ Set.univ ≠ ⊤ := hfin.ne
   have hc_enn : (haarScalarFactor (Measure.map (φ : G → G) μ) μ : ENNReal) = 1 :=
