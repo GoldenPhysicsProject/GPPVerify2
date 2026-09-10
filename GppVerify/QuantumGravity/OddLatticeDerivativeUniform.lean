@@ -59,7 +59,7 @@ theorem hasDerivAt_oddLogPartialSum (N : ℕ) (x : ℝ) :
     HasDerivAt
       (fun y : ℝ => ∑ n in Finset.range N, oddLogTerm n y)
       (∑ n in Finset.range N, oddDerivativeTerm n x) x := by
-  exact HasDerivAt.fun_sum (u := Finset.range N)
+  exact HasDerivAt.sum (u := Finset.range N)
     (fun n _ => hasDerivAt_oddLogTerm n x)
 
 /-- The standard p-series majorant used on `[-T,T]`. -/
