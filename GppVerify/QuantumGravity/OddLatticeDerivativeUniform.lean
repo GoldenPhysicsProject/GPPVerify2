@@ -1,5 +1,6 @@
 import Mathlib.Analysis.Normed.Group.FunctionSeries
 import Mathlib.Analysis.PSeries
+import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Tactic
 
 /-!
@@ -17,18 +18,50 @@ the partial sums converge uniformly on every compact symmetric interval
 
   |f_n(x)| <= 2T/(n+1)^2.
 
-No identification of the limiting sum with `tanh` is asserted here; this is
-only the analytic uniform-convergence bridge required for the subsequent
-derivative-limit theorem.
+It also records the exact finite logarithmic-derivative identity term by term:
+`d/dx log(1 + x^2/(2n+1)^2) = f_n(x)`.  This is the finite calculus input for
+the subsequent derivative-limit theorem identifying the infinite sum with `tanh`.
 -/
 
 namespace GppOddLatticeDerivativeUniform
 
 open Filter Set Topology
+open scoped BigOperators
 
 /-- The odd-lattice logarithmic-derivative summand. -/
 def oddDerivativeTerm (n : ℕ) (x : ℝ) : ℝ :=
   2 * x / ((2 * (n : ℝ) + 1) ^ 2 + x ^ 2)
+
+/-- The logarithm of the corresponding positive odd Weierstrass factor. -/
+def oddLogTerm (n : ℕ) (x : ℝ) : ℝ :=
+  Real.log (1 + x ^ 2 / ((2 * (n : ℝ) + 1) ^ 2))
+
+/-- Each finite odd-factor logarithm has exactly the expected rational derivative. -/
+theorem hasDerivAt_oddLogTerm (n : ℕ) (x : ℝ) :
+    HasDerivAt (oddLogTerm n) (oddDerivativeTerm n x) x := by
+  have hc : 0 < (2 * (n : ℝ) + 1) ^ 2 := by positivity
+  have hx2 : HasDerivAt (fun y : ℝ => y ^ 2) (2 * x) x := by
+    convert (hasDerivAt_id x).pow 2 using 1 <;> ring
+  have hinner :
+      HasDerivAt
+        (fun y : ℝ => 1 + y ^ 2 / ((2 * (n : ℝ) + 1) ^ 2))
+        (2 * x / ((2 * (n : ℝ) + 1) ^ 2)) x := by
+    convert (hasDerivAt_const x (1 : ℝ)).add
+      (hx2.div_const ((2 * (n : ℝ) + 1) ^ 2)) using 1 <;> ring
+  have hpos : 0 < 1 + x ^ 2 / ((2 * (n : ℝ) + 1) ^ 2) := by positivity
+  have hlog := hinner.log hpos.ne'
+  unfold oddLogTerm oddDerivativeTerm
+  convert hlog using 1 <;> field_simp [ne_of_gt hc] <;> ring
+
+/-- Finite sums of odd-factor logarithms differentiate to the corresponding
+finite odd-lattice rational sum. -/
+theorem hasDerivAt_oddLogPartialSum (N : ℕ) (x : ℝ) :
+    HasDerivAt
+      (fun y : ℝ => ∑ n in Finset.range N, oddLogTerm n y)
+      (∑ n in Finset.range N, oddDerivativeTerm n x) x := by
+  simpa only [Finset.sum_apply] using
+    (HasDerivAt.fun_sum (s := Finset.range N)
+      (fun n _ => hasDerivAt_oddLogTerm n x))
 
 /-- The standard p-series majorant used on `[-T,T]`. -/
 def oddDerivativeMajorant (T : ℝ) (n : ℕ) : ℝ :=
@@ -86,6 +119,8 @@ theorem tendstoUniformlyOn_oddDerivativeTerm
 
 end GppOddLatticeDerivativeUniform
 
+#print axioms GppOddLatticeDerivativeUniform.hasDerivAt_oddLogTerm
+#print axioms GppOddLatticeDerivativeUniform.hasDerivAt_oddLogPartialSum
 #print axioms GppOddLatticeDerivativeUniform.summable_oddDerivativeMajorant
 #print axioms GppOddLatticeDerivativeUniform.norm_oddDerivativeTerm_le_majorant
 #print axioms GppOddLatticeDerivativeUniform.tendstoUniformlyOn_oddDerivativeTerm
