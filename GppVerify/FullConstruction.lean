@@ -67,6 +67,7 @@ import GppVerify.RiemannHypothesis.PrimeHankelAllOrderStrict
 import GppVerify.RiemannHypothesis.ZetaGibbsCenteredMomentBridge
 import GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
 import GppVerify.RiemannHypothesis.NumberGibbsQuadraticEntropyGeometry
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticThirdResponse
 
 -- Exact sech / Wiener-Hopf / Gamma / Mehler-Fock spectral structure
 import GppVerify.RiemannHypothesis.SechSixthIntegral
