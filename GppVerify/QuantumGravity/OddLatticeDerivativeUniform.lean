@@ -1,6 +1,7 @@
 import Mathlib.Analysis.PSeries
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.NormedSpace.FunctionSeries
+import Mathlib.NumberTheory.ZetaValues
 import Mathlib.Tactic
 
 /-!
@@ -75,8 +76,8 @@ theorem summable_oddDerivativeMajorant (T : ℝ) (hT : 0 ≤ T) :
   have hbase : Summable (fun n : ℕ => 1 / (((n : ℝ) + 1) ^ 2)) := by
     convert hshift using 1 with n
     norm_num
-  have hmul := hbase.mul_left (2 * T)
-  simpa [oddDerivativeMajorant, div_eq_mul_inv, mul_assoc] using hmul
+  exact (hbase.mul_left (2 * T)).congr (fun n => by
+    simp [oddDerivativeMajorant, div_eq_mul_inv])
 
 /-- On a compact symmetric interval, every odd-lattice term is bounded by the
 summable p-series majorant. -/
