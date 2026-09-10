@@ -24,7 +24,21 @@ theorem tendsto_prod_one_add_sq_div_normalized (x : ℝ) (hx : x ≠ 0) :
   have h := GppSinhWeierstrass.tendsto_prod_one_add_sq_div x
   have hpx : Real.pi * x ≠ 0 := mul_ne_zero Real.pi_ne_zero hx
   have h' := h.const_mul (Real.pi * x)⁻¹
-  convert h' using 1 <;> simp [hpx, div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm]
+  have hfun : ∀ n : ℕ,
+      (Real.pi * x)⁻¹ *
+          (Real.pi * x *
+            ∏ j ∈ Finset.range n,
+              ((1 : ℝ) + x ^ 2 / ((j : ℝ) + 1) ^ 2))
+        = ∏ j ∈ Finset.range n,
+            ((1 : ℝ) + x ^ 2 / ((j : ℝ) + 1) ^ 2) := by
+    intro n
+    rw [← mul_assoc, inv_mul_cancel₀ hpx, one_mul]
+  have hlim :
+      (Real.pi * x)⁻¹ * Real.sinh (Real.pi * x)
+        = Real.sinh (Real.pi * x) / (Real.pi * x) := by
+    rw [div_eq_mul_inv, mul_comm]
+  simp_rw [hfun] at h'
+  rwa [hlim] at h'
 
 end GppSinhWeierstrassNormalized
 
