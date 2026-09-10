@@ -21,9 +21,9 @@ theorem tendsto_two_mul_atTop :
     Filter.Tendsto (fun n : ℕ => 2 * n) Filter.atTop Filter.atTop := by
   refine Filter.tendsto_atTop.2 ?_
   intro b
-  refine ⟨b, ?_⟩
-  intro a ha
-  omega
+  exact Filter.eventually_atTop.2 ⟨b, by
+    intro a ha
+    omega⟩
 
 /-- Away from the removable point `x = 0`, the odd positive-denominator
     Weierstrass product converges to the quotient of the two normalized sinh
@@ -56,8 +56,20 @@ theorem tendsto_odd_weierstrass_to_sinh_quotient (x : ℝ) (hx : x ≠ 0) :
       Real.sinh (Real.pi * (x / 2)) / (Real.pi * (x / 2)) ≠ 0 :=
     div_ne_zero hsinh harg
   have hdiv := hnum.div hden hdenlim
-  simpa [Nat.cast_add, Nat.cast_one,
-    GppOddWeierstrassProductSplit.prod_weierstrass_odd_eq_full_div_half] using hdiv
+  have hfun :
+      (fun n : ℕ =>
+        ∏ k in Finset.range n,
+          ((1 : ℝ) + x ^ 2 / (((2 * k + 1 : ℕ) : ℝ) ^ 2))) =
+      (fun n : ℕ =>
+        ((∏ j in Finset.range (2 * n),
+            ((1 : ℝ) + x ^ 2 / (((j + 1 : ℕ) : ℝ) ^ 2))) /
+          ∏ k in Finset.range n,
+            ((1 : ℝ) + (x / 2) ^ 2 / (((k + 1 : ℕ) : ℝ) ^ 2)))) := by
+    funext n
+    exact
+      GppOddWeierstrassProductSplit.prod_weierstrass_odd_eq_full_div_half x n
+  rw [hfun]
+  simpa only [Function.comp_apply] using hdiv
 
 end GppOddWeierstrassQuotientLimit
 
