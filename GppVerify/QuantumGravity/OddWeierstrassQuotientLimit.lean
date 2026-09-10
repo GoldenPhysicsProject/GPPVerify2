@@ -69,8 +69,7 @@ theorem tendsto_odd_weierstrass_to_sinh_quotient (x : ℝ) (hx : x ≠ 0) :
     exact
       GppOddWeierstrassProductSplit.prod_weierstrass_odd_eq_full_div_half x n
   rw [hfun]
-  convert hdiv using 1 <;>
-    simp only [Function.comp_apply, Nat.cast_add, Nat.cast_one]
+  simpa only [Function.comp_apply, Nat.cast_add, Nat.cast_one] using hdiv
 
 end GppOddWeierstrassQuotientLimit
 
