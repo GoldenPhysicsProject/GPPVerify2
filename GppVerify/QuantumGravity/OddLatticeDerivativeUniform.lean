@@ -1,4 +1,3 @@
-import Mathlib.Analysis.Normed.Group.FunctionSeries
 import Mathlib.Analysis.PSeries
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Tactic
