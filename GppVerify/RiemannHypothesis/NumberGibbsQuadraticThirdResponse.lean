@@ -6,9 +6,9 @@ import Mathlib.Tactic
 # Third Massieu response of the quadratically confined number gas
 
 The Hessian of the Massieu potential is the covariance matrix of the sufficient
-statistics `(L,L^2)`.  Differentiating its diagonal entries with the certified
-raw-moment derivative ladder gives the four independent symmetric third
-responses.  They are the negative normalized joint third cumulants.
+statistics `(L,L^2)`.  Differentiating its entries with the certified raw-moment
+derivative ladder gives the symmetric third responses.  They are the negative
+normalized joint third cumulants.
 -/
 
 namespace GppNumberGibbsQuadraticThirdResponse
@@ -65,6 +65,32 @@ theorem hasDerivAt_fisherBB_eta
   have H := hnum.div hden (pow_ne_zero 2 hZne)
   convert H using 1 <;> simp [fisherBB, kappa112] <;> field_simp [hZne] <;> ring
 
+/-- `∂β g_{βη} = -κ(L,L,L²)`.  This makes the `ββη` permutation symmetry
+explicit at the Fisher-matrix level. -/
+theorem hasDerivAt_fisherBE_beta
+    (β : ℝ) {η : ℝ} (hη : 0 < η) :
+    HasDerivAt (fun b : ℝ => fisherBE b η) (-kappa112 β η) β := by
+  have hZne : Z β η ≠ 0 := ne_of_gt (Z_pos β hη)
+  have hnum :=
+    ((hasDerivAt_M3_beta β hη).mul (hasDerivAt_Z_beta β hη)).sub
+      ((hasDerivAt_M1_beta β hη).mul (hasDerivAt_M2_beta β hη))
+  have hden := (hasDerivAt_Z_beta β hη).pow 2
+  have H := hnum.div hden (pow_ne_zero 2 hZne)
+  convert H using 1 <;> simp [fisherBE, kappa112] <;> field_simp [hZne] <;> ring
+
+/-- `∂η g_{βη} = -κ(L,L²,L²)`.  This makes the `βηη` permutation symmetry
+explicit at the Fisher-matrix level. -/
+theorem hasDerivAt_fisherBE_eta
+    (β : ℝ) {η : ℝ} (hη : 0 < η) :
+    HasDerivAt (fun e : ℝ => fisherBE β e) (-kappa122 β η) η := by
+  have hZne : Z β η ≠ 0 := ne_of_gt (Z_pos β hη)
+  have hnum :=
+    ((hasDerivAt_M3_eta β hη).mul (hasDerivAt_Z_eta β hη)).sub
+      ((hasDerivAt_M1_eta β hη).mul (hasDerivAt_M2_eta β hη))
+  have hden := (hasDerivAt_Z_eta β hη).pow 2
+  have H := hnum.div hden (pow_ne_zero 2 hZne)
+  convert H using 1 <;> simp [fisherBE, kappa122] <;> field_simp [hZne] <;> ring
+
 /-- `∂β g_{ηη} = -κ(L,L²,L²)`, equivalently the `βηη` Massieu response. -/
 theorem hasDerivAt_fisherEE_beta
     (β : ℝ) {η : ℝ} (hη : 0 < η) :
@@ -91,6 +117,8 @@ theorem hasDerivAt_fisherEE_eta
 
 #print axioms hasDerivAt_fisherBB_beta
 #print axioms hasDerivAt_fisherBB_eta
+#print axioms hasDerivAt_fisherBE_beta
+#print axioms hasDerivAt_fisherBE_eta
 #print axioms hasDerivAt_fisherEE_beta
 #print axioms hasDerivAt_fisherEE_eta
 
