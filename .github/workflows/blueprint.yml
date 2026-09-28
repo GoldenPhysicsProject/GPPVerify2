@@ -40,6 +40,9 @@ jobs:
           python3 scripts/patch_mobile.py
           echo "lean.goldenphysics.org" > blueprint/src/web/CNAME
 
+      - name: Inject GoatCounter analytics
+        run: python3 scripts/inject_goatcounter.py
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
