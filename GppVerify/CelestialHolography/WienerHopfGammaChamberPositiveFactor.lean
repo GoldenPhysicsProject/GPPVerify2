@@ -90,6 +90,57 @@ theorem rhoGamma_re_strictly_decreases_below_threshold
     mul_pos (sub_pos.mpr hfac) hpos
   nlinarith
 
+/-- The strict chamber-growth condition is not merely sufficient: positivity of
+the current chamber makes the recurrence threshold an exact iff classification. -/
+theorem rhoGamma_re_lt_succ_iff (k : ℕ) (lam : ℝ) :
+    (rhoGamma k lam).re < (rhoGamma (k + 1) lam).re ↔
+      ((k : ℝ) + 1) < 2 * lam ^ 2 := by
+  have hpos : 0 < (rhoGamma k lam).re := rhoGamma_re_pos k lam
+  have hrec := congrArg Complex.re (rhoGamma_succ_stepFactor k lam)
+  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hrec
+  constructor
+  · intro h
+    have hfac : 1 < rhoStepFactor k lam := by
+      rw [hrec] at h
+      nlinarith
+    exact (rhoStepFactor_gt_one_iff k lam).1 hfac
+  · exact rhoGamma_re_strictly_increases_above_threshold k lam
+
+/-- Likewise, strict decrease is equivalent to lying below the same exact
+spectral threshold. -/
+theorem rhoGamma_succ_re_lt_iff (k : ℕ) (lam : ℝ) :
+    (rhoGamma (k + 1) lam).re < (rhoGamma k lam).re ↔
+      2 * lam ^ 2 < ((k : ℝ) + 1) := by
+  have hpos : 0 < (rhoGamma k lam).re := rhoGamma_re_pos k lam
+  have hrec := congrArg Complex.re (rhoGamma_succ_stepFactor k lam)
+  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hrec
+  constructor
+  · intro h
+    have hfac : rhoStepFactor k lam < 1 := by
+      rw [hrec] at h
+      nlinarith
+    exact (rhoStepFactor_lt_one_iff k lam).1 hfac
+  · exact rhoGamma_re_strictly_decreases_below_threshold k lam
+
+/-- Adjacent real chamber densities coincide exactly at the crossing surface
+`2 lam^2 = k+1`. -/
+theorem rhoGamma_succ_re_eq_iff (k : ℕ) (lam : ℝ) :
+    (rhoGamma (k + 1) lam).re = (rhoGamma k lam).re ↔
+      2 * lam ^ 2 = ((k : ℝ) + 1) := by
+  have hpos : 0 < (rhoGamma k lam).re := rhoGamma_re_pos k lam
+  have hrec := congrArg Complex.re (rhoGamma_succ_stepFactor k lam)
+  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hrec
+  constructor
+  · intro h
+    have hfac : rhoStepFactor k lam = 1 := by
+      rw [hrec] at h
+      nlinarith
+    exact (rhoStepFactor_eq_one_iff k lam).1 hfac
+  · intro h
+    have hfac : rhoStepFactor k lam = 1 := (rhoStepFactor_eq_one_iff k lam).2 h
+    rw [hrec, hfac]
+    simp
+
 end GppWienerHopfGammaChamberPositiveFactor
 
 #print axioms GppWienerHopfGammaChamberPositiveFactor.gammaChamberFactor_pos
@@ -97,3 +148,6 @@ end GppWienerHopfGammaChamberPositiveFactor
 #print axioms GppWienerHopfGammaChamberPositiveFactor.rhoGamma_re_pos
 #print axioms GppWienerHopfGammaChamberPositiveFactor.rhoGamma_re_strictly_increases_above_threshold
 #print axioms GppWienerHopfGammaChamberPositiveFactor.rhoGamma_re_strictly_decreases_below_threshold
+#print axioms GppWienerHopfGammaChamberPositiveFactor.rhoGamma_re_lt_succ_iff
+#print axioms GppWienerHopfGammaChamberPositiveFactor.rhoGamma_succ_re_lt_iff
+#print axioms GppWienerHopfGammaChamberPositiveFactor.rhoGamma_succ_re_eq_iff

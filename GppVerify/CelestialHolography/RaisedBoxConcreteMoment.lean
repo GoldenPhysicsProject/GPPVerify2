@@ -1,6 +1,7 @@
 import GppVerify.CelestialHolography.RaisedBoxPointwiseLimit
 import GppVerify.CelestialHolography.RaisedBoxSimplexMajorantAlgebra
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.Tactic
 
 /-!
@@ -33,6 +34,93 @@ def Q (S T x1 x2 x3 : ℝ) : ℝ :=
 /-- Raised-box Feynman-parametric integrand. -/
 noncomputable def integrand (ε S T x1 x2 x3 : ℝ) : ℝ :=
   (Q S T x1 x2 x3) ^ (-ε : ℝ)
+
+/-- For fixed external parameters the concrete real-power integrand is Borel
+measurable in the innermost affine coordinate.  This is the measure-theoretic
+input needed by the first dominated-convergence step. -/
+theorem integrand_measurable_x3 (ε S T x1 x2 : ℝ) :
+    Measurable (fun x3 : ℝ => integrand ε S T x1 x2 x3) := by
+  unfold integrand
+  apply Measurable.pow_const
+  unfold Q x4
+  fun_prop
+
+/-- For fixed regulator, invariants, and outer simplex coordinate, the raised-box
+integrand is jointly Borel measurable in the two inner affine coordinates.
+This is the product-measure input needed to replace the variable endpoint
+`x3 ≤ 1 - x1 - x2` by a measurable simplex-strip indicator and invoke Fubini. -/
+theorem integrand_measurable_x2_x3 (ε S T x1 : ℝ) :
+    Measurable (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2) := by
+  unfold integrand
+  apply Measurable.pow_const
+  unfold Q x4
+  fun_prop
+
+/-- The closed affine strip representing the two inner simplex coordinates for
+fixed `x1`.  Writing the variable endpoint as a measurable set is the clean
+product-measure replacement for the nested bound `0 ≤ x3 ≤ 1 - x1 - x2`. -/
+def innerSimplexStrip (x1 : ℝ) : Set (ℝ × ℝ) :=
+  {p | 0 ≤ p.2 ∧ p.1 + p.2 ≤ 1 - x1}
+
+/-- The inner simplex strip is Borel measurable. -/
+theorem measurableSet_innerSimplexStrip (x1 : ℝ) :
+    MeasurableSet (innerSimplexStrip x1) := by
+  unfold innerSimplexStrip
+  exact
+    (measurableSet_le measurable_const measurable_snd).inter
+      (measurableSet_le (measurable_fst.add measurable_snd) measurable_const)
+
+/-- Extending the two-inner-coordinate integrand by zero off the affine simplex
+strip preserves Borel measurability.  This is the exact input needed by
+product-measure/Fubini lemmas such as `integral_prod_right'`. -/
+theorem stripIntegrand_measurable (ε S T x1 : ℝ) :
+    Measurable
+      ((innerSimplexStrip x1).indicator
+        (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) := by
+  exact (integrand_measurable_x2_x3 ε S T x1).indicator
+    (measurableSet_innerSimplexStrip x1)
+
+/-- Product integration turns the jointly measurable strip integrand into a
+strongly measurable function of the remaining middle coordinate.  This is the
+parameter-measurability input required by the middle dominated-convergence
+step, obtained without treating the variable endpoint as a primitive. -/
+theorem stripInnerIntegral_stronglyMeasurable (ε S T x1 : ℝ) :
+    MeasureTheory.StronglyMeasurable
+      (fun x2 : ℝ =>
+        ∫ x3 : ℝ,
+          ((innerSimplexStrip x1).indicator
+            (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) (x2, x3)) := by
+  exact
+    (stripIntegrand_measurable ε S T x1).stronglyMeasurable.integral_prod_right'
+
+/-- At fixed middle coordinate `x2`, the measurable two-dimensional affine strip
+is exactly the closed interval `0 ≤ x3 ≤ 1 - x1 - x2` in the innermost
+coordinate.  This pointwise section identity is the bridge between the Fubini
+strip representation and the original variable-endpoint interval integral. -/
+theorem stripIntegrand_section_eq_Icc_indicator
+    (ε S T x1 x2 x3 : ℝ) :
+    ((innerSimplexStrip x1).indicator
+      (fun p : ℝ × ℝ => integrand ε S T x1 p.1 p.2)) (x2, x3) =
+      (Set.Icc (0 : ℝ) (1 - x1 - x2)).indicator
+        (fun y : ℝ => integrand ε S T x1 x2 y) x3 := by
+  by_cases hstrip : (x2, x3) ∈ innerSimplexStrip x1
+  · have hstrip' : 0 ≤ x3 ∧ x2 + x3 ≤ 1 - x1 := by
+      simpa [innerSimplexStrip] using hstrip
+    have hx3 : x3 ∈ Set.Icc (0 : ℝ) (1 - x1 - x2) := by
+      constructor
+      · exact hstrip'.1
+      · linarith [hstrip'.2]
+    simp [Set.indicator_of_mem hstrip, Set.indicator_of_mem hx3]
+  · have hx3 : x3 ∉ Set.Icc (0 : ℝ) (1 - x1 - x2) := by
+      intro hx3
+      apply hstrip
+      have hx3' : 0 ≤ x3 ∧ x3 ≤ 1 - x1 - x2 := by
+        simpa only [Set.mem_Icc] using hx3
+      simp only [innerSimplexStrip, Set.mem_setOf_eq]
+      constructor
+      · exact hx3'.1
+      · linarith [hx3'.2]
+    simp [Set.indicator_of_not_mem hstrip, Set.indicator_of_not_mem hx3]
 
 /-- Standard affine volume of the three-simplex, written in the same iterated
 coordinates used by the physical Feynman parameter integral. -/
@@ -105,6 +193,12 @@ theorem integrand_le_one_channel_majorant
 
 end GppRaisedBoxConcreteMoment
 
+#print axioms GppRaisedBoxConcreteMoment.integrand_measurable_x3
+#print axioms GppRaisedBoxConcreteMoment.integrand_measurable_x2_x3
+#print axioms GppRaisedBoxConcreteMoment.measurableSet_innerSimplexStrip
+#print axioms GppRaisedBoxConcreteMoment.stripIntegrand_measurable
+#print axioms GppRaisedBoxConcreteMoment.stripInnerIntegral_stronglyMeasurable
+#print axioms GppRaisedBoxConcreteMoment.stripIntegrand_section_eq_Icc_indicator
 #print axioms GppRaisedBoxConcreteMoment.simplexMoment_zero
 #print axioms GppRaisedBoxConcreteMoment.Q_pos
 #print axioms GppRaisedBoxConcreteMoment.integrand_tendsto_one

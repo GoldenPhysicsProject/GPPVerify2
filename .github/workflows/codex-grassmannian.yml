@@ -1,8 +1,6 @@
 name: Codex Grassmannian geometry
 
 on:
-  push:
-    branches: ["codex/lean-workbench"]
   workflow_dispatch:
 
 concurrency:
