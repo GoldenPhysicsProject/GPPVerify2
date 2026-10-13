@@ -1,214 +1,134 @@
-# GPPVerify2 — Golden Physics Project Lean 4 formalization
+# GPPVerify
 
-`GPPVerify2` is the Codex/GPT formal-verification workbench for the Golden Physics Project. It is not an RH-only repository. The repository formalizes exact mathematical layers arising across celestial amplitudes, representation theory and spectral analysis, analytic number theory, thermodynamic number theory, Grassmannian geometry, quantum field theory, gravity, and the broader ONON framework.
+Lean 4 + Mathlib formalization of **shadow holography**, the organizing idea of the Golden
+Physics Project. It is a library of kernel-checked theorems, with every open step named
+explicitly. It is not a proof of any famous conjecture.
 
-**Blueprint:** https://lean.goldenphysics.org  
-**Project:** https://goldenphysics.org  
-**Author:** Daniel Toupin | ORCID: 0009-0003-7682-9579
-
-The Codex working branch is `codex/lean-workbench`. Experimental and numerical work belongs in the companion repository `GPPDiscovery2` on `codex/discovery-workbench`; durable Codex research state belongs in the `codex` Supabase schema.
-
----
-
-## What this repository is for
-
-The governing rule is simple: formalize real mathematics, preserve the exact boundary between proved and open statements, and never make the repository look stronger by weakening the claim.
-
-The current active program has four major research fronts.
-
-### 1. Celestial amplitudes, dispersion, Yang–Mills and gravity
-
-Formal targets include:
-
-- celestial-cut and Mellin-transform kinematics;
-- regulated scalar box identities, dispersion reconstruction, regulator limits, endpoint control, and raised-box/dimension-shift arguments;
-- simplex majorants, Beta reductions, Fubini/Tonelli and dominated-convergence closure;
-- honest fixed-loop-momentum Yang–Mills sewing numerators, including the `D_s = 4`, `μ ≠ 0` state sum rather than scalar reconstruction relabelled as gauge theory;
-- higher-loop and generalized cuts;
-- gravity cuts and the analytic/subtraction hypotheses required for amplitude reconstruction.
-
-A cut identity is not by itself an amplitude theorem. Generalized-cut completeness, analyticity, subtraction data, normalization, color/state sums, and loop induction are tracked explicitly when required.
-
-### 2. Half-densities, principal series, completed zeta and the Weil bridge
-
-Formal targets include:
-
-- positive-real dilation characters and half-density normalization;
-- `Δ = 2s`, shadow `s ↦ 1-s`, and critical-line unitarity/conjugation;
-- completed-zeta and Archimedean Gamma response;
-- Mehler–Fock/Legendre spectral weights;
-- Wiener–Hopf positive factors and exact spectral kernels;
-- explicit-formula transport and the genuine Weil quadratic form.
-
-The local representation-theoretic and spectral structure does **not** prove RH. A successful RH route must construct the completed global object without encoding unknown zeros, identify its quadratic form with the actual Weil explicit-formula criterion on an adequate test class, and prove the required global positivity unconditionally.
-
-### 3. Prime-gas and number thermodynamics
-
-Formal targets include:
-
-- Gibbs measures on integers and prime/von-Mangoldt weighted ensembles;
-- partition functions, free energy, entropy, response functions and cumulants;
-- exact log-moment summability;
-- finite and countable Fisher/Hessian geometry;
-- covariance determinants and Vandermonde/Cauchy–Binet structure;
-- thermodynamic limits and fluctuation geometry.
-
-One-dimensional Fisher geometry is intrinsically flat; curvature claims therefore require a genuinely multi-parameter statistical family.
-
-### 4. Exact spectral-weight, chamber and convolution mathematics
-
-Formal targets include:
-
-- exact Gamma/Mehler–Fock spectral-weight identities;
-- positivity and recurrence of chamber polynomials;
-- Wiener–Hopf factorization identities;
-- chamber convolution formulas when they are actually justified;
-- exact period/MZV structure at higher loop order.
-
-Previously tempting extrapolations, such as unrestricted all-loop rationality of chamber integrals, are not treated as theorems without proof.
+**Public site:** https://lean.goldenphysics.org (plain-language overview) · technical blueprint at https://lean.goldenphysics.org/blueprint/  
+**Source text:** Daniel Toupin, *On the Nature of Nature* — https://goldenphysics.org  
+**Author:** Daniel Toupin | ORCID: 0009-0003-7682-9579  
+**Exploratory companion:** [GPPDiscovery](https://github.com/GoldenPhysicsProject/GPPDiscovery) (numerics; nothing there is proved)
 
 ---
 
-## Representative certified results
+## What shadow holography is
 
-The repository contains many independent exact layers. Representative examples include:
+One involution appears in two places.
 
-- Haar self-duality and functional-equation infrastructure;
-- the Grassmannian transition identity `τ ∘ τ = -id` as a theorem rather than an axiom;
-- positive-real half-density/shadow dilation identities;
-- exact Gamma/Mehler–Fock spectral recurrences and positivity results;
-- Wiener–Hopf/Gamma factor identities;
-- scalar-box endpoint, special-function and regulator lemmas;
-- number-Gibbs entropy and differential thermodynamics;
-- finite-support Fisher/Vandermonde identities, including the arbitrary finite normalized identity
-  `ordered Vandermonde energy = 6 × det Cov(X, X²)`;
-- countable raw-moment/Fisher determinant limit infrastructure.
+- **Celestial holography.** Scattering amplitudes are Mellin-transformed in energy. They
+  are labelled by conformal dimensions `Δ`, with the principal series at `Re Δ = 1`. The
+  *shadow* map `Δ ↦ 2 − Δ` pairs each dimension with its partner.
+- **Arithmetic.** The completed zeta function `ξ(s)` has a functional equation
+  `s ↦ 1 − s`, and its critical line sits at `Re s = ½`.
 
-These are reusable mathematical components. Their existence does not silently promote any still-open global theorem.
+Under `Δ = 2s` these are the same map. The version that matters is the antiholomorphic
+reflection `τ(s) = 1 − s̄`. Its fixed set is exactly the critical line
+(`GppFE.critical_line_is_fixed_locus`), and `ξ ∘ τ = conj ∘ ξ`.
 
----
+The framework reads this holographically, at three nested levels. All three are Mellin or
+Pontryagin dualities, so each is a precise dictionary rather than an analogy:
 
-## Proof-status discipline
+| Boundary | Bulk |
+|---|---|
+| multiplicative line `ℝ₊`, split at its fixed point `x = 1` | spectral sphere, split by the critical line (the *equator*) into two hemispheres |
+| inversion `x ↦ 1/x` | reflection `s ↦ 1 − s̄` |
+| support on a half-line | analyticity on a hemisphere (Paley–Wiener) |
+| the integers as Fourier modes of a circle (theta, Poisson) | the functional equation |
+| primes as a compact torus `∏ S¹`, dual to `ℚ₊^×` | the critical line embedded densely in that torus (Kronecker): *a hologram inside a hologram* |
 
-Three categories must always be distinguished:
+The same equator appears in celestial scattering as the scale sector: boosts act on energy
+by dilation. That part is an exact structural parallel. It is **not** a claim that `ξ` is a
+correlator of any physical theory.
 
-1. **proved theorem** — Lean kernel checks the intended mathematical statement from Mathlib and explicitly listed assumptions;
-2. **explicit axiom/input** — a named external physical or mathematical input whose role is visible in the dependency graph;
-3. **honest scaffold/stub** — infrastructure placeholder that proves no substantive open claim and whose documentation names the missing mathematics.
+What the framework asks is how far this dictionary goes and where it breaks. Each transfer
+either survives kernel-checking or fails at a specific, nameable place. Both outcomes are
+recorded here.
 
-Never collapse these categories in status reports.
+## What is proved, and what is open
 
-### No-`sorry` rule
+- **The dictionary itself.** Shadow/functional-equation identification, dilation-unitarity
+  bridges between principal series and completed zeta, Haar self-duality, and the zero
+  pairing `ρ ↦ 1 − ρ̄`. Most of the tree is in `CelestialHolography/` and
+  `RiemannHypothesis/`.
+- **Physics on the same involution.** Half-flip / CPT and time reversal, Majorana
+  conditions, complete positivity, Grassmannian `Gr(2,4)` geometry, and a
+  Standard Model sector. Physics inputs enter as explicit hypotheses, never as axioms.
+- **RH, as one open question inside the framework.** Holographically, the functional
+  equation says the hologram is *symmetric*, and RH says it is also *positive*
+  (reflection-positive across the equator). The finite core is proved:
+  `GppHolographicRP.reflectionForm_nonneg_iff` shows that positivity across the equator
+  holds **iff** there are no off-equator mirror pairs. `GppWeilCriterion.rh_of_weil_pairedForm_nonneg`
+  reduces RH to Weil positivity. The missing step is constructing that positivity for the
+  actual arithmetic distribution. That step is equivalent to RH, it is not proved, and
+  nothing in this repo assumes it.
+- **Recorded dead ends.** Several routes were tried and shown not to work, for example the
+  Fisher-zero log-concavity no-go (`FisherZeroLogConcavityNoGo.lean`). They stay in the tree
+  as theorems about why they fail.
 
-`codex/lean-workbench` is maintained under a zero-`sorry` discipline. New work must not introduce `sorry`, `admit`, or an equivalent unsound escape hatch. CI should treat this as an invariant, not as a one-time cleanup campaign.
+## Honesty rules (enforced by CI)
 
-### Stub retirement
+- **No `sorry`.** CI fails on one.
+- **No custom `axiom`.** The count is zero, and `scripts/check_axioms.lean` audits it.
+- **Open results are `open_…` stubs.** They are `theorem open_foo : True := trivial`, with a
+  doc comment naming the exact missing mathematics. A file full of them still reports
+  "0 sorry, 0 axiom", so the `open_` prefix (CI-checked) is what keeps that honest. A stub
+  is retired only by proving it.
 
-Existing `True := trivial` scaffolds are not proofs. They should be retired only by replacing them with the intended theorem and a real proof. Deleting a difficult target, weakening its statement while retaining the name, or moving the claim into an axiom does not count as progress.
+## What a sceptical reader can check in ten minutes
 
-### Axiom minimization
+Nothing here asks for trust. Each point below is a command or a file.
 
-The axiom inventory is audited separately from `sorry` and stubs. Physics inputs, mathematical external assumptions, and reducible convenience axioms should be categorized separately. Whenever Mathlib or an already-proved theorem can replace a custom axiom, the custom axiom should be removed.
+- **The epistemics are mechanical, not rhetorical.** `scripts/` holds the gates CI runs:
+  `check_sorries.py`, `check_stub_naming.py` and `check_vacuity.py` (catch declarations that
+  assert nothing: `True` stubs, `X = X` tautologies, theorems whose conclusion is just a
+  hypothesis), `check_blueprint_refs.py` (every `\lean{}` in the blueprint must name a real
+  declaration), `check_landing_claims.py` (the public page may not say more than the tree
+  proves), `check_import_graph.py`, and `check_axioms.lean` (`#print axioms` on the flagship
+  theorems). Most of these gates exist because an audit found a real overstatement (stubs badged
+  "Proved", cards naming declarations that did not exist). The audit and the fix are in each
+  script's header.
+- **The central question is stated as an exact equivalence, not claimed as a result.**
+  `rh_iff_weil_pairedForm_nonneg` (RH iff a positivity statement) and
+  `GppHolographicRP.reflectionForm_nonneg_iff` (positivity across the equator holds iff there are
+  no off-equator mirror pairs) are proved. The positivity itself is the open step and is named as such.
+- **Failure is a first-class output.** Routes that do not work are kept as theorems about why,
+  e.g. `FisherZeroLogConcavityNoGo.lean`. A proposed route that turns out to be an
+  Archimedean-factor deformation rather than a real constraint is recorded as exactly that.
+- **Open means open.** The `True := trivial` stubs are counted and named `open_…`, so the
+  "0 sorry, 0 axiom" line cannot be read as "everything is proved".
+- **Older material is labelled as older.** `docs/` is dated working notes, and retired material lives
+  in `archive/`. In particular, `archive/DependencyMap.md` is a June 2026 pre-formalization survey
+  whose "Pathway 2" framing is retired; the current status is this file and the blueprint.
 
----
-
-## Discovery → formalization workflow
-
-The Codex/GPT workflow is deliberately split across two repositories.
-
-### `GPPDiscovery2`
-
-Use `codex/discovery-workbench` for exact symbolic algebra, Python/SymPy/mpmath/NumPy/SciPy experiments, interval checks, numerical convergence studies, counterexample searches, period recognition, and reproducible derivations.
-
-Numerical evidence is never imported into Lean as if it were a theorem. A discovery is promoted only after its exact mathematical statement, hypotheses, domains, branch choices, and singular cases are understood.
-
-### `GPPVerify2`
-
-Use `codex/lean-workbench` for exact theorem statements and kernel-checked proofs. Search the pinned Mathlib version before creating parallel infrastructure. Prefer standard Mathlib objects and theorems whenever they express the same mathematics cleanly.
-
-Discovery scripts may generate constants or finite data used by a proof only when the generation procedure and validation are reproducible and the Lean theorem checks the mathematically relevant property rather than merely trusting an opaque numerical artifact.
-
----
-
-## Mathlib alignment and maintenance
-
-The project tracks a pinned Lean/Mathlib toolchain. Maintenance work includes:
-
-- replacing obsolete custom lemmas with equivalent standard Mathlib results when doing so simplifies dependencies;
-- avoiding redundant local definitions that obscure standard mathematical structure;
-- keeping theorem statements stable while refactoring implementations;
-- running the complete Lake build after substantive changes;
-- auditing `sorry`, custom axioms, and vacuous scaffolds independently;
-- using `#print axioms` on important theorem endpoints.
-
-Refactoring is valuable only when it preserves or strengthens the actual theorem.
-
----
-
-## Physics-to-mathematics translation
-
-Physics notation is retained where useful, but theorem docstrings should identify the mathematical object being formalized. For non-obvious constructions, document mappings such as:
-
-- physical scaling dimension ↔ complex principal-series parameter;
-- shadow transform ↔ reciprocal/conjugate dilation character;
-- cut phase space ↔ a measure/integral on a specified domain;
-- regulator ↔ a parameterized integrable family with a stated limiting filter;
-- state sum ↔ a finite sum over an explicitly defined polarization/state basis;
-- thermodynamic susceptibility ↔ covariance/Hessian entry;
-- spectral density ↔ a real/complex-valued function with stated positivity and normalization properties.
-
-The purpose is not pedagogical decoration; it prevents verbal physics shorthand from hiding a different formal statement.
-
----
-
-## Current high-value open boundaries
-
-The most important active boundaries include:
-
-- **scalar raised box:** package the fixed simplex majorant as an actual `Integrable` object, justify the required Fubini/Tonelli steps, and invoke measure-theoretic dominated convergence;
-- **Yang–Mills:** compute and normalize the genuine fixed-loop-momentum `D_s = 4`, `μ ≠ 0` gluon sewing numerator and then extend to generalized cuts;
-- **gravity:** higher-multiplicity/generalized-cut reconstruction with the necessary analytic hypotheses;
-- **Weil/RH:** assemble the signed prime-plus-Archimedean global quadratic form, identify it with the genuine Weil criterion on the correct test class, and prove unconditional positivity;
-- **number thermodynamics:** pass finite Fisher positivity cleanly to countable Gibbs/arithmetic ensembles using summability and normalization;
-- **higher chamber integrals:** determine the correct period/MZV class rather than assume rationality;
-- **broader ONON formalization:** replace remaining honest scaffolds in Grassmannian, QFT, Standard Model, Yang–Mills, gravity and number-theory modules by actual mathematics as infrastructure becomes available.
-
-These boundaries are expected to move. Durable session-by-session state belongs in Supabase `codex.research_notes`, not in this README.
-
----
-
-## Build and audit
+The current module, stub, and axiom counts are published on the
+[blueprint](https://lean.goldenphysics.org) and kept in sync by `scripts/sync_published_counts.py`.
+To reproduce them:
 
 ```bash
+grep -rn "^\s*sorry\s*$" --include="*.lean" GppVerify/ | wc -l
+grep -rn "^axiom " --include="*.lean" GppVerify/ | wc -l
+grep -rn ": True := trivial" --include="*.lean" GppVerify/ | wc -l
+```
+
+## Build
+
+```bash
+curl -sSfL https://github.com/leanprover/elan/releases/latest/download/elan-x86_64-unknown-linux-gnu.tar.gz | tar xz
+./elan-init -y
 lake exe cache get
 lake build
-
-# No-sorry invariant
-grep -rn "^\s*sorry\s*$" --include="*.lean" GppVerify/
-
-# Custom axiom inventory
-grep -rn "^axiom " --include="*.lean" GppVerify/
-
-# Honest scaffold inventory
-grep -rn ": True := trivial" --include="*.lean" GppVerify/
 ```
 
-Important endpoints should additionally be checked with `#print axioms` and the repository audit scripts.
+Blueprint: `pip install leanblueprint && cd blueprint && leanblueprint build`. The output is
+`blueprint/web/index.html`.
 
----
+## Layout
 
-## Blueprint and dependency map
-
-```bash
-pip install leanblueprint
-cd blueprint
-leanblueprint build
-```
-
-See `docs/DependencyMap.md` for the broader theorem dependency map. The live blueprint is at https://lean.goldenphysics.org.
-
----
-
-## Status principle
-
-This repository is an executable mathematical research program, not a claim counter. A theorem is reported as proved only when its intended statement is present and kernel-checked; a numerical or symbolic discovery is reported at its actual evidentiary level; and an unresolved global theorem remains unresolved until every required bridge is closed.
+| Directory | Contents |
+|---|---|
+| `GppVerify/CelestialHolography/` | shadow transform, principal series, Mellin/dilation bridges |
+| `GppVerify/RiemannHypothesis/` | functional equation, explicit-formula and Weil-positivity reductions, holographic reflection positivity |
+| `GppVerify/StandardModel/`, `QuantumGravity/`, `QuantumInformation/`, … | physics sectors of the same involution |
+| `GppVerify/Thread*/` | self-contained research threads |
+| `discovery/` | exploratory notes that sit next to the Lean threads they feed |
+| `docs/` | dated working notes; historical, not a status report |

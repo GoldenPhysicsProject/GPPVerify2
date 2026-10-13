@@ -1,4 +1,7 @@
 import Mathlib.Analysis.Calculus.Deriv.Basic
+import Mathlib.Analysis.Calculus.Deriv.Inv
+import Mathlib.Analysis.Calculus.Deriv.Pow
+import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Tactic
 
 /-!
@@ -87,18 +90,18 @@ theorem hasDerivAt_kappa3Expr
     (hZne : Z β ≠ 0) :
     HasDerivAt (kappa3Expr Z M1 M2 M3)
       (-(kappa4Expr Z M1 M2 M3 M4 β)) β := by
-  have hM3Z := h3.div hZ hZne
-  have hM2Z := h2.div hZ hZne
-  have hM1Z := h1.div hZ hZne
-  have hprod := hM2Z.mul hM1Z
-  have hcubic := hM1Z.pow 3
-  have hsum := hM3Z.sub (hprod.const_mul 3) |>.add (hcubic.const_mul 2)
-  convert hsum using 1
-  · funext x
-    simp [kappa3Expr]
+  have hM3Z := HasDerivAt.div h3 hZ hZne
+  have hM2Z := HasDerivAt.div h2 hZ hZne
+  have hM1Z := HasDerivAt.div h1 hZ hZne
+  have hprod := HasDerivAt.mul hM2Z hM1Z
+  have hcubic := HasDerivAt.pow hM1Z 3
+  have hsum := HasDerivAt.add (HasDerivAt.sub hM3Z (HasDerivAt.const_mul 3 hprod))
+    (HasDerivAt.const_mul 2 hcubic)
+  refine (hsum.congr_deriv ?_).congr_of_eventuallyEq (Filter.Eventually.of_forall fun x => ?_)
+  · simp only [kappa4Expr, Pi.div_apply, show (3 : ℕ) - 1 = 2 from rfl]
+    field_simp
     ring
-  · simp [kappa4Expr]
-    field_simp [hZne]
+  · simp only [kappa3Expr, Pi.add_apply, Pi.sub_apply, Pi.mul_apply, Pi.div_apply, Pi.pow_apply]
     ring
 
 end GppGibbsCumulantDifferentialAlgebra

@@ -30,7 +30,7 @@ theorem partialMoment_eq_rawMoment_fin
     (w x : ℕ → ℝ) (r N : ℕ) :
     partialMoment w x r N =
       rawMoment (fun i : Fin N => w i) (fun i : Fin N => x i) r := by
-  simp [partialMoment, rawMoment]
+  simp [partialMoment, rawMoment, Finset.sum_range]
 
 /-- Every finite truncation has nonnegative homogeneous Fisher numerator when
 the weights are nonnegative.  No normalization of the truncation is used. -/
@@ -125,7 +125,7 @@ theorem fisherDet_infinite_nonneg
       (infiniteMoment w x 0) (infiniteMoment w x 1)
       (infiniteMoment w x 2) (infiniteMoment w x 3)
       (infiniteMoment w x 4) :=
-    le_of_tendsto hlim (Eventually.of_forall hnonneg)
+    ge_of_tendsto hlim (Eventually.of_forall hnonneg)
   rw [hnorm, fisherNumerator_one_eq_fisherDet] at hinf
   exact hinf
 

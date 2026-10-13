@@ -29,8 +29,7 @@ noncomputable def centeredXi (w : ℂ) : ℂ :=
 /-- In centered coordinates the functional equation is literal evenness. -/
 theorem centeredXi_even (w : ℂ) : centeredXi w = centeredXi (-w) := by
   unfold centeredXi riemannXi
-  rw [show (1 / 2 : ℂ) - w = 1 - ((1 / 2 : ℂ) + w) by ring]
-  rw [completedRiemannZeta_one_sub]
+  rw [show (1 / 2 : ℂ) + -w = 1 - ((1 / 2 : ℂ) + w) by ring, completedRiemannZeta_one_sub]
   ring
 
 /-- Zeros of centered xi occur in sign-reflected pairs. -/

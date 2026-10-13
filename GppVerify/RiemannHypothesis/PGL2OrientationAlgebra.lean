@@ -24,6 +24,10 @@ an OPE, crossing symmetry, or a full CFT.
 
 namespace GppPGL2Orientation
 
+open scoped Interval
+
+noncomputable section
+
 /-- Determinant of a real 2-by-2 representative. -/
 def det2 (a b c d : ℝ) : ℝ := a * d - b * c
 
@@ -69,7 +73,13 @@ theorem det2_scale_neg_iff
     det2 (r * a) (r * b) (r * c) (r * d) < 0 ↔
       det2 a b c d < 0 := by
   rw [det2_scale]
-  exact (mul_neg_iff_of_pos_left (sq_pos_of_ne_zero hr))
+  have hr2 := sq_pos_of_ne_zero hr
+  constructor
+  · intro h
+    by_contra hD
+    nlinarith [mul_nonneg hr2.le (not_lt.mp hD)]
+  · intro h
+    exact mul_neg_of_pos_of_neg hr2 h
 
 /-- The sign channel is independent of position: for two regular points the derivative
 factors have positive product, so their signs agree. -/
@@ -87,6 +97,8 @@ theorem derivative_sign_constant_on_regular_points
   rw [div_mul_div_comm]
   exact div_pos (by simpa [pow_two] using hdetSq) (mul_pos hxSq hySq)
 
+
+end
 end GppPGL2Orientation
 
 #print axioms GppPGL2Orientation.mobiusDerivativeFactor_pos

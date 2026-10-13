@@ -80,7 +80,6 @@ theorem resolventWeight_mul_scalarHeatAnomaly
     exact_mod_cast hmNat
   unfold resolventWeight scalarHeatAnomaly repetitionLength
   field_simp [hm]
-  ring
 
 /-- The same repetition anomaly in literal von-Mangoldt prime-power normalization. -/
 theorem resolventWeight_mul_scalarHeatAnomaly_eq_sqrt_weight
@@ -105,14 +104,14 @@ theorem resolventWeight_mul_scalarHeatAnomaly_closed
 
 /-- Finite causal resolvent anomaly through repetition index `M-1`. -/
 noncomputable def finiteResolventAnomaly (p t : ℝ) (M : ℕ) : ℝ :=
-  ∑ m in range M,
+  ∑ m ∈ range M,
     resolventWeight p m * scalarHeatAnomaly t (repetitionLength p m)
 
 /-- Exact finite prime-orbit heat sum produced by the causal resolvent anomaly. -/
 theorem finiteResolventAnomaly_eq_primeHeatSum
     (p t : ℝ) (M : ℕ) :
     finiteResolventAnomaly p t M =
-      ∑ m in range M,
+      ∑ m ∈ range M,
         Real.log p * p ^ (-(repetition m : ℝ) / 2) *
           heatKernelGaussian t (repetitionLength p m) := by
   unfold finiteResolventAnomaly
@@ -125,7 +124,7 @@ inverse-square-root prime-power coefficient. -/
 theorem finiteResolventAnomaly_eq_sqrt_primeHeatSum
     {p : ℝ} (hp : 0 < p) (t : ℝ) (M : ℕ) :
     finiteResolventAnomaly p t M =
-      ∑ m in range M,
+      ∑ m ∈ range M,
         (Real.log p / Real.sqrt (p ^ repetition m)) *
           heatKernelGaussian t (repetitionLength p m) := by
   unfold finiteResolventAnomaly

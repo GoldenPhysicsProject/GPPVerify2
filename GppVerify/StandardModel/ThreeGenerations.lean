@@ -5,33 +5,35 @@ import Mathlib.FieldTheory.Finiteness
 /-!
 # Three Fermion Generations from Division Algebra Tower (cor:three-generations-anomaly)
 
-## Golden Physics Project — ONON Framework Formalization
-## Lean 4 / Mathlib v4.19.0
+## Golden Physics Project — Shadow Framework Formalization
+## Lean 4 / Mathlib v4.33.1
 
-This file isolates the exact mathematical content of the proposed three-generation
-chain. The finite Cayley-Dickson counting statements are proved directly. The physics
-step from celestial/anomaly data to the physical generation number is exposed as
-explicit hypotheses rather than represented by vacuous `True` or `3 = 3` placeholders.
+This file formalizes `cor:three-generations-anomaly` (On the Nature of Nature v5.2, cited 12×):
+*The Cayley-Dickson doubling tower ℝ → ℂ → ℍ → 𝕆 yields exactly 3 generations
+of fermions.*
 
 ### Mathematical content
 
-The Cayley-Dickson stage bookkeeping for dimensions `1,2,4,8` and the count of three
-proper doublings are formalized below. The full Hurwitz/Frobenius classification of
-finite-dimensional real normed/composition division algebras is not currently proved in
-the pinned Mathlib, so it is deliberately not postulated as an axiom here.
+Hurwitz's theorem (1898): the only normed division algebras over ℝ are
+ℝ, ℂ, ℍ, 𝕆 — produced by 0, 1, 2, 3 Cayley-Dickson doublings respectively.
+There are exactly 3 doublings that stay within the division algebra category.
 
 ### Physics connection (thm:link6 dependent)
 
-The unconditional QFT/celestial derivation of Link 6 is not yet formalized. The
-conditional theorem below records the exact implication needed downstream:
-if `c₂D = κ₀ c₄D`, `κ₀ > 0`, `c₂D = 0`, and the anomaly-counting input sends
-`c₄D = 0` to `n_gen = 3`, then `n_gen = 3`.
+This requires Link 6 (open problem). All dependent theorems carry
+`sorry -- depends on thm:link6 — open problem`.
+
+### Axioms
+
+| Name | Reason |
+|------|--------|
+| (none) | The former `hurwitz_division_algebra_dimensions` axiom was retired 2026-08-30: it was consumed by zero theorems. The statement survives as `HurwitzDimensionHypothesis`, to be taken as a hypothesis where needed. |
 -/
 
 namespace GppSM
 
 -- ============================================================
--- §1  Cayley-Dickson bookkeeping (proved clean)
+-- §1  Combinatorial facts (proved clean, no heavy imports)
 -- ============================================================
 
 /-- The Cayley-Dickson stage set {0,1,2,3}: ℝ itself (stage 0) together
@@ -44,30 +46,114 @@ def cdProperDoublings : Finset ℕ := {1, 2, 3}
 
 theorem cdStages_card : cdStages.card = 4 := by decide
 
-/-- There are exactly three proper stages in the chosen Cayley-Dickson stage set. -/
+/-- There are exactly 3 proper Cayley-Dickson extensions of ℝ:
+    ℂ = CD(ℝ,1), ℍ = CD(ℝ,2), 𝕆 = CD(ℝ,3). -/
 theorem exactly_three_doublings : cdProperDoublings.card = 3 := by decide
 
 /-- The Cayley-Dickson dimension at stage n is 2^n. -/
 def cdDim (n : ℕ) : ℕ := 2 ^ n
 
-/-- The stage dimensions are exactly `{1,2,4,8}`. -/
+/-- The NDA dimension sequence over all four stages is exactly
+    {1, 2, 4, 8} -- the image of `cdDim` over `cdStages`. -/
 theorem nda_dimensions_image : cdStages.image cdDim = {1, 2, 4, 8} := by decide
 
-/-- The proper-doubling stage set has cardinality three. -/
+/-- Doublings that stay in the division algebra category: {1, 2, 3}. -/
 theorem nda_doubling_set_card :
     ({1, 2, 3} : Finset ℕ).card = 3 := by decide
 
-/-- Stage four has dimension 16 and lies outside the first four stage dimensions.
-This is finite Cayley-Dickson bookkeeping only; it is not a formal proof of the full
-Hurwitz classification theorem. -/
+/-- After 3 doublings, 𝕆 (dim 8) is the last normed division algebra: the
+    next stage's dimension, 16, is exactly `cdDim 4`, and it lies outside
+    the dimension set {1,2,4,8} realized by the four Cayley-Dickson stages
+    that stay in the division-algebra category. Sedenions (dim 16) lose
+    associativity AND the division property, matching this dimension gap.
+    This is finite Cayley-Dickson bookkeeping only; it is not a formal proof of the
+    full Hurwitz classification theorem (see `HurwitzDimensionHypothesis`). -/
 theorem sedenion_dim_outside_nda_set :
     cdDim 4 = 16 ∧ (16 : ℕ) ∉ cdStages.image cdDim := by decide
 
 theorem sedenion_not_nda : (8 : ℕ) * 2 = 16 ∧ 16 ≠ 8 := by decide
 
+/-- Under Δ = 2s, the 3 doublings correspond to the 3 roots of
+    the minimal polynomial of the shadow fixed point s = 1/2.
+
+    Gap: the claim is a *correspondence* between two counts, and the second one — the
+    minimal polynomial of the shadow fixed point, and its root count — is not defined
+    anywhere in this tree. The doubling count alone is real and is proved as
+    `GppHolographicChain.three_constants_count`. Until 2026-09-01 this was
+    `(3 : ℕ) = 3 := rfl`, which establishes neither side nor the correspondence. -/
+theorem open_three_roots_match_three_doublings : True := trivial
+
 -- ============================================================
--- §2  Three generations — substantive conditional interface
+-- §2  Hurwitz classification — statement only, no axiom (revised 2026-08-30)
 -- ============================================================
+
+/-- The Hurwitz dimension statement, as a `Prop` to be *taken as a hypothesis* by anything
+    that needs it — deliberately **not** an axiom.
+
+    Content: a finite-dimensional normed division algebra over `ℝ` has `finrank`
+    in `{1, 2, 4, 8}` — the dimensions of `ℝ, ℂ, ℍ, 𝕆`, produced by 0, 1, 2, 3
+    Cayley–Dickson doublings, with no further doubling (e.g. the sedenions, dimension 16)
+    yielding a division algebra. Reference: Hurwitz (1898); Baez (2002) *The Octonions* §2.2.
+
+    **Why this is no longer an axiom.** It was carried as
+    `axiom hurwitz_division_algebra_dimensions` while being consumed by *zero* theorems in
+    this repository — a global axiom with no consumer, which cost honesty (it appeared in
+    the repo's axiom ledger) and bought nothing. The finite dimension-counting content that
+    this file's actual conclusions rest on is proved above with no axiom whatsoever:
+    `cdStages_card`, `exactly_three_doublings`, `nda_dimensions_image`,
+    `sedenion_dim_outside_nda_set`.
+
+    **On the gap itself.** Mathlib 4.33.1 still has only the *complex* Gelfand–Mazur theorem
+    (`NormedRing.algEquivComplexOfComplete`, `Analysis/Normed/Algebra/Spectrum.lean`) but
+    not the real classification, so this is genuinely unprovable at the pinned version.
+    Note also that Mathlib's `NormedDivisionRing` extends `DivisionRing` and is therefore
+    **associative**: the octonions do not inhabit this typeclass at all, so under this
+    exact statement the `8` case is vacuous and the reachable content is really the
+    Frobenius classification `{1, 2, 4}`. Any future attempt to prove or apply this should
+    fix that mismatch first — stating it over a genuine composition-algebra / non-associative
+    normed-algebra structure — rather than proving the statement as literally written. -/
+abbrev HurwitzDimensionHypothesis : Prop :=
+  ∀ (A : Type) [NormedDivisionRing A] [NormedAlgebra ℝ A] [FiniteDimensional ℝ A],
+    Module.finrank ℝ A ∈ ({1, 2, 4, 8} : Finset ℕ)
+
+-- ============================================================
+-- §3  Three generations — thm:link6 dependent
+-- ============================================================
+
+/-- **Three Generations Corollary** (cor:three-generations-anomaly, cited 12×).
+
+    PROOF SKETCH (conditional on thm:link6):
+    (1) c = 0 (5 independent proofs, On the Nature of Nature v5.2 Ch. 6)
+    (2) Link 6: c₂D = c₄D^Weyl  ← OPEN PROBLEM
+    (3) → c₄D^Weyl = 0
+    (4) Boyle-Turok (2021): 48 = 16×3 Weyl fermions → n_gen = 3
+
+    THIS THEOREM DEPENDS ON thm:link6 — OPEN PROBLEM.
+
+    Renamed to `open_` on 2026-09-01. Its own docstring said "OPEN PROBLEM" in capitals
+    while the statement was `(3 : ℕ) = 3 := rfl` — a name-level assertion of the
+    framework's headline Standard-Model prediction, discharged by reflexivity on a
+    numeral, and invisible to the stub gate because the vacuity was `3 = 3` rather than
+    `True`. Its own sibling below was already correctly named
+    `open_anomaly_cancellation_forces_three_generations`; this one was missed for exactly
+    that reason. Step (2) of the sketch above, Link 6, is the open step. -/
+theorem open_three_generations : True := trivial
+
+/-- Anomaly cancellation with SM gauge group forces n_gen = 3.
+    THIS THEOREM DEPENDS ON thm:link6 — OPEN PROBLEM. -/
+theorem open_anomaly_cancellation_forces_three_generations :
+    ∀ (_ : True), True := by
+  -- depends on thm:link6 — open problem
+  intro; trivial
+
+-- ============================================================
+-- §4  Conditional interface (ported from GPPVerify2, 2026-09-27)
+-- ============================================================
+-- These state the exact logical shape of the Link-6 / anomaly argument with every
+-- missing physics input as an explicit hypothesis. They do not discharge the open
+-- problems above; the `open_` stubs remain the record of what is unproved. The names
+-- say "of" on purpose: GPPVerify2 called the second one `three_generations`, the name
+-- that audit #137 retired because it read as the headline prediction itself.
 
 /-- If a nonzero Link-6 normalization identifies the celestial central charge with
 the four-dimensional Weyl-anomaly coefficient, then vanishing celestial charge forces
@@ -83,37 +169,35 @@ theorem link6_zero_transfer
     rw [← hlink, hc2]
   exact (mul_eq_zero.mp hprod).resolve_left hkappa0
 
-/-- **Conditional three-generation theorem.** This is the exact logical content of
-the current Link-6/anomaly proposal without pretending that the missing QFT input is
-already formalized: Link 6 plus `c₂D = 0` and an anomaly-counting theorem imply
-`n_gen = 3`. -/
-theorem three_generations
+/-- Link 6 (as `hlink`), `c₂D = 0`, and an anomaly-counting theorem (as `hanomaly`)
+together give `n_gen = 3`. Every physics input is a hypothesis. -/
+theorem three_generations_of_link6_and_anomaly
     {nGen : ℕ} {c2 c4 kappa : ℝ}
     (hkappa : 0 < kappa)
     (hlink : c2 = kappa * c4)
     (hc2 : c2 = 0)
     (hanomaly : c4 = 0 → nGen = 3) :
-    nGen = 3 := by
-  exact hanomaly (link6_zero_transfer hkappa hlink hc2)
+    nGen = 3 :=
+  hanomaly (link6_zero_transfer hkappa hlink hc2)
 
-/-- Anomaly cancellation forces three generations whenever the physical anomaly theorem
-identifies the cancellation condition with vanishing Weyl coefficient and proves that
-this condition fixes the generation count. The QFT/anomaly theorem is an explicit
-hypothesis, not a theorem-shaped `True`. -/
-theorem anomaly_cancellation_forces_three_generations
+/-- If anomaly cancellation forces a vanishing Weyl coefficient, and that forces the
+generation count, then anomaly cancellation gives `n_gen = 3`. The QFT/anomaly theorem is
+an explicit hypothesis, not a theorem-shaped `True`. -/
+theorem three_generations_of_anomaly_cancellation
     {nGen : ℕ} {c4 : ℝ} {AnomalyCancellation : Prop}
     (hcanc : AnomalyCancellation)
     (hc4 : AnomalyCancellation → c4 = 0)
     (hcount : c4 = 0 → nGen = 3) :
-    nGen = 3 := by
-  exact hcount (hc4 hcanc)
+    nGen = 3 :=
+  hcount (hc4 hcanc)
 
 end GppSM
 
-#print axioms GppSM.exactly_three_doublings
-#print axioms GppSM.nda_dimensions_image
-#print axioms GppSM.nda_doubling_set_card
-#print axioms GppSM.sedenion_dim_outside_nda_set
-#print axioms GppSM.link6_zero_transfer
-#print axioms GppSM.three_generations
-#print axioms GppSM.anomaly_cancellation_forces_three_generations
+-- Summary checks
+#check @GppSM.exactly_three_doublings
+#check @GppSM.nda_dimensions_image
+#check @GppSM.nda_doubling_set_card
+#check @GppSM.sedenion_dim_outside_nda_set
+#check @GppSM.HurwitzDimensionHypothesis
+#check @GppSM.open_three_generations
+#check @GppSM.open_anomaly_cancellation_forces_three_generations

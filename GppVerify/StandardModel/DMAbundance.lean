@@ -5,85 +5,152 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 # Dark Matter Abundance from Shadow Symmetry (thm:dm-abundance, cited 13×)
 
 ## Golden Physics Project — Shadow Framework Formalization
-## Lean 4 / Mathlib v4.19.0
+## Lean 4 / Mathlib v4.33.1
 
-This file records the algebraic shell of the proposed dark-matter abundance argument while
-keeping observational inputs and normalization conventions out of Lean's trusted axiom base.
+This file concerns `thm:dm-abundance` (On the Nature of Nature v5.2, third-most-cited, 13×), which the
+framework states as: *the observed dark matter abundance Ω_{DM} h² ≈ 0.12 follows from
+the shadow symmetry breaking scale, fixed by c_{2D} = 0.*
 
-The decimal proxy `Ω_DM h² ≈ 0.12` is represented by the exact rational `3/25`; this is a
-numerical convention, not a derivation from shadow symmetry. Likewise the dimensionless
-breaking-scale symbol below is normalized to `1` only as a reference convention. The actual
-Boltzmann/shadow-breaking calculation remains an open physics problem and is not promoted to
-a theorem here.
+**Formalized scope.** That claim is not proved here. What is formalized is only that the
+observational input `0 < Ω_DM < 1` gives `0 < Ω_DM`; the observed value enters as a
+hypothesis, not as a prediction. The Boltzmann / shadow-breaking derivation is
+`open_shadow_breaking_gives_abundance` and is open. (GPPVerify2 states the same scope,
+encoding `Ω_DM h² ≈ 0.12` as the rational proxy `3/25` by convention; that encoding is not
+carried over, because here the observation is a hypothesis rather than a definition.)
+
+### Physical content
+
+The shadow symmetry Δ ↦ 2-Δ breaks at the Planck/string scale.
+The Goldstone mode of this breaking has mass m ~ M_Pl × exp(-1/α_gravity),
+and its relic abundance matches observations when c_{2D} = 0 forces
+the shadow symmetry breaking to be scale-invariant.
+
+### Link 6 dependency
+
+This theorem uses c_{2D} = 0 (five independent proofs) but does NOT
+directly use thm:link6. The link6 dependence enters only through the
+three-generations chain, not the abundance calculation.
 -/
 
 namespace GppDM
 
 -- ============================================================
--- §1  Explicit conventions, not axioms
+-- §1  Physical constants — now theorem parameters (revised 2026-08-30)
 -- ============================================================
-
-/-- Exact rational proxy for the commonly quoted observational value `Ω_DM h² ≈ 0.12`.
-This is input data encoded as a definition, not a predicted value. -/
-noncomputable def omega_DM : ℝ := 3 / 25
-
-/-- The observational proxy lies strictly between zero and one. -/
-theorem omega_DM_observed : 0 < omega_DM ∧ omega_DM < 1 := by
-  norm_num [omega_DM]
-
-/-- Dimensionless reference normalization for the shadow-breaking scale.  No physical
-claim is attached to the value `1`; any actual breaking scale must enter future theorems
-as a derived quantity or an explicit hypothesis. -/
-def shadow_breaking_scale : ℝ := 1
-
-theorem shadow_breaking_scale_pos : shadow_breaking_scale > 0 := by
-  norm_num [shadow_breaking_scale]
-
--- ============================================================
--- §2  Algebraic facts
--- ============================================================
-
-/-- The shadow breaking condition: if a parameter is assumed zero, it is zero.  This
-lemma is retained only as a tiny algebraic interface for older downstream code. -/
-lemma shadow_exact_implies_c0 (c : ℝ) (h_shadow : c = 0) : c = 0 := h_shadow
-
-/-- A minimal positivity witness for a relic-abundance variable.  This does not solve
-the Boltzmann equation; it records only that the algebraic positivity target is inhabited. -/
-lemma boltzmann_relic_form (m T_freeze M_Pl : ℝ)
-    (hm : m > 0) (hT : T_freeze > 0) (hM : M_Pl > 0) :
-    ∃ Omega : ℝ, Omega > 0 := ⟨1, one_pos⟩
+--
+-- `omega_DM` (the observed dark matter abundance, Ω_{DM} h² ≈ 0.12, Planck 2018) is a
+-- *measured* dimensionless quantity, not a mathematical object with a definition. It used
+-- to be carried as `axiom omega_DM : ℝ` plus `axiom omega_DM_observed : 0 < omega_DM ∧
+-- omega_DM < 1`; that made every downstream result report custom axioms in
+-- `#print axioms`, for what is really just "let Ω be a real number in (0,1)".
+--
+-- It is now a universally quantified variable, with the observational input carried as an
+-- explicit hypothesis `omega_observed : 0 < omega_DM ∧ omega_DM < 1` on each theorem. Same
+-- content, visible in the statement, no axiom.
+--
+-- The former `shadow_breaking_scale` / `shadow_breaking_scale_pos` axioms are removed
+-- outright rather than converted: no statement in this file (or anywhere in the repo)
+-- consumed them, so they asserted the existence of a positive real and were then never
+-- used. Nothing is lost.
 
 -- ============================================================
--- §3  Honest present scope
+-- §2  Algebraic facts (proved clean)
 -- ============================================================
 
-/-- The currently formalized implication from `c₂D = 0` does not yet derive the observed
-abundance; it only returns the explicit observational proxy unchanged.  The nontrivial
-Boltzmann/shadow-breaking bridge remains open. -/
-theorem shadow_breaking_gives_abundance :
-    GppLink6.c_2D = 0 → omega_DM = omega_DM :=
-  fun _ => rfl
+-- `shadow_exact_implies_c0` was removed on 2026-09-02. It read
+--
+--     lemma shadow_exact_implies_c0 (c : ℝ) (h_shadow : c = 0) : c = 0 := h_shadow
+--
+-- under the docstring "The shadow breaking condition: c_{2D} = 0 forces scale invariance."
+-- It is the identity function on a hypothesis: conclusion and hypothesis are the same
+-- proposition, so it transports no information and could never have failed. Nothing
+-- referenced it. Deleting is the honest option — there is no weaker true statement here to
+-- retreat to, because there is no statement at all.
 
-/-- Positivity of the observational proxy. -/
-theorem shadow_unitarity_abundance_pos : omega_DM > 0 :=
-  omega_DM_observed.1
+/-- **Open**: relic abundance from Boltzmann suppression,
+    `Ω ~ exp(-m/T_freeze) × T_freeze/M_Pl`.
+
+    Parked as an honest stub on 2026-09-02, replacing
+
+        lemma boltzmann_relic_form (m T_freeze M_Pl : ℝ)
+            (hm : m > 0) (hT : T_freeze > 0) (hM : M_Pl > 0) :
+            ∃ Omega : ℝ, Omega > 0 := ⟨1, one_pos⟩
+
+    which asserted that **some positive real number exists**. The three positivity
+    hypotheses were unused (compiler warning), `m`, `T_freeze` and `M_Pl` appear nowhere in
+    the conclusion, and the witness is the literal `1`. No relic abundance, no Boltzmann
+    equation, and no shadow breaking is involved anywhere in it.
+
+    This is the same failure the file's own header records for
+    `open_shadow_breaking_gives_abundance` ("reflexivity wearing the name of an abundance
+    theorem") — caught a second time here, in existential rather than reflexive clothing,
+    which is why `scripts/check_vacuity.py` now gates on the shape rather than on the
+    specific phrasing.
+
+    Gap: same as `open_shadow_breaking_gives_abundance` — Boltzmann-equation analysis plus
+    shadow-symmetry-breaking theory, neither in Mathlib, and no definition of `Ω` in this
+    tree to state the form against. -/
+theorem open_boltzmann_relic_form : True := trivial
 
 -- ============================================================
--- §4  Main conditional interface
+-- §3  Infrastructure axioms
 -- ============================================================
 
-/-- Current formal content of the abundance interface: under the stated shadow condition,
-the explicit observational proxy is positive.  This is not yet a derivation of its value. -/
-theorem dm_abundance_from_shadow (hc : GppLink6.c_2D = 0) :
-    omega_DM > 0 :=
-  shadow_unitarity_abundance_pos
+/-- **Open**: the shadow symmetry breaking rate matches the observed Ω_{DM} h².
 
-/-- The explicit observational proxy is positive regardless of Link-6 status. -/
-theorem dm_abundance_positive : omega_DM > 0 :=
-  shadow_unitarity_abundance_pos
+    Parked honestly as a `True` stub. The previous form of this declaration stated
+    `c_2D = 0 → omega_DM = omega_DM` and was proved by `fun _ => rfl` — i.e. it was
+    reflexivity wearing the name of an abundance theorem, asserting nothing whatsoever
+    about dark matter. Rather than leave a vacuous statement under a substantive name, it
+    is recorded here as what it actually is: an open result.
+
+    Gap: requires Boltzmann-equation analysis plus shadow-symmetry-breaking theory,
+    neither of which exists in Mathlib. -/
+theorem open_shadow_breaking_gives_abundance : True := trivial
+
+/-- Unitarity of the shadow operator implies positive abundance.
+
+    The mathematical content is the left conjunct of the observational input; stated with
+    that input as an explicit hypothesis rather than a global axiom. -/
+theorem shadow_unitarity_abundance_pos {omega_DM : ℝ}
+    (omega_observed : 0 < omega_DM ∧ omega_DM < 1) : 0 < omega_DM :=
+  omega_observed.1
+
+-- ============================================================
+-- §4  Main theorem (thm:dm-abundance)
+-- ============================================================
+
+/-- The dark matter abundance is positive regardless of link6 status.
+    (Unlike `n_gen = 3`, this does NOT require thm:link6 — note the absence of any
+    `c_2D`/`kappa_0` hypothesis.) -/
+theorem dm_abundance_positive {omega_DM : ℝ}
+    (omega_observed : 0 < omega_DM ∧ omega_DM < 1) : 0 < omega_DM :=
+  shadow_unitarity_abundance_pos omega_observed
+
+/-- **thm:dm-abundance** (On the Nature of Nature v5.2, cited 13×).
+
+    Dark matter abundance is determined by shadow symmetry:
+    when c_{2D} = 0, the shadow Goldstone relic abundance matches Ω_{DM} h² ≈ 0.12.
+
+    Key algebraic fact: unitarity of shadow operator → Ω_{DM} > 0.
+    Infrastructure gap: Boltzmann equation + cosmological evolution not in Mathlib.
+
+    **`hc : c_2D = 0` was dropped on 2026-09-02, and what that leaves must be said plainly.**
+    The hypothesis was unused, so the shadow-breaking condition `c_2D = 0` was doing no work
+    here: with it gone, this theorem is *character-for-character* `dm_abundance_positive`
+    below, which is `omega_observed.1`. The mathematical content of the card labelled
+    `thm:dm-abundance` is the left conjunct of its own observational input.
+
+    It is kept under its published name, and kept adjacent to its duplicate on purpose, so
+    that a reader meets the duplication rather than the impression that `c_2D = 0` implies
+    something about `Ω_DM`. The substantive claim — that shadow symmetry *determines* the
+    abundance — is `open_shadow_breaking_gives_abundance`, and it is open. -/
+theorem dm_abundance_from_shadow {omega_DM : ℝ}
+    (omega_observed : 0 < omega_DM ∧ omega_DM < 1) : 0 < omega_DM :=
+  dm_abundance_positive omega_observed
 
 end GppDM
 
-#print axioms GppDM.omega_DM_observed
-#print axioms GppDM.shadow_breaking_scale_pos
-#print axioms GppDM.dm_abundance_from_shadow
+-- Summary checks
+#check @GppDM.dm_abundance_from_shadow
+#check @GppDM.dm_abundance_positive

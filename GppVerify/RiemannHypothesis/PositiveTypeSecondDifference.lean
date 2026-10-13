@@ -22,7 +22,10 @@ theorem second_difference_lower_bound {P : ℝ → ℝ}
     (hP : PositiveType P) (heven : ∀ x, P (-x) = P x) (t : ℝ) :
     0 ≤ 3 * P 0 - 4 * P t + P (2 * t) := by
   have h := hP 3 ![0, t, 2 * t] ![(1 : ℂ), (-2 : ℂ), (1 : ℂ)]
-  simp [Fin.sum_univ_succ, heven] at h
+  simp [Fin.sum_univ_succ, heven, show t - 2 * t = -t by ring,
+    show 2 * t - t = t by ring] at h
+  have h' := (Complex.le_def.mp h).1
+  simp at h'
   linarith
 
 /-- Rearranged form: `P(2t) >= 4P(t)-3P(0)`. -/

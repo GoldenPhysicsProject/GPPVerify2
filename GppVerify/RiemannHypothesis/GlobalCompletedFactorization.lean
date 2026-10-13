@@ -1,5 +1,4 @@
 import GppVerify.RiemannHypothesis.GlobalVonMangoldtBridge
-import GppVerify.RiemannHypothesis.PrimeResponseTransferOperator
 import Mathlib.Analysis.SpecialFunctions.Gamma.Deligne
 import Mathlib.Tactic
 

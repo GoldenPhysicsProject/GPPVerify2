@@ -1,4 +1,5 @@
 import GppVerify.QuantumGravity.CausalDiamondFisherCancellation
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import GppVerify.QuantumGravity.GammaModulusIdentity
 import Mathlib.Tactic
 

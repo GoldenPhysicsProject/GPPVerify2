@@ -17,11 +17,11 @@ open GppCutkoskyWeil GppPrimePoissonRadial
 
 /-- Finite-prime Poisson response at radial parameter `a` and spectral parameter `t`. -/
 noncomputable def finitePrimePoissonResponse (S : Finset ℕ) (a t : ℝ) : ℝ :=
-  ∑ p in S, WpA (p : ℝ) a t
+  ∑ p ∈ S, WpA (p : ℝ) a t
 
 /-- Finite sum of local Euler-factor negative logarithmic derivatives. -/
 noncomputable def finitePrimeLogDerivResponse (S : Finset ℕ) (a t : ℝ) : ℝ :=
-  ∑ p in S, (minusLogDerivZetaP (p : ℝ) (a + t * Complex.I)).re
+  ∑ p ∈ S, (minusLogDerivZetaP (p : ℝ) (a + t * Complex.I)).re
 
 /-- **Exact finite-prime radial bridge.**  If every element of `S` is at least `2`,
 then the finite Poisson response equals twice the real part of the corresponding

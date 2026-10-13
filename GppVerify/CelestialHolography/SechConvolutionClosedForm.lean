@@ -1,4 +1,5 @@
 import GppVerify.CelestialHolography.SechConvolutionEndpoints
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Tactic
 
 /-!

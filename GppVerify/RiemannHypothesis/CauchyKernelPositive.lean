@@ -116,7 +116,7 @@ theorem tendsto_dampedCosAntideriv {b x : ℝ} (hb : 0 < b) :
           ≤ |x * Real.sin (x*t)| + |b * Real.cos (x*t)| := by
         rw [sub_eq_add_neg]
         calc |x * Real.sin (x*t) + -(b * Real.cos (x*t))|
-            ≤ |x * Real.sin (x*t)| + |-(b * Real.cos (x*t))| := abs_add _ _
+            ≤ |x * Real.sin (x*t)| + |-(b * Real.cos (x*t))| := abs_add_le _ _
           _ = |x * Real.sin (x*t)| + |b * Real.cos (x*t)| := by rw [abs_neg]
       have hs : |x * Real.sin (x*t)| ≤ |x| := by
         rw [abs_mul]
@@ -161,7 +161,10 @@ theorem cauchy_kernel_eq_integral {ε : ℝ} (hε : 0 < ε) (x : ℝ) :
     positivity in Yakaboylu's eq. (75). -/
 theorem cauchy_kernel_positive_type {ε : ℝ} (hε : 0 < ε) :
     PositiveType (fun x => ε^2 / (ε^2 + x^2)) := by
-  intro n x c
+  -- The kernel is even in `x` (it depends on `x` only through `x^2`), which is
+  -- what `positiveType_of_even_of_re` needs. The Bochner argument below is the
+  -- original real-part proof, unchanged.
+  refine positiveType_of_even_of_re (fun t => by ring_nf) (fun n x c => ?_)
   -- Step 1: rewrite each matrix entry through the Bochner representation.
   have hentry : ∀ i j : Fin n,
       (((fun y => ε^2 / (ε^2 + y^2)) (x i - x j) : ℝ) : ℂ) =

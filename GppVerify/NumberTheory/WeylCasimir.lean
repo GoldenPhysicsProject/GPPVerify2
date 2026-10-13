@@ -1,7 +1,7 @@
 import Mathlib.Algebra.Group.Basic
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Matrix.Basic
-import Mathlib.Data.Matrix.Notation
+import Mathlib.LinearAlgebra.Matrix.Notation
 import Mathlib.Tactic
 
 /-!
@@ -18,12 +18,12 @@ The main result is now the actual vector/dot-product computation
 `rhoA3_dot_self`, not just arithmetic on the numerator; the bare
 numerator identities below are recorded as corollaries.
 
-Chronology correction (2026-09-02): older T-boundary manuscripts also attached
-Majorana-neutrino, massless-lightest-neutrino, and mirror-baryon conclusions to
-this algebraic neighborhood. Those physical conclusions depended on the now
-superseded claim that ordinary Wigner time reversal flips helicity. They are not
-consequences of the Weyl/Casimir calculations and have therefore been removed
-from this file. The exact Lie-theoretic identities remain.
+Objection on record (GPPVerify2, 2026-09-02): older T-boundary manuscripts
+attached Majorana-neutrino, massless-lightest-neutrino and mirror-baryon
+conclusions to this algebraic neighbourhood. Those depend on ordinary Wigner time
+reversal flipping helicity, which it does not. They are kept below as labelled
+`open_` framework claims with that objection beside each; they are not
+consequences of the Weyl/Casimir identities, which stand on their own.
 -/
 
 namespace GppWeylCasimir
@@ -52,7 +52,7 @@ theorem weyl_casimir_u4 : (3^2 + 1^2 + 1^2 + 3^2 : ℤ) / 4 = 5 := by decide
 
 /-! ## First eigenvalue of the Laplace-Beltrami operator on Gr(2,4)
 
-Source: ONON5213.tex, Dark Matter chapter, Theorem "First Eigenvalue of
+Source: On the Nature of Nature v5.2.1.3, Dark Matter chapter, Theorem "First Eigenvalue of
 Gr(2,4)" (thm:lambda1): λ₁(Gr(2,4)) = 8, via the Casimir formula
 λ_μ = ⟨μ+ρ_G, μ+ρ_G⟩ - ⟨ρ_G, ρ_G⟩ at the smallest non-trivial
 K-spherical weight μ = (1,0,0,-1). Reuses `rhoA3` above for ρ_G. -/
@@ -80,12 +80,13 @@ theorem gr24_lambda1 : dotProduct muPlusRhoA3 muPlusRhoA3 - dotProduct rhoA3 rho
 Source: holographic_chain_v932.tex, Definition "Triality" (Def 6.2). The
 Weyl vector of D₄ = Spin(8) is ρ = (3,2,1,0); the vector, spinor, and
 cospinor weights are λᵥ=(1,0,0,0), λₛ=(½,½,½,½), λ_c=(½,½,½,-½). The
-Casimir formula C₂(λ) = ⟨λ,λ+2ρ⟩ gives the same value 7 for all three.
-This is an exact algebraic shadow of Spin(8) triality. Equality of these
-quadratic Casimirs does not by itself identify bosonic and fermionic sectors,
-nor does it imply equality of conformal weights without an additional model-
-specific relation between C₂ and the conformal Hamiltonian.
--/
+Casimir formula C₂(λ) = ⟨λ,λ+2ρ⟩ gives the same value 7 for all three,
+the algebraic seed of Spin(8) triality. Independently verified via
+Python before being written as Lean proofs. Equality of these quadratic
+Casimirs does not by itself identify bosonic and fermionic sectors, nor does
+it imply equality of conformal weights without an additional model-specific
+relation between C₂ and the conformal Hamiltonian (caveat ported from
+GPPVerify2). -/
 
 /-- The Weyl vector of D₄ = Spin(8), ρ = (3,2,1,0). -/
 def rhoD4 : Fin 4 → ℚ
@@ -130,8 +131,10 @@ theorem casimir_cospinor_eq_seven : casimirD4 lambdaCospinor = 7 := by
   unfold casimirD4 lambdaCospinor rhoD4 dotProduct
   norm_num [Fin.sum_univ_four]
 
-/-- **Spin(8) triality Casimir equality**: the vector, spinor, and cospinor
-    highest weights used above have equal quadratic Casimir in this normalization. -/
+/-- **Spin(8) triality Casimir equality**: the three 8-dimensional
+    representations (vector, spinor, cospinor) share the same quadratic Casimir
+    eigenvalue in this normalization. Equal conformal weight would need a
+    further model-specific relation between C₂ and the conformal Hamiltonian. -/
 theorem casimir_triality_equal :
     casimirD4 lambdaVector = casimirD4 lambdaSpinor ∧
       casimirD4 lambdaSpinor = casimirD4 lambdaCospinor := by
@@ -171,10 +174,56 @@ def gr24_point_count (q : ℤ) : ℤ := 1 + q + 2 * q^2 + q^3 + q^4
 theorem gr24_point_count_at_1 : gr24_point_count 1 = 6 := by
   simp [gr24_point_count]
 
-/-- The physical shadow Casimir ratio: (Δ=1 central charge) / (k+N) coupling -/
-theorem shadow_dimension_at_critical : (1 : ℤ) * 2 = 2 * 1 := by decide
+/-- The physical shadow Casimir ratio: (Δ=1 central charge) / (k+N) coupling.
 
-/-- Doubly-degenerate b₄ Betti number for Gr(2,4) -/
-theorem gr24_middle_betti : (2 : ℕ) = 2 := rfl
+    Gap: neither the central charge at `Δ = 1` nor the `k+N` coupling is defined in this
+    file, so there is nothing here to take a ratio of. Until 2026-09-01 this was stated as
+    `(1 : ℤ) * 2 = 2 * 1`, which is commutativity of multiplication and carries none of
+    the claimed physics. Renamed to `open_` so the gate counts it. -/
+theorem open_shadow_dimension_at_critical : True := trivial
+
+/-- Doubly-degenerate b₄ Betti number for Gr(2,4): the middle coefficient of the point
+    count `1 + q + 2q² + q³ + q⁴` is `2`, while every other coefficient is `1`.
+
+    Stated against `gr24_point_count` — the object actually defined above — rather than as
+    the bare numeral `(2 : ℕ) = 2 := rfl`, which is what stood here until 2026-09-01 and
+    mentions neither Gr(2,4) nor any Betti number. -/
+theorem gr24_middle_betti (q : ℤ) :
+    gr24_point_count q - (1 + q + q^3 + q^4) = 2 * q^2 := by
+  simp only [gr24_point_count]
+  ring
+
+/-- Mirror baryon lower bound: number of dark generations ≥ 1.
+    Source: zitterbewegung paper, thm:dm-bound.
+    The T-boundary condition forces at least one mirror generation.
+
+    Gap: there is no formal definition of "number of dark generations" in this tree, and
+    no formalization of the T-boundary condition that is supposed to force the bound, so
+    there is nothing for the inequality to range over.
+
+    History worth stating plainly: this began as an axiom, and a June 2026 session
+    recorded it as "closed" by restating it as `(1 : ℕ) ≤ 1 := le_refl 1`. That is not a
+    closure — it is a true statement about the numeral 1 wearing the name of a physics
+    theorem, and strictly less honest than the axiom it replaced, since an axiom at least
+    shows up in `#print axioms`. Now an `open_` stub the gate counts. -/
+theorem open_mirror_baryon_lower_bound : True := trivial
+-- OBJECTION (GPPVerify2, 2026-09-02): the T-boundary argument assumes ordinary Wigner time
+-- reversal flips helicity; it preserves it. Not a consequence of the Weyl/Casimir algebra here.
+
+/-- Massless lightest neutrino prediction from T-boundary.
+    Source: zitterbewegung paper, pred:massless.
+    The lightest neutrino is massless because it cannot acquire T-boundary mass. -/
+theorem open_lightest_neutrino_massless : True := trivial
+-- NOTE: Requires spectral analysis of T-boundary Dirac operator (Mathlib gap).
+-- OBJECTION (GPPVerify2, 2026-09-02): the T-boundary argument assumes ordinary Wigner time
+-- reversal flips helicity; it preserves it. Not a consequence of the Weyl/Casimir algebra here.
+
+/-- Majorana condition from T-boundary.
+    Source: zitterbewegung paper, cor:neutrino.
+    Neutrinos satisfying the T-boundary condition are their own antiparticles. -/
+theorem open_majorana_from_T_boundary : True := trivial
+-- NOTE: Requires T-boundary differential geometry formalism (Mathlib gap).
+-- OBJECTION (GPPVerify2, 2026-09-02): the T-boundary argument assumes ordinary Wigner time
+-- reversal flips helicity; it preserves it. Not a consequence of the Weyl/Casimir algebra here.
 
 end GppWeylCasimir

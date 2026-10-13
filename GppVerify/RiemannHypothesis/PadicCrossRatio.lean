@@ -40,8 +40,12 @@ theorem crossRatio_mobius
   unfold crossRatio
   rw [mobius_sub p h1 h2, mobius_sub p h3 h4,
       mobius_sub p h1 h3, mobius_sub p h2 h4]
-  field_simp [hdet, h1, h2, h3, h4, h13, h24]
-  ring
+  generalize mobiusDet p a b c d = D at hdet ⊢
+  generalize c * x1 + d = A at h1 ⊢
+  generalize c * x2 + d = B at h2 ⊢
+  generalize c * x3 + d = C at h3 ⊢
+  generalize c * x4 + d = E at h4 ⊢
+  field_simp
 
 end GppPadicCrossRatio
 

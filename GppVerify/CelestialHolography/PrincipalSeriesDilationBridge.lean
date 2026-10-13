@@ -43,7 +43,7 @@ theorem celestial_supercritical_dilation_expands
   have hs : (1 : ℝ) / 2 < s.re := by
     simp [celestialWeight] at hΔ
     linarith
-  rw [norm_dilationCharacter, one_lt_exp_iff]
+  rw [norm_dilationCharacter, Real.one_lt_exp_iff]
   exact mul_pos (Real.log_pos ha) (sub_pos.mpr hs)
 
 /-- At any dilation scale `a > 1`, the celestial subcritical half-plane

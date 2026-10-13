@@ -32,7 +32,7 @@ theorem celestialDelta_shadow (s : ℂ) :
 theorem critical_line_iff_celestial_principal_line (s : ℂ) :
     s.re = (1 / 2 : ℝ) ↔ (celestialDelta s).re = 1 := by
   unfold celestialDelta
-  simp only [mul_re, ofNat_re, ofNat_im, zero_mul, sub_zero]
+  simp only [mul_re, re_ofNat, im_ofNat, zero_mul, sub_zero]
   constructor <;> intro h
   · linarith
   · linarith

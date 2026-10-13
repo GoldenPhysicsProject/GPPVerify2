@@ -1,4 +1,5 @@
 import GppVerify.QuantumGravity.GammaModulusIdentity
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import GppVerify.QuantumGravity.SpectralRhoChamberProduct
 import Mathlib.Tactic
 
@@ -35,7 +36,6 @@ theorem rhoGamma_zero_eq_mehlerFock (x : ℝ) (hx : x ≠ 0) :
   rw [hgamma]
   push_cast
   field_simp [hpiC, hsinhC]
-  ring
 
 /-- Exact value at the removable singularity of the base Mehler--Fock quotient. -/
 theorem rhoGamma_zero_zero :
@@ -68,7 +68,6 @@ theorem rhoGamma_at_zero (k : ℕ) :
   rw [hpow]
   push_cast
   field_simp [hfact, hpi]
-  ring
 
 /-- All-order explicit Mehler--Fock chamber formula away from `x=0`. -/
 theorem rhoGamma_eq_mehlerFock_chamber (k : ℕ) (x : ℝ) (hx : x ≠ 0) :
@@ -85,7 +84,6 @@ theorem rhoGamma_eq_mehlerFock_chamber (k : ℕ) (x : ℝ) (hx : x ≠ 0) :
   rw [hpow]
   push_cast
   field_simp [hfact, hsinh]
-  ring
 
 /-- Unified all-real chamber formula, with the removable origin value filled in. -/
 theorem rhoGamma_eq_mehlerFock_chamber_all (k : ℕ) (x : ℝ) :

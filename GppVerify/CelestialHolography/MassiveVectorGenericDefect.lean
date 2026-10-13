@@ -38,6 +38,8 @@ positivity statements independently of the symbolic amplitude engine.
 
 namespace GppMassiveVectorGenericDefect
 
+noncomputable section
+
 open GppMassiveCutPhysicalCoordinates
 
 /-- Exact rational defect found by the generic symbolic state-sum audit. -/
@@ -89,7 +91,7 @@ theorem sameHelicityDs4Baseline_nonneg (r t : ℝ) :
 /-- On the physical interval `0 <= u <= 1`, the exact mixed-helicity polynomial
 `u^2 - 8u + 8` is uniformly at least one. -/
 theorem mixedHelicityNumerator_ge_one
-    {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1) :
+    {u : ℝ} (hu1 : u ≤ 1) :
     1 ≤ u ^ 2 - 8 * u + 8 := by
   have h7 : 0 ≤ 7 - u := by linarith
   have hprod : 0 ≤ (1 - u) * (7 - u) :=
@@ -105,22 +107,22 @@ theorem mixedHelicityScalarPhysical_nonneg (beta c u : ℝ) :
 /-- Consequently the physical mixed-helicity `D_s=4` cut baseline is nonnegative
 throughout `0 <= u <= 1`, even using Lean's totalized division convention. -/
 theorem mixedHelicityDs4Physical_nonneg
-    (beta c : ℝ) {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1) :
+    (beta c : ℝ) {u : ℝ} (hu1 : u ≤ 1) :
     0 ≤ mixedHelicityDs4Physical beta c u := by
   unfold mixedHelicityDs4Physical
   have hn : 0 ≤ u ^ 2 - 8 * u + 8 :=
-    le_trans zero_le_one (mixedHelicityNumerator_ge_one hu0 hu1)
+    le_trans zero_le_one (mixedHelicityNumerator_ge_one hu1)
   exact div_nonneg (mul_nonneg (by norm_num) hn) (sq_nonneg (1 - beta * c))
 
 /-- Away from the collinear denominator zero, the same physical mixed-helicity
 baseline is strictly positive. -/
 theorem mixedHelicityDs4Physical_pos
-    (beta c : ℝ) {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1)
+    (beta c : ℝ) {u : ℝ} (hu1 : u ≤ 1)
     (hden : 1 - beta * c ≠ 0) :
     0 < mixedHelicityDs4Physical beta c u := by
   unfold mixedHelicityDs4Physical
   have hn : 0 < u ^ 2 - 8 * u + 8 :=
-    lt_of_lt_of_le zero_lt_one (mixedHelicityNumerator_ge_one hu0 hu1)
+    lt_of_lt_of_le zero_lt_one (mixedHelicityNumerator_ge_one hu1)
   exact div_pos (mul_pos (by norm_num) hn) (sq_pos_of_ne_zero hden)
 
 /-- The mixed massive-vector numerator has the exact factorization found by the
@@ -132,7 +134,7 @@ theorem mixedHelicityVectorNumerator_factor (u : ℝ) :
 /-- On physical kinematics `0 <= u <= 1`, the mixed massive-vector numerator is
 uniformly at least three. -/
 theorem mixedHelicityVectorNumerator_ge_three
-    {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1) :
+    {u : ℝ} (hu1 : u ≤ 1) :
     3 ≤ 3 * u ^ 2 - 16 * u + 16 := by
   have h10 : 0 ≤ 13 - 3 * u := by linarith
   have hprod : 0 ≤ (1 - u) * (13 - 3 * u) :=
@@ -141,22 +143,22 @@ theorem mixedHelicityVectorNumerator_ge_three
 
 /-- The massive-vector mixed-helicity cut is nonnegative on the physical interval. -/
 theorem mixedHelicityVectorPhysical_nonneg
-    (beta c : ℝ) {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1) :
+    (beta c : ℝ) {u : ℝ} (hu1 : u ≤ 1) :
     0 ≤ mixedHelicityVectorPhysical beta c u := by
   unfold mixedHelicityVectorPhysical
   have hn : 0 ≤ 3 * u ^ 2 - 16 * u + 16 :=
-    le_trans (by norm_num) (mixedHelicityVectorNumerator_ge_three hu0 hu1)
+    le_trans (by norm_num) (mixedHelicityVectorNumerator_ge_three hu1)
   exact div_nonneg hn (sq_nonneg (1 - beta * c))
 
 /-- Away from the collinear denominator zero, the massive-vector mixed-helicity
 cut is strictly positive on `0 <= u <= 1`. -/
 theorem mixedHelicityVectorPhysical_pos
-    (beta c : ℝ) {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u ≤ 1)
+    (beta c : ℝ) {u : ℝ} (hu1 : u ≤ 1)
     (hden : 1 - beta * c ≠ 0) :
     0 < mixedHelicityVectorPhysical beta c u := by
   unfold mixedHelicityVectorPhysical
   have hn : 0 < 3 * u ^ 2 - 16 * u + 16 :=
-    lt_of_lt_of_le (by norm_num) (mixedHelicityVectorNumerator_ge_three hu0 hu1)
+    lt_of_lt_of_le (by norm_num) (mixedHelicityVectorNumerator_ge_three hu1)
   exact div_pos hn (sq_pos_of_ne_zero hden)
 
 /-- **Mixed-helicity dimensional reconstruction.** The exact massive-vector sewing
@@ -207,12 +209,19 @@ theorem sameHelicityScalarSewing_physical
     {r t : ℝ} (hr : r ≠ 0) :
     sameHelicityScalarSewing r t =
       rhoCoord r ^ 4 / (1 - betaCoord r * cosThetaCoord t) ^ 2 := by
-  unfold sameHelicityScalarSewing rhoCoord betaCoord cosThetaCoord
+  unfold sameHelicityScalarSewing rhoCoord
   have hR : 1 + r ^ 2 ≠ 0 := by nlinarith [sq_nonneg r]
+  have hR' : r ^ 2 + 1 ≠ 0 := by nlinarith [sq_nonneg r]
   have hT : 1 + t ^ 2 ≠ 0 := by nlinarith [sq_nonneg t]
   have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
   have hRT : r ^ 2 + t ^ 2 ≠ 0 := by nlinarith [sq_nonneg t]
-  field_simp [hR, hT, hRT]
+  have hden : 1 - betaCoord r * cosThetaCoord t =
+      2 * (r ^ 2 + t ^ 2) / ((1 + r ^ 2) * (1 + t ^ 2)) := by
+    unfold betaCoord cosThetaCoord
+    field_simp
+    ring
+  rw [hden]
+  field_simp
   ring
 
 /-- Exact physical form of the generic polarization defect. -/
@@ -221,12 +230,20 @@ theorem sameHelicityDefect_physical
     sameHelicityDefect r t =
       16 * betaCoord r ^ 2 /
         (1 - betaCoord r * cosThetaCoord t) ^ 2 := by
-  unfold sameHelicityDefect betaCoord cosThetaCoord
+  unfold sameHelicityDefect
   have hR : 1 + r ^ 2 ≠ 0 := by nlinarith [sq_nonneg r]
+  have hR' : r ^ 2 + 1 ≠ 0 := by nlinarith [sq_nonneg r]
   have hT : 1 + t ^ 2 ≠ 0 := by nlinarith [sq_nonneg t]
   have hr2 : 0 < r ^ 2 := sq_pos_of_ne_zero hr
   have hRT : r ^ 2 + t ^ 2 ≠ 0 := by nlinarith [sq_nonneg t]
-  field_simp [hR, hT, hRT]
+  have hden : 1 - betaCoord r * cosThetaCoord t =
+      2 * (r ^ 2 + t ^ 2) / ((1 + r ^ 2) * (1 + t ^ 2)) := by
+    unfold betaCoord cosThetaCoord
+    field_simp
+    ring
+  rw [hden]
+  unfold betaCoord
+  field_simp
   ring
 
 /-- **Physical generic `D_s=4` numerator.** The baseline separates exactly into
@@ -263,8 +280,11 @@ theorem vector_eq_three_scalar_at_threshold
     {Cv Cs t : ℝ}
     (hdef : Cv - 3 * Cs = sameHelicityDefect 1 t) :
     Cv = 3 * Cs := by
-  simpa using hdef
+  have h0 : sameHelicityDefect 1 t = 0 := by simp [sameHelicityDefect]
+  linarith
 
+
+end
 end GppMassiveVectorGenericDefect
 
 #print axioms GppMassiveVectorGenericDefect.sameHelicityDefect_nonneg

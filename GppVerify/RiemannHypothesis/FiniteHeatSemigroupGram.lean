@@ -26,12 +26,12 @@ open scoped BigOperators
 /-- Finite positive atomic heat trace. -/
 noncomputable def atomicHeat
     {α : Type*} (atoms : Finset α) (weight rate : α → ℝ) (t : ℝ) : ℝ :=
-  ∑ a in atoms, weight a * Real.exp (-(rate a) * t)
+  ∑ a ∈ atoms, weight a * Real.exp (-(rate a) * t)
 
 /-- Two-time finite heat kernel written in rank-one form. -/
 noncomputable def atomicHeatKernel
     {α : Type*} (atoms : Finset α) (weight rate : α → ℝ) (t u : ℝ) : ℝ :=
-  ∑ a in atoms,
+  ∑ a ∈ atoms,
     weight a * Real.exp (-(rate a) * t) * Real.exp (-(rate a) * u)
 
 /-- The rank-one kernel is exactly the additive heat-semigroup kernel `K(t+u)`. -/
@@ -58,8 +58,8 @@ theorem weighted_rankOne_sum_nonneg
     (atoms : Finset α) (I : Finset ι)
     (weight rate : α → ℝ) (coeff time : ι → ℝ)
     (hweight : ∀ a ∈ atoms, 0 ≤ weight a) :
-    0 ≤ ∑ a in atoms,
-      weight a * (∑ i in I, coeff i * Real.exp (-(rate a) * time i)) ^ 2 := by
+    0 ≤ ∑ a ∈ atoms,
+      weight a * (∑ i ∈ I, coeff i * Real.exp (-(rate a) * time i)) ^ 2 := by
   exact Finset.sum_nonneg fun a ha =>
     mul_nonneg (hweight a ha) (sq_nonneg _)
 
@@ -70,48 +70,48 @@ theorem atomicHeatKernel_gram_nonneg
     (atoms : Finset α) (I : Finset ι)
     (weight rate : α → ℝ) (coeff time : ι → ℝ)
     (hweight : ∀ a ∈ atoms, 0 ≤ weight a) :
-    0 ≤ ∑ i in I, ∑ j in I,
+    0 ≤ ∑ i ∈ I, ∑ j ∈ I,
       coeff i * coeff j * atomicHeatKernel atoms weight rate (time i) (time j) := by
   have hsq := weighted_rankOne_sum_nonneg atoms I weight rate coeff time hweight
   suffices hident :
-      (∑ i in I, ∑ j in I,
+      (∑ i ∈ I, ∑ j ∈ I,
         coeff i * coeff j * atomicHeatKernel atoms weight rate (time i) (time j)) =
-      ∑ a in atoms,
-        weight a * (∑ i in I, coeff i * Real.exp (-(rate a) * time i)) ^ 2 by
+      ∑ a ∈ atoms,
+        weight a * (∑ i ∈ I, coeff i * Real.exp (-(rate a) * time i)) ^ 2 by
     rw [hident]
     exact hsq
   unfold atomicHeatKernel
   simp_rw [Finset.mul_sum]
   calc
-    (∑ i in I, ∑ j in I, ∑ a in atoms,
+    (∑ i ∈ I, ∑ j ∈ I, ∑ a ∈ atoms,
       coeff i * coeff j *
         (weight a * Real.exp (-(rate a) * time i) *
           Real.exp (-(rate a) * time j))) =
-      ∑ i in I, ∑ a in atoms, ∑ j in I,
+      ∑ i ∈ I, ∑ a ∈ atoms, ∑ j ∈ I,
         coeff i * coeff j *
           (weight a * Real.exp (-(rate a) * time i) *
             Real.exp (-(rate a) * time j)) := by
       apply Finset.sum_congr rfl
       intro i hi
       rw [Finset.sum_comm]
-    _ = ∑ a in atoms, ∑ i in I, ∑ j in I,
+    _ = ∑ a ∈ atoms, ∑ i ∈ I, ∑ j ∈ I,
         coeff i * coeff j *
           (weight a * Real.exp (-(rate a) * time i) *
             Real.exp (-(rate a) * time j)) := by
       rw [Finset.sum_comm]
-    _ = ∑ a in atoms,
-        weight a * (∑ i in I, coeff i * Real.exp (-(rate a) * time i)) ^ 2 := by
+    _ = ∑ a ∈ atoms,
+        weight a * (∑ i ∈ I, coeff i * Real.exp (-(rate a) * time i)) ^ 2 := by
       apply Finset.sum_congr rfl
       intro a ha
       symm
       calc
-        weight a * (∑ i in I, coeff i * Real.exp (-(rate a) * time i)) ^ 2 =
+        weight a * (∑ i ∈ I, coeff i * Real.exp (-(rate a) * time i)) ^ 2 =
             weight a *
-              ((∑ i in I, coeff i * Real.exp (-(rate a) * time i)) *
-               (∑ j in I, coeff j * Real.exp (-(rate a) * time j))) := by
+              ((∑ i ∈ I, coeff i * Real.exp (-(rate a) * time i)) *
+               (∑ j ∈ I, coeff j * Real.exp (-(rate a) * time j))) := by
           rw [pow_two]
         _ = weight a *
-              (∑ i in I, ∑ j in I,
+              (∑ i ∈ I, ∑ j ∈ I,
                 (coeff i * Real.exp (-(rate a) * time i)) *
                   (coeff j * Real.exp (-(rate a) * time j))) := by
           congr 1
@@ -119,7 +119,7 @@ theorem atomicHeatKernel_gram_nonneg
           apply Finset.sum_congr rfl
           intro i hi
           rw [Finset.mul_sum]
-        _ = ∑ i in I, ∑ j in I,
+        _ = ∑ i ∈ I, ∑ j ∈ I,
               weight a *
                 ((coeff i * Real.exp (-(rate a) * time i)) *
                   (coeff j * Real.exp (-(rate a) * time j))) := by
@@ -127,7 +127,7 @@ theorem atomicHeatKernel_gram_nonneg
           apply Finset.sum_congr rfl
           intro i hi
           rw [Finset.mul_sum]
-        _ = ∑ i in I, ∑ j in I,
+        _ = ∑ i ∈ I, ∑ j ∈ I,
               coeff i * coeff j *
                 (weight a * Real.exp (-(rate a) * time i) *
                   Real.exp (-(rate a) * time j)) := by
@@ -143,7 +143,7 @@ theorem atomicHeat_add_gram_nonneg
     (atoms : Finset α) (I : Finset ι)
     (weight rate : α → ℝ) (coeff time : ι → ℝ)
     (hweight : ∀ a ∈ atoms, 0 ≤ weight a) :
-    0 ≤ ∑ i in I, ∑ j in I,
+    0 ≤ ∑ i ∈ I, ∑ j ∈ I,
       coeff i * coeff j * atomicHeat atoms weight rate (time i + time j) := by
   simpa [atomicHeatKernel_eq_atomicHeat_add] using
     atomicHeatKernel_gram_nonneg atoms I weight rate coeff time hweight

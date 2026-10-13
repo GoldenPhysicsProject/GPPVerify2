@@ -1,0 +1,187 @@
+# Run scripts/wire_root.py on a branch and push the result.
+#
+# Why this exists: the import-graph gate correctly rejects any branch carrying a module that
+# `GppVerify.lean` does not import, because `lake build GppVerify` never compiles such a
+# module — it can be broken, carry a `sorry`, or declare an axiom while CI reports green.
+#
+# `scripts/wire_root.py` fixes that in one command, which helps whoever can run a shell.
+# Codex cannot: its connector edits files through the GitHub API, and `GppVerify.lean` is
+# ~86 KB of curated section headers that a wholesale rewrite would destroy. So on 2026-09-02
+# every Codex payload — raised-box, heat-semigroup, spectral chambers, Fisher–Vandermonde —
+# needed a manual wiring pass from the other side. Four round trips for a mechanical edit.
+#
+# This closes that. It is `workflow_dispatch` only, so nothing is ever pushed to a branch
+# except when someone explicitly asks for it, naming the branch. There are no automatic
+# triggers and no `push:` event on purpose: a workflow that silently rewrites branches is a
+# worse problem than the one it solves.
+#
+# The wiring push does NOT trigger the Build workflow, and an earlier version of this file
+# claimed it did. Two independent reasons, confirmed by self-test on 2026-09-02: `build.yml`
+# triggers only on `main` pushes and pull requests, and — more fundamentally — GitHub
+# suppresses workflow triggers from pushes made with `GITHUB_TOKEN`, to prevent recursion.
+#
+# That matters, because wiring a module into the root graph is exactly the moment it starts
+# having to compile for the first time, and today that turned up four genuine breaks across
+# two payloads. Wiring without building is the more dangerous half on its own: it converts
+# "this module was never checked" into "this module is in the build graph" without anyone
+# checking it.
+#
+# It also resyncs the published counts — `index.html`'s stat strip and og:description, and
+# the blueprint's stub sentence (`scripts/sync_published_counts.py`). A branch that adds a
+# module or parks a stub makes those numbers stale as a side effect, so without this the
+# dispatch that exists to be a one-command fix ends red on the landing-claim gate and the
+# stub-naming gate, over numbers the run itself invalidated. A gate that reds on work nobody
+# got wrong is a gate people learn to wave through.
+#
+# So this workflow verifies its own work. The `verify` job below cold-builds the wired branch
+# and runs every gate. It duplicates `build.yml` rather than reusing it, which is a real cost
+# — if you change the gates there, change them here — and is still better than a dispatch that
+# silently leaves a branch wired but unbuilt.
+name: wire root
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to wire (e.g. codex/my-payload). Must already exist."
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  wire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 0
+
+      - name: Wire any modules missing from the root import graph
+        id: wire
+        # The counts sync runs unconditionally, not only when wiring changed something. A
+        # branch makes the published counts stale whether or not it also needs an import
+        # wired — parking one stub does it — so wiring alone would leave the dispatch red on
+        # the landing-claim and stub-naming gates, over numbers the branch made stale and
+        # nobody chose. Both were caught by self-test on 2026-09-02, one after the other:
+        #   stat 'Lean Modules' says 187; the tree has 188
+        #   blueprint/src/web.tex states 157 stubs; the tree has 158
+        run: |
+          python3 scripts/wire_root.py | tee /tmp/wire.log
+          python3 scripts/sync_published_counts.py | tee /tmp/stats.log
+          if git diff --quiet -- GppVerify.lean index.html blueprint/src/web.tex; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.wire.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add GppVerify.lean index.html blueprint/src/web.tex
+          # The subject names what actually changed, and the body carries both reports, so
+          # the commit says which modules were added and which published numbers moved —
+          # rather than leaving a bare "wire root" in the history, or claiming a wiring that
+          # did not happen on a run that only resynced the page.
+          if git diff --cached --quiet -- GppVerify.lean; then
+            SUBJECT="Sync the published counts to the tree"
+          else
+            SUBJECT="Wire modules into the root import graph"
+          fi
+          {
+            echo "$SUBJECT"
+            echo
+            echo "Dispatched for branch ${{ inputs.branch }}."
+            echo
+            echo "scripts/wire_root.py — modules on disk but outside the root graph, so"
+            echo "\`lake build GppVerify\` was not compiling them:"
+            echo
+            sed -n 's/^  \(GppVerify\..*\)$/  \1/p' /tmp/wire.log
+            echo
+            echo "scripts/sync_published_counts.py:"
+            sed 's/^/  /' /tmp/stats.log
+          } > /tmp/msg
+          git commit -F /tmp/msg
+          git push origin "HEAD:${{ inputs.branch }}"
+
+      - name: Report
+        run: |
+          if [ "${{ steps.wire.outputs.changed }}" = "true" ]; then
+            echo "Pushed. The verify job below cold-builds this branch and runs every"
+            echo "gate — a push made with GITHUB_TOKEN raises no workflow events, so that"
+            echo "job is the only verification this dispatch gets."
+          else
+            echo "Nothing to do; the root import graph was already complete and the"
+            echo "landing page's derived counts already matched the tree."
+          fi >> "$GITHUB_STEP_SUMMARY"
+
+  # Wiring a module is the moment it must compile for the first time. Verify it here, because
+  # the push above cannot trigger `build.yml` (GITHUB_TOKEN pushes raise no workflow events).
+  verify:
+    needs: wire
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 0
+
+      - name: Install elan
+        run: |
+          curl -sSfL \
+            https://github.com/leanprover/elan/releases/latest/download/elan-x86_64-unknown-linux-gnu.tar.gz \
+            | tar xz
+          ./elan-init -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Cache Lean toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ hashFiles('lean-toolchain') }}
+
+      - name: Cache lake packages
+        uses: actions/cache@v4
+        with:
+          path: .lake
+          key: lake-${{ hashFiles('lakefile.toml', 'lean-toolchain') }}-${{ runner.os }}
+          restore-keys: |
+            lake-${{ hashFiles('lakefile.toml', 'lean-toolchain') }}-
+
+      - name: Get Mathlib cache
+        run: lake exe cache get || true
+
+      - name: Discard this package's build artifacts (keep Mathlib's)
+        run: rm -rf .lake/build
+
+      - name: Build
+        run: set -o pipefail && lake build 2>&1 | tee /tmp/build.log
+
+      - name: Unused-hypothesis gate
+        run: |
+          if grep -E "is not explicitly referenced" /tmp/build.log; then
+            echo "::error::Unused binder(s) in the freshly wired tree."
+            exit 1
+          fi
+          echo "OK — no unused binders."
+
+      - name: Sorry gate, build-log
+        run: |
+          if grep -F "declaration uses 'sorry'" /tmp/build.log; then
+            echo "::error::A declaration uses 'sorry'."
+            exit 1
+          fi
+          echo "OK — no declaration uses 'sorry'."
+
+      - name: Source and honesty gates
+        run: |
+          python3 scripts/check_import_graph.py
+          python3 scripts/check_sorries.py
+          python3 scripts/check_stub_naming.py
+          python3 scripts/check_vacuity.py
+          python3 scripts/check_blueprint_refs.py
+          python3 scripts/check_landing_claims.py

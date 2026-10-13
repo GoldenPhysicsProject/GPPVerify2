@@ -27,7 +27,7 @@ noncomputable def chamberCoeff (k : ℕ) : ℝ :=
 
 /-- Positive even chamber polynomial `prod_{j=1}^k (j^2+x^2)`. -/
 noncomputable def chamberPoly (k : ℕ) (x : ℝ) : ℝ :=
-  ∏ j in Finset.range k, (((j : ℝ) + 1) ^ 2 + x ^ 2)
+  ∏ j ∈ Finset.range k, (((j : ℝ) + 1) ^ 2 + x ^ 2)
 
 @[simp] theorem chamberCoeff_zero : chamberCoeff 0 = 1 := by
   norm_num [chamberCoeff]

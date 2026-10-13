@@ -12,6 +12,8 @@ complex Fourier/Dirichlet series.
 
 namespace GppPositiveTypeLimit
 
+open scoped ComplexOrder
+
 open Complex
 open GppHaarPositivityWeil
 
@@ -38,12 +40,8 @@ theorem positiveType_of_tendsto
     apply tendsto_finset_sum
     intro j hj
     exact tendsto_const_nhds.mul (hlim (x i - x j))
-  have hNonneg : ∀ᶠ N : ℕ in Filter.atTop,
-      0 ≤ (∑ i : Fin M, ∑ j : Fin M,
-        (starRingEnd ℂ) (c i) * c j * ((f N (x i - x j) : ℝ) : ℂ)).re :=
-    Filter.Eventually.of_forall (fun N => hf N M x c)
-  exact ge_of_tendsto
-    (Complex.continuous_re.continuousAt.tendsto.comp hTendstoSum) hNonneg
+  -- `PositiveType` is nonnegativity in `ℂ`'s partial order, whose cone is closed.
+  exact ge_of_tendsto hTendstoSum (Filter.Eventually.of_forall fun N => hf N M x c)
 
 end GppPositiveTypeLimit
 

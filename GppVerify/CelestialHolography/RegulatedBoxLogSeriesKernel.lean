@@ -63,7 +63,6 @@ theorem hasSum_pow_div_succ_eq_neg_log_div
     have hn : (((n + 1 : ℕ) : ℝ)) ≠ 0 := by positivity
     rw [pow_succ]
     field_simp [hx0, hn]
-    ring
   rw [hfun]
   exact h
 

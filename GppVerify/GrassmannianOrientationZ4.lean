@@ -26,14 +26,12 @@ def chartDet : (ℝ × ℝ × ℝ × ℝ) → ℝ
 theorem chartDet_neg (a b c d : ℝ) :
     chartDet (-a, -b, -c, -d) = chartDet (a, b, c, d) := by
   simp [chartDet]
-  ring
 
 /-- The tuple-packaged orientation map squares to coordinate negation. -/
 theorem tauTuple_sq_eq_neg (a b c d : ℝ)
     (hD : chartDet (a, b, c, d) ≠ 0) :
     tauTuple (tauTuple (a, b, c, d)) = (-a, -b, -c, -d) := by
-  simpa [tauTuple, chartDet] using
-    transition_transition_eq_neg a b c d (by simpa [chartDet] using hD)
+  exact transition_transition_eq_neg a b c d (by simpa [chartDet] using hD)
 
 /-- **Exact order-four closure.**  On the nonzero-determinant big cell,
 applying the orientation transition four times returns the original point. -/

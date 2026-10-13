@@ -27,10 +27,9 @@ noncomputable def bubbleAntideriv (r : ℝ) : ℝ := Real.tanh r ^ 2 / 2
 theorem hasDerivAt_bubbleAntideriv (r : ℝ) :
     HasDerivAt bubbleAntideriv (Real.tanh r / Real.cosh r ^ 2) r := by
   have h := (hasDerivAt_tanh' r).pow 2 |>.div_const 2
-  convert h using 1
-  · simp [bubbleAntideriv]
-  · rw [one_div_cosh_sq]
-    ring
+  refine h.congr_deriv ?_
+  rw [div_eq_mul_one_div (Real.tanh r) (Real.cosh r ^ 2), one_div_cosh_sq]
+  norm_num <;> ring
 
 /-- The bubble antiderivative vanishes at threshold. -/
 theorem bubbleAntideriv_zero : bubbleAntideriv 0 = 0 := by
@@ -64,8 +63,7 @@ theorem tendsto_tanh_sq_one :
 /-- The bubble antiderivative tends to `1/2`. -/
 theorem tendsto_bubbleAntideriv_half :
     Tendsto bubbleAntideriv atTop (nhds (1 / 2 : ℝ)) := by
-  have h := tendsto_tanh_sq_one.div_const (2 : ℝ)
-  simpa [bubbleAntideriv] using h
+  exact tendsto_tanh_sq_one.div_const (2 : ℝ)
 
 /-- The shell is nonnegative above threshold. -/
 theorem bubbleShell_nonneg {r : ℝ} (hr : 0 < r) :

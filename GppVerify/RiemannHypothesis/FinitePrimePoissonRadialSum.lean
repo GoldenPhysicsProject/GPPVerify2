@@ -23,8 +23,8 @@ open GppPrimePoissonRadial
 theorem sum_WpA_eq_two_mul_sum_re
     (P : Finset ℝ) {a : ℝ} (ha : 0 < a)
     (hp : ∀ p ∈ P, 1 < p) (t : ℝ) :
-    ∑ p in P, WpA p a t =
-      2 * ∑ p in P, (minusLogDerivZetaP p (a + t * Complex.I)).re := by
+    ∑ p ∈ P, WpA p a t =
+      2 * ∑ p ∈ P, (minusLogDerivZetaP p (a + t * Complex.I)).re := by
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro p hpP

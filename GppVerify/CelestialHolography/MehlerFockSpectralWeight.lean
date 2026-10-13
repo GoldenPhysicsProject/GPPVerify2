@@ -34,7 +34,6 @@ theorem weight_product {lam : ℝ}
     wienerHopfWeight lam * mehlerFockWeight lam = collapsedWeight lam := by
   unfold wienerHopfWeight mehlerFockWeight collapsedWeight
   field_simp [hs, hc]
-  ring
 
 /-- The collapsed spectral density is pointwise nonnegative. -/
 theorem collapsedWeight_nonneg (lam : ℝ) :

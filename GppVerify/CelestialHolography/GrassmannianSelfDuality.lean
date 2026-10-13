@@ -1,9 +1,10 @@
-import Mathlib.Analysis.InnerProductSpace.Projection
+import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
+import Mathlib.Analysis.InnerProductSpace.Projection.Submodule
 
 /-!
 # Perfect self-duality of Gr(k,n)
 
-Source: ONON5213.tex, Chapter 7 ("The Isomorphism: From Quantum Gravity to Number Theory"),
+Source: On the Nature of Nature v5.2.1.3, Chapter 7 ("The Isomorphism: From Quantum Gravity to Number Theory"),
 Theorem "Perfect self-duality of Gr(k,n)": the orthogonal-complement map
 `Λ ↦ Λ^⊥` sends `Gr(k,n)` to `Gr(n-k,n)`, is an involution, and restricts to a
 self-map of the *same* Grassmannian `Gr(k,n)` iff `n = 2k` — the case relevant to
@@ -35,7 +36,7 @@ theorem grassmannian_orthogonal_dim (K : Submodule 𝕜 E) :
 theorem grassmannian_orthogonal_involutive (K : Submodule 𝕜 E) : Kᗮᗮ = K :=
   Submodule.orthogonal_orthogonal K
 
-/-- **Perfect self-duality of Gr(k,n)** (ONON5213.tex, Ch. 7). The orthogonal-complement
+/-- **Perfect self-duality of Gr(k,n)** (On the Nature of Nature v5.2.1.3, Ch. 7). The orthogonal-complement
 involution restricts to a self-map of `Gr(k,n)` -- i.e. sends a `k`-dimensional subspace
 to another `k`-dimensional subspace, rather than merely landing in `Gr(n-k,n)` -- if and
 only if `n = 2k`. In particular this is why `Gr(2,4)` (`k = 2`, `n = 4`) is self-dual:
@@ -53,5 +54,35 @@ theorem gr_two_four_self_dual
     (hE : finrank 𝕜 E = 4) : finrank 𝕜 Kᗮ = k := by
   have := (grassmannian_self_dual_iff K hK).mpr (by rw [hE, hk])
   exact this
+
+/-- **Gaussian binomial point count for Gr(2,4)** (On the Nature of Nature v5.2.1.3, Ch. 7, `eq:point-count`):
+the number of points of `Gr(2,4)` over 𝔽_q is `\binom{4}{2}_q = 1+q+2q^2+q^3+q^4`. We record
+the algebraic identity behind this (as a statement over any field, for `q ≠ ±1` so both
+denominators are nonzero): `(q^4-1)(q^3-1) / ((q^2-1)(q-1)) = 1+q+2q^2+q^3+q^4`. -/
+theorem grassmannian_gaussian_binomial_two_four {q : ℝ} (hq1 : q ≠ 1) (hqm1 : q ≠ -1) :
+    (q ^ 4 - 1) * (q ^ 3 - 1) / ((q ^ 2 - 1) * (q - 1)) = 1 + q + 2 * q ^ 2 + q ^ 3 + q ^ 4 := by
+  have h1 : q - 1 ≠ 0 := sub_ne_zero.mpr hq1
+  have h2 : q + 1 ≠ 0 := fun h => hqm1 (by linarith)
+  have h3 : q ^ 2 - 1 ≠ 0 := by
+    have hfact : q ^ 2 - 1 = (q - 1) * (q + 1) := by ring
+    rw [hfact]; exact mul_ne_zero h1 h2
+  rw [div_eq_iff (mul_ne_zero h3 h1)]
+  ring
+
+/-- The `Gr(2,4)` point-count polynomial factors into the two elementary
+palindromic factors corresponding to its Schubert-cell profile. -/
+theorem gr24_point_count_factorization (q : ℝ) :
+    1 + q + 2 * q ^ 2 + q ^ 3 + q ^ 4 =
+      (q ^ 2 + 1) * (q ^ 2 + q + 1) := by
+  ring
+
+/-- The `Gr(2,4)` point-count polynomial is reciprocal of degree four,
+matching the palindromic coefficient profile `1,1,2,1,1`. -/
+theorem gr24_point_count_reciprocal {q : ℝ} (hq : q ≠ 0) :
+    q ^ 4 *
+        (1 + q⁻¹ + 2 * (q⁻¹) ^ 2 + (q⁻¹) ^ 3 + (q⁻¹) ^ 4) =
+      1 + q + 2 * q ^ 2 + q ^ 3 + q ^ 4 := by
+  field_simp [hq]
+  ring
 
 end GppCelestialHolography

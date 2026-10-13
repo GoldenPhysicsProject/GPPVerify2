@@ -4,10 +4,10 @@ import GppVerify.CelestialHolography.Link6
 /-!
 # Rigidity Theorem: Einstein Equations from Shadow Symmetry (thm:rigidity, cited 10×)
 
-## Golden Physics Project — ONON Framework Formalization
-## Lean 4 / Mathlib v4.19.0
+## Golden Physics Project — Shadow Framework Formalization
+## Lean 4 / Mathlib v4.33.1
 
-This file formalizes `thm:rigidity` (ONON52, cited 10×):
+This file formalizes `thm:rigidity` (On the Nature of Nature v5.2, cited 10×):
 *The Einstein field equations G_{μν} = 8πG T_{μν} are uniquely determined by:
 (1) Shadow symmetry (diffeomorphism covariance + shadow Δ ↦ 2-Δ)
 (2) Two-derivative truncation
@@ -37,22 +37,37 @@ namespace GppRigidity
 -- ============================================================
 
 /-- In 4D, the Weyl tensor is traceless: g^{αβ} C_{αμβν} = 0. -/
-lemma weyl_traceless : True := trivial
+lemma open_weyl_traceless : True := trivial
 
 /-- Bianchi identity: ∇_μ G^{μν} = 0 (divergence-free). -/
-lemma bianchi_identity : True := trivial
+lemma open_bianchi_identity : True := trivial
 
 /-- The shadow dimension of the graviton is Δ_h = 2 (spin 2 in 4D).
     Under shadow Δ ↦ 2-Δ: Δ_h ↦ 2-2 = 0, the shadow is the conformal factor. -/
 lemma graviton_shadow_dimension : (2 : ℤ) - 2 = 0 := by decide
 
-/-- Two-derivative truncation: the action contains at most R (Ricci scalar).
-    Higher-derivative terms R² would contribute c_{4D}^Weyl ≠ 0. -/
-lemma two_derivative_from_c0 (c : ℝ) (hc : c = 0) : c = 0 := hc
+/-- **Open**: two-derivative truncation — the action contains at most `R` (Ricci scalar),
+    higher-derivative `R²` terms contributing `c_{4D}^Weyl ≠ 0`.
+
+    Parked as an honest stub on 2026-09-02, replacing
+
+        lemma two_derivative_from_c0 (c : ℝ) (hc : c = 0) : c = 0 := hc
+
+    which was the identity function: conclusion and hypothesis are the same proposition, so
+    it transported no information and could not have failed. Nothing about the action, the
+    Ricci scalar, or the Weyl coefficient appeared in it.
+
+    Second instance of this exact shape in the tree — `shadow_exact_implies_c0` in
+    `StandardModel/DMAbundance.lean` was the other — which is why `scripts/check_vacuity.py`
+    now gates on `conclusion-is-hypothesis` rather than on either name.
+
+    Gap: no formalization of the gravitational action, curvature invariants, or the
+    higher-derivative expansion exists in this tree or in Mathlib. -/
+lemma open_two_derivative_from_c0 : True := trivial
 
 /-- Lovelock's theorem (algebraic form): in d=4, the divergence-free, symmetric
     second-order tensor from g_{μν} is uniquely G_{μν} + Λg_{μν} up to scale. -/
-lemma lovelock_uniqueness_algebraic : True := trivial
+lemma open_lovelock_uniqueness_algebraic : True := trivial
 
 -- ============================================================
 -- §2  Infrastructure axioms
@@ -60,22 +75,23 @@ lemma lovelock_uniqueness_algebraic : True := trivial
 
 /-- Lovelock (1971): in d=4, G_{μν} + Λg_{μν} is the unique divergence-free
     symmetric tensor from g_{μν} at most second order in derivatives.
-    Gap: differential geometry infrastructure not in Mathlib 4.19.0. -/
-theorem lovelock_theorem : True := trivial
+    Gap: differential geometry infrastructure re-verified absent in Mathlib 4.33.1
+    (2026-09-01: no Ricci curvature anywhere in the tree). -/
+theorem open_lovelock_theorem : True := trivial
 
 /-- Shadow symmetry forces graviton propagator to be 1/k² (massless, spin 2).
     Gap: requires spinor-helicity formalism for celestial amplitudes. -/
-theorem shadow_forces_massless_graviton : True := trivial
+theorem open_shadow_forces_massless_graviton : True := trivial
 
 /-- c_{4D}^Weyl = 0 eliminates all higher-curvature terms.
     Gap: requires quantum gravity renormalization group analysis. -/
-theorem c0_eliminates_higher_curvature : True := trivial
+theorem open_c0_eliminates_higher_curvature : True := trivial
 
 -- ============================================================
 -- §3  Main theorem (thm:rigidity)
 -- ============================================================
 
-/-- **thm:rigidity** (ONON52, cited 10×).
+/-- **thm:rigidity** (On the Nature of Nature v5.2, cited 10×).
 
     The Einstein equations G_{μν} = 8πG T_{μν} are uniquely determined by:
     (1) Shadow symmetry Δ ↦ 2-Δ (diffeomorphism covariance)
@@ -84,15 +100,14 @@ theorem c0_eliminates_higher_curvature : True := trivial
 
     Algebraic core: Lovelock uniqueness + shadow dimension = 2.
     Infrastructure gap: differential geometry + spinor-helicity formalism. -/
-theorem einstein_uniqueness_from_shadow
-    (hc : GppLink6.c_4D_weyl = 0) : True := trivial
+theorem open_einstein_uniqueness_from_shadow {c_4D_weyl : ℝ}
+    (_hc : c_4D_weyl = 0) : True := trivial
 
 /-- Corollary: dark energy (cosmological constant Λ) is the only free parameter. -/
-theorem cosmological_constant_unique : True := trivial
+theorem open_cosmological_constant_unique : True := trivial
 
 end GppRigidity
 
 -- Summary checks
 #check @GppRigidity.graviton_shadow_dimension
-#check @GppRigidity.two_derivative_from_c0
-#check @GppRigidity.einstein_uniqueness_from_shadow
+#check @GppRigidity.open_einstein_uniqueness_from_shadow

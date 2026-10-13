@@ -16,6 +16,8 @@ The infinite `tsum` passage is deliberately kept separate.
 
 namespace GppVonMangoldtCosine
 
+open scoped ComplexOrder
+
 open Complex LSeries
 open ArithmeticFunction
 open GppGlobalVonMangoldt
@@ -93,7 +95,8 @@ theorem neg_zeta_logDeriv_re_eq_vonMangoldt_cosine_tsum
 of the cosine and sine Gram squares by `cos(A-B)`. -/
 theorem cosine_frequency_positiveType (freq : ℝ) :
     PositiveType (fun t : ℝ => Real.cos (freq * t)) := by
-  intro n x c
+  -- `cos (freq * (-t)) = cos (-(freq * t)) = cos (freq * t)`.
+  refine positiveType_of_even_of_re (fun t => by rw [mul_neg, Real.cos_neg]) (fun n x c => ?_)
   rw [Complex.re_sum]
   have hterm : ∀ i : Fin n,
       (∑ j : Fin n, (starRingEnd ℂ) (c i) * c j *
@@ -124,8 +127,9 @@ theorem cosine_frequency_positiveType (freq : ℝ) :
 theorem positiveType_nonneg_scalar {f : ℝ → ℝ}
     (hf : PositiveType f) {r : ℝ} (hr : 0 ≤ r) :
     PositiveType (fun t => r * f t) := by
-  intro n x c
-  have h := hf n x c
+  -- Evenness of `r * f` reduces to evenness of `f`, which `hf.even` supplies.
+  refine positiveType_of_even_of_re (fun t => by rw [hf.even t]) (fun n x c => ?_)
+  have h := (RCLike.nonneg_iff.mp (hf n x c)).1
   let S : ℂ := ∑ i : Fin n, ∑ j : Fin n,
     (starRingEnd ℂ (c i)) * c j * (f (x i - x j) : ℂ)
   have hS : 0 ≤ S.re := by
@@ -161,7 +165,7 @@ theorem vonMangoldt_mode_positiveType (a : ℝ) (n : ℕ) :
 theorem positiveType_finset_sum_modes
     {ι : Type*} [DecidableEq ι] (S : Finset ι) (f : ι → ℝ → ℝ)
     (hf : ∀ i ∈ S, PositiveType (f i)) :
-    PositiveType (fun t => ∑ i in S, f i t) := by
+    PositiveType (fun t => ∑ i ∈ S, f i t) := by
   classical
   induction S using Finset.induction_on with
   | empty =>
@@ -169,7 +173,7 @@ theorem positiveType_finset_sum_modes
       simp
   | @insert a S ha ih =>
       have haPT : PositiveType (f a) := hf a (by simp)
-      have hSPT : PositiveType (fun t => ∑ i in S, f i t) := by
+      have hSPT : PositiveType (fun t => ∑ i ∈ S, f i t) := by
         apply ih
         intro i hi
         exact hf i (by simp [hi])
@@ -181,11 +185,107 @@ theorem positiveType_finset_sum_modes
 /-- Every finite truncation of the global von-Mangoldt cosine response is positive type. -/
 theorem finite_vonMangoldt_cosine_positiveType (a : ℝ) (S : Finset ℕ) :
     PositiveType (fun t : ℝ =>
-      ∑ n in S, ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n * a) *
+      ∑ n ∈ S, ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n * a) *
         Real.cos (Real.log n * t)) := by
   apply positiveType_finset_sum_modes S
   intro n hn
   exact vonMangoldt_mode_positiveType a n
+
+/-- Positive type is closed under pointwise sequential limits.  This packages the
+finite-Gram limiting argument used elsewhere in the project into a reusable theorem. -/
+theorem positiveType_of_pointwise_tendsto
+    (P : ℕ → ℝ → ℝ) (Q : ℝ → ℝ)
+    (hP : ∀ N, PositiveType (P N))
+    (hlim : ∀ t, Filter.Tendsto (fun N => P N t) Filter.atTop (nhds (Q t))) :
+    PositiveType Q := by
+  -- `Q` inherits evenness from the approximants: each `P N` is even by
+  -- `PositiveType.even`, so the two limits `Q (-t)` and `Q t` are limits of the
+  -- same sequence and coincide.
+  refine positiveType_of_even_of_re (fun t => ?_) (fun n x c => ?_)
+  · have hEq : (fun N => P N (-t)) = fun N => P N t := funext fun N => (hP N).even t
+    have h1 := hlim (-t)
+    rw [hEq] at h1
+    exact tendsto_nhds_unique h1 (hlim t)
+  have hTendstoSum : Filter.Tendsto
+      (fun N : ℕ => ∑ i : Fin n, ∑ j : Fin n,
+        (starRingEnd ℂ (c i)) * c j * (P N (x i - x j) : ℂ))
+      Filter.atTop
+      (nhds (∑ i : Fin n, ∑ j : Fin n,
+        (starRingEnd ℂ (c i)) * c j * (Q (x i - x j) : ℂ))) := by
+    apply tendsto_finsetSum
+    intro i _
+    apply tendsto_finsetSum
+    intro j _
+    exact tendsto_const_nhds.mul
+      ((Complex.continuous_ofReal.tendsto (Q (x i - x j))).comp
+        (hlim (x i - x j)))
+  have hNonneg : ∀ᶠ N in Filter.atTop,
+      0 ≤ (∑ i : Fin n, ∑ j : Fin n,
+        (starRingEnd ℂ (c i)) * c j * (P N (x i - x j) : ℂ)).re :=
+    Filter.Eventually.of_forall (fun N => by
+      simpa using (RCLike.nonneg_iff.mp (hP N n x c)).1)
+  exact ge_of_tendsto
+    (Complex.continuous_re.continuousAt.tendsto.comp hTendstoSum) hNonneg
+
+/-- The real von-Mangoldt cosine series is absolutely summable on every vertical
+line `Re s = a > 1`. -/
+theorem summable_vonMangoldt_cosine
+    {a t : ℝ} (ha : 1 < a) :
+    Summable (fun n : ℕ =>
+      ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n * a) *
+        Real.cos (Real.log n * t)) := by
+  have hs : 1 < (((a : ℂ) + (t : ℂ) * Complex.I).re) := by
+    simpa using ha
+  have hsumC : Summable (fun n : ℕ =>
+      LSeries.term vonMangoldtComplex
+        ((a : ℂ) + (t : ℂ) * Complex.I) n) := by
+    exact ArithmeticFunction.LSeriesSummable_vonMangoldt hs
+  have hsumR : Summable (fun n : ℕ =>
+      (LSeries.term vonMangoldtComplex
+        ((a : ℂ) + (t : ℂ) * Complex.I) n).re) :=
+    Complex.reCLM.summable hsumC
+  refine hsumR.congr ?_
+  intro n
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp
+  · exact vonMangoldt_term_re_eq_exp_cos n hn a t
+
+/-- The genuine untruncated von-Mangoldt cosine response is positive type on
+`Re s = a > 1`.  This is the infinite-series closure of the finite mode theorem;
+it is local to the absolute-convergence half-plane and is not Weil positivity. -/
+theorem vonMangoldt_cosine_tsum_positiveType
+    {a : ℝ} (ha : 1 < a) :
+    PositiveType (fun t : ℝ =>
+      ∑' n : ℕ, ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n * a) *
+        Real.cos (Real.log n * t)) := by
+  apply positiveType_of_pointwise_tendsto
+    (fun N t =>
+      ∑ n ∈ Finset.range N,
+        ArithmeticFunction.vonMangoldt n * Real.exp (-Real.log n * a) *
+          Real.cos (Real.log n * t))
+  · intro N
+    exact finite_vonMangoldt_cosine_positiveType a (Finset.range N)
+  · intro t
+    exact (summable_vonMangoldt_cosine (a := a) (t := t) ha).hasSum.tendsto_sum_nat
+
+/-- Equivalently, on every vertical line strictly to the right of the critical
+strip, `-Re(ζ'/ζ)` is a positive-type kernel in the spectral variable `t`.
+This uses only the nonnegative von-Mangoldt weights and absolute convergence. -/
+theorem neg_zeta_logDeriv_vertical_positiveType
+    {a : ℝ} (ha : 1 < a) :
+    PositiveType (fun t : ℝ =>
+      (-(deriv riemannZeta ((a : ℂ) + (t : ℂ) * Complex.I) /
+        riemannZeta ((a : ℂ) + (t : ℂ) * Complex.I))).re) := by
+  rw [show
+      (fun t : ℝ =>
+        (-(deriv riemannZeta ((a : ℂ) + (t : ℂ) * Complex.I) /
+          riemannZeta ((a : ℂ) + (t : ℂ) * Complex.I))).re) =
+      (fun t : ℝ =>
+        ∑' n : ℕ, ArithmeticFunction.vonMangoldt n *
+          Real.exp (-Real.log n * a) * Real.cos (Real.log n * t)) by
+    funext t
+    exact neg_zeta_logDeriv_re_eq_vonMangoldt_cosine_tsum (a := a) (t := t) ha]
+  exact vonMangoldt_cosine_tsum_positiveType ha
 
 end GppVonMangoldtCosine
 
@@ -195,3 +295,7 @@ end GppVonMangoldtCosine
 #print axioms GppVonMangoldtCosine.cosine_frequency_positiveType
 #print axioms GppVonMangoldtCosine.vonMangoldt_mode_positiveType
 #print axioms GppVonMangoldtCosine.finite_vonMangoldt_cosine_positiveType
+#print axioms GppVonMangoldtCosine.positiveType_of_pointwise_tendsto
+#print axioms GppVonMangoldtCosine.summable_vonMangoldt_cosine
+#print axioms GppVonMangoldtCosine.vonMangoldt_cosine_tsum_positiveType
+#print axioms GppVonMangoldtCosine.neg_zeta_logDeriv_vertical_positiveType

@@ -27,8 +27,8 @@ theorem antisymmetric_integral_eq_reflected
   have hfcont : Continuous f := by
     dsimp [f]
     fun_prop
-  have hβm : IntervalIntegrable f volume β m := hfcont.intervalIntegrable
-  have hmγ : IntervalIntegrable f volume m γ := hfcont.intervalIntegrable
+  have hβm : IntervalIntegrable f volume β m := hfcont.intervalIntegrable _ _
+  have hmγ : IntervalIntegrable f volume m γ := hfcont.intervalIntegrable _ _
   have hsplit :
       (∫ x in β..γ, f x) = (∫ x in β..m, f x) + ∫ x in m..γ, f x := by
     exact (intervalIntegral.integral_add_adjacent_intervals hβm hmγ).symm
@@ -46,10 +46,12 @@ theorem antisymmetric_integral_eq_reflected
     exact h.symm
   rw [show (∫ x in β..γ, (β + γ - 2 * x) * g x) = ∫ x in β..γ, f x by rfl]
   rw [hsplit, hleft, hright, ← intervalIntegral.integral_add]
-  apply intervalIntegral.integral_congr
-  intro y hy
-  dsimp [f, m, reflectedKernel]
-  ring
+  · apply intervalIntegral.integral_congr
+    intro y hy
+    dsimp [f, m, reflectedKernel]
+    ring
+  · exact (hfcont.comp (continuous_const.sub continuous_id)).intervalIntegrable _ _
+  · exact (hfcont.comp (continuous_id.add continuous_const)).intervalIntegrable _ _
 
 end GppKLReflectionIdentity
 

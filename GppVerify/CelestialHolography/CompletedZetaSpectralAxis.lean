@@ -43,22 +43,18 @@ theorem complexConj_principalDelta (tau : ℝ) :
   apply Complex.ext <;> simp [complexConj, principalDelta] <;> ring
 
 /-- The completed-zeta logarithmic response is purely imaginary on the explicit
-principal-series parameterization, away from zeros. -/
+principal-series parameterization (at zeros of `Λ` only through Lean's total division). -/
 theorem celestialCompletedResponse_re_eq_zero_at_tau
-    (tau : ℝ)
-    (hLambda : GppCompletedZetaDerivative.completedRiemannZeta
-      (principalDelta tau / 2) ≠ 0) :
+    (tau : ℝ) :
     (celestialCompletedResponse (principalDelta tau)).re = 0 := by
-  exact celestialCompletedResponse_re_eq_zero (principalDelta_re tau) hLambda
+  exact celestialCompletedResponse_re_eq_zero (principalDelta_re tau)
 
 /-- The `-i` normalized completed-zeta response is real on the explicit spectral
-axis, away from zeros. -/
+axis (at zeros of `Λ` only through Lean's total division). -/
 theorem celestialCompletedPhaseResponse_im_eq_zero_at_tau
-    (tau : ℝ)
-    (hLambda : GppCompletedZetaDerivative.completedRiemannZeta
-      (principalDelta tau / 2) ≠ 0) :
+    (tau : ℝ) :
     (celestialCompletedPhaseResponse (principalDelta tau)).im = 0 := by
-  exact celestialCompletedPhaseResponse_im_eq_zero (principalDelta_re tau) hLambda
+  exact celestialCompletedPhaseResponse_im_eq_zero (principalDelta_re tau)
 
 /-- The parameterized principal-axis points never hit the completed-zeta poles
 `Delta = 0` or `Delta = 2`. -/
@@ -73,18 +69,15 @@ theorem principalDelta_ne_zero (tau : ℝ) : principalDelta tau ≠ 0 := by
   simp [principalDelta] at hre
 
 /-- **Spectral oddness.**  The real phase-generator response changes sign under
-`tau -> -tau`.  The single nonvanishing hypothesis at `tau` is enough because the
-functional equation used by the inherited shadow theorem transports it to the
-reflected point. -/
+`tau -> -tau`.  No nonvanishing hypothesis is needed: the inherited shadow theorem
+holds with Lean's total division, including at zeros of `Λ`. -/
 theorem celestialCompletedPhaseResponse_odd_tau
-    (tau : ℝ)
-    (hLambda : GppCompletedZetaDerivative.completedRiemannZeta
-      (principalDelta tau / 2) ≠ 0) :
+    (tau : ℝ) :
     celestialCompletedPhaseResponse (principalDelta tau) =
       -celestialCompletedPhaseResponse (principalDelta (-tau)) := by
   rw [← celestialShadow_principalDelta tau]
   exact celestialCompletedPhaseResponse_shadow_odd
-    (principalDelta_ne_zero tau) (principalDelta_ne_two tau) hLambda
+    (principalDelta_ne_zero tau) (principalDelta_ne_two tau)
 
 end GppCompletedZetaSpectralAxis
 

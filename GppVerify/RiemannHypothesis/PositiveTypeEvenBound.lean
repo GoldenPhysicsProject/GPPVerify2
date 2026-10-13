@@ -18,6 +18,8 @@ theorem le_at_zero_of_even_positiveType {P : ℝ → ℝ}
     P x ≤ P 0 := by
   have h := hP 2 ![0, x] ![(1 : ℂ), (-1 : ℂ)]
   simp [Fin.sum_univ_two, heven] at h
+  have h' := (Complex.le_def.mp h).1
+  simp at h'
   linarith
 
 /-- The lower half of the 2-by-2 positive-type bound. -/
@@ -26,6 +28,8 @@ theorem neg_at_zero_le_of_even_positiveType {P : ℝ → ℝ}
     -P 0 ≤ P x := by
   have h := hP 2 ![0, x] ![(1 : ℂ), (1 : ℂ)]
   simp [Fin.sum_univ_two, heven] at h
+  have h' := (Complex.le_def.mp h).1
+  simp at h'
   linarith
 
 /-- Every value of an even real positive-type kernel is bounded in absolute

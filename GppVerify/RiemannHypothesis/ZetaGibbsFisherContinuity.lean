@@ -30,7 +30,7 @@ theorem continuousAt_zetaVarianceResponse_re
   have hc2 : ContinuousAt (deriv (deriv riemannZeta)) (β : ℂ) :=
     (analyticOnNhd_riemannZeta_zetaHalfPlane.deriv.deriv (β : ℂ) hsset).continuousAt
   have hne : riemannZeta (β : ℂ) ≠ 0 :=
-    riemannZeta_ne_zero_right_half_plane hs
+    GppGlobalVonMangoldt.riemannZeta_ne_zero_right_half_plane hs
   have hc : ContinuousAt
       (fun s : ℂ =>
         deriv (deriv riemannZeta) s / riemannZeta s -
@@ -42,14 +42,14 @@ theorem continuousAt_zetaVarianceResponse_re
         (deriv (deriv riemannZeta) (x : ℂ) / riemannZeta (x : ℂ) -
           (deriv riemannZeta (x : ℂ) / riemannZeta (x : ℂ)) ^ 2).re)
       β := by
-    exact Complex.continuous_re.continuousAt.comp β
-      (hc.comp β Complex.continuous_ofReal.continuousAt)
+    exact Complex.continuous_re.continuousAt.comp
+      (hc.comp Complex.continuous_ofReal.continuousAt)
   simpa [zetaVarianceResponse, iteratedDeriv_succ', iteratedDeriv_one] using hcomp
 
 /-- The actual Gibbs Fisher metric is continuous on every compact interval contained
 in the honest Gibbs half-line. -/
 theorem logEnergyVariance_continuousOn_Icc
-    {β γ : ℝ} (hβ : 1 < β) (hβγ : β ≤ γ) :
+    {β γ : ℝ} (hβ : 1 < β) :
     ContinuousOn logEnergyVariance (Icc β γ) := by
   let f : ℝ → ℝ := fun x => (zetaVarianceResponse x).re
   have hf : ContinuousOn f (Icc β γ) := by

@@ -1,4 +1,4 @@
-import Mathlib.Data.Matrix.Notation
+import Mathlib.LinearAlgebra.Matrix.Notation
 import Mathlib.Tactic
 
 /-!
@@ -20,6 +20,8 @@ The finite algebra is proved here; no infinite prime cascade or RH claim is made
 -/
 
 namespace GppLocalEulerShadowColligation
+
+open scoped Interval
 
 open Matrix
 

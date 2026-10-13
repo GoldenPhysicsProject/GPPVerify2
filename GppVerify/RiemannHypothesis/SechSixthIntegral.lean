@@ -31,7 +31,6 @@ theorem tanh_eq_exp_ratio (x : ℝ) :
   have hd : Real.exp x + Real.exp x * Real.exp (-(2 * x)) ≠ 0 := by
     positivity
   field_simp [hd]
-  ring
 
 /-- `tanh x -> 1` as `x -> +∞`. -/
 theorem tendsto_tanh_one : Tendsto Real.tanh atTop (nhds 1) := by
@@ -44,7 +43,9 @@ theorem tendsto_tanh_one : Tendsto Real.tanh atTop (nhds 1) := by
     simpa using tendsto_const_nhds.sub he
   have hd : Tendsto (fun x : ℝ => 1 + Real.exp (-(2 * x))) atTop (nhds 1) := by
     simpa using tendsto_const_nhds.add he
-  simpa using hn.div hd one_ne_zero
+  have h := hn.div hd one_ne_zero
+  rw [div_one] at h
+  exact h
 
 /-- The antiderivative tends to `8/15`. -/
 theorem tendsto_sechSixthAntideriv :
@@ -52,7 +53,9 @@ theorem tendsto_sechSixthAntideriv :
   have ht := tendsto_tanh_one
   have h := ht.sub ((ht.pow 3).const_mul (2 / 3 : ℝ)) |>.add
     ((ht.pow 5).const_mul (1 / 5 : ℝ))
-  convert h using 1 <;> norm_num [sechSixthAntideriv]
+  have hv : (1 : ℝ) - 2 / 3 * 1 ^ 3 + 1 / 5 * 1 ^ 5 = 8 / 15 := by norm_num
+  rw [hv] at h
+  exact h
 
 /-- The derivative of the polynomial antiderivative is exactly `1/cosh^6`. -/
 theorem hasDerivAt_sechSixthAntideriv (x : ℝ) :
@@ -60,12 +63,9 @@ theorem hasDerivAt_sechSixthAntideriv (x : ℝ) :
   have ht := hasDerivAt_tanh' x
   have h := ht.sub ((ht.pow 3).const_mul (2 / 3 : ℝ)) |>.add
     ((ht.pow 5).const_mul (1 / 5 : ℝ))
-  convert h using 1
-  · unfold sechSixthAntideriv
-  · rw [show Real.cosh x ^ 6 = (Real.cosh x ^ 2) ^ 3 by ring]
-    rw [show 1 / (Real.cosh x ^ 2) ^ 3 = (1 / Real.cosh x ^ 2) ^ 3 by field_simp]
-    rw [one_div_cosh_sq]
-    ring
+  refine h.congr_deriv ?_
+  rw [show 1 / Real.cosh x ^ 6 = (1 / Real.cosh x ^ 2) ^ 3 by ring, one_div_cosh_sq]
+  norm_num <;> ring
 
 /-- The antiderivative vanishes at the origin. -/
 theorem sechSixthAntideriv_zero : sechSixthAntideriv 0 = 0 := by

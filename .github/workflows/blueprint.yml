@@ -3,6 +3,18 @@ name: Blueprint
 on:
   push:
     branches: ["main"]
+  # Validate the blueprint on PRs too. The build job runs everywhere; only the
+  # deploy job is gated on main. Without this a LaTeX error is invisible until it
+  # has already been merged and republished the live site -- which is exactly how
+  # the escaped-underscore breakage happened (see website/GPPVERIFY.md).
+  pull_request:
+    paths:
+      - 'blueprint/**'
+      - 'index.html'
+      - 'scripts/patch_mobile.py'
+      - 'scripts/landing_status.py'
+      - 'scripts/assemble_site.py'
+      - '.github/workflows/blueprint.yml'
   workflow_dispatch:
 
 permissions:
@@ -10,8 +22,11 @@ permissions:
   pages: write
   id-token: write
 
+# One group per ref. With a single shared "pages" group, a pull-request validation run
+# cancelled the in-progress deploy from main (2026-09-28: the #207 merge never deployed
+# because a push to #208 started a PR run in the same group).
 concurrency:
-  group: "pages"
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -34,23 +49,27 @@ jobs:
       - name: Build blueprint
         run: leanblueprint web
 
-      - name: Apply GPP theme and write CNAME
+      - name: Apply GPP theme
         run: |
           cp blueprint/gpp-theme.css blueprint/src/web/styles/gpp-theme.css
           python3 scripts/patch_mobile.py
-          echo "lean.goldenphysics.org" > blueprint/src/web/CNAME
 
-      - name: Inject GoatCounter analytics
-        run: python3 scripts/inject_goatcounter.py
+      # The site root is the plain-language landing page (index.html); the technical
+      # blueprint lives under /blueprint/. Old root-level blueprint URLs redirect there.
+      - name: Assemble site
+        run: python3 scripts/assemble_site.py _site
 
       - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: blueprint/src/web
+          path: _site
 
   deploy:
     name: Deploy to GitHub Pages
     needs: build-blueprint
+    # Never deploy from a pull request -- PRs validate the build only.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

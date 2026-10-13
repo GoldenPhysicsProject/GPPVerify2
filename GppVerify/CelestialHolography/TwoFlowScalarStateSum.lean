@@ -25,7 +25,10 @@ open GppFourPointMHVBubbleSubtractionAlgebra
 inductive FlowOrientation
   | forward
   | backward
-  deriving DecidableEq, Fintype
+  deriving DecidableEq
+
+instance : Fintype FlowOrientation :=
+  ⟨{.forward, .backward}, fun x => by cases x <;> simp⟩
 
 /-- Constant contribution attached to each of the two flow orientations. -/
 def equalFlowContribution (C : ℝ) : FlowOrientation → ℝ := fun _ => C
@@ -33,7 +36,9 @@ def equalFlowContribution (C : ℝ) : FlowOrientation → ℝ := fun _ => C
 /-- Exact finite-state count: two equal oriented flows contribute twice one flow. -/
 theorem sum_equal_flows (C : ℝ) :
     ∑ o : FlowOrientation, equalFlowContribution C o = 2 * C := by
-  simp [equalFlowContribution, FlowOrientation]
+  simp only [equalFlowContribution, Finset.sum_const, Finset.card_univ,
+    show Fintype.card FlowOrientation = 2 from rfl, nsmul_eq_mul]
+  norm_num
 
 /-- If both physical orientations agree with the one-flow bubble coefficient, their
 explicit finite state sum is the phase-normal frame target. -/

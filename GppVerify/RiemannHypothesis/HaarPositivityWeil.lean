@@ -25,16 +25,18 @@ All are instances of: "convolution square of a function on a group is positive-t
 
 The base algebraic case (the constant function is positive-type, and any
 positive-type function is nonnegative at 0) is proved clean. The general
-convolution-square case is documented (see `convolution_square_positive_type_statement`)
-but left open pending the L² integrability bookkeeping it needs.
+convolution-square case (bounded integrable `f`, Lebesgue = Haar measure on `ℝ`) is proved in
+`ConvolutionSquarePositive.lean` (`convolution_square_positive_type`); the former stub
+`open_convolution_square_positive_type_statement` was retired 2026-10-08.
 
-## Key axioms
+## Weil's criterion
 
-Weil's criterion (≡ RH) is axiomatized; proving it unconditionally requires
-Tate's thesis + adèlic Fourier theory (Mathlib gaps).
+Weil's criterion (≡ RH) is not asserted anywhere: its zero-side form is the proved equivalence
+`GppStubRegistry.weil_criterion_iff`; the explicit-formula side needs Tate's thesis + adèlic
+Fourier theory (Mathlib gaps).
 -/
 
-open scoped InnerProductSpace
+open scoped InnerProductSpace ComplexOrder
 
 namespace GppHaarPositivityWeil
 
@@ -43,8 +45,119 @@ namespace GppHaarPositivityWeil
 /-- A function P: ℝ → ℝ is positive-type if the matrices [P(x_i - x_j)] are PSD -/
 def PositiveType (P : ℝ → ℝ) : Prop :=
   ∀ (n : ℕ) (x : Fin n → ℝ) (c : Fin n → ℂ),
+    0 ≤ ∑ i : Fin n, ∑ j : Fin n,
+          (starRingEnd ℂ (c i)) * c j * (P (x i - x j) : ℂ)
+
+/-- A real **symmetric** Gram matrix gives a Hermitian form, so its value is real.
+
+    This is the content the old `.re`-taking definition threw away. Without it,
+    `0 ≤ (∑ ...).re` constrains only the symmetrised matrix — equivalently, only
+    the *even part* of `P` — and says nothing about the odd part. -/
+theorem sum_conj_mul_symm_im_zero {n : ℕ} (c : Fin n → ℂ) (a : Fin n → Fin n → ℝ)
+    (hsymm : ∀ i j, a i j = a j i) :
+    (∑ i : Fin n, ∑ j : Fin n, (starRingEnd ℂ) (c i) * c j * ((a i j : ℝ) : ℂ)).im = 0 := by
+  set z : ℂ := ∑ i : Fin n, ∑ j : Fin n, (starRingEnd ℂ) (c i) * c j * ((a i j : ℝ) : ℂ) with hz
+  have hconj : (starRingEnd ℂ) z = z := by
+    rw [hz]
+    simp only [map_sum, map_mul, Complex.conj_conj, Complex.conj_ofReal]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
+    rw [hsymm j i]
+    ring
+  exact Complex.conj_eq_iff_im.mp hconj
+
+/-- **Migration route, and the exact content of the strengthening.**
+
+    Until 2026-09-05 `PositiveType` read `0 ≤ (∑ ...).re`. Taking the real part
+    symmetrises the Gram matrix, so that condition is equivalent to "the even
+    part of `P` is positive-type" and imposes nothing on the odd part. It
+    therefore admitted functions that are not positive-type in any standard
+    sense — `fun x => x` satisfies it (the form is purely imaginary), while
+    `|P 1| = 1 > 0 = P 0` violates the bound every genuine positive-type
+    function obeys.
+
+    This lemma says the new definition is exactly the old one plus evenness, and
+    it is how the existing `.re`-shaped proofs were migrated: supply the
+    evenness of `P`, keep the original real-part argument unchanged. -/
+theorem positiveType_of_even_of_re {P : ℝ → ℝ} (heven : ∀ x, P (-x) = P x)
+    (hre : ∀ (n : ℕ) (x : Fin n → ℝ) (c : Fin n → ℂ),
+      0 ≤ (∑ i : Fin n, ∑ j : Fin n,
+            (starRingEnd ℂ (c i)) * c j * (P (x i - x j) : ℂ)).re) :
+    PositiveType P := by
+  intro n x c
+  refine RCLike.nonneg_iff.mpr ⟨hre n x c, ?_⟩
+  exact sum_conj_mul_symm_im_zero c (fun i j => P (x i - x j))
+    (fun i j => by rw [← heven (x i - x j), neg_sub])
+
+/-- **A positive-type function is even** — the property the old definition could
+    not prove, and the reason it was strictly too weak.
+
+    Take the two-point configuration `x = (0, t)` with test vector `c = (1, i)`.
+    The form is `2·P 0 + i·(P (-t) - P t)`, whose imaginary part is
+    `P (-t) - P t`. Nonnegativity in `ℂ` forces that to vanish.
+
+    Under the pre-2026-09-05 definition, which required only `0 ≤ (…).re`, this
+    imaginary part was discarded and the conclusion was unavailable — indeed
+    false, since `fun x => x` satisfied that definition. -/
+theorem PositiveType.even {P : ℝ → ℝ} (hP : PositiveType P) (t : ℝ) : P (-t) = P t := by
+  have h := hP 2 ![0, t] ![1, Complex.I]
+  have him : (∑ i : Fin 2, ∑ j : Fin 2,
+      (starRingEnd ℂ) (![(1 : ℂ), Complex.I] i) * ![(1 : ℂ), Complex.I] j *
+        ((P (![(0 : ℝ), t] i - ![(0 : ℝ), t] j) : ℝ) : ℂ)).im = 0 :=
+    (RCLike.nonneg_iff.mp h).2
+  simp [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one,
+    Complex.add_im, Complex.mul_im, Complex.I_re, Complex.I_im, sub_zero, zero_sub] at him
+  linarith [him]
+
+/-- **The strengthening is strict, and here is the witness.**
+
+    `fun x => x` satisfies the *old* condition — nonnegativity of the real part
+    alone — because its quadratic form is purely imaginary:
+
+      `∑ᵢⱼ conj(cᵢ) cⱼ (xᵢ - xⱼ) = z - conj z` for `z = (∑ᵢ conj(cᵢ) xᵢ)(∑ⱼ cⱼ)`,
+
+    which has real part `0`. Taking `.re` symmetrises the Gram matrix, so the old
+    condition constrained only the *even part* of `P` and said nothing at all
+    about the odd part.
+
+    Paired with `not_positiveType_id` below, this shows the old definition
+    admitted a function that is not positive-type in any standard sense: `id`
+    violates `|P x| ≤ P 0`, since `|P 1| = 1 > 0 = P 0`. -/
+theorem re_condition_holds_for_id (n : ℕ) (x : Fin n → ℝ) (c : Fin n → ℂ) :
     0 ≤ (∑ i : Fin n, ∑ j : Fin n,
-          (starRingEnd ℂ (c i)) * c j * (P (x i - x j) : ℂ)).re
+          (starRingEnd ℂ (c i)) * c j * (((fun y : ℝ => y) (x i - x j) : ℝ) : ℂ)).re := by
+  have termwise : ∀ i j : Fin n,
+      (starRingEnd ℂ) (c i) * c j * (((x i - x j : ℝ)) : ℂ)
+        = ((starRingEnd ℂ) (c i) * ((x i : ℝ) : ℂ)) * c j
+          - (starRingEnd ℂ) (c i) * (c j * ((x j : ℝ) : ℂ)) := by
+    intro i j; push_cast; ring
+  have expand :
+      (∑ i : Fin n, ∑ j : Fin n,
+        (starRingEnd ℂ) (c i) * c j * (((fun y : ℝ => y) (x i - x j) : ℝ) : ℂ))
+        = (∑ i : Fin n, (starRingEnd ℂ) (c i) * ((x i : ℝ) : ℂ)) * (∑ j : Fin n, c j)
+          - (∑ i : Fin n, (starRingEnd ℂ) (c i)) * (∑ j : Fin n, c j * ((x j : ℝ) : ℂ)) := by
+    rw [Finset.sum_mul, Finset.sum_mul, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib]
+    exact Finset.sum_congr rfl (fun j _ => termwise i j)
+  rw [expand]
+  have hconj : (∑ i : Fin n, (starRingEnd ℂ) (c i)) * (∑ j : Fin n, c j * ((x j : ℝ) : ℂ))
+      = (starRingEnd ℂ) ((∑ i : Fin n, (starRingEnd ℂ) (c i) * ((x i : ℝ) : ℂ))
+          * (∑ j : Fin n, c j)) := by
+    simp only [map_mul, map_sum, Complex.conj_conj, Complex.conj_ofReal]
+    ring
+  rw [hconj]
+  simp
+
+/-- `id` is **not** positive-type under the current definition — immediately, since
+    positive-type functions are even and `-1 ≠ 1`.
+
+    Together with `re_condition_holds_for_id`, this is the proof that dropping
+    `.re` strictly strengthened the definition rather than merely restating it. -/
+theorem not_positiveType_id : ¬ PositiveType (fun y : ℝ => y) := by
+  intro h
+  have := h.even 1
+  norm_num at this
 
 /-- The constant function 1 is positive-type -/
 theorem const_one_positive_type : PositiveType (fun _ => (1 : ℝ)) := by
@@ -55,8 +168,8 @@ theorem const_one_positive_type : PositiveType (fun _ => (1 : ℝ)) := by
       starRingEnd ℂ (∑ i : Fin n, c i) * (∑ i : Fin n, c i) := by
     rw [map_sum, Finset.sum_mul]
     simp_rw [Finset.mul_sum]
-  rw [key, mul_comm, Complex.mul_conj, Complex.ofReal_re]
-  exact Complex.normSq_nonneg _
+  rw [key, mul_comm, Complex.mul_conj]
+  exact Complex.zero_le_real.mpr (Complex.normSq_nonneg _)
 
 /-- P(0) ≥ 0 for any positive-type function -/
 theorem positive_type_at_zero (P : ℝ → ℝ) (hP : PositiveType P) : 0 ≤ P 0 := by
@@ -64,7 +177,7 @@ theorem positive_type_at_zero (P : ℝ → ℝ) (hP : PositiveType P) : 0 ≤ P 
   simp at this
   exact_mod_cast this
 
-/-- If P = f̄ * f (convolution) then P is positive-type, for `f` bounded and
+/- If P = f̄ * f (convolution) then P is positive-type, for `f` bounded and
     integrable (so that every pairwise translated product `f(·+a)·f(·+b)` is
     itself integrable and the argument below goes through cleanly).
 
@@ -81,50 +194,106 @@ theorem positive_type_at_zero (P : ℝ → ℝ) (hP : PositiveType P) : 0 ≤ P 
     L² hypothesis routed through `MeasureTheory.L2.integrable_inner` on the
     bundled `Lp ℝ 2 μ` type — both add real bookkeeping this thread has not yet
     verified against the compiler, so the interchange step is left open rather
-    than pushed through with an unverified `sorry`. `const_one_positive_type`
-    and `positive_type_at_zero` above are the fully-proved content of this
-    file. -/
-theorem convolution_square_positive_type_statement : True := trivial
--- SOURCE: haar_positivity_weil_wightman.tex
--- STATEMENT: for f : ℝ → ℝ integrable (and bounded, so pairwise translated
--- products stay integrable) and μ a left-invariant measure on ℝ,
--- P x := ∫ y, f y * f (y - x) ∂μ is positive-type.
--- STATUS: the gap described below is NOW CLOSED — the statement is proved
--- in full for Lebesgue (= Haar) measure on ℝ as
+    than pushed through with an unverified `sorry`.
+
+    **Step 3 is now proved** (2026-09-01) as `sum_conj_mul_real_eq_normSq` and
+    `sum_conj_mul_real_re_nonneg` below. Only steps 1–2 — the translation identity and the
+    ∑/∫ interchange — remain, so what is missing here is *analytic bookkeeping*, not
+    algebra. Worth stating precisely: the outline reads as three equally-open steps and it
+    is one third that size.
+
+    **Closed 2026-10-08**: the stub `open_convolution_square_positive_type_statement` is retired. The statement is proved in full for Lebesgue (= Haar) measure on `ℝ` as `GppHaarPositivityWeil.convolution_square_positive_type` in `ConvolutionSquarePositive.lean` (this file cannot import it: that module imports this one). -/
+
+/-! ### Step 3 of the convolution-square argument, proved
+
+The outline above lists three steps. The third — `∑_ij c̄_i c_j a_i a_j = normSq(∑_i c_i a_i)
+≥ 0` for real `a_i` — is pure algebra and needs none of the measure theory blocking the other
+two. Proving it separately makes visible that the remaining gap is exactly steps 1 and 2, and
+leaves the algebraic core ready to use when they land. -/
+
+/-- **Step 3.** For a *real* family `a` and any complex coefficients `c`, the double sum
+    collapses to a squared modulus:
+    `∑_p ∑_q conj(c_p)·c_q·(a_p·a_q) = ‖∑_p c_p·a_p‖²`.
+
+    Reality of `a` is what makes it work: it lets `conj` pass through `a_p`, so the double
+    sum factors as `conj z · z`. -/
+lemma sum_conj_mul_real_eq_normSq {ι : Type*} (S : Finset ι) (c : ι → ℂ) (a : ι → ℝ) :
+    ∑ p ∈ S, ∑ q ∈ S, (starRingEnd ℂ) (c p) * c q * ((a p * a q : ℝ) : ℂ)
+      = ((Complex.normSq (∑ p ∈ S, c p * (a p : ℂ)) : ℝ) : ℂ) := by
+  have hfac : ∑ p ∈ S, ∑ q ∈ S, (starRingEnd ℂ) (c p) * c q * ((a p * a q : ℝ) : ℂ)
+      = (∑ p ∈ S, (starRingEnd ℂ) (c p) * (a p : ℂ)) * (∑ q ∈ S, c q * (a q : ℂ)) := by
+    rw [Finset.sum_mul_sum]
+    refine Finset.sum_congr rfl (fun p _ => Finset.sum_congr rfl (fun q _ => ?_))
+    push_cast; ring
+  rw [hfac]
+  have hconj : (∑ p ∈ S, (starRingEnd ℂ) (c p) * (a p : ℂ))
+      = (starRingEnd ℂ) (∑ p ∈ S, c p * (a p : ℂ)) := by
+    rw [map_sum]
+    exact Finset.sum_congr rfl (fun p _ => by rw [map_mul, Complex.conj_ofReal])
+  rw [hconj, mul_comm, Complex.mul_conj]
+
+/-- The nonnegativity step 3 exists to deliver: a rank-one real kernel has a nonnegative
+    quadratic form. This is exactly the shape `PositiveType` asks for, so once steps 1–2
+    supply `P(x_p − x_q) = a_p · a_q` pointwise, positivity follows immediately. -/
+lemma sum_conj_mul_real_re_nonneg {ι : Type*} (S : Finset ι) (c : ι → ℂ) (a : ι → ℝ) :
+    0 ≤ (∑ p ∈ S, ∑ q ∈ S, (starRingEnd ℂ) (c p) * c q * ((a p * a q : ℝ) : ℂ)).re := by
+  rw [sum_conj_mul_real_eq_normSq]
+  simpa using Complex.normSq_nonneg (∑ p ∈ S, c p * (a p : ℂ))
+-- Pointer, not a declaration. SOURCE: haar_positivity_weil_wightman.tex. The
+-- convolution-square statement —
+--   for `f : ℝ → ℝ` integrable and bounded and `μ` left-invariant on `ℝ`,
+--   `P x := ∫ y, f y * f (y - x) ∂μ` is positive-type
+-- — is PROVED IN FULL for Lebesgue (= Haar) measure on `ℝ`, as
 -- `GppHaarPositivityWeil.convolution_square_positive_type` in
--- `ConvolutionSquarePositive.lean` (integrability of the translated
--- products via `Integrable.comp_add_right` + `Integrable.bdd_mul`, the
--- interchange via `integral_finset_sum`, and the pointwise Gram-square
--- identity). This stub is retained only so older references resolve.
+-- `ConvolutionSquarePositive.lean`: integrability of the translated products via
+-- `Integrable.comp_add_right` + `Integrable.bdd_mul`, the ∑/∫ interchange via
+-- `integral_finset_sum`, and the pointwise Gram-square identity above.
+--
+-- Corrected 2026-09-02: this block used to end "This stub is retained only so older
+-- references resolve" — but the stub it described had already been deleted, so the sentence
+-- attached itself to `sum_conj_mul_real_re_nonneg` directly above and read as if that proved
+-- lemma were the retained stub. There is no stub here; there is a proof, in another file.
 
 /-! ## GNS construction -/
 
-/-- Positive-type functions generate a Hilbert space via GNS construction -/
-theorem gns_from_positive_type (P : ℝ → ℝ) (_ : PositiveType P) : True := trivial
--- SOURCE: haar_positivity_weil_wightman.tex, thm:gns-positive
--- PROOF: Form inner product ⟨δ_{g_i}, δ_{g_j}⟩ = P(g_i^{-1}g_j); complete; done.
--- MATHLIB GAP: GNS construction for groups not in Mathlib.
+-- Pointer, not a declaration. SOURCE: haar_positivity_weil_wightman.tex, thm:gns-positive.
+-- The GNS statement — a positive-type function is a matrix coefficient `P x = ⟪ξ, π x ξ⟫` of a
+-- unitary representation `π` on a Hilbert space, with `ξ` cyclic — is PROVED (2026-09-26) as
+-- `GppPositiveDefiniteGNS.gns_from_positive_type` in `PositiveDefiniteGNS.lean`, for every
+-- `PositiveType` function here, and as `gns_from_positive_definite` for an arbitrary group.
+-- It lives in its own file because it imports this one.
+--
+-- The stub that stood here, `open_gns_from_positive_type`, was labelled LIBRARY GAP: first
+-- "GNS not in Mathlib", then (2026-09-02) "Mathlib has GNS for C⋆-algebras; the missing bridge
+-- is a C⋆-norm on the group algebra". The second label was true about the C⋆ route and the
+-- route was not needed: Kolmogorov's construction — the form `⟪δ_x, δ_y⟫ = P (x⁻¹ y)` on
+-- `G →₀ ℂ`, `PreInnerProductSpace.Core`, completion — never touches a C⋆-algebra, and left
+-- translation preserving the form is the unitary representation.
 
 /-! ## Weil positivity -/
 
 /-- Haar square on idèle class group: P = Ω^∨ * Ω is positive-type -/
-theorem adelic_haar_square_positive_type : True := trivial
+theorem open_adelic_haar_square_positive_type : True := trivial
 -- SOURCE: haar_positivity_weil_wightman.tex, thm:haar-square-positive for C_k
--- PROOF: Same abstract proof as convolution_square_positive_type_statement, applied to C_k.
--- MATHLIB GAP: Idèle class groups not in Mathlib.
+-- PROOF: Same abstract proof as open_convolution_square_positive_type_statement, applied to C_k.
+-- LIBRARY GAP (known mathematics, absent from Mathlib): Idèle class groups not in Mathlib.
 
-/-- Weil's criterion: RH ↔ D_k(P) ≥ 0 for all Weil squares P -/
-theorem weil_criterion : True := trivial
+/- Weil's criterion: RH ↔ D_k(P) ≥ 0 for all Weil squares P
+
+    **Closed 2026-10-08**: the stub `open_weil_criterion` is retired; see `weil_criterion_iff` in
+    `GppVerify/RiemannHypothesis/StubRegistry.lean`. -/
 -- SOURCE: haar_positivity_weil_wightman.tex, thm:weil
 -- FORWARD: RH → all zeros on critical line → spectral sum = Σ|Ω̂(1/2+it)|² ≥ 0.
 -- CONVERSE: off-line zero ρ₀ → construct Ω₀ making D_k(Ω₀*Ω₀^∨) < 0.
--- MATHLIB GAPS:
+-- LIBRARY GAPS (known mathematics, absent from Mathlib):
 --   (a) Tate's thesis: adèlic zeta integrals and functional equation
 --   (b) Weil explicit formula: D_k = Σ_ρ Ω̂(ρ) + local terms
 --   (c) Mellin transform theory for idèle class group
 
-/-- Weil positivity as Hilbert admissibility: D_k gives the inner product -/
-theorem weil_positivity_hilbert : True := trivial
+/- Weil positivity as Hilbert admissibility: D_k gives the inner product
+
+    **Closed 2026-10-08**: the stub `open_weil_positivity_hilbert` is retired; see `weil_positivity_hilbert_imp_rh` in
+    `GppVerify/RiemannHypothesis/StubRegistry.lean`. -/
 -- SOURCE: haar_positivity_weil_wightman.tex, prop:weil-hilbert
 -- The Weil distribution D_k, if positive, is the inner product of a Hilbert space
 -- of admissible arithmetic states.
@@ -132,29 +301,30 @@ theorem weil_positivity_hilbert : True := trivial
 /-! ## Osterwalder-Schrader reflection positivity -/
 
 /-- Shadow positivity: Θ(φ̄) acts as time-reflection on Euclidean fields -/
-theorem shadow_reflection_positivity : True := trivial
+theorem open_shadow_reflection_positivity : True := trivial
 -- SOURCE: haar_positivity_weil_wightman.tex, prop:shadow-reflection
 -- The shadow involution Δ ↔ 2-Δ is the Euclidean time-reflection θ.
 -- Positivity under θ = positivity under shadow = Haar positivity.
 
 /-- OS reconstruction: Euclidean OS axioms → Minkowski Wightman axioms -/
-theorem os_reconstruction_theorem : True := trivial
+theorem open_os_reconstruction_theorem : True := trivial
 -- SOURCE: Osterwalder-Schrader 1973/1975; referenced in wightman_paper.tex
--- MATHLIB GAP: OS reconstruction not formalized.
+-- LIBRARY GAP (known mathematics, absent from Mathlib): OS reconstruction not formalized.
 
 /-! ## Universal positivity construction -/
 
 /-- Shadow-positive datum: (K, P_K, H, μ) satisfying Haar positivity -/
-theorem universal_positivity_construction : True := trivial
+theorem open_universal_positivity_construction : True := trivial
 -- SOURCE: haar_positivity_weil_wightman.tex, thm:universal-positivity
 -- Every physical theory (YM, RH, QG) that satisfies Haar positivity
 -- automatically satisfies all four positivity conditions simultaneously.
 
-/-- Haar projection onto gauge-invariant sector is an orthogonal projection -/
-theorem haar_projection_orthogonal : True := trivial
+/- Haar projection onto gauge-invariant sector is an orthogonal projection
+
+    **Closed 2026-10-08**: the stub `open_haar_projection_orthogonal` is retired. The finite-group instance is proved in full just below (`finiteHaarProjection_isIdempotentElem`, `finiteHaarProjection_range_eq_invariants`, `finiteHaarProjection_isSelfAdjoint`); the infinite compact-group case (Peter–Weyl averaging as a Bochner integral) remains a LIBRARY GAP, stated here rather than parked as a True stub. -/
 -- SOURCE: haar_positivity_weil_wightman.tex, thm:haar-projection
 -- P_K = ∫_K U(k)dk is the orthogonal projection onto K-invariant subspace.
--- MATHLIB GAP: Compact group averaging (Peter-Weyl) in functional analysis,
+-- LIBRARY GAP (known mathematics, absent from Mathlib): Compact group averaging (Peter-Weyl) in functional analysis,
 -- for a general (infinite) compact group and a genuine Bochner/vector-valued
 -- integral. The FINITE-group case is a real, non-degenerate instance --
 -- Haar measure on a finite group is exactly normalized counting measure --
@@ -170,7 +340,7 @@ theorem haar_projection_orthogonal : True := trivial
 vector space (a linear, not-necessarily-unitary, action -- self-adjointness needs the
 inner-product/isometry hypothesis, not pursued here), the averaged "Reynolds operator"
 `P := (1/|G|) • Σ_g U g` is idempotent. This is the finite-group case of
-`haar_projection_orthogonal`: Haar probability measure on a finite group is exactly the
+`open_haar_projection_orthogonal`: Haar probability measure on a finite group is exactly the
 normalized counting measure `1/|G| · Σ_g δ_g`, so `∫_G U(g) dμ(g) = (1/|G|) Σ_g U(g)`
 literally, with no approximation. -/
 theorem finiteHaarProjection_isIdempotentElem
@@ -281,11 +451,12 @@ theorem finiteHaarProjection_isSelfAdjoint
       (fun g => ⟪x, U g⁻¹ y⟫_ℂ) (fun g => ⟪x, U g y⟫_ℂ) (fun g => rfl)
   rw [hstep, hreindex_inv]
 
-/-- Peter-Weyl decomposition (compact groups) -/
-theorem peter_weyl_decomposition : True := trivial
+/- Peter-Weyl decomposition (compact groups)
+
+    **Closed 2026-10-09 (finite abelian case)**: the stub `open_peter_weyl_decomposition` is retired. Fourier expansion and Plancherel for finite abelian groups are proved as `GppFinitePeterWeyl.fourier_expansion` and `GppFinitePeterWeyl.plancherel` (`FinitePeterWeyl.lean`). Still a library gap: Peter–Weyl for general compact groups (matrix coefficients of irreducible unitary representations; nonabelian finite groups). -/
 -- SOURCE: haar_positivity_weil_wightman.tex, thm:peter-weyl
 -- L²(G) = ⊕_{π∈Ĝ} V_π ⊗ V_π*, with each irrep appearing dim(V_π) times.
--- MATHLIB GAP: Peter-Weyl in Mathlib 4.19.0 is partial; not sufficient here.
+-- LIBRARY GAP (known mathematics, absent from Mathlib): Peter-Weyl re-verified absent in Mathlib 4.33.1 (2026-09-01): zero hits.
 
 /-! ## Logical status -/
 
@@ -294,10 +465,10 @@ theorem haar_squares_always_positive : PositiveType (fun _ => (1 : ℝ)) :=
   const_one_positive_type
 
 /-- The four positivity conditions are equivalent in the Haar framework -/
-theorem four_positivities_equivalent : True := trivial
+theorem open_four_positivities_equivalent : True := trivial
 -- SOURCE: haar_positivity_weil_wightman.tex, prop:logical-status
 -- All four are instances of: P = Ω^∨ * Ω on a locally compact group.
 
-theorem haar_positivity_summary : True := trivial
+-- Stub `open_haar_positivity_summary` retired 2026-10-08. A summary stub asserted nothing; the module docstring and the declarations above carry the content.
 
 end GppHaarPositivityWeil

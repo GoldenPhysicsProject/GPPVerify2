@@ -11,6 +11,8 @@ kept in separate modules/Discovery records.
 
 namespace GppCriticalNgonRadialAlgebra
 
+noncomputable section
+
 /-- Universal magnitude of the critical scalar n-gon residue, written for a
 real parameter so the normalization algebra is transparent. -/
 def criticalResidueMagnitude (n : ℝ) : ℝ :=
@@ -28,7 +30,6 @@ theorem residue_mul_muSqMoment_eq_square
       1 / (n - 1) ^ 2 := by
   unfold criticalResidueMagnitude normalizedMuSqMoment
   field_simp [hn1, hn2]
-  ring
 
 /-- Triangle member of the hierarchy. -/
 theorem n_three_value :
@@ -42,6 +43,8 @@ theorem n_four_value :
     normalizedMuSqMoment 4 = (2 / 3 : ℝ) := by
   norm_num [criticalResidueMagnitude, normalizedMuSqMoment]
 
+
+end
 end GppCriticalNgonRadialAlgebra
 
 #print axioms GppCriticalNgonRadialAlgebra.residue_mul_muSqMoment_eq_square

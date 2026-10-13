@@ -12,6 +12,8 @@ positive quadratic form against the von-Mangoldt Fisher weight on `β > 1`.
 
 namespace GppPrimeFisherTwoParameterStrict
 
+noncomputable section
+
 open Polynomial BigOperators
 open GppPrimeHankelAllOrderStrict
 open GppPrimeHankelFisherSpecialization
@@ -48,6 +50,8 @@ theorem fisher_two_parameter_quadratic_pos
     hβ (scorePolynomial a b) (scorePolynomial_ne_zero hab)
   simpa only [scorePolynomial_eval] using h
 
+
+end
 end GppPrimeFisherTwoParameterStrict
 
 #print axioms GppPrimeFisherTwoParameterStrict.scorePolynomial_eval

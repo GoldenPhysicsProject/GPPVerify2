@@ -24,7 +24,7 @@ open GppSpectralRho
 product of recurrence factors encountered on the way from `0` to `k`. -/
 theorem rhoGamma_eq_prod_stepFactor_mul_base (k : ℕ) (x : ℝ) :
     rhoGamma k x =
-      (((∏ j in Finset.range k, rhoStepFactor j x : ℝ) : ℝ) : ℂ) * rhoGamma 0 x := by
+      (((∏ j ∈ Finset.range k, rhoStepFactor j x : ℝ) : ℝ) : ℂ) * rhoGamma 0 x := by
   induction k with
   | zero => simp
   | succ k ih =>
@@ -37,7 +37,7 @@ theorem rhoGamma_eq_prod_stepFactor_mul_base (k : ℕ) (x : ℝ) :
 gives an exact formula for the real spectral density in every chamber. -/
 theorem rhoGamma_re_eq_prod_stepFactor_mul_wienerHopf (k : ℕ) (x : ℝ) :
     (rhoGamma k x).re =
-      (∏ j in Finset.range k, rhoStepFactor j x) *
+      (∏ j ∈ Finset.range k, rhoStepFactor j x) *
         ((2 / Real.pi) * extendedWienerHopfWeight x) := by
   rw [rhoGamma_eq_prod_stepFactor_mul_base]
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
@@ -46,7 +46,7 @@ theorem rhoGamma_re_eq_prod_stepFactor_mul_wienerHopf (k : ℕ) (x : ℝ) :
 /-- The full chamber multiplier relative to the Wiener--Hopf base is strictly
 positive. -/
 theorem prod_rhoStepFactor_pos (k : ℕ) (x : ℝ) :
-    0 < ∏ j in Finset.range k, rhoStepFactor j x := by
+    0 < ∏ j ∈ Finset.range k, rhoStepFactor j x := by
   exact Finset.prod_pos fun j _ => rhoStepFactor_pos j x
 
 /-- **Strict positivity in every Gamma chamber.**  The continuously extended
@@ -57,7 +57,7 @@ origin. -/
 theorem rhoGamma_re_pos (k : ℕ) (x : ℝ) :
     0 < (rhoGamma k x).re := by
   rw [rhoGamma_re_eq_prod_stepFactor_mul_wienerHopf]
-  have hprod : 0 < ∏ j in Finset.range k, rhoStepFactor j x :=
+  have hprod : 0 < ∏ j ∈ Finset.range k, rhoStepFactor j x :=
     prod_rhoStepFactor_pos k x
   have hpi : 0 < (2 : ℝ) / Real.pi := div_pos (by norm_num) Real.pi_pos
   have hwh : 0 < extendedWienerHopfWeight x := extendedWienerHopfWeight_pos x

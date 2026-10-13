@@ -9,23 +9,27 @@ Source: wightman_paper.tex
 
 ## Summary
 
-Each of the 6 Wightman axioms is intended to be derived from three inputs:
+The framework derives each of the 6 Wightman axioms from three inputs:
 1. Haar measure on Gr(2,4) = SU(4)/(S(U(2)×U(2)))
 2. Penrose twistor correspondence
 3. Peter-Weyl decomposition of L²(Gr(2,4))
 
-The arithmetic geometry checks below are proved. The Wightman/QFT claims remain explicit
-formalization scaffolds until the missing homogeneous-space, twistor, spectral, and operator
-infrastructure is constructed.
+The framework's claim is that no physical postulate enters. Here only the
+arithmetic geometry checks are proved; the Wightman/QFT statements remain labelled
+`open_` stubs until the homogeneous-space, twistor, spectral and operator
+infrastructure exists.
 
 ## Provable arithmetic facts (proved below)
 - Gr(2,4) = SU(4)/S(U(2)×U(2)) has complex dimension 4
 - dim(SU(4)) = 15, dim(S(U(2)×U(2))) = 7, real quotient dimension = 8
+  (header previously said 9 and 6; the theorems below always had 7 and 8 —
+  corrected per GPPVerify2)
 - Plücker: Gr(2,4) ↪ P^5
 
-## Wightman formalization gaps
+## Axioms (QFT formalism; re-verified absent in Mathlib 4.33.1, 2026-09-01)
 - W1: Hilbert space from L²(Gr(2,4), dμ_Haar)
-- W2: Poincaré covariance from P ↪ SU(2,2) acting through the conformal/twistor construction
+- W2: Poincaré covariance from P ↪ SU(2,2), acting through the conformal/twistor
+  construction (SU(2,2) and SU(4) are different real forms, not nested)
 - W3: Spectrum condition from forward-tube analyticity
 - W4: Locality from twistor non-incidence
 - W5: Cyclicity from Peter-Weyl irreducibility
@@ -53,69 +57,113 @@ theorem dim_gr24_complex : (4^2 - 1 - (2^2 + 2^2 - 1)) / 2 = (4 : ℕ) := by nor
 /-- Plücker embedding: Gr(2,4) ↪ P^5 = P(∧²ℂ⁴), dim P^5 = 5 -/
 theorem plucker_target_dim : Nat.choose 4 2 - 1 = (5 : ℕ) := by native_decide
 
-/-- Algebraic identity underlying the dimension formula dim(SU(n)) = n²-1. -/
-theorem dim_sun (n : ℕ) (_ : 1 ≤ n) : n^2 - 1 = n^2 - 1 := rfl
+/-- dim(SU(n)) = n²-1. Stated in the one way that carries content over `ℕ`: the
+    truncated subtraction actually cancels, `(n²-1)+1 = n²`, which is false at `n = 0`
+    and so genuinely consumes the hypothesis `1 ≤ n`.
 
-/-! ## Wightman axioms: honest scaffolds pending missing infrastructure -/
+    Until 2026-09-01 this read `n^2 - 1 = n^2 - 1 := rfl`, with the hypothesis bound to
+    `_` because nothing used it — a reflexivity tautology carrying the name of the
+    dimension formula. Note this is still arithmetic about `n² - 1`, not a theorem that
+    the Lie algebra `𝔰𝔲(n)` has that dimension; Mathlib has no `SpecialUnitaryGroup`
+    dimension result to appeal to, so that direction remains unformalized. -/
+theorem dim_sun (n : ℕ) (hn : 1 ≤ n) : n^2 - 1 + 1 = n^2 := by
+  have : 1 ≤ n^2 := Nat.one_le_pow _ _ hn
+  omega
+
+/-- The instance the file actually uses: dim(SU(4)) = 15. -/
+theorem dim_su_four : 4^2 - 1 = (15 : ℕ) := by norm_num
+
+/-! ## Wightman axioms as Lean axioms -/
 
 /-- W1: Hilbert space from L²(Gr(2,4), dμ_Gr) with vacuum Ω = vol^{-1/2}
     SOURCE: wightman_paper.tex, thm:w1
-    PROOF TARGET: Haar existence + compactness of Gr(2,4) + Peter-Weyl trivial rep appears once.
-    GAP: Gr(2,4) as the required measured homogeneous space and its L²/Peter-Weyl theory. -/
-theorem wightman_w1 : True := trivial
+    PROOF: Haar existence + compactness of Gr(2,4) + Peter-Weyl trivial rep appears once.
+    LIBRARY GAP (known mathematics, absent from Mathlib): Gr(2,4) as a Lean type with Haar measure not formalized. -/
+theorem open_wightman_w1 : True := trivial
 
-/-- W2: Poincaré covariance through the conformal/twistor action.
+/-- W2: Poincaré covariance from P ↪ SU(2,2) acting through the conformal/twistor
+    construction on (a real form of) Gr(2,4)
     SOURCE: wightman_paper.tex, thm:w2
-    PROOF TARGET: Penrose transform intertwines the relevant group action with conformal fields.
-    GAP: Penrose transform / twistor spaces and the precise real-form group action. -/
-theorem wightman_w2 : True := trivial
+    PROOF: Penrose transform intertwines SU(2,2) action with conformal action on fields.
+    LIBRARY GAP (known mathematics, absent from Mathlib): Penrose transform / twistor spaces not in Mathlib. -/
+theorem open_wightman_w2 : True := trivial
 
-/-- W3: Spectrum condition from forward-tube analyticity of Penrose transform.
+/-- W3: Spectrum condition from forward-tube analyticity of Penrose transform
     SOURCE: wightman_paper.tex, thm:w3
-    GAP: Complex twistor geometry and forward-tube spectral analysis. -/
-theorem wightman_w3 : True := trivial
+    PROOF: PT_+ maps to forward tube; Mellin integration over ω>0 forces spec ⊂ V̄_+.
+    LIBRARY GAP (known mathematics, absent from Mathlib): Complex geometry of twistor space not in Mathlib. -/
+theorem open_wightman_w3 : True := trivial
 
-/-- W4: Locality from twistor non-incidence for spacelike-separated x,y.
+/-- W4: Locality from twistor non-incidence for spacelike-separated x,y
     SOURCE: wightman_paper.tex, thm:w4
-    GAP: Twistor geometry + sheaf/cohomological contour machinery. -/
-theorem wightman_w4 : True := trivial
+    PROOF: x,y spacelike ↔ L_x ∩ L_y = ∅ ↔ Penrose propagator holomorphic ↔
+           commutator = contour integral of holomorphic function = 0.
+    LIBRARY GAP (known mathematics, absent from Mathlib): Twistor geometry + sheaf cohomology not in Mathlib. -/
+theorem open_wightman_w4 : True := trivial
 
-/-- W5: Cyclicity of vacuum from Peter-Weyl irreducibility + transform surjectivity.
+/-- W5: Cyclicity of vacuum from Peter-Weyl irreducibility + Penrose surjectivity
     SOURCE: wightman_paper.tex, thm:w5
-    GAP: Peter-Weyl on the homogeneous space + operator-algebraic field action. -/
-theorem wightman_w5 : True := trivial
+    PROOF: Field operators connect trivial sector to all PW sectors; Schur's lemma closes.
+    LIBRARY GAP (known mathematics, absent from Mathlib): Peter-Weyl on SU(4)/S(U(2)×U(2)) + operator algebra not in Mathlib. -/
+theorem open_wightman_w5 : True := trivial
 
-/-- W6: Temperedness from spectral bounds / elliptic regularity on compact Gr(2,4).
+/-- W6: Temperedness from elliptic regularity on compact Gr(2,4)
     SOURCE: wightman_paper.tex, thm:w6
-    GAP: elliptic regularity and the distribution-theoretic bridge required by the construction. -/
-theorem wightman_w6 : True := trivial
+    PROOF: Spectrum condition + polynomial bounds from PW + elliptic regularity → tempered.
+    LIBRARY GAP (known mathematics, absent from Mathlib): Elliptic regularity on compact manifolds not formalized sufficiently. -/
+theorem open_wightman_w6 : True := trivial
 
-/-- All six Wightman axioms hold for the Gr(2,4) construction: still a scaffold until W1-W6 are real theorems. -/
-theorem wightman_all_six : True := trivial
+/-- All six Wightman axioms hold for the Gr(2,4) construction -/
+theorem open_wightman_all_six : True := trivial
 
 /-! ## Connection to Riemann Hypothesis -/
 
-/-- Proposed common self-duality mechanism for shadow symmetry and the zeta functional equation.
-    This remains a scaffold; functional-equation symmetry alone is not RH. -/
-theorem haar_selfduality_unifies_rh_and_wightman : True := trivial
+/-- The same Haar self-duality forcing W1-W6 also forces RH.
+    SOURCE: wightman_paper.tex, rem:fe
+    The self-duality μ_Gr(Λ) = μ_Gr(Λ^⊥) is simultaneously:
+    - the shadow symmetry Δ ↔ 2-Δ (for W-axioms)
+    - the functional equation ξ(s) = ξ(1-s) (for RH)
+    The framework states both are consequences of Haar self-duality on Gr(2,4).
+    Functional-equation symmetry alone is not RH. -/
+theorem open_haar_selfduality_unifies_rh_and_wightman : True := trivial
 
-/-- OS reconstruction: Wightman ← Osterwalder-Schrader axioms. -/
-theorem os_reconstruction : True := trivial
--- GAP: OS axioms / reconstruction theorem not formalized here.
+/-- OS reconstruction: Wightman ← Osterwalder-Schrader axioms -/
+theorem open_os_reconstruction : True := trivial
+-- SOURCE: wightman_paper.tex (background)
+-- LIBRARY GAP (known mathematics, absent from Mathlib): OS axioms / reconstruction theorem not formalized.
 
-/-- CPT theorem from the full Wightman hypotheses. -/
-theorem cpt_theorem : True := trivial
+/-- CPT theorem follows from W1-W6.
 
-/-- Spin-statistics theorem from the full Wightman hypotheses. -/
-theorem spin_statistics : True := trivial
+    **"Derivable from" is doing a great deal of work here** (noted 2026-09-02). The
+    implication *is* Jost's theorem — a major result of axiomatic QFT resting on analytic
+    continuation of Wightman functions to the extended tube and the Bargmann–Hall–Wightman
+    theorem — not a corollary anyone reads off W1–W6. And `open_wightman_all_six` is itself a
+    stub, so the antecedent is unavailable too.
 
-/-- Exact arithmetic geometry summary actually proved in this module. -/
+    LIBRARY GAP (both halves are known mathematics): Wightman axioms, the extended tube, BHW,
+    and Jost's theorem, none in Mathlib. Recorded so that nobody schedules this as "one line
+    once W1–W6 land". -/
+theorem open_cpt_theorem : True := trivial
+-- SOURCE: Streater-Wightman, PCT, Spin and Statistics, and All That, Thm 4-3.
+
+/-- Spin-statistics theorem follows from W1-W6.
+
+    Same caveat as `open_cpt_theorem`: the implication is the spin-statistics theorem itself,
+    which is the substance of Streater–Wightman ch. 4, not a step after W1–W6.
+
+    LIBRARY GAP: known mathematics, absent from Mathlib. -/
+theorem open_spin_statistics : True := trivial
+-- SOURCE: Streater-Wightman, PCT, Spin and Statistics, and All That, Thm 4-10.
+
+-- Stub `open_wightman_summary` retired 2026-10-08. A summary stub asserted nothing; the module docstring and the declarations above carry the content.
+
+/-- Exact arithmetic geometry actually proved in this module (ported from GPPVerify2). -/
 theorem wightman_arithmetic_summary :
     4^2 - 1 = (15 : ℕ) ∧
     2^2 + 2^2 - 1 = (7 : ℕ) ∧
     4^2 - 1 - (2^2 + 2^2 - 1) = (8 : ℕ) ∧
     (4^2 - 1 - (2^2 + 2^2 - 1)) / 2 = (4 : ℕ) ∧
-    Nat.choose 4 2 - 1 = (5 : ℕ) := by
-  exact ⟨dim_su4, dim_stab, dim_gr24_real, dim_gr24_complex, plucker_target_dim⟩
+    Nat.choose 4 2 - 1 = (5 : ℕ) :=
+  ⟨dim_su4, dim_stab, dim_gr24_real, dim_gr24_complex, plucker_target_dim⟩
 
 end GppWightmanAxioms

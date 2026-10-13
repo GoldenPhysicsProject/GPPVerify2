@@ -110,7 +110,14 @@ theorem shadow_reverses_celestial_spin
 
 /-- **Proposition 2.2 (No-Enactment), d = 2.**  The transpose map on
 `M₂(ℂ)` is not completely positive.  This is the operational obstruction behind
-trying to enact an antiunitary/transpose operation as a quantum channel. -/
+trying to enact an antiunitary/transpose operation as a quantum channel.
+`GppVerify/QuantumInformation/ChoiMatrix.lean` builds the Choi-matrix /
+complete-positivity framework (forward direction of Choi's theorem), and
+`GppVerify/QuantumInformation/TransposeNotCompletelyPositive.lean` proves
+Choi(transpose) = SWAP and concludes non-complete-positivity. What remains open
+is the *general* `d`-dimensional statement (antisymmetric subspace of dimension
+`d(d-1)/2`) and the converse of Choi's theorem (not needed here). Verified
+numerically for d = 2..5 in the companion script. -/
 theorem no_enactment :
     ¬ GppChoiMatrix.CompletelyPositive GppHalfFlipMatrix.transposeMap :=
   GppHalfFlipMatrix.transposeMap_not_completelyPositive

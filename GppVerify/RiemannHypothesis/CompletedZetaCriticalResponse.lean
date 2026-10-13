@@ -30,7 +30,8 @@ theorem completedZeta_eqOn_conj_conj :
     positiveHalfPlane.EqOn completedRiemannZeta
       (conj ∘ completedRiemannZeta ∘ conj) := by
   intro s hs
-  have hcs : 0 < (conj s).re := by simpa using hs
+  have hs' : 0 < s.re := hs
+  have hcs : 0 < (conj s).re := by rw [Complex.conj_re]; exact hs'
   have h := GppCompletedZetaReality.completedRiemannZeta_conj hcs
   simpa [Function.comp_def] using h
 
@@ -39,9 +40,8 @@ theorem completedRiemannZeta_deriv_conj {s : ℂ} (hs : 0 < s.re) :
     deriv completedRiemannZeta (conj s) = conj (deriv completedRiemannZeta s) := by
   have hd := completedZeta_eqOn_conj_conj.iteratedDeriv_of_isOpen
     isOpen_positiveHalfPlane 1 hs
-  simp [iteratedDeriv_one, Function.comp_def, deriv_conj_conj] at hd
-  have hc := congrArg conj hd
-  simpa using hc.symm
+  simp only [iteratedDeriv_one, deriv_conj_conj, Function.comp_apply] at hd
+  rw [hd, Complex.conj_conj]
 
 /-- On the critical line the completed-zeta derivative is purely imaginary. -/
 theorem completedRiemannZeta_deriv_re_eq_zero_of_re_half {s : ℂ}
@@ -66,11 +66,11 @@ theorem completedRiemannZeta_deriv_re_eq_zero_of_re_half {s : ℂ}
   simp [Complex.conj_re] at hre
   linarith
 
-/-- Wherever completed zeta is nonzero on the critical line, its logarithmic
-response has zero real part. The nonzero hypothesis records the analytic domain of
-the logarithmic derivative even though Lean's division is totalized. -/
+/-- On the critical line the logarithmic response of completed zeta has zero real part.
+No nonvanishing hypothesis is needed: at zeros of `Λ` the statement holds through Lean's
+total division (`x / 0 = 0`), where the logarithmic derivative has no analytic meaning. -/
 theorem completedRiemannZeta_logDeriv_re_eq_zero_of_re_half {s : ℂ}
-    (hs : s.re = 1 / 2) (hΛ : completedRiemannZeta s ≠ 0) :
+    (hs : s.re = 1 / 2) :
     (deriv completedRiemannZeta s / completedRiemannZeta s).re = 0 := by
   have hvalIm := GppCompletedZetaReality.completedRiemannZeta_im_eq_zero_of_re_half hs
   have hderRe := completedRiemannZeta_deriv_re_eq_zero_of_re_half hs

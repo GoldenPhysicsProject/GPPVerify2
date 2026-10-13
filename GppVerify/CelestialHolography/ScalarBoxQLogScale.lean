@@ -43,7 +43,6 @@ theorem q_eq_rho_mul_endpointQ
     ring
   rw [hqexact, hρ, hQ, hRsq]
   field_simp [hU.ne', hU4.ne', hRplus.ne']
-  ring
 
 /-- On `8/9 <= R <= 1`, the normalization factor is in `[256/289,1]`. -/
 theorem endpointQ_mem
@@ -93,7 +92,6 @@ theorem one_sub_endpointQ_le_two_q
 theorem abs_log_endpointQ_le
     {R q ρ : ℝ}
     (hRlo : 8 / 9 ≤ R) (hRhi : R ≤ 1)
-    (hρ0 : 0 ≤ ρ)
     (hq0 : 0 ≤ q)
     (hqρ : q ≤ (324 / 289 : ℝ) * ρ)
     (hq : q = (1 - R) / (1 + R)) :
@@ -110,12 +108,12 @@ theorem abs_log_endpointQ_le
       exact div_le_div_of_nonneg_right hdef (by norm_num)
     _ ≤ (81 / 32 : ℝ) * ρ := by
       have hm := mul_le_mul_of_nonneg_left hqρ (by norm_num : (0 : ℝ) ≤ 289 / 128)
-      convert hm using 1 <;> ring
+      linarith
 
 /-- Final physical logarithmic scale estimate for `q`. -/
 theorem abs_log_q_le_abs_log_rho_add
     {U m R q ρ : ℝ}
-    (hU : 0 < U) (hm : 0 < m) (hmU : m ≤ U / 16)
+    (hU : 0 < U) (hm : 0 < m)
     (hRlo : 8 / 9 ≤ R) (hRhi : R ≤ 1)
     (hq : q = (1 - R) / (1 + R))
     (hRsq : R ^ 2 = U / (U + 4 * m))
@@ -129,9 +127,9 @@ theorem abs_log_q_le_abs_log_rho_add
   have hQmem := endpointQ_mem hRlo hRhi
   have hQpos : 0 < endpointQ R := lt_of_lt_of_le (by norm_num) hQmem.1
   have hfac := q_eq_rho_mul_endpointQ hU hm.le hRlo hq hRsq hρ
-  have hlogQ := abs_log_endpointQ_le hRlo hRhi hρ0 hq0 hqρ hq
+  have hlogQ := abs_log_endpointQ_le hRlo hRhi hq0 hqρ hq
   rw [hfac, Real.log_mul hρpos.ne' hQpos.ne']
-  exact (abs_add _ _).trans (add_le_add_left hlogQ _)
+  exact (abs_add_le _ _).trans (by gcongr)
 
 end GppScalarBoxQLogScale
 

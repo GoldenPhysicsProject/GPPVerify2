@@ -1,4 +1,5 @@
 import GppVerify.CelestialHolography.WienerHopfWeightExtension
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import GppVerify.QuantumGravity.SpectralRhoMehlerFockBridge
 import Mathlib.Tactic
 
@@ -41,7 +42,6 @@ theorem extendedWienerHopfWeight_eq_pi_half_rhoGamma_zero_re (x : ℝ) :
   · subst x
     rw [extendedWienerHopfWeight_zero, rhoGamma_zero_zero]
     simp
-    field_simp [Real.pi_ne_zero]
   · have hrho :
         (rhoGamma 0 x).re = 2 * x / Real.sinh (Real.pi * x) := by
       rw [rhoGamma_zero_eq_mehlerFock x hx]
@@ -51,7 +51,6 @@ theorem extendedWienerHopfWeight_eq_pi_half_rhoGamma_zero_re (x : ℝ) :
     have hsinh : Real.sinh (Real.pi * x) ≠ 0 := by
       exact Real.sinh_ne_zero.mpr (mul_ne_zero Real.pi_ne_zero hx)
     field_simp [hsinh]
-    ring
 
 /-- The same bridge solved for the real Gamma density. -/
 theorem rhoGamma_zero_re_eq_two_over_pi_mul_extendedWienerHopfWeight (x : ℝ) :

@@ -40,14 +40,15 @@ open and named.
 namespace GppTransport
 
 open Finset
+open scoped ComplexOrder
 
 /-- Positive-type on an arbitrary additive commutative group: every finite Gram matrix
     `[P(x_i - x_j)]` is PSD. On `R` this is definitionally
     `GppHaarPositivityWeil.PositiveType`. -/
 def PositiveTypeOn {G : Type*} [AddCommGroup G] (P : G → ℝ) : Prop :=
   ∀ (n : ℕ) (x : Fin n → G) (c : Fin n → ℂ),
-    0 ≤ (∑ i : Fin n, ∑ j : Fin n,
-          (starRingEnd ℂ (c i)) * c j * (P (x i - x j) : ℂ)).re
+    0 ≤ ∑ i : Fin n, ∑ j : Fin n,
+          (starRingEnd ℂ (c i)) * c j * (P (x i - x j) : ℂ)
 
 /-- On `R` the group-level notion coincides definitionally with the repo's
     `PositiveType`. -/
@@ -150,7 +151,7 @@ theorem logPrime_lattice_injective {S : Finset ℕ} (hS : ∀ p ∈ S, Nat.Prime
       intro p hp
       have hp0 : (p : ℝ) ≠ 0 := by exact_mod_cast (hS p hp).pos.ne'
       exact pow_ne_zero _ hp0
-    rw [hcast, Real.log_prod S (fun p => (p : ℝ) ^ (C p)) hne]
+    rw [hcast, Real.log_prod hne]
     exact Finset.sum_congr rfl (fun p _ => by rw [Real.log_pow])
   rw [hprod A, hprod B, sub_eq_zero] at hk_sum
   -- both products are positive naturals; `log` is injective there, so the naturals agree

@@ -71,7 +71,7 @@ theorem q_div_a_sub_one_eq_eta_mul_B
     nlinarith
   have hκplus : 1 + κ ≠ 0 := by linarith
   have hqa := q_sub_a_exact_m_sq S U m R κ q a
-    hSU4.ne' hκRplus hRplus hκplus hq ha hprodSq
+    hκRplus hRplus hκplus hq ha hprodSq
   have haExact := a_exact_linear_m
     hSU.ne' (by linarith : κ + 1 ≠ 0) ha hκsq
   have ha0 : a ≠ 0 := by
@@ -130,7 +130,7 @@ theorem abs_li2Series_etaB_le_linear_eta
       (48 / 19 : ℝ) * η * (1 - η * B) := by
     have hnon : 0 ≤ (48 / 19 : ℝ) * η := by positivity
     have hm := mul_le_mul_of_nonneg_left hdenlower hnon
-    convert hm using 1 <;> ring
+    linarith
   have hfrac : η * B / (1 - η * B) ≤ (48 / 19 : ℝ) * η := by
     apply (div_le_iff₀ hden).2
     exact hxB.trans hscaled
@@ -153,7 +153,7 @@ theorem abs_li2Series_neg_etaB_le_linear_eta
       (48 / 19 : ℝ) * η * (1 - η * B) := by
     have hnon : 0 ≤ (48 / 19 : ℝ) * η := by positivity
     have hm := mul_le_mul_of_nonneg_left hdenlower hnon
-    convert hm using 1 <;> ring
+    linarith
   have hfrac : η * B / (1 - η * B) ≤ (48 / 19 : ℝ) * η := by
     apply (div_le_iff₀ hden).2
     exact hxB.trans hscaled

@@ -7,7 +7,7 @@ open scoped ComplexOrder Matrix
 # Proposition 2.2, complete: the transpose map on M_2(ℂ) is not completely positive
 
 ## Golden Physics Project — GPPVerify
-## Lean 4 | Mathlib v4.19.0
+## Lean 4 | Mathlib v4.33.1
 
 This file connects the two general/specific pieces built elsewhere in this session:
 
@@ -20,7 +20,7 @@ Here we define the transpose map on `M_2(ℂ)` as an actual `ℂ`-linear map, pr
 matrix is *exactly* `SWAP` (an unconditional finite computation — no reindexing needed,
 verified by hand before writing this proof), and conclude the full, unconditional form
 of Proposition 2.2: the transpose map on `M_2(ℂ)` is not completely positive. This
-finally retires `HalfFlipProposition.lean`'s `no_enactment` stub for the concrete `d = 2`
+finally retires `HalfFlipProposition.lean`'s `open_no_enactment` stub (now `no_enactment`) for the concrete `d = 2`
 case as a real theorem rather than a documented gap.
 -/
 

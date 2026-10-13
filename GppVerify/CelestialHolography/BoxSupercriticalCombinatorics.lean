@@ -24,6 +24,8 @@ formalize the multivariate simplex integral.
 
 namespace GppBoxSupercriticalCombinatorics
 
+open scoped Nat
+
 /-- Exact factorial collapse of each binomial/Dirichlet coefficient. -/
 theorem choose_factorial_square_collapse {m j : ℕ} (hj : j ≤ m) :
     Nat.choose m j * (j !) ^ 2 * ((m - j) !) ^ 2 =

@@ -100,8 +100,9 @@ theorem WpA_eq_two_mul_re_minusLogDerivZetaP
         1 - 2 * r * Real.cos θ + r ^ 2 := by
     nlinarith [Real.sin_sq_add_cos_sq θ]
   rw [hdeneq]
-  field_simp
-  linear_combination (Real.log p) * (2 * r ^ 2) * Real.sin_sq_add_cos_sq θ
+  have hden0 : 1 - 2 * r * Real.cos θ + r ^ 2 ≠ 0 := hdenpos.ne'
+  rw [div_sub_one hden0, ← add_div, mul_div_assoc', mul_div_assoc', div_left_inj' hden0]
+  linear_combination (2 * Real.log p * r ^ 2) * Real.sin_sq_add_cos_sq θ
 
 end GppPrimePoissonRadial
 

@@ -4,10 +4,10 @@ import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
 /-!
 # Born Rule from Haar Measure (lem:born-rule-haar, cited 11×)
 
-## Golden Physics Project — ONON Framework Formalization
-## Lean 4 / Mathlib v4.19.0
+## Golden Physics Project — Shadow Framework Formalization
+## Lean 4 / Mathlib v4.33.1
 
-This file formalizes `lem:born-rule-haar` (ONON52, cited 11×):
+This file formalizes `lem:born-rule-haar` (On the Nature of Nature v5.2, cited 11×):
 *The Born rule probability measure P(A) = |⟨ψ|A|ψ⟩| / ‖ψ‖² arises canonically
 from the Haar measure on the adèlic group A×/Q×.*
 
@@ -62,23 +62,25 @@ lemma haar_circle_uniform :
 
 /-- The adèlic Haar measure restricts to a probability measure on K¹.
     Gap: requires normalized Haar measure on K¹ (Fujisaki). -/
-theorem K1_haar_probability : True := trivial
+theorem open_K1_haar_probability : True := trivial
 
 /-- The Born rule probability P(A|ψ) = ‖P_A ψ‖² / ‖ψ‖² arises from
     the Haar measure on the unitary group U(H) ⊂ L²(K¹).
     Gap: requires unitary group Haar measure + quantum logic. -/
-theorem born_from_haar : True := trivial
+theorem open_born_from_haar : True := trivial
 
 /-- Uniqueness: the Born rule is the unique probability measure on projective
     Hilbert space invariant under U(H).
-    Gap: Gleason's theorem not in Mathlib 4.19.0. -/
-theorem gleason_uniqueness : True := trivial
+    Gap: Gleason's theorem re-verified absent in Mathlib 4.33.1 (2026-09-01).
+    Grep trap: `grep Gleason` returns 3 files, all his *topology* result on projective /
+    extremally disconnected spaces. Different theorem, same surname. -/
+theorem open_gleason_uniqueness : True := trivial
 
 -- ============================================================
 -- §3  Main lemma (lem:born-rule-haar)
 -- ============================================================
 
-/-- **lem:born-rule-haar** (ONON52, cited 11×).
+/-- **lem:born-rule-haar** (On the Nature of Nature v5.2, cited 11×).
 
     The Born rule probability measure arises canonically from Haar measure:
     P(A|ψ) = ‖P_A ψ‖² / ‖ψ‖² is the unique U(H)-invariant probability measure
@@ -86,7 +88,7 @@ theorem gleason_uniqueness : True := trivial
 
     Proved clean: Haar normalization, Born probability bounds.
     Infrastructure gap: Gleason's theorem, projective Hilbert space structure. -/
-theorem born_rule_from_haar :
+theorem open_born_rule_from_haar :
     -- For any state ψ ∈ L²(K¹) and projection P_A, P(A|ψ) = ‖P_A ψ‖² / ‖ψ‖²
     True := trivial
 
@@ -96,4 +98,4 @@ end GppBorn
 #check @GppBorn.haar_probability
 #check @GppBorn.born_normalization
 #check @GppBorn.haar_circle_uniform
-#check @GppBorn.born_rule_from_haar
+#check @GppBorn.open_born_rule_from_haar

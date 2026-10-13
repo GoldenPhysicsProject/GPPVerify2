@@ -67,7 +67,6 @@ theorem Hplus_mul_Hminus (k : ℝ) :
     (k / (2 * Real.pi))
   have hscale : Real.pi * (k / (2 * Real.pi)) = k / 2 := by
     field_simp [Real.pi_ne_zero]
-    ring
   rw [hscale] at href
   calc
     Hplus k * Hminus k =
@@ -86,7 +85,6 @@ theorem Hplus_mul_Hminus (k : ℝ) :
           (Real.pi / Real.cosh (k / 2)) ^ 2 / Real.pi ^ 2 =
             1 / Real.cosh (k / 2) ^ 2 := by
         field_simp [Real.pi_ne_zero, hcosh]
-        ring
       exact_mod_cast hreal
 
 /-- The upper real-axis Gamma factor never vanishes.  This follows directly from

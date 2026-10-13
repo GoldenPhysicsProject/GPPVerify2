@@ -65,7 +65,7 @@ prime-power heat tower. -/
 theorem finiteResolventAnomaly_eq_normalizedPrimePowerHeatTower
     (p : Nat.Primes) (t : ℝ) (M : ℕ) :
     finiteResolventAnomaly (p : ℝ) t M =
-      ∑ m in Finset.range M,
+      ∑ m ∈ Finset.range M,
         normalizedPrimeHeatSummand t ((p : ℕ) ^ repetition m) := by
   unfold finiteResolventAnomaly
   apply Finset.sum_congr rfl

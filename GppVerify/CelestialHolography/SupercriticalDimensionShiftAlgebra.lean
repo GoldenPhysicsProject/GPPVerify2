@@ -31,10 +31,7 @@ theorem critical_coeff (r : ℕ) :
 /-- For `n>=3`, the critical `r=n-2` coefficient is `-(n-3)!`. -/
 theorem critical_ngon_coeff {n : ℕ} (hn : 3 ≤ n) :
     supercriticalCoeff (n - 2) 0 = -(Nat.factorial (n - 3) : ℚ) := by
-  rw [critical_coeff]
-  congr 2
-  congr 1
-  omega
+  rw [critical_coeff, show n - 2 - 1 = n - 3 by omega]
 
 end GppSupercriticalDimensionShiftAlgebra
 

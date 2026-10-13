@@ -1,5 +1,5 @@
 import GppVerify.CelestialHolography.ArithmeticSplitSignature
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # Arithmetic principal-series selection criterion
@@ -24,6 +24,8 @@ such modes or proves their split-nullity; those are the remaining arithmetic inp
 -/
 
 namespace GppArithmeticPrincipalSeriesSelection
+
+noncomputable section
 
 open GppArithmeticSplitSignature
 
@@ -75,6 +77,8 @@ theorem sigmaA_eq_zero_of_nonreal_splitNull {s : ℂ}
   rw [principal_of_nonreal_splitNull hnull him]
   ring
 
+
+end
 end GppArithmeticPrincipalSeriesSelection
 
 #print axioms GppArithmeticPrincipalSeriesSelection.principal_of_unit_growth_one

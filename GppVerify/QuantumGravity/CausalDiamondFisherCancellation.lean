@@ -34,7 +34,6 @@ theorem klDensity_mul_bwFisherKernel
   have hpi : Real.pi ≠ 0 := ne_of_gt Real.pi_pos
   unfold klDensity bwFisherKernel
   field_simp [hsinh, hpi]
-  ring
 
 /-- The polynomialized Fisher weight has an exact double zero at the trivial spectral point. -/
 theorem flatFisherWeight_zero :

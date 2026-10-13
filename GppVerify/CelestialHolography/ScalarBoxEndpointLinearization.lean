@@ -75,9 +75,8 @@ theorem a_exact_linear_m
     (hsq : κ ^ 2 = 1 + 4 * m * (S - m) / (S * U)) :
     a = 4 * m * (S - m) / ((S * U) * (κ + 1) ^ 2) := by
   have hfac0 : κ ^ 2 * (S * U) - S * U = 4 * m * (S - m) := by
-    have h := hsq
-    field_simp [hSU] at h
-    nlinarith
+    rw [hsq, add_mul, div_mul_cancel₀ _ hSU]
+    ring
   have hfac : (κ - 1) * (κ + 1) * (S * U) = 4 * m * (S - m) := by
     calc
       (κ - 1) * (κ + 1) * (S * U) = κ ^ 2 * (S * U) - S * U := by ring
@@ -90,7 +89,6 @@ theorem a_exact_linear_m
     (κ - 1) / (κ + 1) * ((S * U) * (κ + 1) ^ 2) =
         (κ - 1) * (κ + 1) * (S * U) := by
           field_simp [hκplus]
-          ring
     _ = 4 * m * (S - m) := hfac
 
 /-- On the physical interval `0 ≤ m ≤ S`, the lower endpoint satisfies the sharp
@@ -130,7 +128,6 @@ theorem a_nonneg_and_le_linear_m
             exact div_le_div_of_nonneg_left hnumUpper0 hbasepos hdenlower
       _ = m / U := by
             field_simp [hS.ne', hU.ne']
-            ring
 
 end GppScalarBoxEndpointLinearization
 

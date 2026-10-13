@@ -39,8 +39,8 @@ theorem integrable_shift_mul_shift {f : ℝ → ℝ} (hf : Integrable f (volume 
     Integrable (fun y => f (y + a) * f (y + b)) (volume : Measure ℝ) := by
   have ha : Integrable (fun y => f (y + a)) (volume : Measure ℝ) := hf.comp_add_right a
   have hb : Integrable (fun y => f (y + b)) (volume : Measure ℝ) := hf.comp_add_right b
-  exact hb.bdd_mul ha.aestronglyMeasurable
-    ⟨C, fun y => by rw [Real.norm_eq_abs]; exact hbdd (y + a)⟩
+  exact hb.bdd_mul (c := C) ha.aestronglyMeasurable
+    (Filter.Eventually.of_forall fun y => by rw [Real.norm_eq_abs]; exact hbdd (y + a))
 
 /-- Translation identity: `P(a−b) = ∫ f(y+a)·f(y+b) dy`, by right-invariance of Lebesgue
     measure. -/
@@ -95,7 +95,17 @@ theorem gram_square_nonneg {n : ℕ} (c : Fin n → ℂ) (a : Fin n → ℝ) :
 theorem convolution_square_positive_type {f : ℝ → ℝ}
     (hf : Integrable f (volume : Measure ℝ)) {C : ℝ} (hbdd : ∀ x, |f x| ≤ C) :
     PositiveType (fun x => ∫ y, f y * f (y - x)) := by
-  intro n x c
+  -- The convolution square is even: `P (-x) = ∫ f y * f (y + x)`, and
+  -- translating by `x` turns that into `∫ f (y + x) * f y = P x`. That evenness
+  -- is exactly what the old `.re`-taking definition never required, and what
+  -- `positiveType_of_even_of_re` now makes explicit; the real-part argument
+  -- below is unchanged.
+  refine positiveType_of_even_of_re (fun t => ?_) (fun n x c => ?_)
+  · have h₁ := convolution_shift (f := f) (0 : ℝ) t
+    have h₂ := convolution_shift (f := f) t (0 : ℝ)
+    simp only [zero_sub, sub_zero, add_zero] at h₁ h₂
+    rw [h₁, h₂]
+    exact integral_congr_ae (Filter.Eventually.of_forall (fun y => mul_comm _ _))
   -- Step 1: rewrite each matrix entry through the translation identity.
   have hentry : ∀ i j : Fin n,
       ((fun x => ∫ y, f y * f (y - x)) (x i - x j) : ℂ) =

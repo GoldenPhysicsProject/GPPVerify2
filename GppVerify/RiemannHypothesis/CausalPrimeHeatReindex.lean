@@ -64,7 +64,7 @@ theorem normalizedPrimeHeat_tsum_eq_primePower_pair_tsum (t : ℝ) :
       (tsum_subtype_eq_of_support_subset hsupp).symm
     _ = ∑' pk : Nat.Primes × ℕ,
         normalizedPrimeHeatSummand t ((pk.1 : ℕ) ^ (pk.2 + 1)) := by
-      simpa [S] using
+      exact
         (Nat.Primes.prodNatEquiv.tsum_eq
           (fun n : {n : ℕ // IsPrimePow n} => normalizedPrimeHeatSummand t n)).symm
 

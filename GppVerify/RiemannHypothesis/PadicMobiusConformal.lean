@@ -26,6 +26,8 @@ Mathlib's `Padic p` field; no CFT or holography axiom is introduced.
 
 namespace GppPadicMobiusConformal
 
+noncomputable section
+
 variable (p : ℕ) [Fact p.Prime]
 
 /-- Fractional-linear action in an affine chart of the p-adic projective line. -/
@@ -43,7 +45,8 @@ theorem mobius_sub
       mobiusDet p a b c d * (x - y) /
         ((c * x + d) * (c * y + d)) := by
   unfold mobius mobiusDet
-  field_simp [hx, hy]
+  rw [div_sub_div _ _ hx hy]
+  congr 1
   ring
 
 /-- **p-adic conformal distance covariance.**  The p-adic norm transforms with
@@ -78,6 +81,8 @@ theorem norm_inv_sub_inv
     (by simpa using hx) (by simpa using hy)
   simpa [mobius, mobiusDet, mul_comm] using h
 
+
+end
 end GppPadicMobiusConformal
 
 #print axioms GppPadicMobiusConformal.mobius_sub

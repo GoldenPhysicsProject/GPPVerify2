@@ -15,6 +15,8 @@ No analytic continuation or amplitude normalization is assumed here.
 
 namespace GppSplitSignatureSpinorKinematics
 
+noncomputable section
+
 /-- A real four-vector in split signature. -/
 structure SplitMomentum where
   p0 : ℝ
@@ -93,6 +95,8 @@ theorem dot22_eq_zero_of_square_eq_zero
   norm_num at h ⊢
   linarith
 
+
+end
 end GppSplitSignatureSpinorKinematics
 
 #print axioms GppSplitSignatureSpinorKinematics.fromSpinors_null

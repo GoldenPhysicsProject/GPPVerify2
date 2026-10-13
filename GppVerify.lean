@@ -9,7 +9,7 @@ import GppVerify.HaarSelfDuality
 -- Shadow involution, T-symmetry, googly resolution (zero sorries, one standard axiom)
 import GppVerify.CoreTheorems
 
--- ── RH Pathway 2: Spectral / Meyer ──────────────────────────
+-- ── Spectral foundation layer (one route among several; RH is not claimed) ──
 -- Adèlic Haar measure infrastructure
 import GppVerify.RiemannHypothesis.HaarMeasure
 
@@ -17,13 +17,14 @@ import GppVerify.RiemannHypothesis.HaarMeasure
 import GppVerify.RiemannHypothesis.FunctionalEquation
 
 -- Shadow = time reversal (thm:shadow-cpt, most-cited result)
--- NOTE: three_generations_from_c0_and_link6 carries
+-- NOTE: open_three_generations_from_c0_and_link6 carries
 --       "depends on thm:link6 — open problem"
 import GppVerify.RiemannHypothesis.ShadowSymmetry
 
 -- Spectral multiplicity argument (two_zeros_at_ordinate, riemannZeta_conj).
 -- riemann_hypothesis alias + arithmetic_admissibility axiom RETIRED 2026-07-17;
 -- flagship conditional: GppWeilCriterion.rh_of_weil_pairedForm_nonneg
+import GppVerify.RiemannHypothesis.ExpNotTempered
 import GppVerify.RHSpectralMultiplicity
 
 -- ── L² Constraint ────────────────────────────────────────────
@@ -31,14 +32,15 @@ import GppVerify.RHSpectralMultiplicity
 import GppVerify.RiemannHypothesis.L2Constraint
 
 -- ── Momentum generator has no point spectrum ────────────────
--- Pins down exactly why ONON's thm:no-ghosts-onon Step 1 needs the Cesàro
+-- Pins down exactly why On the Nature of Nature's thm:no-ghosts-onon Step 1 needs the Cesàro
 -- regularization rather than the ordinary L² inner product.
 import GppVerify.RiemannHypothesis.MomentumGeneratorNoPointSpectrum
 
 -- ── Standard Model ───────────────────────────────────────────
 -- Three generations from Cayley-Dickson tower (cor:three-generations-anomaly)
--- NOTE: three_generations + anomaly_cancellation carry
---       "depends on thm:link6 — open problem"
+-- NOTE: open_three_generations + open_anomaly_cancellation_forces_three_generations
+--       carry "depends on thm:link6 — open problem". Both are open_ stubs; the first
+--       was renamed 2026-09-01, having previously been stated as `(3 : ℕ) = 3 := rfl`.
 import GppVerify.StandardModel.ThreeGenerations
 
 -- ── Celestial Holography ─────────────────────────────────────
@@ -56,8 +58,8 @@ import GppVerify.CelestialHolography.ShadowDiscontinuity
 -- analytic celestial-sewing identity (inverse-Mellin of the pair shadow discontinuity =
 -- momentum-space pair closure) is isolated as a LOCAL hypothesis,
 -- ShadowPairSewing.sewing_identity, not proved here and not a global axiom -- it does
--- NOT discharge the existing celestial_amplitude_has_cut / disc_equals_loop_integrand /
--- shadow_disc_mellin_density stubs above, which are untouched. No axiom, no sorry.
+-- NOT discharge the existing open_celestial_amplitude_has_cut / open_disc_equals_loop_integrand /
+-- open_shadow_disc_mellin_density stubs above, which are untouched. No axiom, no sorry.
 import GppVerify.CelestialHolography.TreeLoopSewing
 
 -- Dispersion reconstruction: proves the general (physics-convention-independent)
@@ -90,6 +92,7 @@ import GppVerify.GeneralRelativity.Rigidity
 -- ── Number Theory (New) ──────────────────────────────────────
 -- Shadow Euler Identity and Hadamard product stubs
 import GppVerify.NumberTheory.ShadowEulerIdentity
+import GppVerify.NumberTheory.Gr24LocalZeta
 
 -- Weyl vector Casimir ⟨ρ_G,ρ_G⟩ = 5 for U(4) (proved clean)
 import GppVerify.NumberTheory.WeylCasimir
@@ -137,6 +140,14 @@ import GppVerify.CelestialHolography.HolographicChain
 -- Standard Model parameters as L-function values
 import GppVerify.NumberTheory.DecodingReality
 
+-- ── Spin-Statistics Eta (New, 2026-08-19, from On the Nature of Nature v5.2.1.3) ─────
+-- η(2n)/ζ(2n) = 1 - 2^{1-2n} for all n ≥ 1, and η(4)/ζ(4) = 7/8
+import GppVerify.NumberTheory.SpinStatisticsEta
+
+-- ── Squarefree Density Euler Product (New, 2026-08-19, On the Nature of Nature v5.2.1.3) ──
+-- ∏_p (1 - p⁻²) = 6/π² = 1/ζ(2), the arithmetic content of thm:squarefree
+import GppVerify.NumberTheory.SquarefreeDensityZeta
+
 -- ── Dark Energy (New) ─────────────────────────────────────────
 -- Dark energy w(a) from T-boundary conformal self-lensing
 import GppVerify.Cosmology.DarkEnergy
@@ -154,6 +165,64 @@ import GppVerify.GrassmannianMass
 -- Theorem 3.3(i): the orientation map tau(A) = A eps / det(A)
 -- satisfies tau^2 = -id, tau^4 = id
 import GppVerify.StandardModel.MassOrientationCoupling
+-- Which Way Is Forward? (v26): the exact finite core — explicit Cl(2,2) carrier, the
+-- orientation algebra, the unitary four-lift intertwiner, the order-16 carrier group with
+-- center {±1, ±χ}, Fix(D) and the half flips, and the Cl(3,1) realization. All `decide`
+-- over ℤ[i]. Independent of the unmerged codex/orientation-mass-time-formalization branch.
+import GppVerify.StandardModel.OrientationCliffordCore
+-- Which Way Is Forward? (v26), the paper's Lean inventory: 33 modules (plus 15 dependencies)
+-- ported 2026-09-26 from Codex's unmerged branch codex/orientation-mass-time-formalization
+-- (draft #173, head 780de22), where they did not build. Fixed here to compile under Lean
+-- 4.33.1; content and statements are Codex's except where a proof had to change, and two
+-- hypotheses the proofs never used were dropped (unused-binder gate).
+import GppVerify.CelestialHolography.AmbientFourDualitySpine
+import GppVerify.CelestialHolography.DiracSpinCoverIntertwiner
+import GppVerify.CelestialHolography.EinsteinInfinityTwistorFamily
+import GppVerify.CelestialHolography.FlatInfinityCelestialFactorization
+import GppVerify.CelestialHolography.FlatInfinityChiralComplex
+import GppVerify.CelestialHolography.GrassmannianGooglyDecomposition
+import GppVerify.CelestialHolography.GrassmannianKleinOrderFourLift
+import GppVerify.CelestialHolography.KleinCliffordPinConjugation
+import GppVerify.CelestialHolography.KleinNullInfinityBoundary
+import GppVerify.CelestialHolography.KleinPinOrderFourBlock
+import GppVerify.CelestialHolography.KleinPinReflectionDegeneration
+import GppVerify.CelestialHolography.KleinSpinorIncidence
+import GppVerify.CelestialHolography.MassCircleFolding
+import GppVerify.CelestialHolography.PluckerChiralityAction
+import GppVerify.CelestialHolography.ProjectiveFourierPenroseQuotient
+import GppVerify.CelestialHolography.SpinCenterExchangeZ4Lift
+import GppVerify.CelestialHolography.SpinProductCenterTimeOrientation
+import GppVerify.CelestialHolography.SplitSignatureHodgeGrassmannian
+import GppVerify.CelestialHolography.SplitSignaturePenroseFourierSquare
+import GppVerify.CelestialHolography.TransverseNormalConnection
+import GppVerify.CelestialHolography.TwistorAnnihilatorIncidence
+import GppVerify.CelestialHolography.TwistorCanonicalShift
+import GppVerify.CelestialHolography.TwistorWeightDuality
+import GppVerify.RiemannHypothesis.CayleyShadowAdjointBridge
+import GppVerify.RiemannHypothesis.OrientationCriticalRealStructureBridge
+import GppVerify.StandardModel.CPTPairedOrientationState
+import GppVerify.StandardModel.CPTvsDiagonalGaugeSeparation
+import GppVerify.StandardModel.ChargedCAROrientationFock
+import GppVerify.StandardModel.ChargedKahlerDynamicalSign
+import GppVerify.StandardModel.ChargedKahlerRelativeOrientation
+import GppVerify.StandardModel.DiagonalPairObservableAlgebra
+import GppVerify.StandardModel.FourOrientationGaugeProjection
+import GppVerify.StandardModel.HorizonOrientationBranchedDoubleCover
+import GppVerify.StandardModel.ManyBodyOrientationRedundancyNoGo
+import GppVerify.StandardModel.ObservedChargeMustBeRelational
+import GppVerify.StandardModel.OrientationCARBridge
+import GppVerify.StandardModel.OrientationComplexStructureDoubleCover
+import GppVerify.StandardModel.OrientationCovariantSecondLaw
+import GppVerify.StandardModel.OrientationGaugeAveraging
+import GppVerify.StandardModel.OrientationMassTime
+import GppVerify.StandardModel.OrientationPairProduction
+import GppVerify.StandardModel.OrientationQuotientUniversalProperty
+import GppVerify.StandardModel.ParityExchangeOrientationSeparation
+import GppVerify.StandardModel.RelationalChargeFiniteFockToy
+import GppVerify.StandardModel.RelationalU1GaugeRepresentation
+import GppVerify.StandardModel.Spin102ChiralRealityCore
+import GppVerify.StandardModel.Spin62BLFiniteCore
+import GppVerify.StandardModel.SpinCOrientationQuotient
 
 -- ── The Half-Flip Proposition (New) ───────────────────────────
 -- Lemma 2.1: antiunitary conjugation = unitary o transpose on
@@ -172,8 +241,13 @@ import GppVerify.QuantumInformation.ChoiMatrix
 
 -- ── Proposition 2.2, complete (New) ────────────────────────────
 -- Choi(transpose) = SWAP exactly, hence transpose map on M_2(C) is
--- not completely positive: no_enactment fully retired for d=2.
+-- not completely positive: HalfFlipProposition.no_enactment (d=2).
 import GppVerify.QuantumInformation.TransposeNotCompletelyPositive
+
+-- ── CHSH Bell violation + CKW monogamy (New, 2026-08-19, On the Nature of Nature v5.2.1.3) ─
+-- S = -1-√2 at the source's optimal angles, |S|>2, and the CKW
+-- monogamy consequence 1+x²≤y²≤1 ⟹ x=0
+import GppVerify.QuantumInformation.CHSHViolation
 
 -- ── Grassmannian Jacobian, exact matrix identity (New) ────────
 -- N^2 = D*K, K^2 = D^2*1, hence N^4 = D^4*1 for the chart
@@ -195,7 +269,7 @@ import GppVerify.NumberTheory.BSDPointCounts
 import GppVerify.CelestialHolography.FubiniStudyAntipodal
 
 -- ── Zagier MZV Growth Recurrence, corrected (New) ─────────────
--- ONON5213.tex's Zagier recurrence d_w = d_{w-2}+d_{w-3} is formalized
+-- On the Nature of Nature v5.2.1.3's Zagier recurrence d_w = d_{w-2}+d_{w-3} is formalized
 -- with corrected initial conditions (the source's stated d_0=1,d_1=d_2=0
 -- contradicts its own listed sequence); reproduces the listed sequence
 -- exactly. Brown's deep theorem that this equals the true MZV dimension
@@ -399,7 +473,7 @@ import GppVerify.RiemannHypothesis.PadicHaarTransfer
 -- comparison. Combined with the pre-existing born_rule_cesaro
 -- (RHProofStructure.lean, sigma = 1/2 gives exactly 1), this closes
 -- the gap that file's own doc comment had explicitly flagged as not
--- formalized. Not derived from ONON52.tex.
+-- formalized. Not derived from On the Nature of Nature v5.2.
 import GppVerify.RiemannHypothesis.CesaroMeanDivergence
 
 -- ── Abel regularization of the Cesàro mean (New) ──────────────────
@@ -409,7 +483,7 @@ import GppVerify.RiemannHypothesis.CesaroMeanDivergence
 -- computed via two convergent exponential integrals in the log
 -- variable, omega_eps(1) = 1 exactly, and the delta-selection limit
 -- eps^2/(eps^2 + gamma^2) -> 0 (gamma != 0) driving the paper's
--- delta_{rho', 1-rho-bar} matrix-element limit. Not from ONON52.tex.
+-- delta_{rho', 1-rho-bar} matrix-element limit. Not from On the Nature of Nature v5.2.
 import GppVerify.RiemannHypothesis.AbelCesaroRegularization
 
 -- ── Periodic zeros of the eta factor 1 - 2^(1-s) (New) ────────────
@@ -419,7 +493,7 @@ import GppVerify.RiemannHypothesis.AbelCesaroRegularization
 -- line Re s = 1 -- outside the open critical strip, so the completed
 -- eta function's zero set decomposes cleanly as Z_D union Z_R. Plus
 -- the weight identity t e^t/(1+e^t)^2 = t/(4 cosh^2(t/2)) bridging
--- the Yakaboylu and Abel-Cesaro papers' conventions. Not from ONON52.
+-- the Yakaboylu and Abel-Cesaro papers' conventions. Not from On the Nature of Nature v5.2.
 import GppVerify.RiemannHypothesis.CompletedEtaZeros
 
 -- ── Yakaboylu's regularized matrix element, eq. (49) (New) ────────
@@ -429,7 +503,7 @@ import GppVerify.RiemannHypothesis.CompletedEtaZeros
 -- plus the two limit facts making it the Kronecker delta of eq. (47):
 -- exactly 1 at sigma = 1, tends to 0 for sigma != 1. This is the
 -- multiplicative-variable twin of AbelCesaroRegularization.lean's
--- log-variable character formula. Not from ONON52.tex.
+-- log-variable character formula. Not from On the Nature of Nature v5.2.
 import GppVerify.RiemannHypothesis.YakaboyluMatrixElement
 
 -- ── Arithmetic kernel of the positivity argument (New) ────────────
@@ -439,7 +513,7 @@ import GppVerify.RiemannHypothesis.YakaboyluMatrixElement
 -- diagonal form being a nonnegative sum of |c|^2 when every zero is
 -- self-dual. The operator-theoretic content (W well-defined and PSD
 -- via oblique-projection compression) is deep unbounded-operator
--- theory, deliberately not formalized. Not from ONON52.tex.
+-- theory, deliberately not formalized. Not from On the Nature of Nature v5.2.
 import GppVerify.RiemannHypothesis.YakaboyluPositivityKernel
 
 -- ── Finite Weil-positivity criterion iff RH (New) ─────────────────
@@ -467,7 +541,7 @@ import GppVerify.RiemannHypothesis.TwoPointCriterion
 -- F(u) = u tanh u - log cosh u with F' = u/cosh^2 and F -> log 2,
 -- fed to integral_Ioi_of_hasDerivAt_of_nonneg (nonneg integrand =>
 -- integrability and value in one step). Includes hasDerivAt_tanh,
--- absent from the pinned Mathlib. Not from ONON52.tex.
+-- absent from the pinned Mathlib. Not from On the Nature of Nature v5.2.
 import GppVerify.RiemannHypothesis.SechSquaredIntegral
 
 -- ── N_{1/2} = log2/6 - 1/24 exactly (New) ─────────────────────────
@@ -478,7 +552,7 @@ import GppVerify.RiemannHypothesis.SechSquaredIntegral
 -- limit (2/3)log 2 reusing the sech^2 thread, the u-form integral
 -- (2/3)log2 - 1/6, the t-variable form via G(t) = 4 F4(t/2) (no
 -- change-of-variables lemma), and eigenstate_norm_half. Not from
--- ONON52.tex.
+-- On the Nature of Nature v5.2.
 import GppVerify.RiemannHypothesis.SechFourthIntegral
 
 -- ── N_sigma finite and positive across the strip (New) ────────────
@@ -488,7 +562,7 @@ import GppVerify.RiemannHypothesis.SechFourthIntegral
 -- integrand at s = 2sigma+1) with strictly positive value (positive
 -- integrand on a set of infinite measure). Consistency corollary:
 -- eigenstateNorm (1/2) = log2/6 - 1/24, tying threads A1 and A2
--- together on the nose. Not from ONON52.tex.
+-- together on the nose. Not from On the Nature of Nature v5.2.
 import GppVerify.RiemannHypothesis.EigenstateNormStrip
 
 -- ── Alternating harmonic series = log 2 (New) ─────────────────────
@@ -499,7 +573,7 @@ import GppVerify.RiemannHypothesis.EigenstateNormStrip
 -- partial sum as an explicit remainder integral, sandwiched by
 -- +-1/(n+1). With SechSquaredIntegral.lean this puts eta(1) = log 2
 -- in the repo in both its Mellin and series incarnations. Not from
--- ONON52.tex.
+-- On the Nature of Nature v5.2.
 import GppVerify.RiemannHypothesis.AlternatingHarmonicLog2
 
 -- ── The Planck integral = pi^4/15 (New) ───────────────────────────
@@ -509,7 +583,7 @@ import GppVerify.RiemannHypothesis.AlternatingHarmonicLog2
 -- sum-integral interchange justified by summability of the term
 -- norms (integral_tsum_of_summable_integral_norm), term integrals
 -- Gamma(4)/(n+1)^4 = 6/(n+1)^4, and zeta(4) = pi^4/90 via Mathlib's
--- Bernoulli machinery. No step assumed. Not from ONON52.tex.
+-- Bernoulli machinery. No step assumed. Not from On the Nature of Nature v5.2.
 import GppVerify.QuantumGravity.PlanckIntegral
 
 -- ── Mellin kinematics elementary layer (New) ──────────────────────
@@ -533,7 +607,7 @@ import GppVerify.CelestialHolography.MellinKinematics
 -- identity P(a-b) = int f(y+a) f(y+b) holds by right-invariance, the
 -- finite sum interchanges with the integral, and the pointwise sum is
 -- a Gram square. Plugs directly into HaarPositivityWeil's
--- PositiveType framework. Not from ONON52.tex.
+-- PositiveType framework. Not from On the Nature of Nature v5.2.
 import GppVerify.RiemannHypothesis.ConvolutionSquarePositive
 
 -- Thread S2: Schur product for the Weil class — positive-type times convolution
@@ -630,7 +704,7 @@ import GppVerify.RiemannHypothesis.HeatTraceCriterion
 import GppVerify.RiemannHypothesis.QuartetPerturbation
 
 -- ── The pseudo-isothermal halo pair (New) ─────────────────────────
--- Thread H (ONON5213 Dark Matter chapter): the boxed halo profile
+-- Thread H (On the Nature of Nature v5.2.1.3 Dark Matter chapter): the boxed halo profile
 -- rho_DM(r) = rho_0/(1+(r/r_c)^2) and the holographic surface density
 -- Sigma(b) = pi rho_0 r_c^2/sqrt(b^2+r_c^2) are an exact Abel-transform
 -- pair, both directions kernel-checked as improper integrals via
@@ -706,12 +780,14 @@ import GppVerify.RiemannHypothesis.LiCriterion
 -- no sorry.
 import GppVerify.RiemannHypothesis.BlackbodyMellinZeta
 
--- ONON5213.tex, Chapter 7 ("The Isomorphism"), Theorem "Perfect self-duality of
+-- On the Nature of Nature v5.2.1.3, Chapter 7 ("The Isomorphism"), Theorem "Perfect self-duality of
 -- Gr(k,n)": the orthogonal-complement map Λ ↦ Λ^⊥ on a finite-dimensional inner
 -- product space sends Gr(k,n) into Gr(n-k,n) (grassmannian_orthogonal_dim), is an
 -- involution (grassmannian_orthogonal_involutive), and restricts to a self-map of
 -- Gr(k,n) itself iff n = 2k (grassmannian_self_dual_iff), specialized to the
--- paper's own Gr(2,4) case (gr_two_four_self_dual). No axiom, no sorry.
+-- paper's own Gr(2,4) case (gr_two_four_self_dual). Also proves the algebraic
+-- identity behind the paper's Gaussian-binomial point count of Gr(2,4) over F_q
+-- (grassmannian_gaussian_binomial_two_four). No axiom, no sorry.
 import GppVerify.CelestialHolography.GrassmannianSelfDuality
 
 -- ── Thread S, Step 1: abstract Hermitian inertia core (New) ──
@@ -808,14 +884,122 @@ import GppVerify.QuantumGravity.AllLoopFiniteness
 --     (Tendsto of partial products, for every real lam) rather than the paper's own
 --     truncated-at-N=2000-with-Hurwitz-remainder numerical bound -- derived from Mathlib's
 --     Complex.tendsto_euler_sin_prod (Euler's product for sin) via the substitution z=i*lam.
--- Proposition 7.1(b)'s analytic continuation to Re s > -1, and Theorem 6.1 (First Moment,
--- needs a digamma function -- Mathlib v4.19.0 has NONE, grepped, zero hits for
--- digamma/polygamma anywhere in the tree) and Theorems 2.1/3.1/4.1/4.4 (conical reduction,
--- shadow=Legendre-degree symmetry, Mehler-Fock, Temperedness -- need Legendre/conical
--- special functions, also entirely absent from Mathlib) remain open; see
--- docs/FORMALIZATION_PLAN.md for the precise boundary of each gap.
+-- Theorems 2.1/3.1/4.1/4.4 (conical reduction, shadow=Legendre-degree symmetry, Mehler-Fock,
+-- Temperedness) remain open, needing Legendre/conical special functions that Mathlib does not
+-- have; see docs/FORMALIZATION_PLAN.md for the precise boundary of each gap. Theorem 6.1
+-- (First Moment) is partly closed -- see FirstMomentCore below. The claim that stood here
+-- until 2026-09-06, that this was blocked because "Mathlib v4.19.0 has NONE, grepped, zero
+-- hits for digamma/polygamma anywhere in the tree", was stale on both halves: the pin has
+-- been Mathlib 4.33.1 since PR #133, and GppDigamma has existed since task #9 -- built from
+-- GammaDeriv, which the original grep never looked for because it searched for the NAME.
 import GppVerify.QuantumGravity.KinematicZetaBridge
 import GppVerify.QuantumGravity.SinhWeierstrassProduct
+
+-- ── Thread Loops-from-Cuts, Planck form (New) ──
+-- Daniel has designated `Loops_from_Cuts_in_Celestial_Holography.tex`,
+-- `Principal_Series_Kinematic_Blocks.tex`, `Spectral_Weight_from_Principal_Series.tex`, and
+-- `Modular_Thermality_of_the_Celestial_Spectral_Weight.tex` as the canonical replacements for
+-- the earlier haar_qg/kinematic_block/blackbody paper series (the "loop", "measure", "block",
+-- and "blackbody" papers). Formalizes the Planck-form theorem stated identically in the last
+-- two of these: P(lambda) = 2*pi*lambda*(n_B(pi*lambda) - n_B(2*pi*lambda)), the Bose-
+-- difference representation of the Plancherel weight. Pure elementary hyperbolic-function
+-- algebra, no Mathlib gaps.
+import GppVerify.QuantumGravity.PlanckForm
+
+-- ── Thread Loops-from-Cuts, Matsubara pole residues (New) ──
+-- Modular_Thermality_of_the_Celestial_Spectral_Weight.tex, Proposition "Equivalent
+-- descriptions" item (iv): the complex continuation of P(lambda) has simple poles at
+-- lambda=in, n a nonzero integer, with residue i*(-1)^n*n. Formalized as the operational
+-- limit lim_{eps->0} eps*P(in+eps) (Res is not a named Mathlib operator; no general
+-- residue-calculus API exists at this pinned commit), matching the paper's own script.
+import GppVerify.QuantumGravity.MatsubaraPoles
+
+-- ── Thread Loops-from-Cuts, log of the sinh Weierstrass product (New) ──
+-- The first half of the cumulant-law chain FORMALIZATION_PLAN.md flagged as the natural
+-- next target once SinhWeierstrassProduct.lean landed: HasSum (fun n => log(1+lambda^2/
+-- (n+1)^2)) (log(sinh(pi*lambda)/(pi*lambda))), an unconditional infinite sum of logs (not
+-- a numerical truncation), from continuity of log at the (proved positive) Weierstrass-
+-- product limit. The second half -- expanding each log(1+x) into its own power series and
+-- swapping the resulting double sum to land on the paper's zeta(2k) closed form -- is not
+-- attempted here, per the file's own scoped honest boundary. NOTE: the completion of this
+-- chain (the cumulant law itself and its single-index closed form) landed independently on
+-- main via a different, more direct route -- see the CumulantLaw import below rather than a
+-- separate CumulantLawClosedForm.lean, which this branch's own version of turned out to be
+-- fully redundant with main's GppCumulantLaw.cumulant_law and was dropped at merge time.
+import GppVerify.QuantumGravity.SinhLogSeries
+
+-- ── Thread Loops-from-Cuts, weight-shift relations (New) ──
+-- Principal_Series_Kinematic_Blocks.tex, Theorem "Weight-shift relations and the resulting
+-- differential equation" -- the digamma-free first half: P(z-i)=[(1+iz)/(-iz)]P(z) and
+-- P(z+i)=[(1-iz)/(iz)]P(z) for the complex-analytic Gamma-product continuation of P, pure
+-- consequences of Gamma(s+1)=s*Gamma(s) applied to each factor. The theorem's second half
+-- (the resulting first-order ODE for P's Fourier partner, needed for thm:resolved's
+-- digamma-moment identification) remains blocked on Mathlib's missing digamma function.
+import GppVerify.QuantumGravity.WeightShiftRelations
+
+-- ── Thread Loops-from-Cuts, antipodal-pairing algebraic core (New) ──
+-- Loops_from_Cuts_in_Celestial_Holography.tex, Theorem "Cut geometry: antipodal pairing
+-- and uniform measure" (thm:measure) -- the most important/novel link of the whole new
+-- canonical loop paper. Verifies by direct vector computation (no measure theory) that the
+-- paper's claimed antipodal solution z6=-z5/|z5|^2, omega5=M/(2(1+|z5|^2)),
+-- omega6=M|z5|^2/(2(1+|z5|^2)) genuinely satisfies P=l5+l6 for every z5!=0, plus that the
+-- null-vector parametrization q(x,y) is always null. Uniqueness of the solution and the
+-- phase-space MEASURE reduction itself (needing genuine delta^4-constrained-pushforward
+-- Jacobian machinery this repo has never built) remain open, precisely scoped.
+import GppVerify.CelestialHolography.AntipodalPairingSolution
+
+-- ── Thread Tree-Loop-Sewing, discovery follow-on: sign opposition (New) ──
+-- From discovery/shadow_ope/sign_opposition_sweep.py's found-and-explained fact that the
+-- s-channel and t-channel tied-leg sewing discontinuities Sewn_s, Sewn_t always carry
+-- opposite-sign imaginary parts (39/39 structured points, 666/666 random points, zero
+-- exceptions, then explained analytically). Promotes the algebraic explanation to a real
+-- theorem: A(x,y)=2q(x,y).p1=-4E is an exact z-independent constant, A'(x,y)=2q(x,y).p2=
+-- -4E|z|^2 is manifestly <=0, C(x,y)=2q(x,y).p4 clears to an exact sum of two squares
+-- (kappa*|z-z4|^2, kappa=2E(1-cos theta)>0 for t<0), and B(x,y)=2q(x,y).(p1+p2)=
+-- -4E(1+|z|^2) is unconditionally negative -- all four proved by direct `ring`/`nlinarith`
+-- computation from the bare kinematics, not assumed. sign_opposition combines them into
+-- the exact algebraic content of Im(Sewn_s)<0<Im(Sewn_t) on the physical branch (B''>0
+-- taken as a hypothesis, since it genuinely changes sign over the sphere and is not
+-- pinned down by E,theta alone). Pure real algebra and elementary geometry -- no Mellin
+-- transforms, no complex analysis, no Legendre functions (still absent from Mathlib
+-- v4.19.0, see the note above) -- does NOT touch or discharge ShadowPairSewing.sewing_identity.
+import GppVerify.CelestialHolography.ShadowSignOpposition
+
+-- ── Thread Loops-from-Cuts, dispersion-kernel Mellin identity, item 2/3 (New) ──
+-- Loops_from_Cuts_in_Celestial_Holography.tex's dispersion-relation reconstruction
+-- (thm:disp, thm:celdisp) rests on the Mellin kernel identity int_0^infty S^(sigma-1)/(s'+S)
+-- dS = s'^(sigma-1)*pi/sin(pi*sigma); substituting S=s'u reduces this to the base case
+-- int_0^infty u^(sigma-1)/(1+u) du = pi/sin(pi*sigma), a "second Euler Beta integral" on
+-- (0,infty) confirmed absent from Mathlib v4.19.0 by direct grep (only the (0,1) form,
+-- Complex.betaIntegral, exists). Proves the Beta-reflection integral this ultimately rests
+-- on, in real intervalIntegral form: int x in (0:R)..1, x^(s-1)*(1-x)^(-s) = pi/sin(pi*s)
+-- for 0<s<1 -- obtained by unfolding Complex.betaIntegral s (1-s), evaluating it via
+-- Complex.Gamma_mul_Gamma_eq_betaIntegral (Gamma(u)Gamma(v)=Gamma(u+v)*B(u,v), u+v=1 so
+-- Gamma(u+v)=Gamma(1)=1) combined with the reflection formula
+-- Complex.Gamma_mul_Gamma_one_sub, then casting the complex identity down to a real one via
+-- Complex.ofReal_cpow (valid uniformly on x in [0,1], both endpoints included, since
+-- Mathlib's 0^y convention for rpow/cpow already agree there) and
+-- intervalIntegral.integral_ofReal. Does NOT carry the substitution x=t/(1+t) (mapping
+-- (0,1)<->(0,infty)) needed to reach the paper's actual (0,infty) dispersion kernel -- that
+-- needs MeasureTheory.integral_image_eq_integral_abs_deriv_smul with a fresh Ioo-0-1-to-Ioi-0
+-- diffeomorphism, genuinely new infrastructure this repo has never built (algebra checked by
+-- hand, not yet coded), left open as the well-scoped next step.
+import GppVerify.CelestialHolography.DispersionKernelMellin
+
+-- ── Thread Loops-from-Cuts, logistic Fourier pair, item 3/3 (New) ──
+-- Modular_Thermality_of_the_Celestial_Spectral_Weight.tex /
+-- Spectral_Weight_from_Principal_Series.tex: P(lambda) = int e^(i*lambda*x)/(4cosh^2(x/2)) dx,
+-- the Fourier-transform characterization of the already-proved closed hyperbolic form
+-- pi*lambda/sinh(pi*lambda) (PlanckForm.lean, MatsubaraPoles.lean). The third and lowest-
+-- ranked of the three items Daniel asked to be attempted "in order of importance or
+-- novelty." PROVED 2026-09-26 (logistic_fourier_pair), after sitting as a True-stub whose
+-- docstring called it out of reach: Mathlib v4.19.0 had no sech Fourier transform, no
+-- Poisson-kernel pair and no residue calculus. That census was accurate (sech still has zero
+-- occurrences at 4.33.1) and irrelevant: substituting the logistic CDF u = 1/(1+e^-x) turns the
+-- integral into B(1+i*lambda, 1-i*lambda) = Gamma(1+i*lambda)Gamma(1-i*lambda), and Euler
+-- reflection gives pi*lambda/sinh(pi*lambda). The census listed the textbook residue proof's
+-- tools and never asked whether a different proof needed them. Standard axioms only.
+import GppVerify.QuantumGravity.LogisticFourierPair
 
 -- ── Thread QG-Blackbody, round 3: the cumulant law (New) ──────────────────────────────────
 -- From blackbody_law_qg_dtoupin_v1.tex Test T5 ("cumulants are even zeta values"). Unlocked
@@ -853,6 +1037,20 @@ import GppVerify.QuantumGravity.SpectralWeightIdentities
 -- kinematic_block_v1.tex's First Moment Theorem needs is a further, separate extension, not
 -- attempted here. Kernel-clean, no axiom, no sorry.
 import GppVerify.QuantumGravity.Digamma
+
+-- ── The closing third of the First Moment Theorem (task #10) ─────────────────────────────
+-- principal_series_blocks_v2.tex's Theorem 6.1 (thm:moment) has three inputs; this file
+-- proves the last one, unconditionally, and states the other two precisely as prose rather
+-- than as declarations. Proved: exp(-t/2)/(1-exp(-t)) = 1/(2 sinh(t/2)) for t>0; the
+-- hyperbolic collapse with the u=t/4 Jacobian written out (the paper's one-line "collapses
+-- to tanh u sech^2 u" silently carries a factor of 16); the improper integral
+-- int_0^inf tanh u sech^2 u du = 1/2 by FTC with antiderivative -1/(2 cosh^2 u); and hence
+-- the remainder integral int_0^inf (1/(2 sinh(t/2)))(1/4)[1-sech^2(t/4)] dt = 1/8, which is
+-- where Theorem 6.1's 1/8 comes from. NOT proved and NOT stated in Lean: the Fourier pair
+-- (1/2pi) int P(lam) cos(lam y) dlam = 1/(4 cosh^2(y/2)), and Gauss's integral
+-- representation of psi. Theorem 6.1 itself is therefore still open, and this file says so.
+-- Kernel-clean, no axiom, no sorry.
+import GppVerify.QuantumGravity.FirstMomentCore
 
 -- ── Positive Gamma--Plancherel defect (v34, Theorem 62.1) ────────────────────────────────
 -- Exact identity between the real-place density and the existing celestial weight
@@ -970,7 +1168,7 @@ import GppVerify.NumberTheory.GoldenRatioHyperbolicSector
 -- reflection pairing (Yakaboylu/Bombieri-Lagarias style) with NO prime, Mellin, or Haar-measure
 -- content to match against; already flagged in this file's own module doc (see above) before
 -- this pass began. The correct classical target is instead HaarPositivityWeil.lean's
--- weil_criterion (D_k = Sum_rho Omega-hat(rho) + local terms), which remains a full True-stub,
+-- open_weil_criterion (D_k = Sum_rho Omega-hat(rho) + local terms), which remains a full True-stub,
 -- honestly blocked on Tate's thesis + idele class groups (neither in Mathlib) for its ADELIC
 -- form. But the classical ELEMENTARY (non-adelic) explicit formula's finite-prime local term
 -- has a clean, checked closed form: with zeta_p(s):=(1-p^{-s})^{-1} the local Euler factor,
@@ -997,6 +1195,8 @@ import GppVerify.RiemannHypothesis.EulerFactorLogDeriv
 import GppVerify.RiemannHypothesis.PrimeGreenAmplitude
 import GppVerify.RiemannHypothesis.PrimeFermionDirac
 import GppVerify.RiemannHypothesis.PrimeDoubletDirac
+import GppVerify.RiemannHypothesis.PrimeContractionUnitarity
+import GppVerify.RiemannHypothesis.PrimeCharacteristicFunction
 
 -- ── Thread Weil-Semiboundedness (New, 2026-08-23) ──
 -- formalization_queue item 1b12010b: pure order-theoretic skeleton for
@@ -1068,3 +1268,938 @@ import GppVerify.ThreadWeilParity.CommutingMetricResidueGap
 -- and does NOT prove the global "exactly the zeros of F, no others" claim (needs D_lam
 -- controlled away from F's zeros too, a separate global argument).
 import GppVerify.ThreadWeilParity.ShiftedLogDerivativeTransfer
+
+-- Suzuki-Herglotz thread, item 2e8ff61e: the kernel-integral half of "Suzuki shifted
+-- operator is an exact projected convolution with shifted xi log-derivative multiplier".
+-- suzukiKernel_integral_eq_shift_add_const: for mean-zero u on (-a,a), integrating
+-- N_a(x,y)=(x^2+y^2)/(4a)-|x-y|/2+a/6 against u equals integrating the shift kernel
+-- -|x-y|/2 against u, plus the single x-independent constant integral y^2/(4a)*u(y).
+-- Pure intervalIntegral linearity + ring, no functional analysis. Does NOT construct
+-- K_a=(-Delta_N)^{-1} or P_a as literal operators, and does NOT touch the Fourier/
+-- distributional half (hat{|x|}(z)=-2/z^2 via (|x|)''=2*delta_0) -- blocked on the
+-- standing tempered-distribution Mathlib gap.
+import GppVerify.ThreadWeilParity.SuzukiShiftedKernelReduction
+
+-- ── Codex: Global von Mangoldt / completed-factorization chain (merge fixup) ──
+-- GlobalCompletedFactorization.lean and LogDerivativeProduct.lean were genuinely
+-- orphaned in the codex/lean-workbench import list (not reachable from any import
+-- root anywhere in the tree, confirmed by full-repo grep) -- added directly here so
+-- `lake build GppVerify` actually type-checks them, matching every other file's
+-- convention of being reachable from this root.
+import GppVerify.RiemannHypothesis.GlobalCompletedFactorization
+import GppVerify.RiemannHypothesis.GramPositivityBoundary
+import GppVerify.RiemannHypothesis.LogDerivativeProduct
+
+-- ── Prime-Fisher/Hankel thread, ported from GPPVerify2 (2026-08-29) ──
+-- Unconditional strict Fisher/Hankel-Gram positivity for the arithmetic prime-gas
+-- measure: finite weighted polynomial Gram positivity -> polynomial-summability layers ->
+-- unconditional all-order strict positivity via a prime-power root-escape witness
+-- (2,4,8,...,2^(N+1), whose log-support points are injective, so no nonzero degree-N
+-- polynomial vanishes on all of them). Capstone: PrimeHankelAllOrderStrict.lean. Ported
+-- verbatim from GoldenPhysicsProject/GPPVerify2 (Codex's parallel Lean repo, branch
+-- codex/lean-workbench) with Daniel's explicit direction to bring GPPVerify's proved-result
+-- coverage up to par with it. GlobalVonMangoldtBridge.lean updated to Codex's superset
+-- (three additional tsum-form theorems, purely additive, nothing removed).
+--
+-- NOT ported this pass: FiniteFisherVandermondeIdentity.lean and its two dependents
+-- (CountableFisherMomentLimit.lean, CountableFisherNonnegativity.lean) -- the countable/
+-- normalized-measure extension of Fisher positivity. Its central lemma
+-- (orderedVandermondeEnergy_eq_momentDiscriminant, a 5-moment discriminant identity
+-- across a triple sum) fails to close in this pinned Mathlib (`ring` leaves an unsolved
+-- goal after full sum-distribution; confirmed reproducible from GPPVerify2's own current
+-- source verbatim, not a porting artifact) -- an honest gap, not attempted here rather
+-- than forced through with sorryAx. Everything actually wired below (including the
+-- all-order strict capstone) is independent of this and builds clean.
+import GppVerify.RiemannHypothesis.FiniteFisherMomentBridge
+import GppVerify.RiemannHypothesis.FiniteVandermondeEnergy
+import GppVerify.RiemannHypothesis.FiniteVandermondeExpansionKernel
+import GppVerify.RiemannHypothesis.FiniteMomentFactorization
+import GppVerify.RiemannHypothesis.PrimeHankelRootEscape
+import GppVerify.RiemannHypothesis.PrimeHankelFiniteGramStrict
+import GppVerify.RiemannHypothesis.PrimeHankelInfiniteLift
+import GppVerify.RiemannHypothesis.PrimeHankelFisherSpecialization
+import GppVerify.RiemannHypothesis.VonMangoldtCumulantSummability
+import GppVerify.RiemannHypothesis.PrimeFisherMomentSummability
+import GppVerify.RiemannHypothesis.PrimeHankelPolynomialSummability
+import GppVerify.RiemannHypothesis.PrimeHankelAllOrderStrict
+import GppVerify.RiemannHypothesis.TwoParameterFisherDeterminant
+import GppVerify.RiemannHypothesis.VonMangoldtCosineBridge
+import GppVerify.RiemannHypothesis.VonMangoldtCubicPositivity
+import GppVerify.RiemannHypothesis.WeightedVarianceFinite
+import GppVerify.RiemannHypothesis.WeightedVarianceInfinite
+import GppVerify.RiemannHypothesis.ZetaGibbsSummability
+import GppVerify.RiemannHypothesis.ZetaGibbsMoments
+import GppVerify.RiemannHypothesis.VonMangoldtCumulantDerivativeBridge
+import GppVerify.RiemannHypothesis.ZetaGibbsMomentBridge
+import GppVerify.RiemannHypothesis.ZetaGibbsFisher
+import GppVerify.RiemannHypothesis.ZetaThirdCumulantStrict
+import GppVerify.RiemannHypothesis.ZetaFisherStrictMonotonicity
+import GppVerify.RiemannHypothesis.ZetaGibbsFisherStrict
+import GppVerify.RiemannHypothesis.PrimeHankelGram
+
+-- ── Modules that were outside the root import graph until 2026-09-01 ──
+-- `lake build GppVerify` only compiles what this file transitively imports, so these 15
+-- were never built by CI at all — including through the 4.33.1 upgrade (PR #133), whose
+-- title claimed "the whole tree builds clean". Each was built explicitly before being
+-- wired in here and all 15 passed, so nothing was broken; the gap was in the coverage,
+-- not the mathematics. `scripts/check_import_graph.py` now fails the build if a module
+-- under GppVerify/ is missing from this list. Hole found by Codex on its own port and
+-- relayed via the bridge — see gpp-bridge/CODEX_RESEARCH_NOTES.md, 2026-09-01.
+import GppVerify.RiemannHypothesis.ArchimedeanEulerNonvanishing
+import GppVerify.RiemannHypothesis.CayleyDicksonFockBridge
+import GppVerify.RiemannHypothesis.CayleyDicksonFockOperator
+import GppVerify.RiemannHypothesis.CompletedLogDerivativeBridge
+import GppVerify.RiemannHypothesis.CompletedZetaDerivativeSymmetry
+import GppVerify.RiemannHypothesis.CompletedZetaReality
+import GppVerify.RiemannHypothesis.FiniteCompletedFactorNonvanishing
+import GppVerify.RiemannHypothesis.FinitePrimeDiracCompletion
+import GppVerify.RiemannHypothesis.GlobalVonMangoldtBridge
+import GppVerify.RiemannHypothesis.NumberEntropy
+import GppVerify.RiemannHypothesis.PrimeGasPartition
+import GppVerify.RiemannHypothesis.PrimeOccupationBridge
+import GppVerify.RiemannHypothesis.ScaleMassDiagnostic
+import GppVerify.RiemannHypothesis.ScaleShadowHalfDensity
+import GppVerify.RiemannHypothesis.ThermalCriticalLineBridge
+
+import GppVerify.RiemannHypothesis.PrimeFockPartition
+
+-- ── Wired automatically by scripts/wire_root.py ─────────────
+-- Modules added here were on disk but outside the root import graph, so
+-- `lake build GppVerify` was not compiling them. Move an import up into the
+-- appropriate curated section above, with a note on what it is for, whenever
+-- you know where it belongs — this block is a staging area, not a destination.
+import GppVerify.StandardModel.TauDifferential
+import GppVerify.RiemannHypothesis.DigammaSeries
+import GppVerify.RiemannHypothesis.FiniteGNS
+-- GNS for a positive-definite function on any group: Hilbert space, unitary representation,
+-- cyclic vector with P g = ⟪ξ, π g ξ⟫. Closes the stub `open_gns_from_positive_type`
+-- (HaarPositivityWeil.lean), which was parked on the C⋆ route it did not need. 2026-09-26.
+import GppVerify.RiemannHypothesis.PositiveDefiniteGNS
+import GppVerify.RiemannHypothesis.FiniteNoGhost
+import GppVerify.RiemannHypothesis.HeatTraceModeSum
+import GppVerify.RiemannHypothesis.BernsteinEasy
+import GppVerify.RiemannHypothesis.SemigroupPositiveDefinite
+import GppVerify.RiemannHypothesis.ExponentialConvexity
+import GppVerify.Upstream.WeierstrassFactor
+import GppVerify.Upstream.WeierstrassProduct
+import GppVerify.Upstream.OrderOfGrowth
+import GppVerify.Upstream.ZeroCounting
+import GppVerify.Upstream.DyadicSummability
+import GppVerify.Upstream.ZeroSummability
+
+-- ── Orientation / mass-time / googly topic branch staging ─────────────
+-- Direct root imports are intentional: scripts/check_import_graph.py requires every
+-- module under GppVerify/ to be named here, even when another topic module imports it.
+import GppVerify.CelestialHolography.AmbientFourPenroseIntertwiner
+import GppVerify.CelestialHolography.AmbientEpsilonProjectiveWeight
+import GppVerify.CelestialHolography.AnnihilatorComplementBridge
+import GppVerify.CelestialHolography.ConcreteGooglyDualitySpine
+import GppVerify.CelestialHolography.FourierDualSplitPolarity
+import GppVerify.CelestialHolography.FourierSliceSupportGeometry
+import GppVerify.CelestialHolography.GooglyCorrespondenceWeights
+import GppVerify.CelestialHolography.GooglyGeometryIntertwinerSpine
+import GppVerify.CelestialHolography.GooglyRepresentationIdentity
+import GppVerify.CelestialHolography.GooglySquareRoot
+import GppVerify.CelestialHolography.IncidenceKernelGoogly
+import GppVerify.CelestialHolography.LorentzianTwistorPolarity
+import GppVerify.CelestialHolography.NonlinearGooglyClosure
+import GppVerify.CelestialHolography.OnShellDualReconstruction
+import GppVerify.CelestialHolography.OrientationGooglyCore
+import GppVerify.CelestialHolography.OrientationOnlyGooglyNoGo
+import GppVerify.CelestialHolography.PenroseQuotientDescent
+import GppVerify.CelestialHolography.ProjectiveGooglyInvolution
+import GppVerify.CelestialHolography.ProjectiveObservableInvariance
+import GppVerify.CelestialHolography.ProjectiveOrientationInvariance
+import GppVerify.CelestialHolography.SplitGooglyGeometryCapstone
+import GppVerify.CelestialHolography.SplitPolarityComplementBridge
+import GppVerify.CelestialHolography.SplitSignatureGooglyFactorization
+import GppVerify.CelestialHolography.SplitSignatureLightParity
+import GppVerify.CelestialHolography.TwistorDiagonalDuality
+import GppVerify.CelestialHolography.TwistorFlagDuality
+import GppVerify.StandardModel.ClockFrequency
+import GppVerify.StandardModel.GrassmannianDiracIntertwiner
+import GppVerify.StandardModel.GrassmannianDiracPhysicalIntertwiner
+import GppVerify.StandardModel.GrassmannianMassClockBridge
+import GppVerify.StandardModel.GrassmannianPhysicalMass
+import GppVerify.StandardModel.OrientationMassTimeSpectral
+import GppVerify.StandardModel.SpinorMassBridge
+import GppVerify.CelestialHolography.AmbidextrousPenroseRayQuotients
+import GppVerify.CelestialHolography.AmbitwistorBicomplexOrientation
+import GppVerify.CelestialHolography.AmbitwistorContactExchange
+import GppVerify.CelestialHolography.AmbitwistorContactNeutralCone
+import GppVerify.CelestialHolography.AmbitwistorContactRaySlice
+import GppVerify.CelestialHolography.AmbitwistorGoldenPGL2Bridge
+import GppVerify.CelestialHolography.AmbitwistorSecondOrderIncidence
+import GppVerify.CelestialHolography.AmbitwistorSturmBidegrees
+import GppVerify.CelestialHolography.CanonicalAmbitwistorContactChart
+import GppVerify.CelestialHolography.CelestialCrossingChargeOrientation
+import GppVerify.CelestialHolography.CelestialCrossingGoldenSector
+import GppVerify.CelestialHolography.CelestialLightWeylIntertwiners
+import GppVerify.CelestialHolography.CelestialOrientedNullDoubleCover
+import GppVerify.CelestialHolography.ConformalInfinityConeFactorization
+import GppVerify.CelestialHolography.ContactCliffordWeylBridge
+import GppVerify.CelestialHolography.DiscretePinGooglyDictionary
+import GppVerify.CelestialHolography.EinsteinChiralCurvatureBlocks
+import GppVerify.CelestialHolography.EinsteinNullRaySL2Geometry
+import GppVerify.CelestialHolography.EinsteinScaleProjectiveFiber
+import GppVerify.CelestialHolography.EinsteinWeylQuarticReconstruction
+import GppVerify.CelestialHolography.EpsilonAnnihilatorDuality
+import GppVerify.CelestialHolography.FactorizedAmbitwistorEinsteinGoogly
+import GppVerify.CelestialHolography.FlatNullWeylFiberGeometry
+import GppVerify.CelestialHolography.FlatSkyJacobiCurve
+import GppVerify.CelestialHolography.FourierEpsilonCliffordSupport
+import GppVerify.CelestialHolography.FourierLightShadowDiamond
+import GppVerify.CelestialHolography.GoldenCrossingLegendreCapstone
+import GppVerify.CelestialHolography.GoldenCrossingMonodromyCube
+import GppVerify.CelestialHolography.GooglyGaugeSpinLiftCapstone
+import GppVerify.CelestialHolography.GooglyIntegrabilityTaxonomy
+import GppVerify.CelestialHolography.GooglyTimeOrientationSeparation
+import GppVerify.CelestialHolography.GrassmannianRelativeCenterOrientation
+import GppVerify.CelestialHolography.GrassmannianTauTimeOrientationLift
+import GppVerify.CelestialHolography.HorizonModularDuality
+import GppVerify.CelestialHolography.HorizonOrientationDiagnostics
+import GppVerify.CelestialHolography.InfinityLeviScreenGeometry
+import GppVerify.CelestialHolography.InfinityRulingHodgeSeparation
+import GppVerify.CelestialHolography.KleinSpinorInfinityBridge
+import GppVerify.CelestialHolography.KleinWeylReflectionConjugacy
+import GppVerify.CelestialHolography.LegendreCrossingSturmConnection
+import GppVerify.CelestialHolography.LevelTwoGoldenObstruction
+import GppVerify.CelestialHolography.LorentzHermitianDiscreteGeometry
+import GppVerify.CelestialHolography.LorentzNullConeOrientation
+import GppVerify.CelestialHolography.NSFLegendreCoordinatePullbackCriterion
+import GppVerify.CelestialHolography.NSFLegendreProjectiveCriterion
+import GppVerify.CelestialHolography.NSFOppositeHelicityTailCoupling
+import GppVerify.CelestialHolography.NSFSchwarzianEinsteinBridge
+import GppVerify.CelestialHolography.NSFSkyAffineParameterBridge
+import GppVerify.CelestialHolography.NullConeEinsteinSelector
+import GppVerify.CelestialHolography.NullOpticalRicciWeylSplit
+import GppVerify.CelestialHolography.NullSurfaceEinsteinBundleBridge
+import GppVerify.CelestialHolography.OrientationProjectorSwap
+import GppVerify.CelestialHolography.PenroseLocalTwistorEinsteinQuotient
+import GppVerify.CelestialHolography.PenroseLocalTwistorRayGaugeCovariance
+import GppVerify.CelestialHolography.PenroseLocalTwistorRayReduction
+import GppVerify.CelestialHolography.PenroseQuotientTautologicalTwist
+import GppVerify.CelestialHolography.PenroseRayQuotientHomogeneity
+import GppVerify.CelestialHolography.PenroseTwistorIncidenceQuotient
+import GppVerify.CelestialHolography.PrincipalSeriesLightPlancherelMatch
+import GppVerify.CelestialHolography.RankOneWeylHaarSpine
+import GppVerify.CelestialHolography.RayFieldSkyDescent
+import GppVerify.CelestialHolography.ReciprocityEllipticHyperbolicFixedPoints
+import GppVerify.CelestialHolography.ReflectionSpinGoldenFork
+import GppVerify.CelestialHolography.SchwarzianChainRuleJets
+import GppVerify.CelestialHolography.SignedMultiplicativeHaarScale
+import GppVerify.CelestialHolography.SkyCrossingLegendreCompatibility
+import GppVerify.CelestialHolography.SkyEinsteinIntrinsicSpine
+import GppVerify.CelestialHolography.SkyFourSectionCrossRatio
+import GppVerify.CelestialHolography.SkyIncidenceDescent
+import GppVerify.CelestialHolography.SkyProjectiveEinsteinCriterion
+import GppVerify.CelestialHolography.SkyProjectiveSpinLift
+import GppVerify.CelestialHolography.SkyWeightedIncidenceDescent
+import GppVerify.CelestialHolography.SpinCenterRepresentationParity
+import GppVerify.CelestialHolography.SpinorEinsteinCorrespondenceSelector
+import GppVerify.CelestialHolography.SpinorWeylBidegreeGoogly
+import GppVerify.CelestialHolography.SplitFourierKernelFactorization
+import GppVerify.CelestialHolography.SplitSkyJacobiRegularity
+import GppVerify.CelestialHolography.SturmDualityFixedPointGeometry
+import GppVerify.CelestialHolography.SturmReciprocalPotential
+import GppVerify.CelestialHolography.SturmSchwarzianProjectiveBridge
+import GppVerify.CelestialHolography.TaggedAmbitwistorEinsteinGooglyCriterion
+import GppVerify.CelestialHolography.TaggedAmbitwistorParity
+import GppVerify.CelestialHolography.TwistorRepresentationConvention
+import GppVerify.CelestialHolography.WeylQuarticNullReconstruction
+import GppVerify.GrassmannianComplexDifferential
+import GppVerify.GrassmannianDifferentialSimilarity
+import GppVerify.RiemannHypothesis.CayleyShadowDirac
+-- Arithmetic holography, finite core (09-28): reflection positivity across the equator ⟺ no mirror pairs.
+import GppVerify.RiemannHypothesis.HolographicReflectionPositivity
+import GppVerify.RiemannHypothesis.FourComponentRigidity
+import GppVerify.RiemannHypothesis.CayleyHardyKernel
+import GppVerify.RiemannHypothesis.SchurGapTransfer
+import GppVerify.RiemannHypothesis.CriticalBPYCoercivity
+import GppVerify.RiemannHypothesis.CasimirCriticalLine
+import GppVerify.RiemannHypothesis.TFDGCDMobiusWhitening
+import GppVerify.RiemannHypothesis.ArithmeticUnitaryDual
+import GppVerify.ThreadWeilParity.KMSMetricWeylPositivity
+import GppVerify.RiemannHypothesis.CasimirRiemannHypothesis
+import GppVerify.RiemannHypothesis.PrimeCayleyChannel
+import GppVerify.RiemannHypothesis.CenteredPrincipalSeries
+import GppVerify.RiemannHypothesis.WallKrylovPoisson
+import GppVerify.RiemannHypothesis.PrimeTFDLaxCompletion
+import GppVerify.RiemannHypothesis.PrimeCayleyGolden
+-- No-go (Codex GPPDiscovery2 workbench 09-27, formalized 09-28): a positive, arbitrarily strongly
+-- log-concave density whose characteristic function has an explicit off-axis complex zero.
+import GppVerify.RiemannHypothesis.FisherZeroLogConcavityNoGo
+-- Codex formalization queue, 2026-09-25 items (formalized 09-27): Cayley–Li finite positivity;
+-- averaged operator-valued Koszul contracting homotopy and its abstract inverse bound.
+import GppVerify.RiemannHypothesis.CayleyLiHiggs
+import GppVerify.RiemannHypothesis.OperatorValuedKoszulHomotopy
+-- Ported and upgraded from Codex's GPPDiscovery2 DiscoveryLean sandbox (09-27): positive finite
+-- Fredholm determinants det(I + z²A) vanish only on the imaginary axis.
+import GppVerify.RiemannHypothesis.PositiveFredholmFactor
+import GppVerify.RiemannHypothesis.CayleyHaarMetricRigidity
+import GppVerify.RiemannHypothesis.HaarOrientationFiber
+import GppVerify.RiemannHypothesis.CayleyRadialDefect
+import GppVerify.RiemannHypothesis.GradedIndefiniteCompletion
+import GppVerify.RiemannHypothesis.ReflectionPositiveGraphContraction
+import GppVerify.RiemannHypothesis.UnitaryParentLeakage
+-- TFD boundary Cayley transform and parity determinants (Codex GPPDiscovery2 workbench 09-27; formalized 09-28)
+import GppVerify.RiemannHypothesis.TFDParitySewing
+-- Fixed-window transform: closed form and exact zero set (Codex GPPDiscovery2 09-24; formalized 09-27)
+import GppVerify.RiemannHypothesis.FixedWindowTransform
+import GppVerify.RiemannHypothesis.DirichletLogGaugeIdentity
+-- Schur bound for half-density arithmetic synthesis (Codex GPPDiscovery2, 09-24; formalized 09-27)
+import GppVerify.RiemannHypothesis.SeedSynthesisBound
+import GppVerify.RiemannHypothesis.FiniteFermionicDeterminantCriticalZeros
+import GppVerify.RiemannHypothesis.FiniteFermionicMomentGram
+import GppVerify.RiemannHypothesis.FiniteHeatGramPositive
+import GppVerify.RiemannHypothesis.FiniteModelSpaceReflectionNoGo
+import GppVerify.RiemannHypothesis.MetaplecticDilationReflectionCore
+import GppVerify.RiemannHypothesis.MobiusVonMangoldtGaugeConnection
+import GppVerify.RiemannHypothesis.PositiveSquareOddSectorNoGo
+import GppVerify.RiemannHypothesis.ReciprocalContractionCriticalLine
+import GppVerify.RiemannHypothesis.ReciprocalPositivityNoGo
+import GppVerify.RiemannHypothesis.RiemannCayleyUnitarityBoundary
+import GppVerify.RiemannHypothesis.ZetaGaugeGramPositivity
+import GppVerify.StandardModel.ArithmeticCoPoissonOrientationTemplate
+import GppVerify.StandardModel.ArithmeticReciprocityOrientationParity
+import GppVerify.StandardModel.BlackMirrorFoldedCPTOrientation
+import GppVerify.StandardModel.BlackMirrorKDPhaseBridgeCriterion
+import GppVerify.StandardModel.CPTMatterOrientationSpine
+import GppVerify.StandardModel.CPTOrientedIndexPair
+import GppVerify.StandardModel.CPTPairCreationFromVacuum
+import GppVerify.StandardModel.CPTSheetElectroweakAnomalyBookkeeping
+import GppVerify.StandardModel.CPTSheetRelationalCharge
+import GppVerify.StandardModel.CPTSymmetryDoesNotForceAntimatter
+import GppVerify.StandardModel.ChargeFlipGaugeObstruction
+import GppVerify.StandardModel.ChargeFlipRequiresDoubleTransfer
+import GppVerify.StandardModel.ChargeFrequencyContactBridge
+import GppVerify.StandardModel.ChargedCARChargeTimeComplexDictionary
+import GppVerify.StandardModel.ChargedCARComplexOrientationNoGo
+import GppVerify.StandardModel.ChargedCARStructuralNotStateDoubling
+import GppVerify.StandardModel.ComptonChargedCARAlignmentBridge
+import GppVerify.StandardModel.ComptonClockFreezesAtMasslessBoundary
+import GppVerify.StandardModel.ComptonHaarTimeBridge
+import GppVerify.StandardModel.ComptonSpinRotationLock
+import GppVerify.StandardModel.ComptonZitterBeatBridge
+import GppVerify.StandardModel.ConformalDurationUndefinedBeforeScale
+import GppVerify.StandardModel.ConformalMassScaleCompensator
+import GppVerify.StandardModel.ContactDiracCliffordReduction
+import GppVerify.StandardModel.ContactDiracHadamardBridge
+import GppVerify.StandardModel.ContactTimeCarrierNoGo
+import GppVerify.StandardModel.ContactWignerTimeBridge
+import GppVerify.StandardModel.DoubledDiracBoundaryGluingCriterion
+import GppVerify.StandardModel.DyadicOrientationHadamardBridge
+import GppVerify.StandardModel.ElectroweakIndexBLObstruction
+import GppVerify.StandardModel.EvenHomogeneousMassFromOrientation
+import GppVerify.StandardModel.FixedCoordinateOppositeQuantumPhase
+import GppVerify.StandardModel.GaugeCurrentSpinOrientation
+import GppVerify.StandardModel.GaugeGravityDiagonalBlindness
+import GppVerify.StandardModel.GaugeSpinCPTLift
+import GppVerify.StandardModel.GaugeSpinCenterRelationalMatter
+import GppVerify.StandardModel.HorizonCPTFluxGluing
+import GppVerify.StandardModel.KDMajoranaOrientationBridge
+import GppVerify.StandardModel.KleinGordonNormTimeOrientationLock
+import GppVerify.StandardModel.MajoranaHalfFlipNeutralPortal
+import GppVerify.StandardModel.MassAsContactExchangeHamiltonian
+import GppVerify.StandardModel.MassBreaksRelativeScale
+import GppVerify.StandardModel.MassCenterCosetOrientation
+import GppVerify.StandardModel.MassOrderParameterLocksOrientation
+import GppVerify.StandardModel.MassResidualRelativeZ2
+import GppVerify.StandardModel.MassScaleClockBridge
+import GppVerify.StandardModel.MassiveRootSwapInvariant
+import GppVerify.StandardModel.MassiveSpinCenterOrientation
+import GppVerify.StandardModel.MassiveSpinorOrientationFlip
+import GppVerify.StandardModel.MassiveSturmClockBridge
+import GppVerify.StandardModel.MasslessDoesNotImplyPremetric
+import GppVerify.StandardModel.NullPairMassContactBridge
+import GppVerify.StandardModel.NullRayDiracWeylBridge
+import GppVerify.StandardModel.ObserverTimeOrientationChargeRelativity
+import GppVerify.StandardModel.OppositePolarizationShaleObstruction
+import GppVerify.StandardModel.FourLiftRealFormChargeBridge
+import GppVerify.StandardModel.FourLiftHaarPeterWeyl
+import GppVerify.StandardModel.Z4V4CommonQuotient
+import GppVerify.StandardModel.Spin102SignatureUniqueness
+import GppVerify.StandardModel.OrientationThermofieldDouble
+import GppVerify.StandardModel.OrientedComptonPhase
+import GppVerify.StandardModel.RelationalMatterSelectionRule
+import GppVerify.StandardModel.RelativeComplexOrientationSymmetryTheorem
+import GppVerify.StandardModel.RelativePhaseDiracEnergy
+import GppVerify.StandardModel.RepresentationConjugacyVsElectricSign
+import GppVerify.StandardModel.SMAnomalyGlobalConjugacyLock
+import GppVerify.StandardModel.SMChargeCRTGlue
+import GppVerify.StandardModel.SMGenerationRelationalOrientationLock
+import GppVerify.StandardModel.SpinCChargeParityCore
+import GppVerify.StandardModel.SpinLiftOfContactExchange
+import GppVerify.StandardModel.TetradMetricOrderParameter
+import GppVerify.StandardModel.TetradTimeOrientationDiracBridge
+import GppVerify.StandardModel.TwoComplexStructureTemporalOrientation
+import GppVerify.StandardModel.UniqueContactMassCoupling
+import GppVerify.StandardModel.UniqueRelationalOrientationOrderParameter
+import GppVerify.StandardModel.UnitarityForcesOrientationAlignment
+import GppVerify.StandardModel.UnitarySheetRelationalMatter
+import GppVerify.StandardModel.WeylInvariantComptonClock
+import GppVerify.StandardModel.WeylInvariantPhysicalMetric
+import GppVerify.StandardModel.Z2HaarFourierContactBridge
+import GppVerify.RiemannHypothesis.FiniteCuspSchurComplement
+
+import GppVerify.CelestialHolography.DoubledSpacetimeMassReduction
+
+import GppVerify.CelestialHolography.DoubledLorentzQuarterTurn
+
+import GppVerify.CelestialHolography.DoubledLorentzRelativeMass
+
+-- Exact finite Spin(2)/Dirac cover intertwiner: opposite z^{±1} weights,
+-- central deck sign, half-flip phase inversion, and -i*SWAP quarter-turn.
+
+-- Spin^c local diagonal quotient and the exact X=3(B-L) parity/anomaly arithmetic.
+
+-- Moving normal-plane frame: parent canonical one-form produces minimal U(1)
+-- coupling, with conditional zitter/Compton scale algebra.
+
+-- v17: finite core of the Spin(6,2) four-lift / SU(4) color-centralizer B-L algebra.
+
+-- v18: exact Pati-Salam singlet/doublet hypercharge reconstruction and Yukawa charge checks.
+import GppVerify.StandardModel.PatiSalamHypercharge
+
+-- Relative-orientation half flips versus exact Abelian charge conservation;
+-- particle-antiparticle pair creation preserves net charge.
+
+-- Exact finite intertwiner from the diagonal-even four-lift quotient to the
+-- charged CAR one-particle particle/antiparticle sector.
+
+-- v19: parity exchanges weak/chiral factors rather than adding a third q,t sign.
+
+-- v19: finite aligned/anti-aligned and Majorana-Weyl reality-pair core for the Spin(10,2) completion.
+
+-- v17: explicit fixed-mass transverse-circle gauge fixing (coordinate core of folding quotient).
+
+
+-- v20: finite q,t and orientation-covariant entropy-rate sign core.
+import GppVerify.RiemannHypothesis.AbelCesaroPoleBarrier
+import GppVerify.RiemannHypothesis.CasimirFoldBoundaryIndex
+import GppVerify.RiemannHypothesis.SingleOffLinePairLoewner
+
+import GppVerify.StandardModel.Spin102Minimality
+
+import GppVerify.CelestialHolography.DiracZitterDeckPeriod
+
+-- ── Ported from GPPVerify2 (2026-09-27) ─────────────────────
+import GppVerify.CelestialHolography.A2ChamberNormalization
+import GppVerify.CelestialHolography.ArithmeticCompletedDefectCriterion
+import GppVerify.CelestialHolography.ArithmeticDefectPositivity
+import GppVerify.CelestialHolography.ArithmeticEulerLogAnomaly
+import GppVerify.CelestialHolography.ArithmeticNoGhostCoercivity
+import GppVerify.CelestialHolography.ArithmeticNoGhostInertia
+import GppVerify.CelestialHolography.ArithmeticOSFactorization
+import GppVerify.CelestialHolography.ArithmeticOSGram
+import GppVerify.CelestialHolography.ArithmeticOSReflection
+import GppVerify.CelestialHolography.ArithmeticPrimeFactorMap
+import GppVerify.CelestialHolography.ArithmeticPrimeLocalOS
+import GppVerify.CelestialHolography.ArithmeticPrimeWaveParticle
+import GppVerify.CelestialHolography.ArithmeticPrincipalSeriesSelection
+import GppVerify.CelestialHolography.ArithmeticSplitConventionBridge
+import GppVerify.CelestialHolography.ArithmeticSplitSignature
+import GppVerify.CelestialHolography.ArithmeticTemperedPrincipalSeries
+import GppVerify.CelestialHolography.BoxSupercriticalCombinatorics
+import GppVerify.CelestialHolography.CelestialShadowHelicity
+import GppVerify.CelestialHolography.CompletedZetaDilationUnitaryBridge
+import GppVerify.CelestialHolography.CompletedZetaPrincipalSeriesResponse
+import GppVerify.CelestialHolography.CompletedZetaSpectralAxis
+import GppVerify.CelestialHolography.ConformalShadowPrincipalSeries
+import GppVerify.CelestialHolography.ContinuousSechLevyFrequencyDerivative
+import GppVerify.CelestialHolography.ContinuousSechLevyFrequencyDerivativeBound
+import GppVerify.CelestialHolography.ContinuousSechLevyFrequencyDerivativeMajorant
+import GppVerify.CelestialHolography.ContinuousSechLevyFrequencyDerivativeTail
+import GppVerify.CelestialHolography.ContinuousSechLevyFrequencyDifferentiability
+import GppVerify.CelestialHolography.ContinuousSechLevyIntegrable
+import GppVerify.CelestialHolography.ContinuousSechLevyKernel
+import GppVerify.CelestialHolography.ContinuousSechLevyKernelNormalization
+import GppVerify.CelestialHolography.ContinuousSechLevyMeasurability
+import GppVerify.CelestialHolography.ContinuousSechLevyTail
+import GppVerify.CelestialHolography.ContinuousSechTransformDyadic
+import GppVerify.CelestialHolography.ContinuousSechTransformSemigroup
+import GppVerify.CelestialHolography.ContinuousSechTransformSymmetry
+import GppVerify.CelestialHolography.CriticalNgonRadialAlgebra
+import GppVerify.CelestialHolography.DimensionalStateSumReconstruction
+import GppVerify.CelestialHolography.DiscreteSymmetryHelicity
+import GppVerify.CelestialHolography.FourGravitonAllPlusPolynomial
+import GppVerify.CelestialHolography.FourGravitonAllPlusRationalAlgebra
+import GppVerify.CelestialHolography.FourPointMHVBubbleSubtractionAlgebra
+import GppVerify.CelestialHolography.FourPointMHVRationalAlgebra
+import GppVerify.CelestialHolography.FourPointMHVRationalClosure
+import GppVerify.CelestialHolography.FourPointRationalHomogeneity
+import GppVerify.CelestialHolography.GammaResidueAtZero
+import GppVerify.CelestialHolography.GooglyAntiunitaryExchange
+import GppVerify.CelestialHolography.GooglyTwistorLift
+import GppVerify.CelestialHolography.GrassmannianChartJacobian
+import GppVerify.CelestialHolography.GrassmannianGr24
+import GppVerify.CelestialHolography.GrassmannianPluckerProjective
+import GppVerify.CelestialHolography.GrassmannianProjectiveShadow
+import GppVerify.CelestialHolography.KinematicWeightShiftODE
+import GppVerify.CelestialHolography.MassiveCutMu4RadialMoment
+import GppVerify.CelestialHolography.MassiveCutPhysicalCoordinates
+import GppVerify.CelestialHolography.MassiveCutRadialMu4Weight
+import GppVerify.CelestialHolography.MassiveVectorGenericDefect
+import GppVerify.CelestialHolography.MassiveVectorMixedPhysicalChart
+import GppVerify.CelestialHolography.MassiveVectorPhysicalChartClosure
+import GppVerify.CelestialHolography.MassiveVectorStateSum
+import GppVerify.CelestialHolography.MassiveVectorStateSumReconstruction
+import GppVerify.CelestialHolography.MassiveVectorSym2Algebra
+import GppVerify.CelestialHolography.MassiveVectorWardReconstruction
+import GppVerify.CelestialHolography.MehlerFockGammaCollapsedWeight
+import GppVerify.CelestialHolography.MehlerFockSpectralWeight
+import GppVerify.CelestialHolography.Mu2BubbleRadialIntegral
+import GppVerify.CelestialHolography.Mu2kRadialIntegral
+import GppVerify.CelestialHolography.Mu4DimensionShiftAlgebra
+import GppVerify.CelestialHolography.Mu8GravityRadialIntegral
+import GppVerify.CelestialHolography.PositiveRealPrincipalSeries
+import GppVerify.CelestialHolography.PositiveRegulatorEventuallySmall
+import GppVerify.CelestialHolography.PrincipalSeriesDilationBridge
+import GppVerify.CelestialHolography.PrincipalSeriesShadowConjugation
+import GppVerify.CelestialHolography.RaisedBoxConcreteMoment
+import GppVerify.CelestialHolography.RaisedBoxConcreteVolumeClosure
+import GppVerify.CelestialHolography.RaisedBoxInnerAE
+import GppVerify.CelestialHolography.RaisedBoxInnerDCT
+import GppVerify.CelestialHolography.RaisedBoxMiddleMeasurability
+import GppVerify.CelestialHolography.RaisedBoxOuterDCTClosure
+import GppVerify.CelestialHolography.RaisedBoxOuterDCTMajorant
+import GppVerify.CelestialHolography.RaisedBoxOuterFiberBridge
+import GppVerify.CelestialHolography.RaisedBoxOuterFubiniClosure
+import GppVerify.CelestialHolography.RaisedBoxOuterMeasurability
+import GppVerify.CelestialHolography.RaisedBoxOuterNestedBridge
+import GppVerify.CelestialHolography.RaisedBoxOuterNestedMeasurability
+import GppVerify.CelestialHolography.RaisedBoxOuterNormBound
+import GppVerify.CelestialHolography.RaisedBoxOuterProductIntegrability
+import GppVerify.CelestialHolography.RaisedBoxOuterSectionIntegrability
+import GppVerify.CelestialHolography.RaisedBoxPointwiseLimit
+import GppVerify.CelestialHolography.RaisedBoxRealMajorantIntegrability
+import GppVerify.CelestialHolography.RaisedBoxRealMajorantMiddleIntegral
+import GppVerify.CelestialHolography.RaisedBoxRealMajorantSlice
+import GppVerify.CelestialHolography.RaisedBoxRealMajorantSliceIntegral
+import GppVerify.CelestialHolography.RaisedBoxRealOuterDomination
+import GppVerify.CelestialHolography.RaisedBoxRealOuterIntegrability
+import GppVerify.CelestialHolography.RaisedBoxResidueAssembly
+import GppVerify.CelestialHolography.RaisedBoxSimplexBetaLayer
+import GppVerify.CelestialHolography.RaisedBoxSimplexGammaClosure
+import GppVerify.CelestialHolography.RaisedBoxSimplexMajorantAlgebra
+import GppVerify.CelestialHolography.RaisedBoxSimplexMeasureBridge
+import GppVerify.CelestialHolography.RaisedBoxSimplexNestedReduction
+import GppVerify.CelestialHolography.RaisedBoxSimplexZeroRegulator
+import GppVerify.CelestialHolography.RaisedBoxSimplexZeroVolume
+import GppVerify.CelestialHolography.RaisedBoxStripIntegralBridge
+import GppVerify.CelestialHolography.RegulatedBoxDilogDerivative
+import GppVerify.CelestialHolography.RegulatedBoxDilogDerivativeUnitDisk
+import GppVerify.CelestialHolography.RegulatedBoxDilogEndpointContinuity
+import GppVerify.CelestialHolography.RegulatedBoxDilogInversionKernel
+import GppVerify.CelestialHolography.RegulatedBoxDilogNegativeEndpointContinuity
+import GppVerify.CelestialHolography.RegulatedBoxDilogNegativeExtension
+import GppVerify.CelestialHolography.RegulatedBoxDilogNegativeOneValue
+import GppVerify.CelestialHolography.RegulatedBoxDilogReciprocalIdentity
+import GppVerify.CelestialHolography.RegulatedBoxDilogSeries
+import GppVerify.CelestialHolography.RegulatedBoxDilogSignedZeroContinuity
+import GppVerify.CelestialHolography.RegulatedBoxLandenConstancy
+import GppVerify.CelestialHolography.RegulatedBoxLandenDerivative
+import GppVerify.CelestialHolography.RegulatedBoxLandenIdentity
+import GppVerify.CelestialHolography.RegulatedBoxLandenKernel
+import GppVerify.CelestialHolography.RegulatedBoxLogSeriesKernel
+import GppVerify.CelestialHolography.RegulatedBoxSpenceConstancy
+import GppVerify.CelestialHolography.RegulatedBoxSpenceConstant
+import GppVerify.CelestialHolography.RegulatedBoxSpenceDerivativeKernel
+import GppVerify.CelestialHolography.RegulatedBoxSpenceIdentity
+import GppVerify.CelestialHolography.RegulatorElementaryBounds
+import GppVerify.CelestialHolography.ScalarBoxAutomaticRegulatorConvergence
+import GppVerify.CelestialHolography.ScalarBoxConvergenceAssembly
+import GppVerify.CelestialHolography.ScalarBoxD0PrefactorVanishing
+import GppVerify.CelestialHolography.ScalarBoxEndpointLinearization
+import GppVerify.CelestialHolography.ScalarBoxExternalNumeratorTransfer
+import GppVerify.CelestialHolography.ScalarBoxLogBounds
+import GppVerify.CelestialHolography.ScalarBoxLogScaleBounds
+import GppVerify.CelestialHolography.ScalarBoxLogSquareRemainder
+import GppVerify.CelestialHolography.ScalarBoxPhysicalConvergence
+import GppVerify.CelestialHolography.ScalarBoxPhysicalCoreBound
+import GppVerify.CelestialHolography.ScalarBoxPhysicalMajorantVanishing
+import GppVerify.CelestialHolography.ScalarBoxPhysicalSpecialRemainder
+import GppVerify.CelestialHolography.ScalarBoxPhysicalStructuredCore
+import GppVerify.CelestialHolography.ScalarBoxPoleEndpointScale
+import GppVerify.CelestialHolography.ScalarBoxPoleLogScaleBounds
+import GppVerify.CelestialHolography.ScalarBoxPrefactorRemainder
+import GppVerify.CelestialHolography.ScalarBoxProductEndpointBounds
+import GppVerify.CelestialHolography.ScalarBoxQLogScale
+import GppVerify.CelestialHolography.ScalarBoxRegulatorAlgebra
+import GppVerify.CelestialHolography.ScalarBoxRegulatorBounds
+import GppVerify.CelestialHolography.ScalarBoxRegulatorVanishing
+import GppVerify.CelestialHolography.ScalarBoxSpecialFunctionRemainder
+import GppVerify.CelestialHolography.ScalarBoxSpecialRemainderVanishing
+import GppVerify.CelestialHolography.ScalarBoxStructuredPhysicalConvergence
+import GppVerify.CelestialHolography.ScalarBoxStructuredPhysicalMajorant
+import GppVerify.CelestialHolography.ScalarBoxStructuredRemainder
+import GppVerify.CelestialHolography.SechConvolutionClosedForm
+import GppVerify.CelestialHolography.SechConvolutionEndpoints
+import GppVerify.CelestialHolography.SechConvolutionKernel
+import GppVerify.CelestialHolography.SechConvolutionPrimitive
+import GppVerify.CelestialHolography.SechConvolutionWienerHopf
+import GppVerify.CelestialHolography.SechConvolutionZeroShift
+import GppVerify.CelestialHolography.ShadowDiscreteSymmetrySeparation
+import GppVerify.CelestialHolography.ShadowTransport
+import GppVerify.CelestialHolography.SplitSignatureSpinorKinematics
+import GppVerify.CelestialHolography.SupercriticalDimensionShiftAlgebra
+import GppVerify.CelestialHolography.TwoFlowScalarStateSum
+import GppVerify.CelestialHolography.WienerHopfGammaBridge
+import GppVerify.CelestialHolography.WienerHopfGammaChamberHierarchy
+import GppVerify.CelestialHolography.WienerHopfGammaChamberMonotonicity
+import GppVerify.CelestialHolography.WienerHopfGammaChamberPositiveFactor
+import GppVerify.CelestialHolography.WienerHopfGammaOneExtension
+import GppVerify.CelestialHolography.WienerHopfGammaPositiveFactor
+import GppVerify.CelestialHolography.WienerHopfPositiveFactor
+import GppVerify.CelestialHolography.WienerHopfWeightExtension
+import GppVerify.CelestialHolography.WienerHopfWeightSymmetry
+import GppVerify.GrassmannianOrientationZ4
+import GppVerify.NumberTheory.HadamardShadowPairAlgebra
+import GppVerify.NumberTheory.ShadowEulerFiniteCore
+import GppVerify.QuantumGravity.CausalDiamondFisherCancellation
+import GppVerify.QuantumGravity.CausalDiamondGammaBridge
+import GppVerify.QuantumGravity.FiniteWeightedCovarianceSymmetrization
+import GppVerify.QuantumGravity.GammaHalfModulusIdentity
+import GppVerify.QuantumGravity.GammaWienerHopfFactor
+import GppVerify.QuantumGravity.GammaWienerHopfPhaseSymmetry
+import GppVerify.QuantumGravity.OddLatticeDerivativeUniform
+import GppVerify.QuantumGravity.OddWeierstrassCoshLimit
+import GppVerify.QuantumGravity.OddWeierstrassProductSplit
+import GppVerify.QuantumGravity.OddWeierstrassQuotientLimit
+import GppVerify.QuantumGravity.SinhWeierstrassNormalized
+import GppVerify.QuantumGravity.SpectralGammaPairRecurrence
+import GppVerify.QuantumGravity.SpectralRhoChamberProduct
+import GppVerify.QuantumGravity.SpectralRhoContinuousCumulants
+import GppVerify.QuantumGravity.SpectralRhoContinuousHigherMoments
+import GppVerify.QuantumGravity.SpectralRhoContinuousMoments
+import GppVerify.QuantumGravity.SpectralRhoContinuousStep
+import GppVerify.QuantumGravity.SpectralRhoMehlerFockBridge
+import GppVerify.QuantumGravity.SpectralRhoMonotoneObservableAlignment
+import GppVerify.QuantumGravity.SpectralRhoPositivity
+import GppVerify.QuantumGravity.SpectralRhoRecurrence
+import GppVerify.QuantumGravity.SpectralRhoWienerHopfBridge
+import GppVerify.QuantumGravity.SpectralWeightBetaBridge
+import GppVerify.QuantumGravity.SpectralWeightMomentFamily
+import GppVerify.RiemannHypothesis.ArithmeticConformalCasimir
+import GppVerify.RiemannHypothesis.ArithmeticConformalKinematics
+import GppVerify.RiemannHypothesis.ArithmeticEisensteinUnitarity
+import GppVerify.RiemannHypothesis.ArithmeticSplitCoordinates
+import GppVerify.RiemannHypothesis.ArithmeticTimeEvolution
+import GppVerify.RiemannHypothesis.BregmanStrictOrientation
+import GppVerify.RiemannHypothesis.BregmanStrictOrientationLocal
+import GppVerify.RiemannHypothesis.BregmanTriangularKernel
+import GppVerify.RiemannHypothesis.CausalHeatBoundaryAnomaly
+import GppVerify.RiemannHypothesis.CausalHeatPrimePowerAnomaly
+import GppVerify.RiemannHypothesis.CausalHeatVonMangoldtReindex
+import GppVerify.RiemannHypothesis.CausalPrimeHeatBridge
+import GppVerify.RiemannHypothesis.CausalPrimeHeatReindex
+import GppVerify.RiemannHypothesis.CausalPrimeHeatSummability
+import GppVerify.RiemannHypothesis.CausalPrimeResolventFinite
+import GppVerify.RiemannHypothesis.CelestialRiemannAffineBridge
+import GppVerify.RiemannHypothesis.CenteredPrimeWaveRegulator
+import GppVerify.RiemannHypothesis.CenteredXiHalfDensity
+import GppVerify.RiemannHypothesis.CesaroPrincipalSeriesSelector
+import GppVerify.RiemannHypothesis.CompletedZetaCriticalResponse
+import GppVerify.RiemannHypothesis.CosinePositiveType
+import GppVerify.RiemannHypothesis.CountableFisherMomentLimit
+import GppVerify.RiemannHypothesis.CountableFisherNonnegativity
+import GppVerify.RiemannHypothesis.CountableFisherStrictWitness
+import GppVerify.RiemannHypothesis.CriticalPoleDifferentialAlgebra
+import GppVerify.RiemannHypothesis.FiniteFisherQuantitativeWitness
+import GppVerify.RiemannHypothesis.FiniteFisherVandermondeIdentity
+import GppVerify.RiemannHypothesis.FiniteHeatSemigroupGram
+import GppVerify.RiemannHypothesis.FiniteHeatSemigroupMonotonicity
+import GppVerify.RiemannHypothesis.FinitePrimePoissonPositiveType
+import GppVerify.RiemannHypothesis.FinitePrimePoissonRadialSum
+import GppVerify.RiemannHypothesis.FinitePrimePoissonSum
+import GppVerify.RiemannHypothesis.FinitePrimeWaveFeatureMap
+import GppVerify.RiemannHypothesis.GammaPlancherelFeatureMap
+import GppVerify.RiemannHypothesis.GibbsCumulantDifferentialAlgebra
+import GppVerify.RiemannHypothesis.GlobalPrimePoissonBound
+import GppVerify.RiemannHypothesis.GlobalPrimePoissonPositiveType
+import GppVerify.RiemannHypothesis.GlobalPrimePoissonSecondDifference
+import GppVerify.RiemannHypothesis.GoldenReciprocalScale
+import GppVerify.RiemannHypothesis.HalfDensityResonance
+import GppVerify.RiemannHypothesis.KLOrientationKernel
+import GppVerify.RiemannHypothesis.KLReflectionIdentity
+import GppVerify.RiemannHypothesis.LocalEulerShadowColligation
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticCenteredHigherMoments
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticCenteredMoments
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticCenteredThirdMoment
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticConfinement
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticCurvatureAlgebra
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticCurvatureClosure
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticCurvatureSquareBridge
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticCurvatureStrictAlgebra
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticCurvatureStrictClosure
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticCurvatureSummability
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticEntropyGeometry
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticFisherGeometry
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticGlobalEnvelope
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticHigherMomentDerivatives
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticMassieuDerivatives
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticMassieuFisherIdentification
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticMassieuHessian
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticMassieuMetric
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticMassieuNondegeneracy
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticMassieuPositiveDefinite
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticMomentDerivatives
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticNormalizedMoments
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticPartitionDerivatives
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticTermDerivatives
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticThermodynamics
+import GppVerify.RiemannHypothesis.NumberGibbsQuadraticThirdResponse
+import GppVerify.RiemannHypothesis.NumberGibbsTwoParameterStrict
+import GppVerify.RiemannHypothesis.NumberGibbsTwoParameterZetaWedge
+import GppVerify.RiemannHypothesis.PGL2OrientationAlgebra
+import GppVerify.RiemannHypothesis.PadicConformalScaling
+import GppVerify.RiemannHypothesis.PadicCrossRatio
+import GppVerify.RiemannHypothesis.PadicMobiusConformal
+import GppVerify.RiemannHypothesis.PoissonGeometricFiber
+import GppVerify.RiemannHypothesis.PositiveTypeEvenBound
+import GppVerify.RiemannHypothesis.PositiveTypeLimit
+import GppVerify.RiemannHypothesis.PositiveTypeSecondDifference
+import GppVerify.RiemannHypothesis.PrimeFisherCenteredDeterminant
+import GppVerify.RiemannHypothesis.PrimeFisherCenteredGeometry
+import GppVerify.RiemannHypothesis.PrimeFisherCountableGeometry
+import GppVerify.RiemannHypothesis.PrimeFisherHankelSchurBridge
+import GppVerify.RiemannHypothesis.PrimeFisherProbability
+import GppVerify.RiemannHypothesis.PrimeFisherTwoParameterStrict
+import GppVerify.RiemannHypothesis.PrimeLocalResponseContraction
+import GppVerify.RiemannHypothesis.PrimePoissonRadialBridge
+import GppVerify.RiemannHypothesis.PrimePoissonRadialPositiveType
+import GppVerify.RiemannHypothesis.PrimePowerCumulantPositivity
+import GppVerify.RiemannHypothesis.PrimeResponseContraction
+import GppVerify.RiemannHypothesis.PrimeResponseTransferOperator
+import GppVerify.RiemannHypothesis.PrimitiveSquareLogCounterterm
+import GppVerify.RiemannHypothesis.SechSixthIntegral
+import GppVerify.RiemannHypothesis.StrictQuadraticDeterminant
+import GppVerify.RiemannHypothesis.UnnormalizedMomentGramVandermonde
+import GppVerify.RiemannHypothesis.VonMangoldtPrimePowerFubini
+import GppVerify.RiemannHypothesis.VonMangoldtPrimePowerPoissonFiber
+import GppVerify.RiemannHypothesis.VonMangoldtPrimePowerReindex
+import GppVerify.RiemannHypothesis.VonMangoldtPrimePowerTower
+import GppVerify.RiemannHypothesis.VonMangoldtQuarticPositivity
+import GppVerify.RiemannHypothesis.WeightedVarianceInfiniteStrict
+import GppVerify.RiemannHypothesis.WeilInterpolationBridge
+import GppVerify.RiemannHypothesis.WeilPolynomialInterpolation
+import GppVerify.RiemannHypothesis.ZetaFisherArithmeticBridge
+import GppVerify.RiemannHypothesis.ZetaGibbsCenteredGeometry
+import GppVerify.RiemannHypothesis.ZetaGibbsCenteredMomentBridge
+import GppVerify.RiemannHypothesis.ZetaGibbsCriticalRegularization
+import GppVerify.RiemannHypothesis.ZetaGibbsCumulantDerivative
+import GppVerify.RiemannHypothesis.ZetaGibbsCumulantHierarchy
+import GppVerify.RiemannHypothesis.ZetaGibbsEntropyDerivative
+import GppVerify.RiemannHypothesis.ZetaGibbsFisherContinuity
+import GppVerify.RiemannHypothesis.ZetaGibbsFourthCumulant
+import GppVerify.RiemannHypothesis.ZetaGibbsFreeEnergy
+import GppVerify.RiemannHypothesis.ZetaGibbsFreeEnergyCurvature
+import GppVerify.RiemannHypothesis.ZetaGibbsHeatCapacityDerivative
+import GppVerify.RiemannHypothesis.ZetaGibbsInformationGeometry
+import GppVerify.RiemannHypothesis.ZetaGibbsKLBregman
+import GppVerify.RiemannHypothesis.ZetaGibbsKLOrientationKernel
+import GppVerify.RiemannHypothesis.ZetaGibbsKLStrictOrientation
+import GppVerify.RiemannHypothesis.ZetaGibbsLegendreDifferential
+import GppVerify.RiemannHypothesis.ZetaGibbsLogPartitionGeometry
+import GppVerify.RiemannHypothesis.ZetaGibbsStrictThermodynamics
+import GppVerify.RiemannHypothesis.ZetaGibbsThermodynamicDerivatives
+import GppVerify.RiemannHypothesis.ZetaGibbsThirdCumulantDerivative
+import GppVerify.RiemannHypothesis.ZetaGibbsTwoObservableStrict
+import GppVerify.RiemannHypothesis.ZetaGibbsVarianceCurvature
+import GppVerify.StandardModel.UniversalNotFidelity
+-- ── Formalized from GPPDiscovery2 RH discovery notes (Codex, 2026-09-24), 2026-09-27 ──
+-- Archimedean channel floor A∞ ≥ -γ - log π - π/2 - 3 log 2 (exact constant integral);
+-- finite-place KMS critical limit ‖c₁ - c_β‖ ≤ |β-1| (log N)³;
+-- half-density zeta synthesis on divisor-closed sets: MZ = ZM = I and MDZ - D = L_Λ.
+import GppVerify.RiemannHypothesis.ArchimedeanFloor
+import GppVerify.RiemannHypothesis.KMSCriticalLimit
+import GppVerify.RiemannHypothesis.HalfDensityZetaGauge
+
+-- Prime-square-root Cayley reciprocal-pair algebra (Codex, 2026-09-29)
+import GppVerify.RiemannHypothesis.PrimeSqrtCayley
+
+-- Finite-Haar quotient principal-series norm law (Codex, 2026-09-29)
+import GppVerify.RiemannHypothesis.FiniteHaarQuotientPrincipalSeries
+-- Ported from Codex branches (unmerged on codex/*), 2026-10-03; see CLAUDE_CODE_RESEARCH_NOTES.md
+import GppVerify.QuantumGravity.SpectralRhoChamberSelection
+import GppVerify.RiemannHypothesis.BPYAngularCayley
+import GppVerify.RiemannHypothesis.BPYQuadraticBulk
+import GppVerify.RiemannHypothesis.CasimirShadowDictionary
+import GppVerify.RiemannHypothesis.ConnectedEulerCurrent
+import GppVerify.RiemannHypothesis.GoldenMobiusAudit
+import GppVerify.RiemannHypothesis.GoldenWeylBoundaryWord
+import GppVerify.RiemannHypothesis.GradedHiggsCompletion
+import GppVerify.RiemannHypothesis.HeatSemigroupGram
+import GppVerify.RiemannHypothesis.HilbertQuotientClosure
+import GppVerify.RiemannHypothesis.KreinGraphClosure
+import GppVerify.RiemannHypothesis.PoleBoundaryDirac
+import GppVerify.RiemannHypothesis.PrimeModularCovariance
+import GppVerify.RiemannHypothesis.PrimeOccupationHodge
+import GppVerify.RiemannHypothesis.ShadowKMSRigidity
+import GppVerify.RiemannHypothesis.ZetaGibbsLegendre
+import GppVerify.ThreadWeilParity.CausalDirichletDefect
+import GppVerify.ThreadWeilParity.HodgeIndexBoundary
+import GppVerify.ThreadWeilParity.RadicalBoundaryReduction
+-- Codex SU(1,1)/TFD cluster (2026-09-27 notes), formalized 2026-10-03
+import GppVerify.RiemannHypothesis.SU11PrimeBlaschke
+import GppVerify.RiemannHypothesis.SU11CharacterDefect
+import GppVerify.RiemannHypothesis.SU11LightconeTail
+import GppVerify.RiemannHypothesis.SU11LocalCovariance
+-- Codex finite zeta-graph, Schur-edge and delay-line notes, formalized 2026-10-03
+import GppVerify.RiemannHypothesis.FiniteZetaGraphMetric
+import GppVerify.RiemannHypothesis.PrimeEdgeDtn
+import GppVerify.RiemannHypothesis.HalfPlaneDelayLine
+-- Codex queue rows and Oct 2-3 notes, formalized 2026-10-03
+import GppVerify.RiemannHypothesis.ThetaWhiteningOperator
+import GppVerify.RiemannHypothesis.UnitaryCausalAlgebra
+import GppVerify.RiemannHypothesis.PrimeHouseholder
+import GppVerify.RiemannHypothesis.RankOneThresholdControls
+import GppVerify.RiemannHypothesis.ZeroQuartetHalfFlip
+import GppVerify.RiemannHypothesis.TomitaRatioFlow
+import GppVerify.RiemannHypothesis.BostConnesFiniteNoGo
+import GppVerify.RiemannHypothesis.BostConnesKmsAlgebra
+import GppVerify.RiemannHypothesis.PrimeInnerCascadeNoGo
+import GppVerify.RiemannHypothesis.ZetaGibbsEscape
+import GppVerify.RiemannHypothesis.SelfDualDivisorGeometry
+import GppVerify.RiemannHypothesis.DualMobiusObstruction
+import GppVerify.RiemannHypothesis.ResolventCommutatorKernel
+import GppVerify.RiemannHypothesis.SU11ReflectionKrein
+import GppVerify.RiemannHypothesis.LogisticBoseWard
+import GppVerify.RiemannHypothesis.PrimeExcessDelay
+import GppVerify.RiemannHypothesis.PrimitivePhaseEnergy
+import GppVerify.RiemannHypothesis.PrimeTransferDiscriminant
+import GppVerify.RiemannHypothesis.StripHierarchy
+import GppVerify.RiemannHypothesis.TfdCayleyParity
+import GppVerify.RiemannHypothesis.CenteredDivisorDuality
+import GppVerify.RiemannHypothesis.FiniteSubgroupFourier
+import GppVerify.RiemannHypothesis.PullbackMetric
+import GppVerify.RiemannHypothesis.PrimeWeightNoGo
+import GppVerify.RiemannHypothesis.PrimeTfdPhaseFisher
+import GppVerify.RiemannHypothesis.ValuationChain
+import GppVerify.RiemannHypothesis.HaarValuationLaw
+import GppVerify.RiemannHypothesis.TotientVolterraKernel
+import GppVerify.RiemannHypothesis.LogisticMobiusBoost
+import GppVerify.RiemannHypothesis.PoissonHalfFlipMismatch
+import GppVerify.RiemannHypothesis.FixedWindowCurvature
+import GppVerify.RiemannHypothesis.TwinPrimeDoublets
+import GppVerify.RiemannHypothesis.LocalEulerDefect
+import GppVerify.RiemannHypothesis.FeshbachPolarization
+import GppVerify.RiemannHypothesis.PrimeRadialScore
+import GppVerify.RiemannHypothesis.MertensMuBound
+import GppVerify.RiemannHypothesis.CrossPrimeGram
+import GppVerify.RiemannHypothesis.PrimeLaplacianSplit
+import GppVerify.RiemannHypothesis.ZetaCoherentBoundary
+import GppVerify.RiemannHypothesis.SemilocalLoewnerNormalForm
+import GppVerify.RiemannHypothesis.ArchimedeanLadder
+import GppVerify.RiemannHypothesis.ArchimedeanScatteringRatio
+import GppVerify.RiemannHypothesis.ModularNormalizationIdentities
+import GppVerify.RiemannHypothesis.StieltjesMellinKernel
+import GppVerify.RiemannHypothesis.OddWeilFeasibleGeometry
+import GppVerify.RiemannHypothesis.RHMapBridgeLemmas
+import GppVerify.RiemannHypothesis.OddNeutralHeatAlgebra
+import GppVerify.RiemannHypothesis.OddLoewnerParityReduction
+import GppVerify.RiemannHypothesis.ArrowDictionaryFiniteAlgebra
+import GppVerify.RiemannHypothesis.SemilocalCollisionGram
+import GppVerify.RiemannHypothesis.SU11KernelCovariance
+import GppVerify.RiemannHypothesis.ArithmeticHardySpace
+import GppVerify.RiemannHypothesis.LogScaleParity
+import GppVerify.RiemannHypothesis.EulerFactorizationCoherent
+import GppVerify.RiemannHypothesis.ArithmeticFermionSector
+import GppVerify.RiemannHypothesis.OddCollisionTrace
+import GppVerify.RiemannHypothesis.PrimeFockFactorization
+import GppVerify.RiemannHypothesis.SheetParitySplit
+import GppVerify.RiemannHypothesis.ArchimedeanTailMass
+import GppVerify.RiemannHypothesis.ThreeLineLogistic
+import GppVerify.RiemannHypothesis.PrimeTFDVonMangoldt
+import GppVerify.RiemannHypothesis.LogDerivativeZeroFree
+import GppVerify.RiemannHypothesis.ExponentialSumGrowth
+import GppVerify.RiemannHypothesis.PoleNeutralFilter
+import GppVerify.RiemannHypothesis.RHCriteriaAtlas
+import GppVerify.RiemannHypothesis.StubRegistry
+import GppVerify.RiemannHypothesis.NeutralLegendreBasis
+import GppVerify.NoGo.FreeJacobiNoEigenvalue
+import GppVerify.NoGo.GramDiagonalTautology
+import GppVerify.NoGo.EulerDegreeBlind
+import GppVerify.NoGo.EulerPoleTruncation
+import GppVerify.NoGo.TwoNodePickInsufficient
+import GppVerify.NoGo.QuartetThreeNodeUniversal
+import GppVerify.NoGo.QuartetSignature
+import GppVerify.NoGo.QuartetFourNode
+import GppVerify.NoGo.CayleyGap44
+import GppVerify.Analysis.Pringsheim
+import GppVerify.Analysis.OneSidedPringsheim
+import GppVerify.NoGo.LaguerreCutoff
+import GppVerify.NoGo.GaussianHeatOS
+import GppVerify.NoGo.TwirlNotCollapse
+import GppVerify.NoGo.FiniteNoMasking
+import GppVerify.NoGo.FiniteNoMaskingMulti
+import GppVerify.NoGo.FiniteLoewnerNoMasking
+import GppVerify.NoGo.ConstantVertexSchur
+import GppVerify.NoGo.CompactCommutingMixing
+import GppVerify.NoGo.HermiteFourierIndefinite
+import GppVerify.NoGo.ShiftedProductControl
+import GppVerify.RiemannHypothesis.CriticalRiggedGram
+import GppVerify.RiemannHypothesis.PrimeSqrtHypercube
+import GppVerify.RiemannHypothesis.CCMTranslationDirichlet
+import GppVerify.RiemannHypothesis.RadicalPoleThreshold
+import GppVerify.RiemannHypothesis.PoleNeutralCongruence
+import GppVerify.RiemannHypothesis.PrimeBulkFreeField
+import GppVerify.RiemannHypothesis.PrimeBulkQFTPaper
+import GppVerify.RiemannHypothesis.ThetaDecimation
+import GppVerify.RiemannHypothesis.PrimeShiftCurrent
+import GppVerify.RiemannHypothesis.PrimeFiveModularBoundary
+import GppVerify.RiemannHypothesis.GoldenGeodesicPeriod
+import GppVerify.RiemannHypothesis.SU11DirichletLift
+import GppVerify.RiemannHypothesis.OrientationLogitCoordinate
+import GppVerify.RiemannHypothesis.OneGhostReduction
+import GppVerify.RiemannHypothesis.GoldenLucasDynamics
+import GppVerify.RiemannHypothesis.RationalHeightShells
+import GppVerify.RiemannHypothesis.TFDMobiusCurrent
+import GppVerify.RiemannHypothesis.PoleNeutralMultiplier
+import GppVerify.RiemannHypothesis.BohrPrimeEnergy
+import GppVerify.NoGo.FiniteNormResolvent
+import GppVerify.NoGo.ConfluentStieltjesGram
+import GppVerify.NoGo.HaarSquareNotReflection
+import GppVerify.RiemannHypothesis.ConductorGap
+import GppVerify.RiemannHypothesis.ThetaTwoCopyWeyl
+import GppVerify.RiemannHypothesis.CompletedResolventSector
+import GppVerify.RiemannHypothesis.ArithmeticPickPole
+import GppVerify.RiemannHypothesis.FinitePeterWeyl
+import GppVerify.RiemannHypothesis.HeckeJacobiLeakage
+import GppVerify.RiemannHypothesis.ConfluentPickThirdOrder
+import GppVerify.RiemannHypothesis.JacobiResolventConvention
+import GppVerify.RiemannHypothesis.LogisticPrincipalSeriesUnitary
+import GppVerify.RiemannHypothesis.OrientationBiasExpectation
+import GppVerify.CelestialHolography.RaisedBoxInnerSliceDCT
+import GppVerify.CelestialHolography.RaisedBoxMiddleDCTPrep
+import GppVerify.CelestialHolography.RaisedBoxMiddleDCT
+import GppVerify.CelestialHolography.RaisedBoxOuterDCTPrep
+import GppVerify.RiemannHypothesis.MultiPrimeSupersymmetry
+import GppVerify.StandardModel.OrientationCrossingF2
+import GppVerify.StandardModel.PrimeFamilyIncidence
+import GppVerify.StandardModel.PrimeGapBoundary
+import GppVerify.StandardModel.PrimePatiSalamCartan
+import GppVerify.StandardModel.PrimePatiSalamSpectrum
+import GppVerify.RiemannHypothesis.ObserverCasimirSpectralSurvival
+import GppVerify.RiemannHypothesis.ObserverPrincipalSeriesPositivity
+import GppVerify.RiemannHypothesis.PrimeTFDObserverGeometry
+import GppVerify.RiemannHypothesis.SelectedPrimeCompensation
+import GppVerify.RiemannHypothesis.NyquistArrowFactorization
+import GppVerify.RiemannHypothesis.PrimeFusionCollision
+import GppVerify.RiemannHypothesis.ArrowWeilHodgeClosure
+import GppVerify.RiemannHypothesis.ZetaGaugePositiveConnection
+import GppVerify.RiemannHypothesis.PassiveNetworkKron
+import GppVerify.RiemannHypothesis.ArrowDictionaryAudit
+import GppVerify.RiemannHypothesis.SemilocalArrowFactorization
+import GppVerify.RiemannHypothesis.EulerLocalPoissonKernel
+import GppVerify.NoGo.Ledger
+
+import GppVerify.Analysis.CompactModeSewing
+import GppVerify.QuantumFieldTheory.FiniteLatticeGap
+import GppVerify.RiemannHypothesis.OneSided
+import GppVerify.QuantumFieldTheory.ArithmeticFock
+import GppVerify.QuantumFieldTheory.FockGibbs
+import GppVerify.RiemannHypothesis.PrimeScatteringPhase
+import GppVerify.RiemannHypothesis.ModularResonanceDepth
+import GppVerify.RiemannHypothesis.PrimeHaloKernel
+import GppVerify.RiemannHypothesis.PrimeHeatPhaseDiffusion

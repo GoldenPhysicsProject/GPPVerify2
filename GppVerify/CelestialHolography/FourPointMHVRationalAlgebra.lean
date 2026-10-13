@@ -19,6 +19,8 @@ has been supplied.
 
 namespace GppFourPointMHVRationalAlgebra
 
+noncomputable section
+
 /-- The scalar coefficient multiplying the common helicity phase `i Q` after
 combining the `mu^4` box and `mu^2` bubble rational weights. -/
 def rationalScalar (s t : ℂ) : ℂ :=
@@ -43,12 +45,14 @@ theorem box_add_bubble_eq_compact
 
 /-- With `Xi = -Q`, the same remainder is `+(2 i/9)(s/t) Xi`. -/
 theorem compact_eq_Xi
-    {s t Q Xi : ℂ} (ht : t ≠ 0) (hXi : Xi = -Q) :
+    {s t Q Xi : ℂ} (hXi : Xi = -Q) :
     -(2 * Complex.I / 9) * (s / t) * Q
       = (2 * Complex.I / 9) * (s / t) * Xi := by
   rw [hXi]
   ring
 
+
+end
 end GppFourPointMHVRationalAlgebra
 
 #print axioms GppFourPointMHVRationalAlgebra.rationalScalar_eq

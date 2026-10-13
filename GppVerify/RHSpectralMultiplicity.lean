@@ -2,12 +2,13 @@
 -- The Riemann Hypothesis via Spectral Multiplicity
 -- Author: Daniel Toupin | Golden Physics Project
 -- ORCID: 0009-0003-7682-9579 | goldenphysics.org
--- Lean 4 / Mathlib v4.19.0
+-- Lean 4 / Mathlib v4.33.1
 -- ============================================================
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.NumberTheory.LSeries.HurwitzZetaEven
 import Mathlib.NumberTheory.LSeries.AbstractFuncEq
 import Mathlib.Analysis.Distribution.SchwartzSpace
+import GppVerify.RiemannHypothesis.ExpNotTempered
 import Mathlib.MeasureTheory.Measure.Haar.Basic
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Gamma.Deligne
@@ -145,8 +146,181 @@ theorem two_zeros_at_ordinate (rho : Complex)
       simp at this; linarith [hstrip.2]
   · exact companion_im_eq rho
 
+/-! ## The pathway's target, as an actual theorem
+
+`RHProofStructure.open_rh_pathway_target` parked the framework's RH route as a vacuous
+`True` with the argument written out in a comment:
+
+    Off-line zero ⟹ two distinct zeros at same ordinate ⟹
+    total analytic multiplicity ≥ 2 ⟹ contradicts open_spectral_atom_weight_one.
+
+That argument is entirely available here — `two_zeros_at_ordinate` above is the whole first
+half and it is proved — so it is stated and proved below with the spectral input as an
+explicit hypothesis rather than as a comment.
+
+**Read the honest version of what this buys.** It is an *equivalence*, both directions
+proved: RH on the strip holds **iff** each ordinate carries at most one strip zero. So this
+does **not** advance RH by one inch. It relocates the entire difficulty into
+`AtomWeightOne`, which is exactly where the framework already says it sits, and which is
+still open — it needs trace-class theory for adèlic convolution operators, re-verified
+absent from Mathlib 4.33.1 on 2026-09-01 (`Schatten`: zero hits; the 39 files a naive grep
+returns are all `registerTraceClass`, Lean's debug tracing).
+
+What it *does* buy is that the reduction is now machine-checked rather than asserted in a
+comment, and the open input is visible in the signature of anything that uses it. That is
+the same move that retired twelve physics axioms in `Link6`/`DMAbundance`.
+
+The non-trivial content is the forward direction, and it is not formal shuffling: the
+second zero at the same ordinate is produced by combining the functional equation with
+`riemannZeta_conj` (proved above, via Mellin conjugation on the Hurwitz zeta), which is the
+classical fact that off-line zeros come in quadruples. -/
+
+/-- The companion `1 - conj ρ` of a critical-strip point is again in the critical strip,
+    since `Re(1 - conj ρ) = 1 - Re ρ`. -/
+lemma companion_mem_strip (rho : ℂ) (h0 : 0 < rho.re) (h1 : rho.re < 1) :
+    0 < (1 - starRingEnd ℂ rho).re ∧ (1 - starRingEnd ℂ rho).re < 1 := by
+  simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
+  constructor <;> linarith
+
+/-- **Atom weight one**: each ordinate carries at most one zero of `ζ` in the critical
+    strip. This is `RHProofStructure.open_spectral_atom_weight_one`'s content, stated as a
+    `Prop` to be *taken as a hypothesis* — deliberately not an axiom. -/
+def AtomWeightOne : Prop :=
+  ∀ r1 r2 : ℂ, riemannZeta r1 = 0 → riemannZeta r2 = 0 →
+    0 < r1.re → r1.re < 1 → 0 < r2.re → r2.re < 1 → r1.im = r2.im → r1 = r2
+
+/-- **The Riemann Hypothesis**, in the form the pathway targets: every zero of `ζ` in the
+    open critical strip has real part `1/2`. (Every non-trivial zero lies in the strip, so
+    this is the full statement.) -/
+def RiemannHypothesisStrip : Prop :=
+  ∀ r : ℂ, riemannZeta r = 0 → 0 < r.re → r.re < 1 → r.re = 1 / 2
+
+/-- **Atom weight one implies RH.** The pathway's argument, machine-checked: an off-line
+    strip zero `ρ` has the distinct companion `1 - conj ρ`, which `two_zeros_at_ordinate`
+    shows is also a strip zero at the *same* ordinate — two zeros where the hypothesis
+    permits one. -/
+theorem rh_of_atomWeightOne (h : AtomWeightOne) : RiemannHypothesisStrip := by
+  intro rho hzero h0 h1
+  by_contra hne
+  have hz' : riemannZeta (1 - starRingEnd ℂ rho) = 0 := by
+    apply zeta_zero_implies_companion_zero rho hzero
+    · intro n heq
+      have : rho.re = (-(n : ℂ)).re := congr_arg Complex.re heq
+      simp at this; linarith
+    · intro heq
+      have : rho.re = (1 : ℂ).re := congr_arg Complex.re heq
+      simp at this; linarith
+  obtain ⟨hs0, hs1⟩ := companion_mem_strip rho h0 h1
+  exact companion_ne_of_off_critical rho hne
+    (h _ _ hz' hzero hs0 hs1 h0 h1 (companion_im_eq rho))
+
+/-- **RH implies atom weight one** — the converse, one line: two strip zeros at the same
+    ordinate both have real part `1/2`, hence agree in both coordinates.
+
+    Stated because it is what makes the honest claim about the direction above: the two
+    statements are *equivalent*, so deriving RH from `AtomWeightOne` moves the difficulty
+    rather than reducing it. -/
+theorem atomWeightOne_of_rh (h : RiemannHypothesisStrip) : AtomWeightOne := by
+  intro r1 r2 hz1 hz2 ha0 ha1 hb0 hb1 him
+  exact Complex.ext (by rw [h r1 hz1 ha0 ha1, h r2 hz2 hb0 hb1]) him
+
+/-- RH on the strip **iff** atom weight one. The pathway's target and its stated spectral
+    input are the same statement; all the work is in establishing either one. -/
+theorem rh_iff_atomWeightOne : RiemannHypothesisStrip ↔ AtomWeightOne :=
+  ⟨atomWeightOne_of_rh, rh_of_atomWeightOne⟩
+
+/-! ### `cor:simple-zeros`, and a distinction its statement elides
+
+`RHProofStructure.open_zero_simplicity` reads *"every non-trivial zero of ζ is simple"*, with
+the proof line "RH + spectral atom weight 1 ⟹ each ordinate has total multiplicity 1".
+
+**Those are two different claims and the wording runs them together.**
+
+* *One zero per ordinate* — the ordinate map is injective on the strip zero set. This follows
+  from `AtomWeightOne` immediately, and is proved below.
+* *Analytically simple* — each zero has order of vanishing exactly 1, i.e.
+  `analyticOrderAt ζ ρ = 1`. This is **not** proved here and does not follow from
+  `AtomWeightOne`: a single zero of order 2 sits at one ordinate and violates nothing above.
+
+"Simple zero" in the literature means the second. The tree can honestly claim only the first,
+so only the first is stated, and `open_zero_simplicity` stays for the second. Establishing it
+needs Mathlib's `analyticOrderAt` API applied to ζ — available at 4.33.1, so this is a real
+future target rather than a wall, but it is a separate theorem and not a corollary of what is
+here. -/
+
+/-- The zeros of ζ in the open critical strip. -/
+def stripZeros : Set ℂ := {r | riemannZeta r = 0 ∧ 0 < r.re ∧ r.re < 1}
+
+/-- **One zero per ordinate.** Under `AtomWeightOne` the ordinate map is injective on the
+    strip zero set — the "total multiplicity 1" half of `cor:simple-zeros`.
+
+    Not analytic simplicity: see the section note above. -/
+theorem ordinate_injOn_of_atomWeightOne (h : AtomWeightOne) :
+    Set.InjOn Complex.im stripZeros := by
+  rintro r1 ⟨hz1, ha1, hb1⟩ r2 ⟨hz2, ha2, hb2⟩ him
+  exact h r1 r2 hz1 hz2 ha1 hb1 ha2 hb2 him
+
+/-- The contrapositive, in the form the pathway argument uses: two *distinct* strip zeros
+    must sit at distinct ordinates. This is precisely what `two_zeros_at_ordinate`
+    contradicts for an off-line zero. -/
+theorem ordinate_ne_of_ne_of_atomWeightOne (h : AtomWeightOne)
+    {r1 r2 : ℂ} (h1 : r1 ∈ stripZeros) (h2 : r2 ∈ stripZeros) (hne : r1 ≠ r2) :
+    r1.im ≠ r2.im := fun him => hne (ordinate_injOn_of_atomWeightOne h h1 h2 him)
+
+/-! ### Analytic simplicity: statable and reducible, but **not** reachable
+
+`open_zero_simplicity`'s other half — each zero has order of vanishing exactly 1 — is stated
+here and reduced to a concrete non-vanishing condition. Neither is a proof of it.
+
+**Simplicity of the non-trivial zeros of ζ is an open problem in mathematics.** It is widely
+believed, and a positive proportion of zeros is known simple (Conrey–Ghosh–Gonek and
+successors), but the full statement is proved by no one. An earlier note in
+`RHProofStructure.lean` called it "a real future target rather than a wall" on the grounds
+that Mathlib has `analyticOrderAt`; that conflated *having the vocabulary to state a claim*
+with *being able to prove it*, and is corrected there.
+
+What follows is therefore infrastructure, not progress: it makes the claim expressible and
+converts it into the form any attack would have to attack. -/
+
+/-- **Analytic simplicity** of the critical-strip zeros: each has order of vanishing exactly
+    one. This is what "simple zero" means in the literature, and it is *open*. -/
+def SimpleStripZeros : Prop := ∀ r ∈ stripZeros, analyticOrderAt riemannZeta r = 1
+
+/-- ζ is analytic at every strip zero — the pole at `s = 1` is outside the open strip. -/
+private lemma zeta_analyticAt_of_strip {r : ℂ} (hr : r ∈ stripZeros) :
+    AnalyticAt ℂ riemannZeta r := by
+  have hne1 : r ≠ 1 := by
+    intro h; rw [h] at hr; exact absurd hr.2.2 (by norm_num)
+  exact analyticOn_riemannZeta r (by simpa using hne1)
+
+/-- **Simplicity is exactly non-vanishing of `ζ'` at the zeros.**
+
+    The useful direction is `←`: it turns a statement about orders of vanishing into a
+    concrete non-vanishing condition on a single derivative, which is the form the analytic
+    literature works in. The `→` direction is what makes it an equivalence rather than a
+    convenience: if `ζ` and `ζ'` both vanish at `r` then the order is at least 2. -/
+theorem simpleStripZeros_iff_deriv_ne_zero :
+    SimpleStripZeros ↔ ∀ r ∈ stripZeros, deriv riemannZeta r ≠ 0 := by
+  constructor
+  · intro h r hr hderiv
+    have hana := zeta_analyticAt_of_strip hr
+    have h1 : analyticOrderAt riemannZeta r = 1 := h r hr
+    have h2 : (2 : ℕ∞) ≤ analyticOrderAt riemannZeta r := by
+      have hiff := natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero (n := 2) hana
+      rw [show ((2 : ℕ) : ℕ∞) = (2 : ℕ∞) from rfl] at hiff
+      rw [hiff]
+      intro i hi
+      interval_cases i
+      · simpa using hr.1
+      · simpa using hderiv
+    rw [h1] at h2
+    norm_num at h2
+  · intro h r hr
+    exact (zeta_analyticAt_of_strip hr).analyticOrderAt_eq_one_of_zero_deriv_ne_zero
+      hr.1 (h r hr)
+
 /-- K = A¹/Q* is compact. (Tate 1950) -/
-theorem K_compact : True := by
+theorem open_K_compact : True := by
   -- Placeholder: Full formalization requires Fujisaki's lemma / adelic topology in Mathlib.
   -- This is the compactness of the norm-1 idèle class group, standard in class field theory.
   -- See also HaarMeasure.lean sorries.
@@ -154,14 +328,14 @@ theorem K_compact : True := by
 
 /-- Haar-square convolution operators are positive trace-class on H_1.
     (vol(K) = 1, Hilbert-Schmidt, Reed-Simon VI.22) -/
-theorem K_trace_class : True := by
+theorem open_K_trace_class : True := by
   -- Placeholder for trace-class property of the convolution operator on L^{2}(K).
   -- Follows from compactness + Haar measure normalization.
   trivial
 
 /-- Plancherel atom weight = 1 at each ordinate.
     (Fourier-Plancherel for (R+,x); 1D ODE eigenspace) -/
-theorem plancherel_atom_one (_ : Real) : True := by
+theorem open_plancherel_atom_one (_ : Real) : True := by
   -- Placeholder: The Plancherel measure on the principal series gives atom weight 1
   -- at each imaginary ordinate (corresponding to the 1-dimensional eigenspace of the
   -- infinitesimal generator). This is the key to multiplicity = 1 on the critical line.
@@ -169,7 +343,7 @@ theorem plancherel_atom_one (_ : Real) : True := by
 
 /-- Meyer spectral-Weil identity (Duke Math J 127, 2005).
     Hilbert atom weight at gamma = distributional zero count of zeta at gamma. -/
-theorem meyer_spectral_weil (_ : Real) (_ : Nat) : True := by
+theorem open_meyer_spectral_weil (_ : Real) (_ : Nat) : True := by
   -- Placeholder: Equates the spectral side (Plancherel/Hilbert) with the
   -- distributional/Weil explicit formula side. Once both sides are formalized,
   -- this forces multiplicity contradiction off the line.
@@ -201,10 +375,22 @@ theorem schwartz_integral_clm_exists :
       ∀ φ : SchwartzMap ℝ ℂ, T φ = ∫ u : ℝ, (φ u : ℂ) :=
   ⟨SchwartzMap.integralCLM ℝ volume, fun _ => rfl⟩
 
-/-- Exponential growth is not a tempered distribution. -/
-axiom exp_growth_not_tempered (a : ℝ) (ha : a ≠ 0) :
+/-- **Exponential growth is not a tempered distribution.**
+
+    RETIRED AS AN AXIOM (2026-08-31), and it was the last custom axiom in this repository.
+    The proof is `ExpNotTempered.exp_growth_not_tempered` in
+    `RiemannHypothesis/ExpNotTempered.lean`: a bump translated to `sign(a)·n` and scaled by
+    `e^{-|a|n}` tends to zero in `𝓢(ℝ, ℂ)` (the shift costs only polynomial growth in the
+    seminorms, the scalar decays exponentially), while its weighted integral is exactly
+    translation-invariant. Continuity of `T` then forces a nonzero constant to be zero.
+
+    It could not have been proved before this repository moved to Mathlib 4.33:
+    `HasCompactSupport.toSchwartzMap`, which supplies the concrete nonzero Schwartz witness
+    the argument needs, does not exist in 4.19.0. -/
+theorem exp_growth_not_tempered (a : ℝ) (ha : a ≠ 0) :
     ¬∃ T : SchwartzMap ℝ ℂ →L[ℝ] ℂ,
-      ∀ φ : SchwartzMap ℝ ℂ, T φ = ∫ u : ℝ, cexp (↑a * ↑u) * ↑(φ u)
+      ∀ φ : SchwartzMap ℝ ℂ, T φ = ∫ u : ℝ, cexp (↑a * ↑u) * ↑(φ u) :=
+  ExpNotTempered.exp_growth_not_tempered a ha
 
 /-- Temperedness characterises the critical line. -/
 theorem temperedness_iff_critical_line (a : ℝ) :

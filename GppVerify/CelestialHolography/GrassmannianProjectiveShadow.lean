@@ -67,7 +67,7 @@ def projectiveShadow : ScaledBivectorQuotient → ScaledBivectorQuotient :=
     projectiveShadow (projectiveShadow q) = q := by
   refine Quotient.inductionOn q ?_
   intro v
-  simp [projectiveShadow, googlyExchange_involutive]
+  rw [projectiveShadow_mk, projectiveShadow_mk, googlyExchange_involutive]
 
 /-- Consequently the quotient-level Shadow map is bijective. -/
 theorem projectiveShadow_bijective : Function.Bijective projectiveShadow := by

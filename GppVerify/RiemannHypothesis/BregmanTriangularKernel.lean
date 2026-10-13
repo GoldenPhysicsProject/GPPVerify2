@@ -15,6 +15,8 @@ This file is analytic and abstract; the zeta Gibbs family is instantiated separa
 
 namespace GppBregmanTriangularKernel
 
+open scoped Interval
+
 open Set MeasureTheory intervalIntegral
 open GppZetaGibbsInformationGeometry
 
@@ -41,7 +43,7 @@ theorem bregmanKL_eq_triangular
   have hv : ∀ x ∈ [[β, γ]],
       HasDerivAt (fun y : ℝ => -U y) (g x) x := by
     intro x hx
-    convert (hU x hx).neg using 1 <;> simp
+    exact (hU x hx).neg.congr_deriv (neg_neg _)
   have huInt : IntervalIntegrable (fun _ : ℝ => (-1 : ℝ)) volume β γ :=
     intervalIntegrable_const
   have hgInt : IntervalIntegrable g volume β γ := hg.intervalIntegrable
@@ -68,7 +70,7 @@ theorem bregmanKL_reverse_eq_triangular
     (by simpa [uIcc_comm] using hU)
     (by simpa [uIcc_comm] using hg)
   rw [intervalIntegral.integral_symm] at hforward
-  rw [hforward]
+  rw [hforward, ← intervalIntegral.integral_neg]
   apply intervalIntegral.integral_congr
   intro x hx
   ring

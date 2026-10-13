@@ -1,4 +1,4 @@
-import Mathlib.Analysis.SpecialFunctions.Hyperbolic.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import Mathlib.Tactic
 
 /-!

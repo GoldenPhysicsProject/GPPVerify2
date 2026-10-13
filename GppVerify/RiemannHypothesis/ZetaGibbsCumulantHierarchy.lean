@@ -199,8 +199,10 @@ theorem hasDerivAt_logEnergyThirdCumulant_eq_neg_fourth
   have hZne : Z β ≠ 0 := (gibbsWeight_tsum_pos hβ).ne'
   have h := hasDerivAt_kappa3Expr
     (hasDerivAt_Z hβ) (hasDerivAt_M1 hβ) (hasDerivAt_M2 hβ) (hasDerivAt_M3 hβ) hZne
-  simpa [kappa3Expr, kappa4Expr, logEnergyThirdCumulant,
-    logEnergyFourthCumulant] using h
+  convert h using 1
+  · funext x
+    simp [kappa3Expr, logEnergyThirdCumulant]
+  · simp [kappa4Expr, logEnergyFourthCumulant]
 
 /-- Derivative-level form of the same identity. -/
 theorem deriv_logEnergyThirdCumulant_eq_neg_fourth

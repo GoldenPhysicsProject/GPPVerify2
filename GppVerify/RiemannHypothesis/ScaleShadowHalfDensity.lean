@@ -112,6 +112,19 @@ theorem critical_line_iff_unitary_with_shadow (s : ℂ) :
     exact critical_line_of_dilation_unitary (by norm_num : (0 : ℝ) < 2)
       (by norm_num : (2 : ℝ) ≠ 1) htwo
 
+/-- Single-scale form: at a nontrivial positive scale, the critical line is exactly the
+locus on which the character is unitary; on that same locus shadow acts by inversion. -/
+theorem critical_line_iff_unitary_with_shadow_at_scale {s : ℂ} {a : ℝ}
+    (ha : 0 < a) (ha1 : a ≠ 1) :
+    s.re = 1 / 2 ↔
+      (‖dilationCharacter s a‖ = 1 ∧
+       dilationCharacter (1 - s) a = (dilationCharacter s a)⁻¹) := by
+  constructor
+  · intro hs
+    exact ⟨critical_line_dilation_unitary hs a, dilationCharacter_shadow_eq_inv s a⟩
+  · intro h
+    exact critical_line_of_dilation_unitary ha ha1 h.1
+
 end GppScaleShadow
 
 #print axioms GppScaleShadow.celestialDelta_shadow

@@ -1,6 +1,6 @@
 import Mathlib.Tactic
 import Mathlib.Data.Matrix.Basic
-import Mathlib.Data.Matrix.Notation
+import Mathlib.LinearAlgebra.Matrix.Notation
 
 /-!
 # Exact universal-NOT fidelity algebra for qubits

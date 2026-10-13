@@ -14,10 +14,17 @@
 -- cleanest possible bill of health, while asserting nothing.
 --
 -- This script contained exactly that bug until 2026-08-14: it audited
--- `GppShadow.three_generations_from_c0_and_link6`, a `∀ (_ : True), True` stub in
+-- `GppShadow.open_three_generations_from_c0_and_link6`, a `∀ (_ : True), True` stub in
 -- ShadowSymmetry.lean, and duly reported it axiom-free. The real theorem is
--- `GppLink6.three_generations_from_c0`, which depends on six custom axioms
--- including the OPEN `link6_from_physics`. Audit that one instead.
+-- `GppLink6.three_generations_from_c0`. Audit that one instead.
+--
+-- 2026-08-30: that theorem no longer carries custom axioms either. Its physics inputs
+-- (thm:link6 itself, Boyle-Turok, positivity of the OPE normalisation) are now explicit
+-- HYPOTHESES on the statement rather than global axioms, so it audits clean while being
+-- honestly conditional -- the conditionality is visible in its type. Same treatment for
+-- the dark-matter abundance results. This is the opposite of the stub failure mode above:
+-- there, a clean bill of health hid an empty statement; here it reflects a real deduction
+-- whose inputs are named in the signature.
 --
 -- Before adding a theorem here, check it is not a stub:
 --   grep -n "<name>" -A 3 <file>      -- look for `: True :=` or `∀ (_ : True), True`
@@ -70,10 +77,13 @@ import GppVerify
 -- Expected: Lean built-ins only.
 #print axioms GppThreadS.inertia_sum
 
--- OPEN PHYSICS INPUTS — these are EXPECTED to carry custom axioms. Listed so the
--- dependency is visible in every CI run rather than buried. `link6_from_physics`
--- is the open thm:link6; `boyle_turok_2021` is an uncited external analysis.
+-- OPEN PHYSICS INPUTS — carried as explicit hypotheses since 2026-08-30, not axioms.
+-- These now audit as Lean built-ins only; the physics inputs (thm:link6, Boyle-Turok,
+-- kappa_0 positivity, the observed abundance bounds) appear in the theorem signatures.
+#print axioms GppLink6.link6_corollary
 #print axioms GppLink6.three_generations_from_c0
+#print axioms GppDM.dm_abundance_from_shadow
+#print axioms GppDM.dm_abundance_positive
 
 -- Thread Weil-Parity — the exact Archimedean renormalization tail. Expected: Lean
 -- built-ins only. Promotes a numerical-checkpoint correction (lean_results
@@ -116,6 +126,23 @@ import GppVerify
 #print axioms GppStefanBoltzmann.m_one_eq
 #print axioms GppStefanBoltzmann.m_three_eq
 #print axioms GppGammaModulus.gamma_one_add_mul_gamma_one_sub
+#print axioms GppLogisticFourierPair.beta_kernel_logistic
+#print axioms GppLogisticFourierPair.weight_eq_sech_sq
+#print axioms GppLogisticFourierPair.integral_weight_mul_exp_eq_betaIntegral
+#print axioms GppLogisticFourierPair.logistic_fourier_pair
+#print axioms GppLogisticFourierPair.integral_logistic_density
+#print axioms GppPositiveDefiniteGNS.inner_vec
+#print axioms GppPositiveDefiniteGNS.dense_span_vec
+#print axioms GppPositiveDefiniteGNS.apply_eq_inner_rep
+#print axioms GppPositiveDefiniteGNS.gns_from_positive_definite
+#print axioms GppPositiveDefiniteGNS.gns_from_positive_type
+#print axioms GppOrientationCliffordCore.clifford_relations
+#print axioms GppOrientationCliffordCore.intertwiner_unitary
+#print axioms GppOrientationCliffordCore.intertwiner
+#print axioms GppOrientationCliffordCore.closure_eq_carrier
+#print axioms GppOrientationCliffordCore.carrier_center
+#print axioms GppOrientationCliffordCore.halfFlips_agree_on_fixD
+#print axioms GppOrientationCliffordCore.minkowski_realization
 #print axioms GppAllLoopFiniteness.finiteness
 
 -- Thread QG-Blackbody round 2 (KinematicZetaBridge, SinhWeierstrassProduct) — from
@@ -138,6 +165,10 @@ import GppVerify
 #print axioms GppDigamma.digamma_one_half
 #print axioms GppDigamma.digamma_nat_add_one
 #print axioms GppDigamma.digamma_add_one
+#print axioms GppFirstMoment.exp_div_one_sub_exp_eq
+#print axioms GppFirstMoment.collapse
+#print axioms GppFirstMoment.integral_tanh_mul_sech_sq
+#print axioms GppFirstMoment.remainder_integral_eq_one_eighth
 
 -- Positive Gamma--Plancherel defect (v34, Theorem 62.1). Expected: Lean built-ins only.
 -- The arbitrary-real digamma integral representation is deliberately not asserted;
@@ -242,3 +273,105 @@ import GppVerify
 #print axioms GppWeilParity.continuousAt_shiftedTransferWitness
 #print axioms GppWeilParity.tendsto_shiftedTransfer_quotient_div
 #print axioms GppWeilParity.tendsto_shiftedTransfer_quotient_zero
+#print axioms GppPrimeContraction.primePower_norm_eq_one_iff
+#print axioms GppPrimeContraction.mulOpLinP_apply
+#print axioms GppPrimeContraction.mulOpLinP_comp
+#print axioms GppPrimeContraction.mulOpLinP_norm_eq
+#print axioms GppPrimeContraction.mulOpLinP_conj_comp_self
+#print axioms GppPrimeContraction.prime_contraction_unitary_of_modulus_one
+#print axioms GppPrimeContraction.prime_contraction_unitary_of_critical_line
+#print axioms GppPrimeCharFn.norm_sub_real_eq_norm_one_sub_mul
+#print axioms GppPrimeCharFn.norm_blaschke_eq_one
+#print axioms GppPrimeCharFn.primeCharFn_norm_eq_one
+#print axioms GppPrimeCharFn.primeCharFn_diag_unitary_of_modulus_one
+#print axioms GppWeilParity.suzukiKernel_integral_eq_shift_add_const
+
+-- Prime-Fisher/Hankel thread, ported from GPPVerify2 (2026-08-29)
+#print axioms GppFiniteFisherMomentBridge.six_fisherNumerator_eq_mass_mul_momentDiscriminant
+#print axioms GppFiniteFisherMomentBridge.fisherNumerator_one_eq_fisherDet
+#print axioms GppFiniteFisherMomentBridge.momentDiscriminant_one_eq_six_fisherDet
+#print axioms GppFiniteFisherMomentBridge.six_fisherDet_eq_momentDiscriminant_one
+#print axioms GppFiniteVandermondeEnergy.weighted_vandermonde_sq_nonneg
+#print axioms GppFiniteVandermondeEnergy.weighted_vandermonde_sq_pos
+#print axioms GppFiniteVandermondeEnergy.orderedVandermondeEnergy_nonneg
+#print axioms GppFiniteVandermondeExpansionKernel.vandermonde_sq_expansion
+#print axioms GppFiniteMomentFactorization.triple_monomial_factorization
+#print axioms GppPrimeHankelRootEscape.exists_eval_ne_zero_of_natDegree_lt_card
+#print axioms GppPrimeHankelRootEscape.exists_eval_ne_zero_of_card_gt_degree_bound
+#print axioms GppPrimeHankelFiniteGramStrict.weighted_eval_sq_sum_pos
+#print axioms GppPrimeHankelInfiniteLift.tsum_pos_of_finite_sum_pos
+#print axioms GppPrimeHankelInfiniteLift.weighted_sq_tsum_pos
+#print axioms GppPrimeHankelInfiniteLift.finite_weighted_eval_comp_sq_sum_pos
+#print axioms GppPrimeHankelInfiniteLift.weighted_polynomial_tsum_pos
+#print axioms GppPrimeHankelFisherSpecialization.fisherWeight_nonneg
+#print axioms GppPrimeHankelFisherSpecialization.fisher_polynomial_tsum_pos
+#print axioms GppVonMangoldtCumulantSummability.abscissa_vonMangoldtComplex_le_one
+#print axioms GppVonMangoldtCumulantSummability.summable_logMul_logMul_vonMangoldt
+#print axioms GppVonMangoldtCumulantSummability.summable_iterated_logMul_vonMangoldt
+#print axioms GppPrimeFisherMomentSummability.iterated_logMul_apply_general
+#print axioms GppPrimeFisherMomentSummability.iterated_logMul_apply
+#print axioms GppPrimeFisherMomentSummability.natCast_neg_cpow_eq_ofReal_exp
+#print axioms GppPrimeFisherMomentSummability.iterated_logMul_term_eq_ofReal_fisher_moment
+#print axioms GppPrimeFisherMomentSummability.summable_fisherWeight_mul_log_pow
+#print axioms GppPrimeHankelPolynomialSummability.summable_weight_mul_polynomial_eval
+#print axioms GppPrimeHankelPolynomialSummability.summable_fisherWeight_mul_polynomial_eval_sq
+#print axioms GppPrimeHankelAllOrderStrict.logTwo_support_injective
+#print axioms GppPrimeHankelAllOrderStrict.fisherWeight_two_pow_pos
+#print axioms GppPrimeHankelAllOrderStrict.fisher_polynomial_tsum_pos_unconditional
+#print axioms GppTwoParameterFisherDeterminant.covariance_det_eq_moment_gram_det
+#print axioms GppTwoParameterFisherDeterminant.three_point_covariance_det_eq_vandermonde
+#print axioms GppTwoParameterFisherDeterminant.three_point_covariance_det_pos
+#print axioms GppTwoParameterFisherDeterminant.four_point_covariance_det_eq_vandermonde_sum
+#print axioms GppTwoParameterFisherDeterminant.four_point_covariance_det_nonneg
+#print axioms GppTwoParameterFisherDeterminant.four_point_covariance_det_pos_of_three
+#print axioms GppVonMangoldtCosine.natCast_neg_cpow_re
+#print axioms GppVonMangoldtCosine.vonMangoldt_term_re_eq_exp_cos
+#print axioms GppVonMangoldtCosine.neg_zeta_logDeriv_re_eq_vonMangoldt_cosine_tsum
+#print axioms GppVonMangoldtCosine.cosine_frequency_positiveType
+#print axioms GppVonMangoldtCosine.vonMangoldt_mode_positiveType
+#print axioms GppVonMangoldtCosine.finite_vonMangoldt_cosine_positiveType
+#print axioms GppVonMangoldtCubicPositivity.summable_cubicSummand
+#print axioms GppVonMangoldtCubicPositivity.tsum_cubicSummand_pos
+#print axioms GppVonMangoldtCubicPositivity.logMul_logMul_vonMangoldt_re_pos
+#print axioms GppWeightedVarianceFinite.weighted_first_moment_sq_le
+#print axioms GppWeightedVarianceFinite.weighted_variance_numerator_nonneg
+#print axioms GppWeightedVarianceFinite.normalized_weighted_variance_nonneg
+#print axioms GppWeightedVarianceInfinite.weighted_variance_numerator_nonneg_tsum
+#print axioms GppWeightedVarianceInfinite.normalized_weighted_variance_nonneg_tsum
+#print axioms GppZetaGibbsSummability.summable_gibbsWeight
+#print axioms GppZetaGibbsSummability.summable_gibbsWeight_mul_logEnergy
+#print axioms GppZetaGibbsSummability.summable_gibbsWeight_mul_logEnergy_sq
+#print axioms GppZetaGibbsSummability.gibbsWeight_tsum_pos
+#print axioms GppZetaGibbsSummability.gibbs_logEnergy_variance_nonneg
+#print axioms GppZetaGibbsMoments.riemannZeta_eq_LSeries_one
+#print axioms GppZetaGibbsMoments.iteratedDeriv_riemannZeta_eq_logMomentLSeries
+#print axioms GppZetaGibbsMoments.deriv_riemannZeta_eq_neg_logMomentLSeries
+#print axioms GppZetaGibbsMoments.iteratedDeriv_two_riemannZeta_eq_logSqMomentLSeries
+#print axioms GppZetaGibbsMoments.iteratedDeriv_three_riemannZeta_eq_neg_logCubeMomentLSeries
+#print axioms GppZetaGibbsMoments.iteratedDeriv_four_riemannZeta_eq_logFourthMomentLSeries
+#print axioms GppVonMangoldtCumulantDerivativeBridge.iteratedDeriv_negZetaLogDeriv_eq_logMomentLSeries
+#print axioms GppVonMangoldtCumulantDerivativeBridge.iteratedDeriv_two_negZetaLogDeriv_eq_logMul_logMul
+#print axioms GppVonMangoldtCumulantDerivativeBridge.iteratedDeriv_three_negZetaLogDeriv_eq_neg_logMul_three
+#print axioms GppVonMangoldtCumulantDerivativeBridge.iteratedDeriv_two_negZetaLogDeriv_re_pos
+#print axioms GppZetaGibbsMomentBridge.natSucc_cpow_eq_ofReal_rpow
+#print axioms GppZetaGibbsMomentBridge.natSucc_clog_eq_ofReal_log
+#print axioms GppZetaGibbsMomentBridge.LSeries_one_eq_ofReal_gibbsWeight_tsum
+#print axioms GppZetaGibbsMomentBridge.LSeries_logMul_one_eq_ofReal_firstMoment
+#print axioms GppZetaGibbsMomentBridge.LSeries_logMul_logMul_one_eq_ofReal_secondMoment
+#print axioms GppZetaGibbsMomentBridge.LSeries_logMul_logMul_logMul_one_eq_ofReal_thirdMoment
+#print axioms GppZetaGibbsMomentBridge.LSeries_logMul_four_one_eq_ofReal_fourthMoment
+#print axioms GppZetaGibbsFisher.zetaVarianceResponse_eq_ofReal_logEnergyVariance
+#print axioms GppZetaGibbsFisher.zetaThirdCumulantResponse_eq_ofReal_logEnergyThirdCumulant
+#print axioms GppZetaGibbsFisher.logEnergyVariance_nonneg
+#print axioms GppZetaGibbsFisher.zetaVarianceResponse_re_nonneg
+#print axioms GppZetaGibbsFisher.heatCapacity_nonneg
+#print axioms GppZetaGibbsFisher.entropyBetaDerivative_nonpos
+#print axioms GppZetaGibbsFisher.entropyBetaDerivative_sq_eq_heatCapacity_mul_variance
+#print axioms GppZetaThirdCumulantStrict.iteratedDeriv_two_negZetaLogDeriv_eq_zetaThirdCumulantResponse
+#print axioms GppZetaThirdCumulantStrict.zetaThirdCumulantResponse_re_pos
+#print axioms GppZetaThirdCumulantStrict.logEnergyThirdCumulant_pos
+#print axioms GppZetaFisherStrictMonotonicity.fisher_tsum_strictAnti
+#print axioms GppZetaFisherStrictMonotonicity.logMul_vonMangoldt_re_eq_fisher_tsum
+#print axioms GppZetaGibbsFisherStrict.zetaVarianceResponse_eq_logMul_vonMangoldt
+#print axioms GppZetaGibbsFisherStrict.logEnergyVariance_eq_fisher_tsum
+#print axioms GppZetaGibbsFisherStrict.logEnergyVariance_strictAnti

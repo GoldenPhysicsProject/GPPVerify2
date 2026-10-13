@@ -44,7 +44,7 @@ theorem reflectedKernel_integral_pos
   have hcont : Continuous (fun y : ℝ => reflectedKernel g m y) := by
     unfold reflectedKernel
     fun_prop
-  apply intervalIntegral_pos_of_pos_on hcont.intervalIntegrable
+  apply intervalIntegral_pos_of_pos_on (hcont.intervalIntegrable _ _)
   · intro y hy
     exact reflectedKernel_pos hy.1 (hg y hy)
   · exact hL

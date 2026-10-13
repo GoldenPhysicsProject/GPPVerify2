@@ -55,7 +55,7 @@ theorem centeredPrimeWave_eq_neg_zeta_logDeriv_re
 for every real regulator.  This statement is algebraic and does not require convergence. -/
 theorem finite_centeredPrimeWave_positiveType (eps : ℝ) (S : Finset ℕ) :
     PositiveType (fun t : ℝ =>
-      ∑ n in S, vonMangoldt n *
+      ∑ n ∈ S, vonMangoldt n *
         Real.exp (-Real.log n * centeredRadial eps) *
         Real.cos (Real.log n * t)) := by
   exact finite_vonMangoldt_cosine_positiveType (centeredRadial eps) S

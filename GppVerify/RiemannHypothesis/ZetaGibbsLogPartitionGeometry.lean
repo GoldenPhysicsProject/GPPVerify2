@@ -35,8 +35,7 @@ Gibbs Fisher metric coefficient, i.e. the log-energy variance. Equivalently,
 theorem hasDerivAt_logPartitionSlope
     {β : ℝ} (hβ : 1 < β) :
     HasDerivAt logPartitionSlope (logEnergyVariance β) β := by
-  have h := (hasDerivAt_zetaMeanEnergy hβ).neg
-  simpa [logPartitionSlope] using h
+  exact (hasDerivAt_zetaMeanEnergy hβ).neg.congr_deriv (neg_neg _)
 
 /-- The Hessian/Fisher response is nonnegative on the honest Gibbs domain. -/
 theorem deriv_logPartitionSlope_nonneg

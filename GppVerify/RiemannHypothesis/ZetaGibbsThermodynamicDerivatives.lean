@@ -115,7 +115,10 @@ theorem hasDerivAt_zetaLogPartition
     change (-M1 β) / zetaPartition β = -zetaMeanEnergy β
     rw [hpart, hmean]
     ring
-  simpa [zetaLogPartition, zetaPartition, hcoef] using hlog
+  have hlog' : HasDerivAt (fun y : ℝ => Real.log (riemannZeta (y : ℂ)).re)
+      (-zetaMeanEnergy β) β := by
+    simpa [zetaPartition, hcoef] using hlog
+  exact hlog'
 
 /-- The mean-energy derivative is minus the genuine Gibbs Fisher metric. -/
 theorem hasDerivAt_zetaMeanEnergy
@@ -138,7 +141,10 @@ theorem hasDerivAt_zetaMeanEnergy
     hdiff.hasDerivAt.real_of_complex
   rw [deriv_negZetaLogDeriv_eq_neg_zetaVarianceResponse hβ] at hreal
   rw [zetaVarianceResponse_eq_ofReal_logEnergyVariance hβ] at hreal
-  simpa [zetaMeanEnergy] using hreal
+  have hreal' : HasDerivAt (fun x : ℝ => (negZetaLogDeriv (x : ℂ)).re)
+      (-logEnergyVariance β) β := by
+    simpa using hreal
+  exact hreal'
 
 end GppZetaGibbsThermodynamicDerivatives
 

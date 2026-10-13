@@ -45,7 +45,7 @@ theorem shadow_eq_conj_iff {Delta : ℂ} :
     linarith
   · intro hRe
     apply Complex.ext
-    · simp [celestialShadow, complexConj, hRe]
+    · norm_num [celestialShadow, complexConj, hRe]
     · simp [celestialShadow, complexConj]
 
 end GppPrincipalShadow

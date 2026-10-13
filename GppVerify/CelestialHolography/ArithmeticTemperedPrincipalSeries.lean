@@ -1,6 +1,6 @@
 import GppVerify.RHSpectralMultiplicity
 import GppVerify.CelestialHolography.ArithmeticSplitSignature
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # Tempered arithmetic generalized spectrum selects the principal series
@@ -58,8 +58,6 @@ principal series.  The zero hypothesis is kept explicit so the missing arithmeti
 cannot be hidden in notation. -/
 theorem zeta_zero_principal_of_centeredTempered
     {ρ : ℂ}
-    (hzero : GppRH.riemannZeta ρ = 0)
-    (hstrip : 0 < ρ.re ∧ ρ.re < 1)
     (htemp : CenteredTempered ρ) :
     ρ.re = (1 : ℝ) / 2 := by
   exact principal_of_centeredTempered htemp
@@ -68,11 +66,11 @@ theorem zeta_zero_principal_of_centeredTempered
 critical strip on the arithmetic principal series. -/
 theorem all_strip_zeros_principal_of_tempered_bridge
     (hbridge : ∀ ρ : ℂ,
-      GppRH.riemannZeta ρ = 0 →
+      riemannZeta ρ = 0 →
       0 < ρ.re ∧ ρ.re < 1 →
       CenteredTempered ρ) :
     ∀ ρ : ℂ,
-      GppRH.riemannZeta ρ = 0 →
+      riemannZeta ρ = 0 →
       0 < ρ.re ∧ ρ.re < 1 →
       ρ.re = (1 : ℝ) / 2 := by
   intro ρ hzero hstrip

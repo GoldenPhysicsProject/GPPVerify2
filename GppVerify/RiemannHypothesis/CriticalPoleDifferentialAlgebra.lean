@@ -38,7 +38,7 @@ theorem hasDerivAt_criticalLog
     simpa using (hasDerivAt_id β).sub_const 1
   have hlog : HasDerivAt (fun x : ℝ => Real.log (x - 1)) (1 / (β - 1)) β := by
     convert hdist.log hd using 1 <;> field_simp [hd]
-  simpa [criticalLog] using hL.sub hlog
+  exact hL.sub hlog
 
 /-- Exact second-derivative decomposition of the singular coordinate. -/
 theorem hasDerivAt_criticalLogPrime
@@ -49,12 +49,10 @@ theorem hasDerivAt_criticalLogPrime
   have hd : β - 1 ≠ 0 := sub_ne_zero.mpr hβ
   have hdist : HasDerivAt (fun x : ℝ => x - 1) 1 β := by
     simpa using (hasDerivAt_id β).sub_const 1
-  have hinv := hdist.inv hd
   have hrecip : HasDerivAt (fun x : ℝ => 1 / (x - 1))
-      (-1 / (β - 1) ^ 2) β := by
-    convert hinv.const_mul 1 using 1 <;> field_simp [hd] <;> ring
-  have h := hLp.sub hrecip
-  convert h using 1 <;> simp [criticalLogPrime] <;> ring
+      (-1 / (β - 1) ^ 2) β :=
+    ((hasDerivAt_const β (1 : ℝ)).fun_div hdist hd).congr_deriv (by ring)
+  exact (hLp.sub hrecip).congr_deriv (by ring)
 
 /-- Algebraic consequence: once a regular second derivative `Lpp` is known,
 the double-pole coefficient is exactly one. -/

@@ -27,8 +27,7 @@ theorem summable_cosineSummand {a : ℝ} (ha : 1 < a) (t : ℝ) :
   have hcomplex : Summable (fun n : ℕ =>
       LSeries.term vonMangoldtComplex
         ((a : ℂ) + (t : ℂ) * Complex.I) n) := by
-    simpa [LSeriesSummable, vonMangoldtComplex] using
-      (ArithmeticFunction.LSeriesSummable_vonMangoldt hs)
+    exact ArithmeticFunction.LSeriesSummable_vonMangoldt hs
   have hreal : Summable (fun n : ℕ =>
       (LSeries.term vonMangoldtComplex
         ((a : ℂ) + (t : ℂ) * Complex.I) n).re) := by
@@ -42,7 +41,7 @@ theorem summable_cosineSummand {a : ℝ} (ha : 1 < a) (t : ℝ) :
   intro n
   rcases eq_or_ne n 0 with rfl | hn
   · simp [cosineSummand]
-  · exact (GppVonMangoldtCosine.vonMangoldt_term_re_eq_exp_cos n hn a t).symm
+  · exact GppVonMangoldtCosine.vonMangoldt_term_re_eq_exp_cos n hn a t
 
 /-- The canonical prime-power pair summand is summable. -/
 theorem summable_primePower_pair {a : ℝ} (ha : 1 < a) (t : ℝ) :
@@ -51,8 +50,7 @@ theorem summable_primePower_pair {a : ℝ} (ha : 1 < a) (t : ℝ) :
   let S : Set ℕ := {n : ℕ | IsPrimePow n}
   have hsub : Summable (fun n : S => cosineSummand a t n) :=
     (summable_cosineSummand ha t).subtype S
-  have hpairs := (Nat.Primes.prodNatEquiv.summable_iff).2 hsub
-  simpa [S] using hpairs
+  exact (Nat.Primes.prodNatEquiv.summable_iff).2 hsub
 
 /-- Fubini/Tonelli rearrangement of the absolutely convergent prime-power pair sum. -/
 theorem primePower_pair_tsum_eq_iterated {a : ℝ} (ha : 1 < a) (t : ℝ) :
@@ -70,8 +68,8 @@ theorem neg_zeta_logDeriv_re_eq_iterated_primePower_tsum
       riemannZeta ((a : ℂ) + (t : ℂ) * Complex.I))).re =
       ∑' p : Nat.Primes, ∑' k : ℕ,
         cosineSummand a t ((p : ℕ) ^ (k + 1)) := by
-  rw [GppVonMangoldtPrimePowerReindex.neg_zeta_logDeriv_re_eq_primePower_pair_tsum ha]
-  exact primePower_pair_tsum_eq_iterated ha t
+  exact (GppVonMangoldtCosine.neg_zeta_logDeriv_re_eq_vonMangoldt_cosine_tsum ha).trans
+    ((cosine_tsum_eq_primePower_pair_tsum a t).trans (primePower_pair_tsum_eq_iterated ha t))
 
 end GppVonMangoldtPrimePowerFubini
 

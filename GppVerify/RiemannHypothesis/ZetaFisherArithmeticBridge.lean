@@ -19,6 +19,8 @@ open GppZetaGibbsFisher
 open GppZetaThirdCumulantStrict
 open GppVonMangoldtCumulantDerivativeBridge
 open GppZetaFisherStrictMonotonicity
+open GppZetaGibbsMoments
+open GppVonMangoldtCumulantSummability
 
 /-- The explicit first response is the negative zeta variance response on `Re s>1`. -/
 theorem firstResponse_eq_neg_zetaVarianceResponse
@@ -47,7 +49,7 @@ theorem zetaVarianceResponse_eq_logMul_vonMangoldt
     simpa [iteratedDeriv_one] using heq
   rw [deriv_negZetaLogDeriv_eq_firstResponse hs] at hder
   have habs : LSeries.abscissaOfAbsConv vonMangoldtComplex < ((β : ℂ).re) :=
-    lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one hs
+    lt_of_le_of_lt abscissa_vonMangoldtComplex_le_one (by exact_mod_cast hs)
   rw [LSeries_deriv habs] at hder
   rw [firstResponse_eq_neg_zetaVarianceResponse hβ] at hder
   exact neg_inj.mp hder

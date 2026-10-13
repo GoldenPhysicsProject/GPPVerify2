@@ -35,7 +35,8 @@ theorem arithmeticTimePhase_add (tau sigma a : ℝ) :
 /-- Every arithmetic real-time phase is unitary. -/
 theorem arithmeticTimePhase_norm (tau a : ℝ) :
     ‖arithmeticTimePhase tau a‖ = 1 := by
-  simp [arithmeticTimePhase]
+  simpa [arithmeticTimePhase] using
+    Complex.norm_exp_ofReal_mul_I (tau * arithmeticEnergy a)
 
 /-- Time reversal gives the inverse phase. -/
 theorem arithmeticTimePhase_neg_eq_inv (tau a : ℝ) :
@@ -49,11 +50,11 @@ theorem arithmeticTimePhase_neg_eq_inv (tau a : ℝ) :
 /-- On positive arithmetic scales, OS/shadow reversal of the principal-series
 spectral momentum is exactly Hermitian conjugation of logarithmic time evolution. -/
 theorem arithmeticTimePhase_neg_eq_star
-    (tau a : ℝ) (ha : 0 < a) :
+    (tau a : ℝ) :
     arithmeticTimePhase (-tau) a =
       (starRingEnd ℂ) (arithmeticTimePhase tau a) := by
-  rw [← principal_character_eq_arithmeticTimePhase (-tau) a ha,
-    ← principal_character_eq_arithmeticTimePhase tau a ha]
+  rw [← principal_character_eq_arithmeticTimePhase (-tau) a,
+    ← principal_character_eq_arithmeticTimePhase tau a]
   exact shadow_principal_logScaleCharacter_eq_conj tau (arithmeticEnergy a)
 
 end GppArithmeticTimeEvolution

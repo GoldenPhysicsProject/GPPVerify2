@@ -28,7 +28,7 @@ theorem summable_li2Series_terms {x : ℝ} (hx : |x| < 1) :
     exact summable_geometric_of_abs_lt_one (by simpa using hx)
   have hgeom : Summable (fun n : ℕ => |x| ^ (n + 1)) := by
     simpa [pow_succ, mul_comm] using hgeom0.mul_left |x|
-  apply Summable.of_norm_bounded (fun n : ℕ => |x| ^ (n + 1)) hgeom
+  apply Summable.of_norm_bounded hgeom
   intro n
   rw [Real.norm_eq_abs, abs_div, abs_pow]
   rw [abs_of_nonneg (sq_nonneg (((n + 1 : ℕ) : ℝ)))]
@@ -74,10 +74,12 @@ theorem abs_li2Series_le {x : ℝ} (hx : |x| < 1) :
         exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
       nlinarith [sq_nonneg (((n + 1 : ℕ) : ℝ) - 1)]
     exact div_le_self (by positivity) hden
+  have hsn : Summable (fun n => ‖f n‖) :=
+    Summable.of_nonneg_of_le (fun n => norm_nonneg _) hterm hgeom
   have hnorm : ‖∑' n : ℕ, f n‖ ≤ ∑' n : ℕ, ‖f n‖ :=
-    norm_tsum_le_tsum_norm hs.norm
+    norm_tsum_le_tsum_norm hsn
   have hmono : (∑' n : ℕ, ‖f n‖) ≤ ∑' n : ℕ, |x| ^ (n + 1) :=
-    tsum_mono hs.norm hgeom hterm
+    Summable.tsum_le_tsum hterm hsn hgeom
   unfold li2Series
   change |∑' n : ℕ, f n| ≤ |x| / (1 - |x|)
   rw [← Real.norm_eq_abs]

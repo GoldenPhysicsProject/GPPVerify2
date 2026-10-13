@@ -1,4 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Tactic
 
 /-!
@@ -20,7 +21,6 @@ theorem reciprocal_cosh_product_identity
       Real.sinh (A + B) / (Real.cosh A * Real.cosh B) := by
   rw [Real.sinh_add]
   field_simp [hA, hB]
-  ring
 
 /-- Solved form of the same identity, ready for integration: the reciprocal-cosh
 product is a tanh sum divided by the total-channel `sinh`. -/

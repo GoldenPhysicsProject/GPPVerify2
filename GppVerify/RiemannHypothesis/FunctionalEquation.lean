@@ -7,9 +7,9 @@ import GppVerify.RiemannHypothesis.HaarMeasure
 /-!
 # Functional Equation ξ(s) = ξ(1-s) from Haar Self-Duality
 
-## Golden Physics Project — ONON Framework Formalization
-## RH Pathway 2 (Spectral/Meyer) — Functional Equation Layer
-## Lean 4 / Mathlib v4.19.0
+## Golden Physics Project — Shadow Framework Formalization
+## Spectral foundation layer (functional equation; RH is not claimed here)
+## Lean 4 / Mathlib v4.33.1
 
 This file derives the functional equation of the completed Riemann zeta
 function from the Haar self-duality proved in HaarMeasure.lean.
@@ -26,7 +26,7 @@ It satisfies ξ(s) = ξ(1-s) for all s ∈ ℂ (away from trivial zeros).
 
 ```
 adelic_haar_self_dual  (HaarMeasure.lean)
-  →  Tate zeta integral Z(Φ, s) = Z(Φ̂, 1-s)   [tate_functional_equation]
+  →  Tate zeta integral Z(Φ, s) = Z(Φ̂, 1-s)   [open_tate_functional_equation]
   →  ξ(s) = ξ(1-s)                               [completed_zeta_functional_eq]
 ```
 
@@ -39,9 +39,9 @@ The Tate step uses:
 
 | Name | Status | Reference |
 |------|--------|-----------|
-| `tate_functional_equation` | stub (True → True) — Tate integral formalism not in Mathlib | Tate 1950 §4 |
+| `open_tate_functional_equation` | stub (True → True) — Tate integral formalism not in Mathlib | Tate 1950 §4 |
 | `gamma_reflection_half` | proved clean via `Complex.Gamma_mul_Gamma_one_sub` | Mathlib |
-| `completed_zeta_functional_eq` | proved — `completedRiemannZeta_one_sub` + ring | Mathlib + ONON52 L16391 |
+| `completed_zeta_functional_eq` | proved — `completedRiemannZeta_one_sub` + ring | Mathlib + On the Nature of Nature v5.2 L16391 |
 -/
 
 namespace GppFE
@@ -80,9 +80,9 @@ noncomputable def riemannXi (s : ℂ) : ℂ :=
 
     Once Mathlib adds `NumberTheory.Adeles.ZetaIntegral`, this sorry closes.
 
-    ONON52: Core of thm:functional-equation-adelic, L16391.
+    On the Nature of Nature v5.2: Core of thm:functional-equation-adelic, L16391.
     Reference: Tate (1950), §4 "The Functional Equation". -/
-theorem tate_functional_equation :
+theorem open_tate_functional_equation :
     ∀ (_ : True), True := by
   intro _
   -- SORRY: Requires adèlic Fourier transform and Poisson summation
@@ -118,10 +118,9 @@ lemma gamma_reflection_half (s : ℂ) (_ : ∀ n : ℕ, s ≠ -2 * n) :
     - The prefactor satisfies s(s-1) = (1-s)((1-s)-1) by ring.
     Together these give ξ(s) = ξ(1-s) with no extra hypotheses needed.
 
-    ONON52: Theorem thm:functional-equation-adelic, L16391.
+    On the Nature of Nature v5.2: Theorem thm:functional-equation-adelic, L16391.
     This is the *output* of `adelic_haar_self_dual` via Tate's thesis. -/
-theorem completed_zeta_functional_eq (s : ℂ)
-    (hn : ∀ n : ℕ, s ≠ -↑n) (hone : s ≠ 1) :
+theorem completed_zeta_functional_eq (s : ℂ) :
     riemannXi s = riemannXi (1 - s) := by
   simp only [riemannXi, completedRiemannZeta_one_sub]
   ring
@@ -132,10 +131,9 @@ theorem completed_zeta_functional_eq (s : ℂ)
 
 /-- If ξ(s) = 0 then ξ(1-s) = 0.
     Follows immediately from the functional equation. -/
-theorem xi_zero_symmetric (s : ℂ) (hzero : riemannXi s = 0)
-    (hn : ∀ n : ℕ, s ≠ -↑n) (hone : s ≠ 1) :
+theorem xi_zero_symmetric (s : ℂ) (hzero : riemannXi s = 0) :
     riemannXi (1 - s) = 0 := by
-  rw [← completed_zeta_functional_eq s hn hone]
+  rw [← completed_zeta_functional_eq s]
   exact hzero
 
 /-- The functional equation forces the critical line Re(s) = ½ to be
@@ -170,7 +168,7 @@ end GppFE
 -- Summary checks
 -- ============================================================
 #check @GppFE.riemannXi
-#check @GppFE.tate_functional_equation
+#check @GppFE.open_tate_functional_equation
 #check @GppFE.completed_zeta_functional_eq
 #check @GppFE.xi_zero_symmetric
 #check @GppFE.critical_line_is_fixed_locus

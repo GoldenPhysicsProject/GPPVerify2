@@ -42,7 +42,8 @@ theorem twistorGoogly_smul (c : ℂ) (z : Fin 4 → ℂ) :
 theorem twistorGoogly_involutive (z : Fin 4 → ℂ) :
     twistorGoogly (twistorGoogly z) = z := by
   ext i
-  fin_cases i <;> simp [twistorGoogly] <;> ring_nf
+  fin_cases i <;> apply Complex.ext <;>
+    simp [twistorGoogly, Complex.mul_re, Complex.mul_im] <;> ring
 
 /-- Coordinatewise Hermitian norm density is preserved by the twistor lift. -/
 theorem twistorGoogly_normSq (z : Fin 4 → ℂ) (i : Fin 4) :
@@ -56,8 +57,9 @@ theorem pluckerVector_twistorGoogly (v1 v2 : Fin 4 → ℂ) :
     pluckerVector (twistorGoogly v1) (twistorGoogly v2) =
       googlyExchange (pluckerVector v1 v2) := by
   ext k
-  fin_cases k <;>
-    simp [pluckerVector, plucker, twistorGoogly, googlyExchange] <;> ring_nf
+  fin_cases k <;> apply Complex.ext <;>
+    simp [pluckerVector, plucker, twistorGoogly, googlyExchange,
+      Complex.mul_re, Complex.mul_im] <;> ring
 
 /-- Hence every actual two-frame realizes the antiunitary googly exchange already
 at twistor level, before projectivization. -/

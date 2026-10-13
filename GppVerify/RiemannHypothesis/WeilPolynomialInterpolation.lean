@@ -36,10 +36,9 @@ theorem exists_polynomial_interpolant
     (S : Finset ℂ) (c : ℂ → ℂ) :
     ∃ p : ℂ[X], ∀ z ∈ S, p.eval z = c z := by
   classical
-  refine ⟨Lagrange.interpolate S (fun z : ℂ => z) c, ?_⟩
+  refine ⟨Lagrange.interpolate S id c, ?_⟩
   intro z hz
-  simpa using
-    (Lagrange.eval_interpolate_at_node c Function.injective_id.injOn hz)
+  exact Lagrange.eval_interpolate_at_node c Function.injective_id.injOn hz
 
 /-- If `h` has no zeros on a finite support, arbitrary values there can be
 interpolated by a polynomial multiple `p(z) h(z)`. -/

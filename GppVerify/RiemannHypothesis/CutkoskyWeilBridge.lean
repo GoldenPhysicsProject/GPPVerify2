@@ -1,3 +1,4 @@
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
@@ -379,7 +380,7 @@ theorem summable_rpow_natAbs {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
 theorem summable_KrClosed_summand {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (θ : ℝ) :
     Summable (fun n : ℤ => if n = 0 then (0 : ℂ) else (r : ℂ) ^ n.natAbs *
       Complex.exp (Complex.I * n * θ)) := by
-  apply Summable.of_norm_bounded _ (summable_rpow_natAbs hr0 hr1)
+  apply Summable.of_norm_bounded (summable_rpow_natAbs hr0 hr1)
   intro n
   split_ifs with h
   · simp
@@ -527,7 +528,9 @@ theorem tendsto_KrN0 {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (θ : ℝ) :
     apply Finset.sum_congr rfl
     intro i _
     by_cases hi : i = 0 <;> simp [hi]
-  simpa only [Function.comp, hKrN0_eq] using hcomp
+  -- Mathlib 4.33: `Function.comp` no longer unfolds as a simp lemma, leaving `hcomp` in
+  -- `(f ∘ g)` form against a beta-reduced goal. `Function.comp_def` is the unfolding lemma.
+  simpa only [Pi.div_def, Function.comp_def, hKrN0_eq] using hcomp
 
 /-- **The full analytic result**: `Σⱼₖ c̄ⱼcₖ(K_r-1)(xⱼ-xₖ) ≥ 0` for the genuine, untruncated
     kernel, obtained from the finite-truncation milestone `KrN0_gram_nonneg` by passing to the
@@ -540,9 +543,9 @@ theorem KrClosed_minus_one_tendsto_positive {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r <
       (starRingEnd ℂ) (c j) * c k * KrN0 r N (x j - x k)) Filter.atTop
       (nhds (∑ j : Fin M, ∑ k : Fin M, (starRingEnd ℂ) (c j) * c k *
         (((KrClosed r (x j - x k) : ℝ) : ℂ) - 1))) := by
-    apply tendsto_finset_sum
+    apply tendsto_finsetSum
     intro j _
-    apply tendsto_finset_sum
+    apply tendsto_finsetSum
     intro k _
     exact tendsto_const_nhds.mul (tendsto_KrN0 hr0 hr1 (x j - x k))
   have hNonneg : ∀ᶠ N in Filter.atTop, 0 ≤ (∑ j : Fin M, ∑ k : Fin M,
@@ -555,11 +558,16 @@ theorem KrClosed_minus_one_tendsto_positive {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r <
     review, completing the finite-truncation milestone `KrN0_gram_nonneg`. -/
 theorem KrClosed_minus_one_positiveType {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
     GppHaarPositivityWeil.PositiveType (fun θ => KrClosed r θ - 1) := by
-  intro M x c
-  have := KrClosed_minus_one_tendsto_positive hr0 hr1 x c
-  convert this using 3
-  push_cast
-  ring
+  -- `KrClosed r θ = (1 - r²)/(1 - 2r cos θ + r²)` is even because `cos` is, which
+  -- is what `positiveType_of_even_of_re` needs; the limiting real-part argument
+  -- below is the original proof, unchanged.
+  refine GppHaarPositivityWeil.positiveType_of_even_of_re (fun t => ?_) (fun M x c => ?_)
+  · unfold KrClosed
+    rw [Real.cos_neg]
+  · have := KrClosed_minus_one_tendsto_positive hr0 hr1 x c
+    convert this using 3
+    push_cast
+    ring
 
 /-! ## Fifth pass: the operator-level vacuum-compression identity
 
@@ -781,11 +789,11 @@ theorem vacuum_compression_operator_identity {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r 
   have hinner : (mulOpLin (KrWeight r) (KrWeight_bound hr0 hr1)).comp
       (mulOpLin P0Weight P0Weight_bound)
       = mulOpLin (fun n => KrWeight r n * P0Weight n)
-          (fun n => by dsimp only; rw [mul_comm]; exact P0_Kr_bound hr0 hr1 n) :=
+          (fun n => by rw [mul_comm]; exact P0_Kr_bound hr0 hr1 n) :=
     mulOpLin_comp (KrWeight r) P0Weight (KrWeight_bound hr0 hr1) P0Weight_bound _
   rw [hinner]
   rw [mulOpLin_comp P0Weight (fun n => KrWeight r n * P0Weight n) P0Weight_bound _
-        (fun n => by dsimp only; rw [← mul_assoc]; exact P0_Kr_P0_bound hr0 hr1 n)]
+        (fun n => by rw [← mul_assoc]; exact P0_Kr_P0_bound hr0 hr1 n)]
   congr 1
   funext n
   rw [← mul_assoc]

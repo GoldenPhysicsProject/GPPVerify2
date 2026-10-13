@@ -62,8 +62,7 @@ theorem cosine_tsum_eq_primePower_pair_tsum (a t : ℝ) :
       (tsum_subtype_eq_of_support_subset hsupp).symm
     _ = ∑' pk : Nat.Primes × ℕ,
         cosineSummand a t ((pk.1 : ℕ) ^ (pk.2 + 1)) := by
-      simpa [S] using
-        (Nat.Primes.prodNatEquiv.tsum_eq
+      exact (Nat.Primes.prodNatEquiv.tsum_eq
           (fun n : {n : ℕ // IsPrimePow n} => cosineSummand a t n)).symm
 
 /-- The canonical pair sum in explicit geometric-cosine coordinates. -/

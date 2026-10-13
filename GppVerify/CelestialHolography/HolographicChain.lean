@@ -3,7 +3,7 @@ import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Matrix.Basic
-import Mathlib.Data.Matrix.Notation
+import Mathlib.LinearAlgebra.Matrix.Notation
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Data.Complex.Basic
 
@@ -33,8 +33,8 @@ Source: holographic_chain_v93.tex
 - `three_constants_count` — 3 doublings → 3 physical constants
 
 ### Axioms (arithmetic geometry, algebraic K-theory):
-- `hasse_weil_gr24_factorization` — ζ_Gr(s) product formula
-- `bost_connes_celestial_restriction` — BC system from prime sublattice
+- `open_hasse_weil_gr24_factorization` — ζ_Gr(s) product formula
+- `open_bost_connes_celestial_restriction` — BC system from prime sublattice
 -/
 
 namespace GppHolographicChain
@@ -209,8 +209,13 @@ theorem chain_terminates_at_dim_8 :
     (16 : ℕ) ∉ ({1, 2, 4, 8} : Finset ℕ) := by native_decide
 
 /-- Exactly 3 fundamental constants from 3 Cayley–Dickson doublings:
-    ℏ (R→C), c (C→H), G (H→O) -/
-theorem three_constants_count : (3 : ℕ) = 3 := rfl
+    ℏ (R→C), c (C→H), G (H→O). Counted against the actual division-algebra dimension
+    set: four stages `{1,2,4,8}`, hence three doublings between them.
+
+    Until 2026-09-01 this was `(3 : ℕ) = 3 := rfl` — the numeral, not the count. Note the
+    *identification* of those three doublings with ℏ, c, G is physical interpretation and
+    is not formalized; what is proved here is only that there are three of them. -/
+theorem three_constants_count : ({1, 2, 4, 8} : Finset ℕ).card - 1 = 3 := by decide
 
 /-! ## Lorentzian signature from quaternions -/
 
@@ -252,14 +257,15 @@ theorem null_cone_quadric (t x y z : ℝ) :
 
 /-! ## Axioms (deep: Hasse–Weil, Bost–Connes) -/
 
-/-- ζ_Gr(s) = ζ(s)·ζ(s-1)·ζ(s-2)²·ζ(s-3)·ζ(s-4) (5 Riemann zeta shifts)
+/- ζ_Gr(s) = ζ(s)·ζ(s-1)·ζ(s-2)²·ζ(s-3)·ζ(s-4) (5 Riemann zeta shifts)
     Proof requires Hasse–Weil theorem and Weil conjectures (Deligne 1974). Not
     an axiom: the statement is content-free (`True`); left as a documented
-    stub rather than adding an unnecessary axiom to the trust base. -/
-theorem hasse_weil_gr24_factorization : True := trivial
+    stub rather than adding an unnecessary axiom to the trust base.
+
+    **Closed 2026-10-08**: the stub `open_hasse_weil_gr24_factorization` is retired. The analytic content — the local Euler factor `exp(∑ N(pⁿ)Tⁿ/n) = 1/((1−T)(1−pT)(1−p²T)²(1−p³T)(1−p⁴T))` for `Re s > 4` — is proved as `GppGr24LocalZeta.gr24_local_zeta` from the point-count polynomial. Still a library gap: that the polynomial is `#Gr(2,4)(𝔽_q)` and the global Euler product over all primes. -/
 
 /-- Bost–Connes system is the restriction of the celestial Hilbert space
     to the prime sublattice; Z_BC(β) = ζ(β). -/
-theorem bost_connes_celestial_restriction : True := trivial
+theorem open_bost_connes_celestial_restriction : True := trivial
 
 end GppHolographicChain

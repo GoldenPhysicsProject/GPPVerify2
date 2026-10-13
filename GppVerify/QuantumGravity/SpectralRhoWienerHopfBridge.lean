@@ -1,4 +1,5 @@
 import GppVerify.QuantumGravity.SpectralRhoMehlerFockBridge
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import GppVerify.CelestialHolography.WienerHopfWeightExtension
 import Mathlib.Tactic
 
@@ -43,7 +44,6 @@ theorem rhoGamma_zero_eq_extendedWienerHopf (lam : ℝ) :
     have hsinh : Real.sinh (Real.pi * lam) ≠ 0 := by
       exact Real.sinh_ne_zero.mpr (mul_ne_zero hpi hlam)
     field_simp [hpi, hsinh]
-    ring
 
 /-- Equivalently, the extended scalar-cut phase-space weight is `pi/2` times the base
 Gamma chamber, as a complex-valued identity. -/
@@ -54,7 +54,6 @@ theorem extendedWienerHopf_eq_pi_half_rhoGamma (lam : ℝ) :
   push_cast
   have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   field_simp [hpi]
-  ring
 
 /-- **All-order phase-space/chamber bridge.** Every normalized Gamma spectral chamber is
 its exact positive even chamber multiplier times the continuously extended scalar-cut

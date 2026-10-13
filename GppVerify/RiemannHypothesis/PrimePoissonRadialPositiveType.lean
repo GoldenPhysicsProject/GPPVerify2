@@ -20,6 +20,7 @@ open Complex Real
 open GppCutkoskyWeil
 open GppPrimePoissonRadial
 open GppHaarPositivityWeil
+open scoped ComplexOrder
 
 /-- Positive type is preserved under real input scaling. -/
 theorem positiveType_comp_mul {f : ℝ → ℝ}
@@ -37,8 +38,6 @@ theorem positiveType_nonneg_mul {f : ℝ → ℝ}
   have h := hf n x z
   let S : ℂ := ∑ i : Fin n, ∑ j : Fin n,
     (starRingEnd ℂ (z i)) * z j * (f (x i - x j) : ℂ)
-  have hS : 0 ≤ S.re := by
-    simpa [S] using h
   have heq :
       (∑ i : Fin n, ∑ j : Fin n,
         (starRingEnd ℂ (z i)) * z j * ((c * f (x i - x j) : ℝ) : ℂ)) =
@@ -53,7 +52,7 @@ theorem positiveType_nonneg_mul {f : ℝ → ℝ}
     push_cast
     ring
   rw [heq]
-  simpa [Complex.mul_re] using mul_nonneg hc hS
+  exact mul_nonneg (Complex.zero_le_real.mpr hc) h
 
 /-- The arbitrary-radial local prime response is positive type for every `p>1`, `a>0`. -/
 theorem WpA_positiveType {p a : ℝ} (hp : 1 < p) (ha : 0 < a) :
@@ -74,7 +73,12 @@ theorem WpA_positiveType {p a : ℝ} (hp : 1 < p) (ha : 0 < a) :
   have hweighted :
       PositiveType (fun t => Real.log p * (KrClosed r (Real.log p * t) - 1)) :=
     positiveType_nonneg_mul hscaled hlog
-  simpa [WpA, r, mul_comm] using hweighted
+  have hfun : WpA p a = fun t => Real.log p * (KrClosed r (Real.log p * t) - 1) := by
+    funext t
+    simp only [WpA, r]
+    rw [mul_comm t]
+  rw [hfun]
+  exact hweighted
 
 end GppPrimePoissonRadialPositiveType
 

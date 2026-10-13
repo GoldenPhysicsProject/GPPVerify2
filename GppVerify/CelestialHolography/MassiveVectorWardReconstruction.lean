@@ -35,7 +35,6 @@ theorem longitudinal_term_eq_fifth_current
     have : μ ^ 2 = 0 := hμ
     exact hμ0 (sq_eq_zero_iff.mp this)
   field_simp [hκ0]
-  ring
 
 /-- Consequently the four-dimensional massive-vector projector contraction equals the
 negative five-dimensional metric contraction, written here as its 4D and fifth pieces. -/

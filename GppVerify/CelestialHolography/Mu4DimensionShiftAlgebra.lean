@@ -24,7 +24,6 @@ theorem shiftFactor_mul_boxPole {ε : ℝ} (hε : ε ≠ 0) :
     shiftFactor ε * (1 / (6 * ε)) = -(1 - ε) / 6 := by
   unfold shiftFactor
   field_simp [hε]
-  ring
 
 /-- The dimension-shift product depends only on the *scaled* raised-box integral
 `ε * I`.  Consequently the analytic input needed for the finite rational term is
