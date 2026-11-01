@@ -6529,6 +6529,833 @@ Source: Codex, GPPDiscovery2 \texttt{2026-09-27\_rh\_prime\_heat\_as\_tfd\_phase
   \item \lean{GppPrimeHeatPhaseDiffusion.prime_heat_term_pos}\leanok\ \texttt{prime\_heat\_term\_pos}
 \end{itemize}
 
+\section{Riemann Hypothesis --- All-Prime Hellinger Threshold at the Critical Temperature}
+Source: Codex, bridge \texttt{work/codex/2026-10-13\_all\_prime\_kakutani\_fisher\_critical\_temperature\_boundary}. For geometric prime occupation laws at inverse temperatures $\beta_a,\beta_b$, the one-prime Hellinger affinity is $u_p=\sqrt{(1-s^2)(1-r^2)}/(1-sr)$ with $s=p^{-\beta_a/2}$, $r=p^{-\beta_b/2}$, and $1-u_p^2=(s-r)^2/(1-sr)^2$ exactly. For $0<\beta_a<\beta_b$, $\sum_p(1-u_p^2)<\infty$ iff $\beta_a>1$; so for the shifted fake $\beta_\pm=1\pm2\theta$ the defect series diverges. Kakutani's dichotomy (cited, not formalized) turns this into equivalence versus singularity of the infinite-product measures. No RH claim.
+
+\noindent\textbf{Proved (16 declarations):}
+\begin{itemize}
+  \item \lean{GppPrimeHellingerThreshold.affinity}\leanok\ \texttt{affinity}
+  \item \lean{GppPrimeHellingerThreshold.sr_lt_one}\leanok\ \texttt{sr\_lt\_one}
+  \item \lean{GppPrimeHellingerThreshold.hasSum_affinity}\leanok\ \texttt{hasSum\_affinity}
+  \item \lean{GppPrimeHellingerThreshold.one_sub_affinity_sq}\leanok\ \texttt{one\_sub\_affinity\_sq}
+  \item \lean{GppPrimeHellingerThreshold.affinity_le_one}\leanok\ \texttt{affinity\_le\_one}
+  \item \lean{GppPrimeHellingerThreshold.sv}\leanok\ \texttt{sv}
+  \item \lean{GppPrimeHellingerThreshold.two_le}\leanok\ \texttt{two\_le}
+  \item \lean{GppPrimeHellingerThreshold.sv_nonneg}\leanok\ \texttt{sv\_nonneg}
+  \item \lean{GppPrimeHellingerThreshold.sv_le_two}\leanok\ \texttt{sv\_le\_two}
+  \item \lean{GppPrimeHellingerThreshold.two_rpow_lt_one}\leanok\ \texttt{two\_rpow\_lt\_one}
+  \item \lean{GppPrimeHellingerThreshold.sv_lt_one}\leanok\ \texttt{sv\_lt\_one}
+  \item \lean{GppPrimeHellingerThreshold.sv_sq}\leanok\ \texttt{sv\_sq}
+  \item \lean{GppPrimeHellingerThreshold.sv_split}\leanok\ \texttt{sv\_split}
+  \item \lean{GppPrimeHellingerThreshold.defect}\leanok\ \texttt{defect}
+  \item \lean{GppPrimeHellingerThreshold.summable_defect_iff}\leanok\ \texttt{summable\_defect\_iff}
+  \item \lean{GppPrimeHellingerThreshold.shifted_fake_defect_not_summable}\leanok\ \texttt{shifted\_fake\_defect\_not\_summable}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Unlabeled All-Prime Tail Event}
+Source: Codex, GPP-bridge PR \#11 (2026-10-13) and bridge note \texttt{work/codex/2026-10-13\_all\_prime\_kakutani\_fisher\_critical\_temperature\_boundary}. For any infinite product of probability measures on $\mathbb N$, ``infinitely many modes occupied'' has probability $1$ or $0$ according as $\sum_i P(\text{occupied}_i)$ diverges or converges (Borel--Cantelli, independence under \texttt{infinitePi}). For the prime occupation law the occupation probability is exactly $p^{-\beta}$, so infinitely many primes are occupied a.s.\ iff $\beta\le1$. The pair event $E$ = both sheets infinitely occupied is swap-invariant, with $\nu_0(E)=1$ for $\mu_1\otimes\mu_1$ and $\nu_\theta(E)=0$ for the swap-symmetrized $\beta_\pm=1\pm2\theta$ mixture. $E$ is a tail event; whether a completed observable algebra contains it is open. No RH claim.
+
+\noindent\textbf{Proved (20 declarations):}
+\begin{itemize}
+  \item \lean{GppPrimeOccupationTail.occ}\leanok\ \texttt{occ}
+  \item \lean{GppPrimeOccupationTail.measurableSet_occ}\leanok\ \texttt{measurableSet\_occ}
+  \item \lean{GppPrimeOccupationTail.iIndepSet_occ}\leanok\ \texttt{iIndepSet\_occ}
+  \item \lean{GppPrimeOccupationTail.infinitePi_occ}\leanok\ \texttt{infinitePi\_occ}
+  \item \lean{GppPrimeOccupationTail.infinitely_occupied_dichotomy}\leanok\ \texttt{infinitely\_occupied\_dichotomy}
+  \item \lean{GppPrimeOccupationTail.prime}\leanok\ \texttt{prime}
+  \item \lean{GppPrimeOccupationTail.q}\leanok\ \texttt{q}
+  \item \lean{GppPrimeOccupationTail.q_nonneg}\leanok\ \texttt{q\_nonneg}
+  \item \lean{GppPrimeOccupationTail.q_le_one}\leanok\ \texttt{q\_le\_one}
+  \item \lean{GppPrimeOccupationTail.succ}\leanok\ \texttt{succ}
+  \item \lean{GppPrimeOccupationTail.law}\leanok\ \texttt{law}
+  \item \lean{GppPrimeOccupationTail.q_lt_one}\leanok\ \texttt{q\_lt\_one}
+  \item \lean{GppPrimeOccupationTail.occ_prob}\leanok\ \texttt{occ\_prob}
+  \item \lean{GppPrimeOccupationTail.tsum_occ_eq_top_iff}\leanok\ \texttt{tsum\_occ\_eq\_top\_iff}
+  \item \lean{GppPrimeOccupationTail.tail_one_iff}\leanok\ \texttt{tail\_one\_iff}
+  \item \lean{GppPrimeOccupationTail.tail_zero_iff}\leanok\ \texttt{tail\_zero\_iff}
+  \item \lean{GppPrimeOccupationTail.E}\leanok\ \texttt{E}
+  \item \lean{GppPrimeOccupationTail.pair_event_swap}\leanok\ \texttt{pair\_event\_swap}
+  \item \lean{GppPrimeOccupationTail.centered_pair_E}\leanok\ \texttt{centered\_pair\_E}
+  \item \lean{GppPrimeOccupationTail.shifted_pair_E}\leanok\ \texttt{shifted\_pair\_E}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Finite Swap-Invariant Prime-Block Discriminator}
+Source: Codex, GPP-bridge \texttt{work/codex/2026-10-13\_finite\_even\_prime\_clock\_discriminators}. For a finite block $B$ of prime modes, $E_B$ = both sheets have an occupied mode in $B$ is swap-invariant and bounded. For any joining of two copies of $\mu_1$, $\nu(E_B)\ge 1-2\prod_{B}(1-1/p)$; for any measure with a $\mu_c$ marginal, $\nu(E_B)\le\sum_B p^{-c}$. Hence for $0<\theta<1/2$ and every $\varepsilon>0$ there is a finite block with centered probability at least $1-\varepsilon$ and shifted probability at most $\varepsilon$ (norm distance $2$ on finite swap-invariant observables), using Euler's divergence of $\sum 1/p$. Bost--Connes reading audited, not formalized. No RH claim.
+
+\noindent\textbf{Proved (14 declarations):}
+\begin{itemize}
+  \item \lean{GppPrimeBlockDiscriminator.A}\leanok\ \texttt{A}
+  \item \lean{GppPrimeBlockDiscriminator.EB}\leanok\ \texttt{EB}
+  \item \lean{GppPrimeBlockDiscriminator.EB_swap}\leanok\ \texttt{EB\_swap}
+  \item \lean{GppPrimeBlockDiscriminator.measurableSet_A}\leanok\ \texttt{measurableSet\_A}
+  \item \lean{GppPrimeBlockDiscriminator.compl_A}\leanok\ \texttt{compl\_A}
+  \item \lean{GppPrimeBlockDiscriminator.law_zero}\leanok\ \texttt{law\_zero}
+  \item \lean{GppPrimeBlockDiscriminator.vacuum_prob}\leanok\ \texttt{vacuum\_prob}
+  \item \lean{GppPrimeBlockDiscriminator.centered_lower}\leanok\ \texttt{centered\_lower}
+  \item \lean{GppPrimeBlockDiscriminator.occupied_upper}\leanok\ \texttt{occupied\_upper}
+  \item \lean{GppPrimeBlockDiscriminator.shifted_upper}\leanok\ \texttt{shifted\_upper}
+  \item \lean{GppPrimeBlockDiscriminator.summable_q_iff}\leanok\ \texttt{summable\_q\_iff}
+  \item \lean{GppPrimeBlockDiscriminator.prod_one_sub_le_exp}\leanok\ \texttt{prod\_one\_sub\_le\_exp}
+  \item \lean{GppPrimeBlockDiscriminator.block_discriminator}\leanok\ \texttt{block\_discriminator}
+  \item \lean{GppPrimeBlockDiscriminator.mixture_le}\leanok\ \texttt{mixture\_le}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Conductor-Five Quartic Gauss-Sum Operator}
+Source: Codex, GPP-bridge \texttt{work/codex/2026-10-13\_quartic\_bc\_haar\_spinor\_gauss\_signed\_pairing}, \S1. With $\zeta=e^{2\pi i/5}$ and the quartic character $\chi$ mod 5 ($\chi(2)=i$), the operator $B_\chi(x)=\tfrac14\sum_a\bar\chi(a)\zeta^{ax}$ satisfies $B_\chi(x)=\chi(x)\bar\tau/4$, with $\bar\tau\,\overline{\bar\tau}=5$ and $\overline{\bar\tau}=-\tau$. Hence $B_\chi\overline{B_\chi}=\tfrac5{16}(1-P_5)$ pointwise, $\overline{B_\chi}=-B_{\bar\chi}$, and $B_\chi B_{\bar\chi}=-\tfrac5{16}(1-P_5)$: the sign is forced by $\chi(-1)=-1$. Proved by pure algebra in $\zeta$ ($\zeta^5=1$, geometric sum, $i^2=-1$). Bost--Connes algebra, KMS values and the $L(s,\chi)$ Mellin period are audited, not formalized. No RH claim.
+
+\noindent\textbf{Proved (22 declarations):}
+\begin{itemize}
+  \item \lean{GppQuarticGaussFive.zeta_prim}\leanok\ \texttt{zeta\_prim}
+  \item \lean{GppQuarticGaussFive.zeta_pow_five}\leanok\ \texttt{zeta\_pow\_five}
+  \item \lean{GppQuarticGaussFive.geom}\leanok\ \texttt{geom}
+  \item \lean{GppQuarticGaussFive.conj_zeta}\leanok\ \texttt{conj\_zeta}
+  \item \lean{GppQuarticGaussFive.chi}\leanok\ \texttt{chi}
+  \item \lean{GppQuarticGaussFive.chibar}\leanok\ \texttt{chibar}
+  \item \lean{GppQuarticGaussFive.taubar}\leanok\ \texttt{taubar}
+  \item \lean{GppQuarticGaussFive.tau}\leanok\ \texttt{tau}
+  \item \lean{GppQuarticGaussFive.B}\leanok\ \texttt{B}
+  \item \lean{GppQuarticGaussFive.Bbar}\leanok\ \texttt{Bbar}
+  \item \lean{GppQuarticGaussFive.zeta_pow_mod}\leanok\ \texttt{zeta\_pow\_mod}
+  \item \lean{GppQuarticGaussFive.B_mod}\leanok\ \texttt{B\_mod}
+  \item \lean{GppQuarticGaussFive.Bbar_mod}\leanok\ \texttt{Bbar\_mod}
+  \item \lean{GppQuarticGaussFive.B_eq}\leanok\ \texttt{B\_eq}
+  \item \lean{GppQuarticGaussFive.Bbar_eq}\leanok\ \texttt{Bbar\_eq}
+  \item \lean{GppQuarticGaussFive.conj_taubar}\leanok\ \texttt{conj\_taubar}
+  \item \lean{GppQuarticGaussFive.taubar_mul_tau}\leanok\ \texttt{taubar\_mul\_tau}
+  \item \lean{GppQuarticGaussFive.tau_mul_conj}\leanok\ \texttt{tau\_mul\_conj}
+  \item \lean{GppQuarticGaussFive.chi_mul_conj}\leanok\ \texttt{chi\_mul\_conj}
+  \item \lean{GppQuarticGaussFive.B_mul_conj}\leanok\ \texttt{B\_mul\_conj}
+  \item \lean{GppQuarticGaussFive.conj_B}\leanok\ \texttt{conj\_B}
+  \item \lean{GppQuarticGaussFive.B_mul_Bbar}\leanok\ \texttt{B\_mul\_Bbar}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Binary Fermionic Euler Factor and the Liouville Correction}
+Source: Codex, GPP-bridge \texttt{work/codex/2026-10-13\_prime\_fermionic\_fock\_composite\_theta\_mirror\_boundary}, with Claude Code's correction. Binary telescoping $(1-x)\prod_{j<N}(1+x^{2^j})=1-x^{2^N}$ gives $\prod_j(1+x^{2^j})=1/(1-x)$ for $|x|<1$, the local form of $\zeta(s)=\prod_p\prod_j(1+p^{-2^js})$. Dropping $j=0$ gives $1/(1-x^2)$, so whole-space $j=0$ parity grading yields $1/(1+x)$, the Euler factor of $\zeta(2s)/\zeta(s)$, which differs from the M\"obius factor $1-x$ unless $x=0$. No RH claim.
+
+\noindent\textbf{Proved (6 declarations):}
+\begin{itemize}
+  \item \lean{GppBinaryFermionEuler.prod_binary}\leanok\ \texttt{prod\_binary}
+  \item \lean{GppBinaryFermionEuler.tendsto_pow_two_pow}\leanok\ \texttt{tendsto\_pow\_two\_pow}
+  \item \lean{GppBinaryFermionEuler.tendsto_prod_binary}\leanok\ \texttt{tendsto\_prod\_binary}
+  \item \lean{GppBinaryFermionEuler.tendsto_prod_binary_succ}\leanok\ \texttt{tendsto\_prod\_binary\_succ}
+  \item \lean{GppBinaryFermionEuler.liouville_local}\leanok\ \texttt{liouville\_local}
+  \item \lean{GppBinaryFermionEuler.liouville_ne_moebius}\leanok\ \texttt{liouville\_ne\_moebius}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Conductor-Five Gaussian Mellin Period}
+Source: Codex, GPP-bridge \texttt{work/codex/2026-10-13\_quartic\_bc\_to\_tate\_odd\_gamma\_exact\_mellin}, \S2. For the odd test $f(x)=xe^{-\pi x^2/5}$: $\int_0^\infty f(ny)y^{s-1}dy=\tfrac12(5/\pi)^{(s+1)/2}\Gamma(\tfrac{s+1}2)n^{-s}$ for $s>-1$; for bounded coefficients and real $s>1$ the theta period $\sum_n c_nf(ny)$ has Mellin transform $\tfrac12(5/\pi)^{(s+1)/2}\Gamma(\tfrac{s+1}2)\sum_n c_nn^{-s}$ (termwise interchange justified by absolute summability). With $c_n=2B_\chi(n)$ from QuarticGaussFive this is $(\bar\tau/4)\Lambda(s,\chi)$, the completed odd conductor-5 Dirichlet $L$-function. Real $s$ only; Tate-type identity, not Weil positivity. No RH claim.
+
+\noindent\textbf{Proved (8 declarations):}
+\begin{itemize}
+  \item \lean{GppConductorFiveMellin.f}\leanok\ \texttt{f}
+  \item \lean{GppConductorFiveMellin.arch}\leanok\ \texttt{arch}
+  \item \lean{GppConductorFiveMellin.integrand_eq}\leanok\ \texttt{integrand\_eq}
+  \item \lean{GppConductorFiveMellin.term_mellin}\leanok\ \texttt{term\_mellin}
+  \item \lean{GppConductorFiveMellin.integrableOn_term}\leanok\ \texttt{integrableOn\_term}
+  \item \lean{GppConductorFiveMellin.theta_mellin}\leanok\ \texttt{theta\_mellin}
+  \item \lean{GppConductorFiveMellin.norm_B_le}\leanok\ \texttt{norm\_B\_le}
+  \item \lean{GppConductorFiveMellin.gauss_theta_mellin}\leanok\ \texttt{gauss\_theta\_mellin}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Mirror Gram Window}
+Source: Codex, GPP-bridge \texttt{work/codex/2026-10-13\_mirror\_gram\_window\_lemma}. For $z=\delta+i\gamma$ and its Hermitian mirror, the window evaluation vectors on $L^2[-h,h]$ have squared norm $\int_{-h}^he^{2\delta x}dx=\sinh(2h\delta)/\delta$ and overlap $2h$. The reflected Gram is positive semidefinite for every $\delta$ ($2h\le\sinh(2h\delta)/\delta$), but the normalized overlap $2h\delta/\sinh(2h\delta)$ is $<1$ off the line and tends to $0$ as $h\to\infty$. Imposing rank-one mirror matching at zeta zeros is RH-equivalent and not derived here. No RH claim.
+
+\noindent\textbf{Proved (5 declarations):}
+\begin{itemize}
+  \item \lean{GppMirrorGramWindow.norm_sq_eq}\leanok\ \texttt{norm\_sq\_eq}
+  \item \lean{GppMirrorGramWindow.lt_sinh}\leanok\ \texttt{lt\_sinh}
+  \item \lean{GppMirrorGramWindow.gram_psd}\leanok\ \texttt{gram\_psd}
+  \item \lean{GppMirrorGramWindow.overlap_lt_one}\leanok\ \texttt{overlap\_lt\_one}
+  \item \lean{GppMirrorGramWindow.overlap_tendsto_zero}\leanok\ \texttt{overlap\_tendsto\_zero}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Cayley Circle and Harmonic Measure at s = 1}
+Source: Codex, GPP-bridge \texttt{work/codex/2026-10-13\_cayley\_mirror\_circle\_infinite\_length} and \texttt{\_cayley\_circle\_haar\_harmonic\_measure}. With $\beta(s)=(s-1)/s$: $|\beta|<1$ iff $\Re s>1/2$ and $|\beta|>1$ iff $\Re s<1/2$ (the two disk faces). On the line $\beta(1/2+i\gamma)=-e^{-2i\arctan 2\gamma}$, and $d/d\gamma\,[2\arctan 2\gamma]=1/(\gamma^2+1/4)$, so normalized circle Haar pulls back to $d\gamma/(2\pi(\gamma^2+1/4))$, the harmonic measure of $\Re s>1/2$ based at $s=1$, of total mass $1$. Gluing the faces gives the Riemann sphere (real dimension 2), not a 4D bulk. No RH claim.
+
+\noindent\textbf{Proved (8 declarations):}
+\begin{itemize}
+  \item \lean{GppCayleyCircleHarmonic.beta}\leanok\ \texttt{beta}
+  \item \lean{GppCayleyCircleHarmonic.norm_sub_one_lt_iff}\leanok\ \texttt{norm\_sub\_one\_lt\_iff}
+  \item \lean{GppCayleyCircleHarmonic.norm_sub_one_gt_iff}\leanok\ \texttt{norm\_sub\_one\_gt\_iff}
+  \item \lean{GppCayleyCircleHarmonic.norm_beta_lt_one_iff}\leanok\ \texttt{norm\_beta\_lt\_one\_iff}
+  \item \lean{GppCayleyCircleHarmonic.norm_beta_gt_one_iff}\leanok\ \texttt{norm\_beta\_gt\_one\_iff}
+  \item \lean{GppCayleyCircleHarmonic.beta_line}\leanok\ \texttt{beta\_line}
+  \item \lean{GppCayleyCircleHarmonic.hasDerivAt_angle}\leanok\ \texttt{hasDerivAt\_angle}
+  \item \lean{GppCayleyCircleHarmonic.harmonic_mass_one}\leanok\ \texttt{harmonic\_mass\_one}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Cayley Sphere Involutions and Null Spinors}
+Source: Codex, GPP-bridge \texttt{work/codex/2026-10-13\_spherical\_double\_cayley\_spinor\_null\_cone\_geometry}. Stereographic projection $n(w)$ of $w=(s-1)/s$: the critical line is the equator ($n_z=0\iff|w|=1$); conjugation acts as $(n_x,-n_y,n_z)$, the functional shadow $w\mapsto1/w$ as $(n_x,-n_y,-n_z)$, and the Hermitian mirror $w\mapsto1/\bar w$ as the equator reflection $(n_x,n_y,-n_z)$. The Hermitian matrix $c\lambda\lambda^\dagger$, $\lambda=(1,w)$, is null, with components $E(1,n(w))$ for $c=2E/(1+|w|^2)$. Massless spinor kinematics, not a 4D bulk or gravity. No RH claim.
+
+\noindent\textbf{Proved (10 declarations):}
+\begin{itemize}
+  \item \lean{GppCelestialCayleySphere.nx}\leanok\ \texttt{nx}
+  \item \lean{GppCelestialCayleySphere.ny}\leanok\ \texttt{ny}
+  \item \lean{GppCelestialCayleySphere.nz}\leanok\ \texttt{nz}
+  \item \lean{GppCelestialCayleySphere.one_add_normSq_pos}\leanok\ \texttt{one\_add\_normSq\_pos}
+  \item \lean{GppCelestialCayleySphere.nz_eq_zero_iff}\leanok\ \texttt{nz\_eq\_zero\_iff}
+  \item \lean{GppCelestialCayleySphere.n_conj}\leanok\ \texttt{n\_conj}
+  \item \lean{GppCelestialCayleySphere.n_inv}\leanok\ \texttt{n\_inv}
+  \item \lean{GppCelestialCayleySphere.n_inv_conj}\leanok\ \texttt{n\_inv\_conj}
+  \item \lean{GppCelestialCayleySphere.spinor_null}\leanok\ \texttt{spinor\_null}
+  \item \lean{GppCelestialCayleySphere.spinor_components}\leanok\ \texttt{spinor\_components}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Euler Horodisk in the Cayley Disk}
+Source: Codex, GPP-bridge \texttt{work/codex/2026-10-13\_arithmetic\_seed\_euler\_horodisk\_li\_circle\_moments}, \S2. In $w=(s-1)/s$, the Euler half-plane $\Re s>1$ is exactly the horodisk $|w-1/2|<1/2$, which lies inside the critical disk $|w|<1$ and touches the unit circle only at $w=1$ ($s=\infty$). RH is equivalent to zero-freeness of $\xi(1/(1-w))$ on the whole disk (Li's setting); this is a reformulation, not an estimate. No RH claim.
+
+\noindent\textbf{Proved (5 declarations):}
+\begin{itemize}
+  \item \lean{GppCayleyEulerHorodisk.beta_eq}\leanok\ \texttt{beta\_eq}
+  \item \lean{GppCayleyEulerHorodisk.norm_sub_two_lt_iff}\leanok\ \texttt{norm\_sub\_two\_lt\_iff}
+  \item \lean{GppCayleyEulerHorodisk.euler_horodisk_iff}\leanok\ \texttt{euler\_horodisk\_iff}
+  \item \lean{GppCayleyEulerHorodisk.horodisk_sub_disk}\leanok\ \texttt{horodisk\_sub\_disk}
+  \item \lean{GppCayleyEulerHorodisk.horodisk_touches}\leanok\ \texttt{horodisk\_touches}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Li Moments of a Reflected Zero Quartet}
+Source: Codex, GPP-bridge \texttt{work/codex/2026-10-13\_arithmetic\_seed\_euler\_horodisk\_li\_circle\_moments} (88b7fe2). The Cayley images $e^{-\varepsilon\pm i\theta},e^{\varepsilon\pm i\theta}$ of an off-line zero quartet contribute $\sum(1-w^n)=4[1-\cosh(n\varepsilon)\cos(n\theta)]$ to the $n$-th Li moment; an on-circle conjugate pair contributes $2[1-\cos(n\theta)]\ge0$. Resolving an off-line quartet needs $n\gtrsim1/\varepsilon\approx\gamma^2/\delta$. Li's criterion is an equivalence, not a mechanism. No RH claim.
+
+\noindent\textbf{Proved (4 declarations):}
+\begin{itemize}
+  \item \lean{GppLiQuartetMoment.exp_pow}\leanok\ \texttt{exp\_pow}
+  \item \lean{GppLiQuartetMoment.quartet_moment}\leanok\ \texttt{quartet\_moment}
+  \item \lean{GppLiQuartetMoment.pair_moment}\leanok\ \texttt{pair\_moment}
+  \item \lean{GppLiQuartetMoment.pair_moment_nonneg}\leanok\ \texttt{pair\_moment\_nonneg}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Zeta as Reproducing Kernel; Coherent Overlaps at the Critical Line}
+Source: Codex, GPPDiscovery2 \texttt{2026-09-27\_zeta\_coherent\_state\_ads2\_geometry}, \S\S1--2. In the Dirichlet Hardy space the evaluation vectors satisfy $\sum_n n^{-s}\overline{n^{-w}}=\zeta(s+\bar w)$ for $\Re s+\Re w>1$, so $\zeta$ is the reproducing kernel; at equal $\sigma$ the normalized coherent overlap is $\zeta(2\sigma+i(t-u))/\zeta(2\sigma)$, and for $\tau\ne0$, $\zeta(x+i\tau)/\zeta(x)\to0$ as $x\to1^+$ (pole at $1$, finite at $1+i\tau$). Not formalized: the Fisher metric $(\log\zeta)''$ and its $1/(4r^2)$ asymptotics. No RH claim.
+
+\noindent\textbf{Proved (4 declarations):}
+\begin{itemize}
+  \item \lean{GppZetaCoherentKernel.conj_natCast_cpow}\leanok\ \texttt{conj\_natCast\_cpow}
+  \item \lean{GppZetaCoherentKernel.kernel_eq_zeta}\leanok\ \texttt{kernel\_eq\_zeta}
+  \item \lean{GppZetaCoherentKernel.equal_sigma_kernel}\leanok\ \texttt{equal\_sigma\_kernel}
+  \item \lean{GppZetaCoherentKernel.overlap_tendsto_zero}\leanok\ \texttt{overlap\_tendsto\_zero}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Zeta Gibbs Fisher Metric}
+Source: Codex, GPPDiscovery2 \texttt{2026-09-27\_zeta\_coherent\_state\_ads2\_geometry}, \S3. For real $\beta>1$ with $Z=\sum n^{-\beta}$, $M_1=\sum(\log n)n^{-\beta}$, $M_2=\sum(\log n)^2n^{-\beta}$: termwise $Z'=-M_1$, $M_1'=-M_2$, so $(\log Z)''=(ZM_2-M_1^2)/Z^2=\mathrm{Var}_\beta(\log N)$, and $M_1^2<ZM_2$ strictly (Cauchy--Schwarz). The pole asymptotics $1/\delta^2-(\gamma^2+2\gamma_1)+O(\delta)$ are checked numerically, not formalized. Positivity comes from positive Dirichlet coefficients, so it also holds for $\zeta(s-\theta)\zeta(s+\theta)$; Davenport--Heilbronn fails it numerically. No RH claim.
+
+\noindent\textbf{Proved (18 declarations):}
+\begin{itemize}
+  \item \lean{GppZetaFisherMetric.L}\leanok\ \texttt{L}
+  \item \lean{GppZetaFisherMetric.term}\leanok\ \texttt{term}
+  \item \lean{GppZetaFisherMetric.L_nonneg}\leanok\ \texttt{L\_nonneg}
+  \item \lean{GppZetaFisherMetric.term_eq}\leanok\ \texttt{term\_eq}
+  \item \lean{GppZetaFisherMetric.Z}\leanok\ \texttt{Z}
+  \item \lean{GppZetaFisherMetric.M1}\leanok\ \texttt{M1}
+  \item \lean{GppZetaFisherMetric.M2}\leanok\ \texttt{M2}
+  \item \lean{GppZetaFisherMetric.L_le}\leanok\ \texttt{L\_le}
+  \item \lean{GppZetaFisherMetric.summable_Lpow_term}\leanok\ \texttt{summable\_Lpow\_term}
+  \item \lean{GppZetaFisherMetric.hasDerivAt_Lterm}\leanok\ \texttt{hasDerivAt\_Lterm}
+  \item \lean{GppZetaFisherMetric.term_pos}\leanok\ \texttt{term\_pos}
+  \item \lean{GppZetaFisherMetric.term_le_of_le}\leanok\ \texttt{term\_le\_of\_le}
+  \item \lean{GppZetaFisherMetric.hasDerivAt_sum}\leanok\ \texttt{hasDerivAt\_sum}
+  \item \lean{GppZetaFisherMetric.hasDerivAt_Z}\leanok\ \texttt{hasDerivAt\_Z}
+  \item \lean{GppZetaFisherMetric.hasDerivAt_M1}\leanok\ \texttt{hasDerivAt\_M1}
+  \item \lean{GppZetaFisherMetric.Z_pos}\leanok\ \texttt{Z\_pos}
+  \item \lean{GppZetaFisherMetric.hasDerivAt_logderiv}\leanok\ \texttt{hasDerivAt\_logderiv}
+  \item \lean{GppZetaFisherMetric.fisher_pos}\leanok\ \texttt{fisher\_pos}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Zeta Fisher Kernel Is Positive Definite}
+For every real $\sigma>1$ the kernel $\tau\mapsto(\zeta'/\zeta)'(\sigma+i\tau)=L(\Lambda\log)(\sigma+i\tau)$ is positive definite: $\sum_{i,j}c_i\bar c_j(\zeta'/\zeta)'(\sigma+i(t_i-t_j))=\sum_n\Lambda(n)\log n\,n^{-\sigma}|\sum_i c_i n^{-it_i}|^2\ge0$. The $1\times1$ case is Fisher positivity; the Davenport--Heilbronn function (functional equation, no Euler product with $\Lambda\ge0$) already fails it (Arb: $(\log\mathrm{DH})''(2)<0$). No RH claim.
+
+\noindent\textbf{Proved (9 declarations):}
+\begin{itemize}
+  \item \lean{GppFisherKernelPositive.abscissa_vonMangoldt_le_one}\leanok\ \texttt{abscissa\_vonMangoldt\_le\_one}
+  \item \lean{GppFisherKernelPositive.logDeriv_deriv_eq}\leanok\ \texttt{logDeriv\_deriv\_eq}
+  \item \lean{GppFisherKernelPositive.exp_split}\leanok\ \texttt{exp\_split}
+  \item \lean{GppFisherKernelPositive.quad_form_eq}\leanok\ \texttt{quad\_form\_eq}
+  \item \lean{GppFisherKernelPositive.w}\leanok\ \texttt{w}
+  \item \lean{GppFisherKernelPositive.w_nonneg}\leanok\ \texttt{w\_nonneg}
+  \item \lean{GppFisherKernelPositive.term_eq}\leanok\ \texttt{term\_eq}
+  \item \lean{GppFisherKernelPositive.summable_w}\leanok\ \texttt{summable\_w}
+  \item \lean{GppFisherKernelPositive.fisher_kernel_posDef}\leanok\ \texttt{fisher\_kernel\_posDef}
+\end{itemize}
+
+\section{Riemann Hypothesis --- No-go: Fisher-PD Does Not Force Zeros onto the Line}
+The shifted control $F_\theta(s)=\xi(s-\theta)\xi(s+\theta)$ has a functional equation and off-line zeros, yet its Fisher kernel $\tau\mapsto(\zeta'/\zeta)'(\sigma-\theta+i\tau)+(\zeta'/\zeta)'(\sigma+\theta+i\tau)$ is positive definite for $\sigma-\theta>1$. A positivity transfer using only the functional equation and $\Lambda\ge0$ is therefore falsified; tempered local factors with the single pole pair $\{0,1\}$ are also needed. No RH claim.
+
+\noindent\textbf{Proved (1 declarations):}
+\begin{itemize}
+  \item \lean{GppShiftedFisherKernelNoGo.shifted_kernel_posDef}\leanok\ \texttt{shifted\_kernel\_posDef}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Hagedorn Gap of the Shifted Prime Gas}
+Grok's Hagedorn-gap lemma, exact part. The coefficients $a_\theta(n)=\sum_{d\mid n}d^\theta(n/d)^{-\theta}$ of $\zeta(s-\theta)\zeta(s+\theta)$ satisfy $a_\theta(n)\ge n^\theta$, so $\sum a_\theta(n)n^{-\sigma}$ diverges for $\sigma\le1+\theta$: the $F_\theta$ gas has no Gibbs state on $1<\sigma\le1+\theta$, while $\zeta$'s converges for $\sigma>1$. This is temperedness restated as gas stability, not positivity; Davenport--Heilbronn passes it. No RH claim.
+
+\noindent\textbf{Proved (3 declarations):}
+\begin{itemize}
+  \item \lean{GppHagedornGapShifted.coeff}\leanok\ \texttt{coeff}
+  \item \lean{GppHagedornGapShifted.coeff_ge}\leanok\ \texttt{coeff\_ge}
+  \item \lean{GppHagedornGapShifted.not_summable_gas}\leanok\ \texttt{not\_summable\_gas}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Two-Face Pole Signature of the Zeta Pole Pair}
+Codex's two-face pole theorem, exact part. With $M_g(\pm r)=C\pm S$ (even/odd channels), the pole term is $2\,\mathrm{Re}[(C+S)\overline{(C-S)}]=2|C|^2-2|S|^2$. The form $2\langle g,u\rangle^2-2\langle g,v\rangle^2$ with $u\perp v$ has exactly one positive and one negative direction; on $L^2[-h,h]$ with $u=\cosh(t/2)$, $v=\sinh(t/2)$ (orthogonal) the eigenvalues are $+2(\sinh h+h)$ and $-2(\sinh h-h)$. Pole term only, not full Weil. No RH claim.
+
+\noindent\textbf{Proved (11 declarations):}
+\begin{itemize}
+  \item \lean{GppTwoFacePoleSignature.pole_parity}\leanok\ \texttt{pole\_parity}
+  \item \lean{GppTwoFacePoleSignature.Q}\leanok\ \texttt{Q}
+  \item \lean{GppTwoFacePoleSignature.signature_pos}\leanok\ \texttt{signature\_pos}
+  \item \lean{GppTwoFacePoleSignature.signature_neg}\leanok\ \texttt{signature\_neg}
+  \item \lean{GppTwoFacePoleSignature.nonpos_on_perp}\leanok\ \texttt{nonpos\_on\_perp}
+  \item \lean{GppTwoFacePoleSignature.nonneg_on_perp}\leanok\ \texttt{nonneg\_on\_perp}
+  \item \lean{GppTwoFacePoleSignature.cosh_half_sq}\leanok\ \texttt{cosh\_half\_sq}
+  \item \lean{GppTwoFacePoleSignature.sinh_half_sq}\leanok\ \texttt{sinh\_half\_sq}
+  \item \lean{GppTwoFacePoleSignature.norm_cosh_half}\leanok\ \texttt{norm\_cosh\_half}
+  \item \lean{GppTwoFacePoleSignature.norm_sinh_half}\leanok\ \texttt{norm\_sinh\_half}
+  \item \lean{GppTwoFacePoleSignature.cosh_sinh_orth}\leanok\ \texttt{cosh\_sinh\_orth}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Exact Autocorrelation of the Odd Mirror Window}
+Codex's full signed Weil odd-window evaluation, exact input. For $g=\sinh(t/2)$ on $[-h,h]$, $\int_{-h}^{h-t}g(s)g(s+t)\,ds=\sinh(h-t/2)-(h-t/2)\cosh(t/2)$, vanishing at $t=2h$. Independent numerics reproduce $Q_4=+0.0698371091$ and the Abel/Chebyshev identity; $Q_h>0$ numerically for $h=1,\dots,8$, not certified. A witness consistent with RH, not a proof. No RH claim.
+
+\noindent\textbf{Proved (3 declarations):}
+\begin{itemize}
+  \item \lean{GppOddWindowAutocorrelation.sinh_mul_sinh}\leanok\ \texttt{sinh\_mul\_sinh}
+  \item \lean{GppOddWindowAutocorrelation.autocorr}\leanok\ \texttt{autocorr}
+  \item \lean{GppOddWindowAutocorrelation.autocorr_edge}\leanok\ \texttt{autocorr\_edge}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Shadow Boosts and Prime Shadow Fidelity}
+Codex's shadow-KMS boost note. Einstein addition $\beta(qr)=(\beta q+\beta r)/(1+\beta q\beta r)$; off-line pairs are split-unitary boosts; an invariant positive metric entry forces $\delta=0$ (conditional); prime shadow fidelity $F_p(\sigma)\le1$ with equality iff $\sigma=1/2$, defect $p^{-1}(p^\delta-p^{-\delta})^2$; one-prime modular-spectrum rigidity. Product catastrophe not formalized. No RH claim.
+
+\noindent\textbf{Proved (9 declarations):}
+\begin{itemize}
+  \item \lean{GppShadowBoostFidelity.beta}\leanok\ \texttt{beta}
+  \item \lean{GppShadowBoostFidelity.mobius_add}\leanok\ \texttt{mobius\_add}
+  \item \lean{GppShadowBoostFidelity.boost_split_unitary}\leanok\ \texttt{boost\_split\_unitary}
+  \item \lean{GppShadowBoostFidelity.rigidity}\leanok\ \texttt{rigidity}
+  \item \lean{GppShadowBoostFidelity.fidelity}\leanok\ \texttt{fidelity}
+  \item \lean{GppShadowBoostFidelity.one_sub_fidelity_sq}\leanok\ \texttt{one\_sub\_fidelity\_sq}
+  \item \lean{GppShadowBoostFidelity.fidelity_le_one}\leanok\ \texttt{fidelity\_le\_one}
+  \item \lean{GppShadowBoostFidelity.fidelity_eq_one_iff}\leanok\ \texttt{fidelity\_eq\_one\_iff}
+  \item \lean{GppShadowBoostFidelity.modular_spectrum_rigidity}\leanok\ \texttt{modular\_spectrum\_rigidity}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Hardy-Strip Zero Retention and Scale-Growth Bound}
+Codex's Hardy-strip E-map note, exact parts. Every zero with $0<\sigma<1$ has $|\sigma-1/2|<1/2$ and evaluation norm$^2$ $\tfrac14\sec(\pi(\sigma-\tfrac12))=1/(4\sin\pi\sigma)$; the strip weight ratio is at most $e^{2a|t|}$; an eigen-functional $\ell\circ V=c\ell$ forces $\|c\|\le\|V\|$; two-sided $Ce^{\omega t}$ control forces $|\beta-1/2|\le\omega$. Subexponential growth of the arithmetic quotient is the open RH-strength step. No RH claim.
+
+\noindent\textbf{Proved (5 declarations):}
+\begin{itemize}
+  \item \lean{GppStripRetentionGrowth.retained}\leanok\ \texttt{retained}
+  \item \lean{GppStripRetentionGrowth.eval_norm_eq}\leanok\ \texttt{eval\_norm\_eq}
+  \item \lean{GppStripRetentionGrowth.weight_ratio_le}\leanok\ \texttt{weight\_ratio\_le}
+  \item \lean{GppStripRetentionGrowth.growth_lower_bound}\leanok\ \texttt{growth\_lower\_bound}
+  \item \lean{GppStripRetentionGrowth.exponent_bound}\leanok\ \texttt{exponent\_bound}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Zero Survival and Subexponential Scale Growth}
+Codex's zero-survival note, exact abstract lemmas. A nonzero bounded eigen-functional $\ell\circ V_t=c_t\ell$ with $\|c_t\|=e^{(1/2-\beta)t}$ forces $\beta=1/2$ under a unitary ($\|V_t\|\le1$) or merely subexponential ($\|V_t\|\le C_\varepsilon e^{\varepsilon|t|}$) scale action. A nonzero nilpotent part makes $v-tNv$ unbounded, so unitary jet realizations would also force simplicity of zeros. The survival and growth hypotheses are the open arithmetic content. No RH claim.
+
+\noindent\textbf{Proved (3 declarations):}
+\begin{itemize}
+  \item \lean{GppZeroSurvivalSubexp.principal_of_subexp}\leanok\ \texttt{principal\_of\_subexp}
+  \item \lean{GppZeroSurvivalSubexp.principal_of_contraction}\leanok\ \texttt{principal\_of\_contraction}
+  \item \lean{GppZeroSurvivalSubexp.jordan_unbounded}\leanok\ \texttt{jordan\_unbounded}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Real-Trace Sobolev Completion and Zero Blindness}
+Codex's scale-completion attempt (recorded by Codex as a failed RH closure). The $H^1$ modulation norm is exactly $R=(\sqrt{t^2+4\kappa^2}+|t|)/(2\kappa)$, the root of $R-1/R=|t|/\kappa$, attained and $\le1+|t|/\kappa$; the interval trace block has determinant $\kappa^2$ and eigenvalues $\kappa(1\mp r)/(1\pm r)$, $r=e^{-\kappa\ell}$; the multiplier $((z-b)^2+a^2)((z+b)^2+a^2)$ is positive on $\mathbb R$ yet vanishes at $b+ia$, so real-trace completions are blind to inserted off-line zeros; $h_N$ witnesses nonclosability of the raw vacuum graph. No RH claim.
+
+\noindent\textbf{Proved (14 declarations):}
+\begin{itemize}
+  \item \lean{GppScaleCompletionTrace.R}\leanok\ \texttt{R}
+  \item \lean{GppScaleCompletionTrace.R_root}\leanok\ \texttt{R\_root}
+  \item \lean{GppScaleCompletionTrace.R_pos}\leanok\ \texttt{R\_pos}
+  \item \lean{GppScaleCompletionTrace.R_le}\leanok\ \texttt{R\_le}
+  \item \lean{GppScaleCompletionTrace.disc_zero}\leanok\ \texttt{disc\_zero}
+  \item \lean{GppScaleCompletionTrace.t_eq_zero_of}\leanok\ \texttt{t\_eq\_zero\_of}
+  \item \lean{GppScaleCompletionTrace.ratio_le}\leanok\ \texttt{ratio\_le}
+  \item \lean{GppScaleCompletionTrace.ratio_attained}\leanok\ \texttt{ratio\_attained}
+  \item \lean{GppScaleCompletionTrace.dtn_det}\leanok\ \texttt{dtn\_det}
+  \item \lean{GppScaleCompletionTrace.dtn_eig_minus}\leanok\ \texttt{dtn\_eig\_minus}
+  \item \lean{GppScaleCompletionTrace.dtn_eig_plus}\leanok\ \texttt{dtn\_eig\_plus}
+  \item \lean{GppScaleCompletionTrace.blind_mult_pos}\leanok\ \texttt{blind\_mult\_pos}
+  \item \lean{GppScaleCompletionTrace.blind_mult_root}\leanok\ \texttt{blind\_mult\_root}
+  \item \lean{GppScaleCompletionTrace.nonclosable_witness}\leanok\ \texttt{nonclosable\_witness}
+\end{itemize}
+
+\section{Riemann Hypothesis --- BPY-to-Seed Conformal Metric Covariance}
+Codex's BPY-to-seed conformal metric. If $JU=c\,TJ$ with $T^*T=1$, then $G=J^*J$ obeys $U^*GU=|c|^2G$; for $c=d^{-1/2}$ this is the exact $1/d$ covariance shared with $\Lambda(d)/d$ and $\omega_1(P_d)=1/d$. Boundedness of the established maps is a hypothesis; the frame inequality is not proved. No RH claim.
+
+\noindent\textbf{Proved (2 declarations):}
+\begin{itemize}
+  \item \lean{GppBpySeedConformalMetric.metric_covariance}\leanok\ \texttt{metric\_covariance}
+  \item \lean{GppBpySeedConformalMetric.metric_covariance_real}\leanok\ \texttt{metric\_covariance\_real}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Character Sectors as Residue-Class Projections}
+Grok's precise $P_\chi$. The isotypic projection $E_a=\varphi(q)^{-1}\sum_\psi\psi(a)^{-1}M_\psi$ of the dual-group multiplication action on $\ell^2(\mathbb N)$ is multiplication by $1_{n\equiv a}$, and $\sum_{n\equiv a}n^{-s}=\varphi(q)^{-1}\sum_\psi\psi(a)^{-1}L(s,\psi)$ on $\Re s>1$. Class norms are not equal at finite $z$ (Grok's own correction). No RH claim.
+
+\noindent\textbf{Proved (2 declarations):}
+\begin{itemize}
+  \item \lean{GppResidueClassProjection.projection_eq_indicator}\leanok\ \texttt{projection\_eq\_indicator}
+  \item \lean{GppResidueClassProjection.class_sum}\leanok\ \texttt{class\_sum}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Doubled BPY KMS Autocorrelation and Wedge Fibers}
+Codex's doubled BPY note, exact parts. With $p_\pm(x)=2e^{\pm x/2}\Phi(x)$: $p_+(u+a)p_-(u)=4e^{a/2}\Phi(u+a)\Phi(u)$; the autocorrelation is even; detailed balance $w(a)=e^aw(-a)$ and $\mathfrak F_g(a)=e^a\mathfrak F_g(-a)$; each jump fiber is a $2\times2$ Grassmann determinant $\sqrt{\Phi(u+a)\Phi(u)}(g(u+a)-g(u))$. The Fourier identity $\hat h_0=4\Xi^2$ is not formalized. No RH claim.
+
+\noindent\textbf{Proved (10 declarations):}
+\begin{itemize}
+  \item \lean{GppBpyDoubledKmsWedge.pPlus}\leanok\ \texttt{pPlus}
+  \item \lean{GppBpyDoubledKmsWedge.pMinus}\leanok\ \texttt{pMinus}
+  \item \lean{GppBpyDoubledKmsWedge.kernel_factor}\leanok\ \texttt{kernel\_factor}
+  \item \lean{GppBpyDoubledKmsWedge.w}\leanok\ \texttt{w}
+  \item \lean{GppBpyDoubledKmsWedge.fiber}\leanok\ \texttt{fiber}
+  \item \lean{GppBpyDoubledKmsWedge.shift_even}\leanok\ \texttt{shift\_even}
+  \item \lean{GppBpyDoubledKmsWedge.autocorr_even}\leanok\ \texttt{autocorr\_even}
+  \item \lean{GppBpyDoubledKmsWedge.detailed_balance}\leanok\ \texttt{detailed\_balance}
+  \item \lean{GppBpyDoubledKmsWedge.fiber_detailed_balance}\leanok\ \texttt{fiber\_detailed\_balance}
+  \item \lean{GppBpyDoubledKmsWedge.wedge_det}\leanok\ \texttt{wedge\_det}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Rank-One Compensation No-Go on Two Odd Channels}
+The shifted $F_\theta$ polar sector has two independent negative odd directions. A single
+positive rank-one compensating boundary functional cannot remove both:
+for $\alpha,\beta>0$ and arbitrary real $a,b,\lambda$, there are $x,y$ with
+$\alpha x^2+\beta y^2>0$, $ax+by=0$, and
+$\lambda(ax+by)^2-\alpha x^2-\beta y^2<0$.
+This is exact finite quadratic algebra, not a claim that the completed
+prime--Archimedean remainder has rank one and not a proof of RH.
+
+\noindent\textbf{Proved (2 declarations):}
+\begin{itemize}
+  \item \lean{GppShiftedPoleRankOneNoGo.residual}\leanok\ \texttt{residual}
+  \item \lean{GppShiftedPoleRankOneNoGo.one_channel_cannot_heal_two_negative_modes}\leanok\ \texttt{one\_channel\_cannot\_heal\_two\_negative\_modes}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Four Charge-Time Orientation Lifts}
+Daniel Toupin's orientation group contains four microscopic states
+$(q,t)\in\{\pm1\}^2$.
+The independent charge and time flips commute, their product is the simultaneous
+mirror, and the observer orientation $\chi=qt$ commutes with this mirror.
+For $v=(a,b,c,d)$ the mirror reflection quadratic
+$B_R(v)=2(ad+bc)$ satisfies the exact signature decomposition
+$B_R=\bigl((a+d)^2+(b+c)^2-(a-d)^2-(b-c)^2\bigr)/2$.
+Hence it has two independent positive and two independent negative directions.
+Selecting only the mirror-even subspace would make positivity tautological,
+not a consequence of zeta arithmetic. This is orientation algebra, not RH.
+
+\noindent\textbf{Selected proved declarations:}
+\begin{itemize}
+  \item \lean{GppFourOrientationMirror.flips_commute}\leanok\ \texttt{flips\_commute}
+  \item \lean{GppFourOrientationMirror.two_flips_eq_mirror}\leanok\ \texttt{two\_flips\_eq\_mirror}
+  \item \lean{GppFourOrientationMirror.mirror_involution}\leanok\ \texttt{mirror\_involution}
+  \item \lean{GppFourOrientationMirror.chi_mirror_commute}\leanok\ \texttt{chi\_mirror\_commute}
+  \item \lean{GppFourOrientationMirror.mirror_form_decomposition}\leanok\ \texttt{mirror\_form\_decomposition}
+  \item \lean{GppFourOrientationMirror.even_form_nonneg}\leanok\ \texttt{even\_form\_nonneg}
+  \item \lean{GppFourOrientationMirror.odd_form_nonpos}\leanok\ \texttt{odd\_form\_nonpos}
+  \item \lean{GppFourOrientationMirror.chi_invariant_pairing}\leanok\ \texttt{chi\_invariant\_pairing}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Satake Two-Point Positive-Type Obstruction}
+Grok's S9/S10 local Satake programme and Codex's two-point simplification:
+a Hermitian $2\times2$ Gram with diagonal $d$ and off-diagonal $c>d$
+has a negative antisymmetric direction with energy $2(d-c)<0$.
+For a nonzero real hyperbolic displacement $z$, $2\cosh z>2$,
+so the same obstruction applies to the local weight at an aligned phase.
+No inference of completed Weil positivity or RH.
+
+\noindent\textbf{Proved (5 declarations):}
+\begin{itemize}
+\item \lean{GppSatakeTwoPointNoGo.gramEnergy}\leanok\ \texttt{gramEnergy}
+\item \lean{GppSatakeTwoPointNoGo.antisymmetric_energy}\leanok\ \texttt{antisymmetric\_energy}
+\item \lean{GppSatakeTwoPointNoGo.not_psd_of_off_gt_diag}\leanok\ \texttt{not\_psd\_of\_off\_gt\_diag}
+\item \lean{GppSatakeTwoPointNoGo.cosh_weight_not_psd}\leanok\ \texttt{cosh\_weight\_not\_psd}
+\item \lean{GppSatakeTwoPointNoGo.hyperbolic_negative_witness}\leanok\ \texttt{hyperbolic\_negative\_witness}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Pole/prime-density Casimir and four-orientation Dirac symbol}
+The exact cancellation of the zeta pole with the \emph{continuous}
+prime-counting reference leaves the positive convolution kernel
+$e^{-|t|/2}$, with angular Fourier multiplier $(\nu^2+1/4)^{-1}$.
+This principal-series resolvent admits an internal four-lift Dirac
+square root: on $V=\mathbb C^2\otimes\mathbb C^2$ set
+$\Gamma_1=X\otimes I$, $\Gamma_2=i(Z\otimes Z)(X\otimes I)$.
+The abstract symbol $(a\Gamma_1+b\Gamma_2)$ squares to
+$(a^2+b^2)I_4$, and specifically $b=1/2$ produces $a^2+1/4$.
+This module formally checks only the \emph{finite complex algebra}.
+It does not formalize the integral cancellation, unbounded domains,
+self-adjoint spectral calculus, or the signed Chebyshev-error bound.
+In particular the shifted off-line fake has a positive resolvent
+analogue, so this is \textbf{not} a proof of RH.
+
+\noindent\textbf{Proved declarations:}
+\begin{itemize}
+  \item \lean{GppPoleMeanFourFaceDirac.complex_mass_factor}\leanok\
+  \texttt{complex\_mass\_factor}
+  \item \lean{GppPoleMeanFourFaceDirac.complex_mass_factor_rev}\leanok\
+  \texttt{complex\_mass\_factor\_rev}
+  \item \lean{GppPoleMeanFourFaceDirac.dirac_symbol_square}\leanok\
+  \texttt{dirac\_symbol\_square}
+  \item \lean{GppPoleMeanFourFaceDirac.critical_mass_square}\leanok\
+  \texttt{critical\_mass\_square}
+\end{itemize}
+
+\section{Riemann Hypothesis / Dirichlet GRH --- Haar Prime Partial Isometries}
+The compact norm-one idèle-class factor for $\mathbb Q$ has discrete
+primitive Dirichlet-character sectors $\eta$. A local prime coefficient
+$\eta(p)$ is zero when $p$ divides the conductor and has unit modulus
+otherwise. Therefore a \emph{single unitary} prime translation cannot
+simultaneously reproduce every character's Euler coefficient. Its correct
+abstract Fourier form is a normal partial isometry: a Haar projection
+onto the $p$-unramified character sectors times a compact unitary phase.
+This file formalizes the resulting diagonal operator algebra:
+$V_p^*V_p=V_pV_p^*=E_p$, $E_p^2=E_p$, and commuting Euler vertices.
+The local Haar integral and conductor arithmetic are left as explicit
+external identifications. This does not prove RH or Dirichlet GRH.
+
+\noindent\textbf{Selected proved declarations:}
+\begin{itemize}
+  \item \lean{GppHaarPrimePartialIsometry.haar_projector_idempotent}\leanok\
+  \texttt{haar\_projector\_idempotent}
+  \item \lean{GppHaarPrimePartialIsometry.vertex_product}\leanok\
+  \texttt{vertex\_product}
+  \item \lean{GppHaarPrimePartialIsometry.vertices_commute}\leanok\
+  \texttt{vertices\_commute}
+  \item \lean{GppHaarPrimePartialIsometry.adjoint_vertex_comp}\leanok\
+  \texttt{adjoint\_vertex\_comp}
+  \item \lean{GppHaarPrimePartialIsometry.vertex_adjoint_comp}\leanok\
+  \texttt{vertex\_adjoint\_comp}
+  \item \lean{GppHaarPrimePartialIsometry.vertex_haar_commute}\leanok\
+  \texttt{vertex\_haar\_commute}
+  \item \lean{GppHaarPrimePartialIsometry.ramified_euler_zero}\leanok\
+  \texttt{ramified\_euler\_zero}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Fixed-window conductor dominance of Dirichlet prime currents}
+For the primitive nontrivial Dirichlet sector, the exact completed Weil
+form on a compact Mellin window has a nonnegative real-place kinetic
+energy, conductor coefficient $\log f-c_\varepsilon$, and a finite signed
+prime-power current. Each prime autocorrelation is at most the test
+norm squared. The elementary abstract inequality therefore reads
+\[
+  Q_\eta(g)\geq
+  \left(\log f-c_\varepsilon-2\sum_{p^k<e^{2h}}
+   \frac{\log p}{p^{k/2}}\right)\|g\|^2.
+\]
+Consequently, at any fixed $h$ only finitely many conductors may
+support a negative test. This module verifies the **finite weighted
+sum and conductor comparison**, conditional on explicit upper bounds
+for individual correlations. It does not kernel-check the full
+Dirichlet explicit formula or a uniform-in-$h$ estimate. It is
+NOT an RH/GRH proof.
+\begin{itemize}
+\item \lean{GppConductorPrimeCoercivity.weighted_pairing_upper}\leanok\
+  \texttt{weighted\_pairing\_upper}
+\item \lean{GppConductorPrimeCoercivity.signed_euler_lower}\leanok\
+  \texttt{signed\_euler\_lower}
+\item \lean{GppConductorPrimeCoercivity.conductor_coercivity}\leanok\
+  \texttt{conductor\_coercivity}
+\item \lean{GppConductorPrimeCoercivity.conductor_dominates}\leanok\
+  \texttt{conductor\_dominates}
+\item \lean{GppConductorPrimeCoercivity.negative_requires_small_conductor}\leanok\
+  \texttt{negative\_requires\_small\_conductor}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Finite Picone ground-state comparison for symmetric jumps}
+A positive ground-state comparison function yields an exact
+edge energy identity
+\[
+ (au-bv)^2-(a-b)(au^2-bv^2)=ab(u-v)^2.
+\]
+For nonnegative $a,b$ and nonnegative edge weights, the right-hand side
+is nonnegative and the comparison survives arbitrary finite sums.
+This finite discrete algebra is the core of the nonlocal jump
+ground-state representation used to bound the completed primitive
+$\chi_4$ Weil form on the first prime-active Mellin window.
+The archimedean integral realization and finite interval certificate
+are NOT verified in this module, and no GRH/RH inference is made.
+\begin{itemize}
+\item \lean{GppGroundStatePicone.edge_identity}\leanok\ \texttt{edge\_identity}
+\item \lean{GppGroundStatePicone.edge_lower}\leanok\ \texttt{edge\_lower}
+\item \lean{GppGroundStatePicone.finite_edge_identity}\leanok\ \texttt{finite\_edge\_identity}
+\item \lean{GppGroundStatePicone.finite_edge_lower}\leanok\ \texttt{finite\_edge\_lower}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Complex Character Magnetic Two-Strip Obstruction}
+For the first active prime $p=2$ with $H<\log 2<2H$, the two
+disjoint edge strips carry a Hermitian magnetic exchange matrix
+with Euler phase $a+ib$. In four real coordinates
+$z=(x,u,y,v)$ this exchange is an involution for $a^2+b^2=1$,
+and its quadratic pairing is
+$2a(xy+uv)+2b(xv-uy)$.
+Thus restricting tests to real functions ($u=v=0$) discards the
+imaginary Euler contribution. An explicit Hermitian energy is
+nonnegative on every real vector but strictly negative on the
+complex vector $(x,u,y,v)=(1,0,0,-1)$.
+This proves that real-test positivity is INSUFFICIENT to infer
+the completed complex-character Weil inequality or Dirichlet GRH.
+The formalization checks only finite algebra and no zero locations.
+
+\noindent\textbf{Selected proved declarations:}
+\begin{itemize}
+  \item \lean{GppComplexCharacterMagneticStrip.magnetic_swap_square_scaled}\leanok\ \texttt{magnetic\_swap\_square\_scaled}
+  \item \lean{GppComplexCharacterMagneticStrip.magnetic_swap_involution}\leanok\ \texttt{magnetic\_swap\_involution}
+  \item \lean{GppComplexCharacterMagneticStrip.magnetic_pairing_components}\leanok\ \texttt{magnetic\_pairing\_components}
+  \item \lean{GppComplexCharacterMagneticStrip.real_tests_invisible_imaginary_phase}\leanok\ \texttt{real\_tests\_invisible\_imaginary\_phase}
+  \item \lean{GppComplexCharacterMagneticStrip.real_subspace_nonnegative}\leanok\ \texttt{real\_subspace\_nonnegative}
+  \item \lean{GppComplexCharacterMagneticStrip.complex_witness_negative}\leanok\ \texttt{complex\_witness\_negative}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Closed-Chain Algebra of the Causal-Fermion Bridge}
+Codex/GPT's causal-fermion bridge, finite part only (independently re-derived by Grok S42). The spin-$n$ causal Lagrangian in the moduli $a_i=|\lambda_i|$ of the $N=2n$ closed-chain eigenvalues, $L=\sum a_i^2-N^{-1}(\sum a_i)^2=(2N)^{-1}\sum_{ij}(a_i-a_j)^2$, is nonnegative and vanishes iff all moduli agree; spin one gives $(a_1-a_2)^2/2$ and spin two with spectrum $(c_1,c_1,c_2,c_2)$ gives $(|c_1|-|c_2|)^2$. For the mirror overlap $O=\begin{psmallmatrix}a&b\\\bar b&\bar a\end{psmallmatrix}$, $JOJO^\dagger=(|a|^2-|b|^2)I$, so mirrored spin-one chains have zero action for every input. For real $h$, $m=1+|h|$, the chain $A=xy_h$ obeys $(A-m)^2=h$ and $L=2\max(h,0)$; and $\operatorname{Im}(1/(u-u_0))<0$ for every real $u_0$ (Pick sign alone does not exclude a positive real pole). This re-encodes a scalar defect supplied from outside; it supplies no variational principle and no arithmetic input. No RH claim.
+
+\noindent\textbf{Proved (10 declarations):}
+\begin{itemize}
+  \item \lean{GppCfsClosedChain.lagrangian_eq_pair_sum}\leanok\ \texttt{lagrangian\_eq\_pair\_sum}
+  \item \lean{GppCfsClosedChain.lagrangian_nonneg}\leanok\ \texttt{lagrangian\_nonneg}
+  \item \lean{GppCfsClosedChain.lagrangian_eq_zero_iff}\leanok\ \texttt{lagrangian\_eq\_zero\_iff}
+  \item \lean{GppCfsClosedChain.lagrangian_spin_one}\leanok\ \texttt{lagrangian\_spin\_one}
+  \item \lean{GppCfsClosedChain.lagrangian_spin_two}\leanok\ \texttt{lagrangian\_spin\_two}
+  \item \lean{GppCfsClosedChain.mirror_overlap}\leanok\ \texttt{mirror\_overlap}
+  \item \lean{GppCfsClosedChain.det_yMat_neg}\leanok\ \texttt{det\_yMat\_neg}
+  \item \lean{GppCfsClosedChain.chain_sq}\leanok\ \texttt{chain\_sq}
+  \item \lean{GppCfsClosedChain.lagrangian_roots}\leanok\ \texttt{lagrangian\_roots}
+  \item \lean{GppCfsClosedChain.im_inv_sub_neg}\leanok\ \texttt{im\_inv\_sub\_neg}
+\end{itemize}
+
+\section{Riemann Hypothesis --- The Gamma-Free Prime Barrier as a Legendre-Dual Family}
+Astra's exact duality for Codex's Suzuki gamma-free scalar $T(t)=V(t)-A(t)$, $V(t)=8(\cosh(t/2)-1)$, $A(t)=\sum_j w_j(t-u_j)_+$, proved here for finite truncations of the prime-power list. $A_K(t)=\max_{k\le K}(B_kt-C_k)$ (each prefix affine function lies below $A_K$ and the last active prefix attains it), and with the Legendre transform $V^*(B)=2B\,\mathrm{arsinh}(B/4)-2\sqrt{B^2+16}+8$ (Fenchel--Young via the tangent line of $\cosh$), $A_K\le V$ on $t\ge0$ iff $V^*(B_k)\le C_k$ for every prefix $k\le K$. It does not assert either side for the actual von~Mangoldt sequence (the open arithmetic barrier), handles no infinite list, and says nothing about Suzuki's eventual-sign criterion or its converse. No RH claim.
+
+\noindent\textbf{Proved (9 declarations):}
+\begin{itemize}
+  \item \lean{GppGammaFreeDuality.cosh_tangent}\leanok\ \texttt{cosh\_tangent}
+  \item \lean{GppGammaFreeDuality.Vstar_eq}\leanok\ \texttt{Vstar\_eq}
+  \item \lean{GppGammaFreeDuality.fenchel}\leanok\ \texttt{fenchel}
+  \item \lean{GppGammaFreeDuality.fenchel_eq}\leanok\ \texttt{fenchel\_eq}
+  \item \lean{GppGammaFreeDuality.Vstar_zero}\leanok\ \texttt{Vstar\_zero}
+  \item \lean{GppGammaFreeDuality.affine_eq}\leanok\ \texttt{affine\_eq}
+  \item \lean{GppGammaFreeDuality.affine_le_A}\leanok\ \texttt{affine\_le\_A}
+  \item \lean{GppGammaFreeDuality.A_attained}\leanok\ \texttt{A\_attained}
+  \item \lean{GppGammaFreeDuality.barrier_iff}\leanok\ \texttt{barrier\_iff}
+\end{itemize}
+
+\section{Riemann Hypothesis --- The Davenport--Heilbronn Archimedean Difference is a sech Kernel}
+Grok S47's Lean ask. From Mathlib's $\psi=\Gamma'/\Gamma$ and the Gamma reflection formula $\Gamma(z)\Gamma(1-z)=\pi/\sin\pi z$, the logarithmic derivative gives $\psi(1-z)-\psi(z)=\pi\cos(\pi z)/\sin(\pi z)$ off the poles; with $\psi(\bar z)=\overline{\psi(z)}$ and $\Re\cot(\pi(\tfrac14+\tfrac{ir}{2}))=1/\cosh(\pi r)$ this yields $\Re[\psi(\tfrac34+\tfrac{ir}2)-\psi(\tfrac14+\tfrac{ir}2)]=\pi/\cosh(\pi r)$ for every real $r$. Pointwise digamma identity only: the integral form through $\int_0^\infty\cos(rx)/\cosh(x/2)\,dx$ and the Davenport--Heilbronn Weil form itself are not formalized. No RH claim.
+
+\noindent\textbf{Proved (4 declarations):}
+\begin{itemize}
+  \item \lean{GppDigammaQuarterSech.digamma_reflection}\leanok\ \texttt{digamma\_reflection}
+  \item \lean{GppDigammaQuarterSech.digamma_conj}\leanok\ \texttt{digamma\_conj}
+  \item \lean{GppDigammaQuarterSech.re_cot_quarter}\leanok\ \texttt{re\_cot\_quarter}
+  \item \lean{GppDigammaQuarterSech.re_digamma_quarter_sub}\leanok\ \texttt{re\_digamma\_quarter\_sub}
+\end{itemize}
+
+\section{Riemann Hypothesis --- The Sharp Two-Mode Real-Rootedness Threshold}
+Codex's fake filter for the twistor theta-mixture. With $y=\cosh z$, $\cosh 2z+c\cosh z=2y^2+cy-1$, whose roots $y=(-c\pm\sqrt{c^2+8})/4$ are real and lie in $[-1,1]$ exactly when $|c|\le1$; a real $y$ in $[-1,1]$ forces $\operatorname{Re}z=0$, while $|y|>1$ gives a zero with $\operatorname{Re}z\ne0$. Hence all zeros of $\cosh 2z+c\cosh z$ lie on $i\mathbb R$ iff $|c|\le 1$ (the note states $0\le c\le1$, which agrees for the positive mixtures it uses; recorded as a correction). Also Grok S49's lemma $0<\operatorname{Re}(1/w^2)\iff|\operatorname{Im}w|<|\operatorname{Re}w|$. Finite algebra of one example; nothing about the Fisher-variance identity, the true $\xi$ margin, or any zero of $\xi$ or $\zeta$. No RH claim.
+
+\noindent\textbf{Proved (8 declarations):}
+\begin{itemize}
+  \item \lean{GppTwistorTwoModeThreshold.F_eq}\leanok\ \texttt{F\_eq}
+  \item \lean{GppTwistorTwoModeThreshold.cosh_re_im}\leanok\ \texttt{cosh\_re\_im}
+  \item \lean{GppTwistorTwoModeThreshold.re_eq_zero_of_cosh_real}\leanok\ \texttt{re\_eq\_zero\_of\_cosh\_real}
+  \item \lean{GppTwistorTwoModeThreshold.exists_cosh_offAxis}\leanok\ \texttt{exists\_cosh\_offAxis}
+  \item \lean{GppTwistorTwoModeThreshold.onAxis_of_abs_le_one}\leanok\ \texttt{onAxis\_of\_abs\_le\_one}
+  \item \lean{GppTwistorTwoModeThreshold.offAxis_of_one_lt_abs}\leanok\ \texttt{offAxis\_of\_one\_lt\_abs}
+  \item \lean{GppTwistorTwoModeThreshold.zeros_on_axis_iff}\leanok\ \texttt{zeros\_on\_axis\_iff}
+  \item \lean{GppTwistorTwoModeThreshold.re_inv_sq_pos_iff}\leanok\ \texttt{re\_inv\_sq\_pos\_iff}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Cram\'er Lower Bound on Independent Prime-Power Intensities}
+Codex's tilt-independent obstruction for Astra's independent-channel Poisson construction, elementary part only. For reference intensity $\alpha>0$ and tilted mean $w>0$ the Cram\'er rate is $I_\alpha(w)=2w\,\mathrm{arsinh}(w/\alpha)-2(\sqrt{\alpha^2+w^2}-\alpha)\ge 2w(\log(2w/\alpha)-1)$ (from $\mathrm{arsinh}\,x\ge\log 2x$ and $\sqrt{\alpha^2+w^2}-\alpha\le w$); if $I_\alpha(w)\le wu$ then $\alpha\ge(2/e)\,w\,e^{-u/2}$, which for $w=\Lambda(n)/\sqrt n$, $u=\log n$ is $\alpha\ge(2/e)\Lambda(n)/n$. Also Astra's choice $\alpha=2\Lambda/(n-1)$ has tilted mean $\alpha\sinh(\tfrac12\log n)=\Lambda/\sqrt n$. Not formalized: that the KL of every law with mean $w$ is at least $I_\alpha(w)$ (probability), and the divergence of $\sum\Lambda(n)/n$ that turns this local bound into the intensity-budget no-go. Nothing here concerns correlated or KMS/CFS constructions. No RH claim.
+
+\noindent\textbf{Proved (8 declarations):}
+\begin{itemize}
+  \item \lean{GppCramerIntensityBound.log_two_mul_le_arsinh}\leanok\ \texttt{log\_two\_mul\_le\_arsinh}
+  \item \lean{GppCramerIntensityBound.sqrt_sub_le}\leanok\ \texttt{sqrt\_sub\_le}
+  \item \lean{GppCramerIntensityBound.rate_lower}\leanok\ \texttt{rate\_lower}
+  \item \lean{GppCramerIntensityBound.alpha_lower}\leanok\ \texttt{alpha\_lower}
+  \item \lean{GppCramerIntensityBound.exp_log_half}\leanok\ \texttt{exp\_log\_half}
+  \item \lean{GppCramerIntensityBound.alpha_lower_prime_power}\leanok\ \texttt{alpha\_lower\_prime\_power}
+  \item \lean{GppCramerIntensityBound.sinh_log_half}\leanok\ \texttt{sinh\_log\_half}
+  \item \lean{GppCramerIntensityBound.alpha_astra_mean}\leanok\ \texttt{alpha\_astra\_mean}
+\end{itemize}
+
+\section{Riemann Hypothesis --- The Second Derivative of a Log-Partition Function}
+Exact calculus behind Codex's twistor theta-mixture identity $-m'=\mathbb E[-q']-\operatorname{Var}(q)$. For a finite family with weights $a_i$ and exponents $\varphi_i$ with $\varphi_i'=q_i$, put $F=\sum a_ie^{\varphi_i}$, $m=F'/F=\sum c_iq_i$ with tilted weights $c_i=a_ie^{\varphi_i}/F$ (so $\sum c_i=1$). Then $m'=\sum c_iq_i'+\sum c_iq_i^2-(\sum c_iq_i)^2=\mathbb E[q']+\operatorname{Var}(q)$. The substitution $e^{\varphi_t}=\cosh(t\sqrt u)$ and the integral over $\nu$ are not formalized, and nothing here concerns the sign of $-m'$, the true $\xi$ margin, or any zero. No RH claim.
+
+\noindent\textbf{Proved (6 declarations):}
+\begin{itemize}
+  \item \lean{GppLogPartitionVariance.hasDerivAt_F}\leanok\ \texttt{hasDerivAt\_F}
+  \item \lean{GppLogPartitionVariance.hasDerivAt_dF}\leanok\ \texttt{hasDerivAt\_dF}
+  \item \lean{GppLogPartitionVariance.hasDerivAt_m}\leanok\ \texttt{hasDerivAt\_m}
+  \item \lean{GppLogPartitionVariance.sum_c}\leanok\ \texttt{sum\_c}
+  \item \lean{GppLogPartitionVariance.var_eq}\leanok\ \texttt{var\_eq}
+  \item \lean{GppLogPartitionVariance.m_deriv_eq_var}\leanok\ \texttt{m\_deriv\_eq\_var}
+\end{itemize}
+
+\section{Riemann Hypothesis --- The Pair-Sign Rule and the Lattice Band Algebra}
+Grok S49/S50 asks. An off-line zero $\tfrac12+\delta+i\gamma$ contributes $1/(u-(\delta+i\gamma)^2)^2$ to $-m'(u)$; its real part is positive iff $2|\delta||\gamma|<|u+\gamma^2-\delta^2|$ and nonpositive iff $|u+\gamma^2-\delta^2|\le2|\delta||\gamma|$. The quartic pair factor is $((a-x)^2+t)((\bar a-x)^2+t)=(D+\beta^2)^2+2(D-\beta^2)t+t^2$ with $a=\alpha+i\beta$, $D=(\alpha-x)^2$, and the lattice quadratic $B^2-2M(M-1)B+M(M-1)(M-2)(M-3)$ is negative iff $|B-M(M-1)|<\sqrt{M(M-1)(4M-6)}$. Not formalized: the Laguerre generating identity for polynomials, the lattice model, and the detection bands for actual zeros. No RH claim.
+
+\noindent\textbf{Proved (6 declarations):}
+\begin{itemize}
+  \item \lean{GppPairSignRule.re_inv_sq_nonpos_iff}\leanok\ \texttt{re\_inv\_sq\_nonpos\_iff}
+  \item \lean{GppPairSignRule.shifted_parts}\leanok\ \texttt{shifted\_parts}
+  \item \lean{GppPairSignRule.pair_sign_pos_iff}\leanok\ \texttt{pair\_sign\_pos\_iff}
+  \item \lean{GppPairSignRule.pair_sign_nonpos_iff}\leanok\ \texttt{pair\_sign\_nonpos\_iff}
+  \item \lean{GppPairSignRule.pair_factor_identity}\leanok\ \texttt{pair\_factor\_identity}
+  \item \lean{GppPairSignRule.lattice_band_iff}\leanok\ \texttt{lattice\_band\_iff}
+\section{Riemann Hypothesis --- The Gamma-Free Prime-Kick Cone}
+Codex's elementary dynamics on Suzuki's gamma-free scalar $T=V-A$, for a finite list of prime-power events. With $a_0=V''=2\cosh(t/2)$, $P_0=T'=4\sinh(t/2)-B_k$ and $E_0=2a_0T-P_0^2$, inside a gap $T'=P_0$, $P_0'=a_0$, $a_0'=\sinh(t/2)$, hence $E_0'=2\sinh(t/2)\,T$. At an event of weight $w$: $T$ is continuous, $P_0$ drops by $w$, $E_0^+-E_0^-=2wP_0^--w^2$, and $N_\pm=\sqrt{2a_0T}\pm P_0$ change by $\mp w$. At $n=2$: $T=4(3/\sqrt2-2)$, $a_0=3/\sqrt2$, $P_0^+=\sqrt2-\log2/\sqrt2$, $E_0^+=36-24\sqrt2-2(1-\tfrac12\log2)^2>1.2$, so the starting cone $T,P_0,E_0,N_\pm>0$ holds. Not formalized: the single arithmetic inequality $N_+((\log n)^-)\ge\Lambda(n)/\sqrt n$ for all $n$, Suzuki's criterion, and Landau's theorem; nothing here proves $T\ge0$ for the real prime list. No RH claim.
+
+\noindent\textbf{Proved (19 declarations):}
+\begin{itemize}
+  \item \lean{GppSuzukiKickCone.hasDerivAt_a0}\leanok\ \texttt{hasDerivAt\_a0}
+  \item \lean{GppSuzukiKickCone.hasDerivAt_V}\leanok\ \texttt{hasDerivAt\_V}
+  \item \lean{GppSuzukiKickCone.hasDerivAt_Tk}\leanok\ \texttt{hasDerivAt\_Tk}
+  \item \lean{GppSuzukiKickCone.hasDerivAt_P}\leanok\ \texttt{hasDerivAt\_P}
+  \item \lean{GppSuzukiKickCone.hasDerivAt_E}\leanok\ \texttt{hasDerivAt\_E}
+  \item \lean{GppSuzukiKickCone.Tk_continuous_at_event}\leanok\ \texttt{Tk\_continuous\_at\_event}
+  \item \lean{GppSuzukiKickCone.P_jump}\leanok\ \texttt{P\_jump}
+  \item \lean{GppSuzukiKickCone.E_jump}\leanok\ \texttt{E\_jump}
+  \item \lean{GppSuzukiKickCone.Nplus_jump}\leanok\ \texttt{Nplus\_jump}
+  \item \lean{GppSuzukiKickCone.Nminus_jump}\leanok\ \texttt{Nminus\_jump}
+  \item \lean{GppSuzukiKickCone.E_eq_Nplus_mul_Nminus}\leanok\ \texttt{E\_eq\_Nplus\_mul\_Nminus}
+  \item \lean{GppSuzukiKickCone.start_B}\leanok\ \texttt{start\_B}
+  \item \lean{GppSuzukiKickCone.start_C}\leanok\ \texttt{start\_C}
+  \item \lean{GppSuzukiKickCone.start_T}\leanok\ \texttt{start\_T}
+  \item \lean{GppSuzukiKickCone.start_a0}\leanok\ \texttt{start\_a0}
+  \item \lean{GppSuzukiKickCone.start_P}\leanok\ \texttt{start\_P}
+  \item \lean{GppSuzukiKickCone.start_E}\leanok\ \texttt{start\_E}
+  \item \lean{GppSuzukiKickCone.start_E_gt}\leanok\ \texttt{start\_E\_gt}
+  \item \lean{GppSuzukiKickCone.start_cone}\leanok\ \texttt{start\_cone}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Exact pole cancellation of the PNT continuum kernel (Astra)}
+The completed pole pair has kernel $2\cosh((x-y)/2)$; subtracting the PNT continuum kernel $e^{|x-y|/2}$ leaves the positive kernel $e^{-|x-y|/2}$. This gives an explicit one-sided half-density Gram representation and finite positivity for real and complex coefficients at arbitrary locations, both pole channels retained. A continuum statement on arbitrary finite sets with no window bound: the signed difference between the actual von~Mangoldt sum and the continuum is not bounded here, so this proves neither Weil positivity nor RH.
+
+\noindent\textbf{Proved (6 declarations):}
+\begin{itemize}
+  \item \lean{GppContinuumPoleCancellation.pole_sub_continuum}\leanok\ \texttt{pole\_sub\_continuum}
+  \item \lean{GppContinuumPoleCancellation.halfDensity_product}\leanok\ \texttt{halfDensity\_product}
+  \item \lean{GppContinuumPoleCancellation.integrable_halfDensity_product}\leanok\ \texttt{integrable\_halfDensity\_product}
+  \item \lean{GppContinuumPoleCancellation.halfDensity_gram}\leanok\ \texttt{halfDensity\_gram}
+  \item \lean{GppContinuumPoleCancellation.completed_continuum_nonneg}\leanok\ \texttt{completed\_continuum\_nonneg}
+  \item \lean{GppContinuumPoleCancellation.completed_continuum_complex_nonneg}\leanok\ \texttt{completed\_continuum\_complex\_nonneg}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Frobenius residual bounds imply quadratic residual bounds (Astra)}
+If $\sum_{ij}E_{ij}^2\le\varepsilon^2$ and $\varepsilon\ge0$ then $|\sum_{ij}E_{ij}x_ix_j|\le\varepsilon\sum_ix_i^2$ (finite Cauchy--Schwarz, no symmetry needed), packaged with the residual equality and the resulting coercivity lower bound feeding \texttt{GppWeilResidualCoercivity}. No matrix data, interval certificate, Weil formula or RH assumption is asserted; the hypotheses are explicit finite inequalities.
+
+\noindent\textbf{Proved (3 declarations):}
+\begin{itemize}
+  \item \lean{GppFrobeniusResidual.abs_quadratic_le_of_sum_sq_le}\leanok\ \texttt{abs\_quadratic\_le\_of\_sum\_sq\_le}
+  \item \lean{GppFrobeniusResidual.residual_bound}\leanok\ \texttt{residual\_bound}
+  \item \lean{GppFrobeniusResidual.lower_bound}\leanok\ \texttt{lower\_bound}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Weil-window invisible shifts: pointwise support and autocorrelation (Codex)}
+For a test function supported in the open interval $(-L,L)$, translations by $u$ with $|u|\ge2L$ have no overlapping support, so the translated conjugate product vanishes pointwise and the shifted autocorrelation integral is zero, including at $|u|=2L$. This is the spatial half of Grok's S27 invisible-harmonic lemma; the Fourier/Plancherel identity connecting the autocorrelation to the cosine multiplier is not claimed. No RH or GRH conclusion.
+
+\noindent\textbf{Proved (3 declarations):}
+\begin{itemize}
+  \item \lean{GppWeilInvisibleFrequency.open_window_disjoint_shift}\leanok\ \texttt{open\_window\_disjoint\_shift}
+  \item \lean{GppWeilInvisibleFrequency.shifted_conjugate_product_zero}\leanok\ \texttt{shifted\_conjugate\_product\_zero}
+  \item \lean{GppWeilInvisibleFrequency.shifted_autocorrelation_zero}\leanok\ \texttt{shifted\_autocorrelation\_zero}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Finite confluent Hankel falsifier for the positive two-mode fake (Codex)}
+The rational numbers $h_n=(-1)^n[u^n](f_5'/f_5)$ for $f_5(u)=\cosh(2\sqrt u)+5\cosh\sqrt u$ (checked independently by exact Fraction formal division, and by an independent sympy run, outside Lean): $h_1=13/48>0$ and the adjacent $2\times2$ minor $1649/19353600>0$, but the skipped minor $h_1h_5-h_3^2=-7159067/214592716800<0$, the $3\times3$ determinant is negative, and an explicit rational vector gives a negative quadratic witness. Only the scalar rational facts are formalized; identification with Taylor coefficients is not. No RH claim.
+
+\noindent\textbf{Proved (7 declarations):}
+\begin{itemize}
+  \item \lean{GppTwistorConfluentHankelFake.fake_first_curvature_positive}\leanok\ \texttt{fake\_first\_curvature\_positive}
+  \item \lean{GppTwistorConfluentHankelFake.fake_consecutive_minor_positive}\leanok\ \texttt{fake\_consecutive\_minor\_positive}
+  \item \lean{GppTwistorConfluentHankelFake.fake_skipped_minor_exact}\leanok\ \texttt{fake\_skipped\_minor\_exact}
+  \item \lean{GppTwistorConfluentHankelFake.fake_skipped_minor_negative}\leanok\ \texttt{fake\_skipped\_minor\_negative}
+  \item \lean{GppTwistorConfluentHankelFake.fake_three_by_three_det_exact}\leanok\ \texttt{fake\_three\_by\_three\_det\_exact}
+  \item \lean{GppTwistorConfluentHankelFake.fake_three_by_three_det_negative}\leanok\ \texttt{fake\_three\_by\_three\_det\_negative}
+  \item \lean{GppTwistorConfluentHankelFake.fake_negative_quadratic_witness}\leanok\ \texttt{fake\_negative\_quadratic\_witness}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Pole-parameter square completion and necessary budget (Codex)}
+The non-duplicate lemmas of Codex's draft \#367: $(d+\tfrac12)(a-2b\lambda+(d+\tfrac12)\lambda^2)=(d+\tfrac12)a-b^2+((d+\tfrac12)\lambda-b)^2$, its lower bound, and the necessary budget $C(\beta+\lambda^2/2)<1\Rightarrow C\lambda^2<2$. Real algebra only: nothing here proves $m\ge c$, the continuum lift, a residual tail bound, or RH/GRH.
+
+\noindent\textbf{Proved (3 declarations):}
+\begin{itemize}
+  \item \lean{GppPoleParameterBudget.pole_lambda_square_identity}\leanok\ \texttt{pole\_lambda\_square\_identity}
+  \item \lean{GppPoleParameterBudget.pole_lambda_lower_bound}\leanok\ \texttt{pole\_lambda\_lower\_bound}
+  \item \lean{GppPoleParameterBudget.necessary_pole_lambda_budget}\leanok\ \texttt{necessary\_pole\_lambda\_budget}
+\end{itemize}
+
+\section{General Relativity --- Causal-diamond volume constraint: formalized algebraic core (Codex, Astra repair)}
+Fixed-reference normalized-state identity-shift invariance versus varying-operator scalar response, the vacuum shift, algebraic Einstein/CKV concircularity \emph{assuming} an explicit Ricci Lie-derivative identity, the fixed-volume deficit, the ensemble area-admixture residual, a 4D diagnostic, the exact thermal Fisher cancellation, and linearized constraint-hyperplane uniqueness: if the complete first law gives $\delta S=C\,\delta V$ with $C\ne0$, every stationary variation satisfies $\delta F=0$, and $\delta F\ne0$, then $\delta V\propto\delta F$. Not a global or nonlinear volume-uniqueness proof; full differential geometry, type-III algebraic QFT and curved Noether calculus are not Lean-verified.
+
+\noindent\textbf{Proved (13 declarations):}
+\begin{itemize}
+  \item \lean{GppVolumeConstraint.normalized_state_scalar_invisible}\leanok\ \texttt{normalized\_state\_scalar\_invisible}
+  \item \lean{GppVolumeConstraint.normalized_operator_scalar_visible}\leanok\ \texttt{normalized\_operator\_scalar\_visible}
+  \item \lean{GppVolumeConstraint.vacuum_shift}\leanok\ \texttt{vacuum\_shift}
+  \item \lean{GppVolumeConstraint.volume_multiplier_nonzero}\leanok\ \texttt{volume\_multiplier\_nonzero}
+  \item \lean{GppVolumeConstraint.ricci_trace_wave}\leanok\ \texttt{ricci\_trace\_wave}
+  \item \lean{GppVolumeConstraint.einstein_ricci_identity_concircular}\leanok\ \texttt{einstein\_ricci\_identity\_concircular}
+  \item \lean{GppVolumeConstraint.fixed_volume_area_deficit}\leanok\ \texttt{fixed\_volume\_area\_deficit}
+  \item \lean{GppVolumeConstraint.area_admixture_residual}\leanok\ \texttt{area\_admixture\_residual}
+  \item \lean{GppVolumeConstraint.radius_factor_4d}\leanok\ \texttt{radius\_factor\_4d}
+  \item \lean{GppVolumeConstraint.frozen_weight_factor_4d}\leanok\ \texttt{frozen\_weight\_factor\_4d}
+  \item \lean{GppVolumeConstraint.thermal_fisher_cancellation}\leanok\ \texttt{thermal\_fisher\_cancellation}
+  \item \lean{GppVolumeConstraint.cubic_model}\leanok\ \texttt{cubic\_model}
+  \item \lean{GppVolumeConstraint.stationarity_selects_volume_tangent}\leanok\ \texttt{stationarity\_selects\_volume\_tangent}
+\section{Riemann Hypothesis --- Positive-Pole Direct-Sum Coercivity (Codex, Astra)}
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Astra (even Weil-form completion; Grok S26 audit). The exact weighted square identity $2\beta\big((\beta+\tfrac{\lambda^2}2)(A+2W^2)-(R+\lambda W)^2\big)=(2\beta+\lambda^2)(\beta A-R^2)+(2\beta W-\lambda R)^2$ gives the direct-sum Cauchy--Schwarz bound $(R+\lambda W)^2\le(\beta+\tfrac{\lambda^2}2)(A+2W^2)$ from $R^2\le\beta A$; with $\eta=1-C(\beta+\lambda^2/2)\ge0$ this yields the coercivity $\eta cN\le A+2W^2-C(R+\lambda W)^2$, and the real and imaginary coordinates add for complex tests. Not formalized: the Fourier/Plancherel residual bound, any Arb certificate for a support window, and global Weil positivity. No RH or GRH claim.
+
+\noindent\textbf{Proved (4 declarations):}
+\begin{itemize}
+  \item \lean{GppPositivePoleCompletion.cauchy_square_identity}\leanok\ \texttt{cauchy\_square\_identity}
+  \item \lean{GppPositivePoleCompletion.direct_sum_cauchy}\leanok\ \texttt{direct\_sum\_cauchy}
+  \item \lean{GppPositivePoleCompletion.positive_pole_coercivity}\leanok\ \texttt{positive\_pole\_coercivity}
+  \item \lean{GppPositivePoleCompletion.two_coordinate_coercivity}\leanok\ \texttt{two\_coordinate\_coercivity}
+\end{itemize}
+
+\section{Riemann Hypothesis --- Conditional Residual-Matrix Coercivity (Codex)}
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex (Grok S36--S38). A real finite Cholesky Gram form $\sum_k(\sum_iR_{ki}x_i)^2$ and an LDL form $\sum_kd_k(\sum_iR_{ki}x_i)^2$ with $d\ge0$ are nonnegative, so if $|A(x)-(\lambda\|x\|^2+\text{Gram})|\le\varepsilon\|x\|^2$ then $A(x)\ge(\lambda-\varepsilon)\|x\|^2$, and $A(x)>0$ when $\varepsilon<\lambda$ and $x\neq0$. The residual bound is an explicit hypothesis: nothing here verifies a numerical certificate, a matrix entry, a Frobenius bound, or the Weil trace formula. No RH or GRH claim.
+
+\noindent\textbf{Proved (5 declarations):}
+\begin{itemize}
+  \item \lean{GppWeilResidualCoercivity.cholesky_gram_nonneg}\leanok\ \texttt{cholesky\_gram\_nonneg}
+  \item \lean{GppWeilResidualCoercivity.ldlt_gram_nonneg}\leanok\ \texttt{ldlt\_gram\_nonneg}
+  \item \lean{GppWeilResidualCoercivity.cholesky_residual_lower}\leanok\ \texttt{cholesky\_residual\_lower}
+  \item \lean{GppWeilResidualCoercivity.ldlt_residual_lower}\leanok\ \texttt{ldlt\_residual\_lower}
+  \item \lean{GppWeilResidualCoercivity.cholesky_residual_pos}\leanok\ \texttt{cholesky\_residual\_pos}
+\end{itemize}
+
+\section{Number Theory --- Mertens' First Theorem (explicit)}
+Mathlib has Chebyshev's $\psi$ and $\theta$ with $\psi(x)\le(\log4+4)x$, but not Mertens' theorems. Elementary proof: $\log N!=\sum_{n\le N}\log n=\sum_{n\le N}\sum_{d\mid n}\Lambda(d)=\sum_{d\le N}\Lambda(d)\lfloor N/d\rfloor$, so $N\sum_{d\le N}\Lambda(d)/d=\log N!+\sum_{d\le N}\Lambda(d)\{N/d\}$ with $0\le\sum\Lambda(d)\{N/d\}\le\psi(N)$, and $N\log N-N\le\log N!\le N\log N$. Hence for every $N\ge1$, $\log N-1\le\sum_{n\le N}\Lambda(n)/n\le\log N+\log4+4$, and the sum is unbounded. Unconditional and elementary; no zeta function, no RH content. Written to be upstreamed to Mathlib.
+
+\noindent\textbf{Proved (11 declarations):}
+\begin{itemize}
+  \item \lean{GppMertens.log_factorial_eq}\leanok\ \texttt{log\_factorial\_eq}
+  \item \lean{GppMertens.log_factorial_le}\leanok\ \texttt{log\_factorial\_le}
+  \item \lean{GppMertens.log_factorial_ge}\leanok\ \texttt{log\_factorial\_ge}
+  \item \lean{GppMertens.frac_nonneg}\leanok\ \texttt{frac\_nonneg}
+  \item \lean{GppMertens.frac_le_one}\leanok\ \texttt{frac\_le\_one}
+  \item \lean{GppMertens.mul_sum_eq}\leanok\ \texttt{mul\_sum\_eq}
+  \item \lean{GppMertens.sum_frac_nonneg}\leanok\ \texttt{sum\_frac\_nonneg}
+  \item \lean{GppMertens.sum_frac_le_psi}\leanok\ \texttt{sum\_frac\_le\_psi}
+  \item \lean{GppMertens.mertens_first}\leanok\ \texttt{mertens\_first}
+  \item \lean{GppMertens.mertens_first_lower}\leanok\ \texttt{mertens\_first\_lower}
+  \item \lean{GppMertens.sum_vonMangoldt_div_unbounded}\leanok\ \texttt{sum\_vonMangoldt\_div\_unbounded}
+\end{itemize}
+
+\section{Riemann Hypothesis --- No Fixed Intensity Budget for Independent Prime-Power Channels}
+Codex's independent-channel obstruction to Astra's gamma-free Poisson transport, completed. If each prime-power channel $n$ with reference intensity $\alpha_n>0$ obeys the Cram\'er inequality $I_{\alpha_n}(w_n)\le w_n\log n$ with $w_n=\Lambda(n)/\sqrt n$, then $\alpha_n\ge(2/e)\Lambda(n)/n$ for every $n$ (\texttt{GppCramerIntensityBound}), and Mertens' first theorem gives $\sum_{n\le N}\alpha_n\ge(2/e)(\log N-1)$, which is unbounded: no fixed reference intensity, in particular not the budget $4$, can host all channels. The Cram\'er inequality is a hypothesis (the probability fact $\mathrm{KL}\ge I_\alpha(w)$ is not formalized); the result concerns independently charged channels only and says nothing about correlated, KMS/CFS or signed constructions, or about RH. No RH claim.
+
+\noindent\textbf{Proved (4 declarations):}
+\begin{itemize}
+  \item \lean{GppIndependentChannelBudgetNoGo.alpha_ge}\leanok\ \texttt{alpha\_ge}
+  \item \lean{GppIndependentChannelBudgetNoGo.intensity_sum_lower}\leanok\ \texttt{intensity\_sum\_lower}
+  \item \lean{GppIndependentChannelBudgetNoGo.no_fixed_intensity_budget}\leanok\ \texttt{no\_fixed\_intensity\_budget}
+  \item \lean{GppIndependentChannelBudgetNoGo.budget_four_exceeded}\leanok\ \texttt{budget\_four\_exceeded}
+\end{itemize}
+
 \section{Number Theory --- Arithmetic Layer}
 
 \subsection{BSDPointCounts}
@@ -7277,7 +8104,7 @@ tree --- genuinely eliminated, not renamed:
 Open results are parked as \texttt{theorem foo : True := trivial} (or
 \texttt{$\forall$ (\_ : True), True}) --- the repo's deliberate convention, carrying a doc
 comment that names the precise upstream gap, rather than smuggling the claim in as an axiom
-or leaving a live \texttt{sorry}. There are currently \textbf{124} such stubs.
+or leaving a live \texttt{sorry}. There are currently \textbf{122} such stubs.
 
 \medskip
 \noindent\textbf{That number was wrong until 2026-08-31, and the way it was wrong is worth
@@ -7407,4 +8234,674 @@ Continuous phases into totally disconnected spaces are constant on connected dom
 Commuting projections have zero cross blocks, nested projections give idempotent differences,
 and a right inverse removes prescribed linear moments. Spectral weights at least one give
 a uniform coordinate inverse bound. No arithmetic boundary construction is claimed.
+
+\section{Oriented Fubini--Study antipode and the Weil polar split}
+\lean{GppFSOrientation.antipodal_jacobian_negative,GppFSOrientation.antipodal_unsigned_measure_invariant,GppFSOrientation.antipodal_oriented_form_anti_invariant,GppFSOrientation.weil_pole_even_minus_odd,GppFSOrientation.opposite_orientation_pole_negative}
+The antipode $z\mapsto -1/\bar z$ has negative Jacobian determinant, preserves the unsigned
+Fubini--Study measure, and reverses the oriented area form. Separately, the completed Weil
+polar cross-pair is an even-minus-odd difference of squares, and a reverse-oriented witness
+gives a strictly negative signed polar contribution. Algebra only (Codex, with Daniel Toupin's
+orientation insight): it does not make the polar term positive and does not prove RH.
+
+\section{Exact Osterwalder--Schrader failure of the complete shadow cut}
+\lean{GppCelestialShadowCutOS.cutoffless_shadow_kernel_2log2,GppCelestialShadowCutOS.cutoffless_shadow_kernel_log6,GppCelestialShadowCutOS.cutoffless_shadow_kernel_2log3,GppCelestialShadowCutOS.exact_reflection_determinant,GppCelestialShadowCutOS.negative_reflection_determinant,GppCelestialShadowCutOS.explicit_negative_reflection_witness}
+For the kernel $K(t)=\operatorname{sech}^2(t/2)/16$, the $2\times2$ reflection matrix at
+$t=\log 2,\log 3$ is $\begin{psmallmatrix}1/25&3/98\\3/98&9/400\end{psmallmatrix}$ with exact
+determinant $-891/24010000<0$. So the kernel is positive definite as a Fourier Gram kernel
+but not Osterwalder--Schrader positive for additive Euclidean time. Rational arithmetic only
+(Codex; entries and determinant independently re-checked).
+
+\section{Central-charge sewing algebra and all-spin Kac--Radul mirror}
+\lean{GppWInfinityCentralSewing.opposite_chiral_central,GppWInfinityCentralSewing.equal_chiral_anomaly_cancels,GppWInfinityCentralSewing.central_wedge_zero,GppWInfinityCentralSewing.nontrivial_positive_anomaly_free_pair,GppWInfinityFullSpinMirror.kr_reindex,GppWInfinityFullSpinMirror.kr_mirror_anti,GppWInfinityFullSpinMirror.kr_total_central_zero}
+Two Virasoro sectors with opposite orientation have central term proportional to
+$c_+-c_-$, so equal positive charges give an anomaly-free glued pair; the global wedge
+$n\in\{-1,0,1\}$ has no central term for any $c$. For arbitrary symbols $f,g$ the
+Kac--Radul cocycle reverses sign under the half-density mirror. Formal-algebra statements;
+they do not fix the physical quantum central charge and do not touch RH.
+
+\section{Indicator-vector expectations of the pole kernel and prime shifts}
+\lean{GppIndicatorPole.pole_indicator_expectation,GppIndicatorPole.indicator_shift_overlap,GppIndicatorPole.prime_shift_expectation}
+On $[-L,L]$ with the normalised indicator $f_L=(2L)^{-1/2}\mathbf 1_{[-L,L]}$, the Weil pole kernel
+$2\cosh((x-y)/2)$ has expectation $8(\cosh L-1)/L$; the overlap of $[-L,L]$ with its translate
+by $a\in[0,2L]$ has length $2L-a$; and the symmetric prime-shift expectation is
+$2\sum_n w_n(1-\log n/(2L))$. Exact calculus behind section~3 of Astra's Schur-scale note, whose
+$L=6$ values were re-checked. Elementary integrals only: nothing about the prime operator's
+spectrum, the archimedean term, or any zero of $\zeta$.
+
+\section{Elementary entries of the interval-packet Weil matrix}
+\lean{GppPacketEntries.packet_overlap,GppPacketEntries.pole_functional,GppPacketEntries.pole_functional_conj}
+For carrier packets $f_t(x)=e^{itx}/\sqrt{2L}$ on $[-L,L]$ and $d=t-s\neq0$, the overlap is
+$\langle f_t,f_s\rangle=\sin(dL)/(dL)$; the pole functional
+$\ell_a(t)=\int f_t(x)e^{ax}\,dx$ equals $2\sinh((a+it)L)/((a+it)\sqrt{2L})$, and
+$\ell_{-a}(t)=\overline{\ell_a(t)}$, so the pole term $2\operatorname{Re}(\ell_a\ell_a)$ is not a
+positive absolute square. Elementary integrals behind the conventions of Astra's joint-packet note;
+the Archimedean digamma/Lerch expression, the prime sum and the numerics are not formalized.
+
+\section{Constants of the all-$L$ exterior coercivity choice}
+\lean{GppExteriorConstants.tail_inv_sq_le,GppExteriorConstants.tail_inv_sq_le_inv,GppExteriorConstants.leakage_ratio_le,GppExteriorConstants.exteriorTail_le_half,GppExteriorConstants.alpha_ge_half}
+The real-number inequalities used by the exterior-coercivity choice in Astra's note: the tail
+$\sum_{N<j\le M}(j-a)^{-2}\le 1/(N-a)$, the leakage ratio $r\le 1/(b-a_0)$ once
+$N\ge LT/\pi+4LT(b-a_0)/\pi^3$, the bound $d_N\le\tfrac12$ once $N\ge16L\sinh^2(L/2)/\pi^2$, and
+$\alpha=b-(b-a_0)r-s-d_N\ge\tfrac12$ for $b=s+2$. The Fourier estimates producing $r$ and $d_N$, the digamma
+lower bound and the coupling tail are not formalized; no positivity of the Weil form beyond the
+exterior of a finite Fourier block, and no RH claim.
+
+\section{York volume pairing, local Fubini--Study K\"ahler structure, and their bridge}
+\lean{GppYorkVolume.york_pairing_is_volume_variation,GppYorkVolume.york_constraint_forces_maximal_slice,GppYorkVolume.weighted_volume_response_forces_constant,GppYorkVolume.time_reversal_anti_symplectic,GppFSLocalKahler.complex_structure_sq,GppFSLocalKahler.symplectic_eq_metric_J,GppFSLocalKahler.antiunitary_preserves_metric,GppFSLocalKahler.antiunitary_reverses_omega,GppFSYorkBridge.horizontal_amplitude_zero,GppFSYorkBridge.volume_hyperplane_eq_fs_orthogonal,GppFSYorkBridge.fs_orthogonality_eq_entropy_stationarity}
+Finite-sum ADM/York momentum contraction (the York pairing is the volume variation; a
+Hamiltonian-constraint linearization forces a maximal slice; a spatially uniform work coefficient
+is forced by uniform volume response; time reversal is antisymplectic), the local $\mathbb{CP}^1$
+Fubini--Study metric with complex structure $J$, $J^2=-1$, $\omega=g(J\cdot,\cdot)$, an antiunitary
+map preserving $g$ and reversing $\omega$, and the bridge: the projective phase quotient is distinct
+from the volume hyperplane, and given a K\"ahler pair $(g,\omega)$ and the York law
+$\omega(y,\cdot)=c\,dV$, $dV(\delta)=0\iff g(Jy,\delta)=0$. The equality of the boundary
+Fubini--Study and bulk gravitational symplectic forms is a named hypothesis, not proved
+(Codex; Belin--Lewkowycz--Sarosi and Jacobson--Visser as sources). No claim about RH.
+
+\section{The PNT continuum kernel has at most one positive direction}
+\lean{GppContinuumInertia.pole_form_eq,GppContinuumInertia.contForm_le_pole,GppContinuumInertia.contForm_nonpos_on_hyperplane,GppContinuumInertia.no_two_dim_positive}
+The pole form $\sum c_ic_j\,2\cosh((x_i-x_j)/2)$ equals $2\ell_+(c)\ell_-(c)$ with
+$\ell_\pm(c)=\sum c_ie^{\pm x_i/2}$, a rank-two form of signature $(1,1)$. By pole cancellation, the
+continuum form $\sum c_ic_j e^{|x_i-x_j|/2}$ is at most the pole form, hence $\le0$ on the hyperplane
+$\ell_+=0$, and for any two coefficient vectors some nontrivial combination has nonpositive continuum
+form. So the continuum form has at most one positive direction, on arbitrary finite point sets. This
+concerns the continuum model only: the signed remainder between the actual prime-power sum and the
+continuum is not controlled, and nothing is claimed about the Weil form or RH.
+
+\section{An off-line quartet costs two negative directions; one time direction forbids it}
+\lean{GppQuartetIndex.quartet_negative_family,GppQuartetIndex.offline_conditions,GppQuartetIndex.negativeIndex_le_one_forces_line,GppQuartetIndex.online_form_nonneg}
+The four points $\rho,1-\rho,\bar\rho,1-\bar\rho$ are the orbit of the Klein four-group generated by the shadow
+reflection $\tau(s)=1-\bar s$ and conjugation. For $\rho$ off the critical line and non-real the orbit is two
+distinct mirror pairs, and the reflection form is strictly negative on the span of the two corresponding vectors:
+negative index at least $2$. Consequently, if the form has no two-dimensional negative-definite subspace
+(negative index at most $1$, ``one time direction''), every sampled zero lies on the critical line. This is a
+finite statement; passing to the Weil form needs the explicit formula and independent prescribability of the
+samples, and under those hypotheses it is equivalent to RH. It reformulates RH as a Lorentzian-signature
+statement and does not prove it.
+\section{Gravity reads the even part of the orientation grading}
+\lean{GppOrientationEvenGravity.current_odd,GppOrientationEvenGravity.current_diagonal,GppOrientationEvenGravity.stress_even,GppOrientationEvenGravity.gravitational_source_sign,GppOrientationEvenGravity.reversed_velocity,GppOrientationEvenGravity.reversed_acceleration}
+Reversing a worldline's orientation sends its tangent $u\mapsto-u$. The oriented current $q\,u$ is odd under a single arrow
+flip and invariant under the simultaneous flip $(q,u)\mapsto(-q,-u)$; the dust stress tensor $m\,u_iu_j$ is even; and reversing the
+curve parameter reverses velocity but leaves acceleration unchanged. Hence the sign of the gravitational source is the sign of $m$ for
+either orientation: an arrow flip can change measured charge but never turn attraction into repulsion, which would need $m<0$. Source:
+Daniel Toupin, \emph{Which Way Is Forward?}, with AI assistance from Claude Code. Classical point-particle kinematics only; the
+field-theory stress tensor and the ALPHA-g measurement are cited, not formalized. No claim about RH.
+\section{The continued Abel kernel is indefinite off its convergence strip}
+\lean{GppAbelContinuedKernel.abelCont_gt_one,GppAbelContinuedKernel.abelCont_zero,GppAbelContinuedKernel.abelCont_imag_le_one,GppAbelContinuedKernel.diag_value,GppAbelContinuedKernel.offdiag_value,GppAbelContinuedKernel.eigen_pair,GppAbelContinuedKernel.contForm_indefinite,GppAbelContinuedKernel.no_invariant_mean}
+The rational function $\varepsilon^2/(\varepsilon^2-\alpha^2)$ is the value of the Abel character integral only for
+$|\alpha|<\varepsilon$. For real $0<|\alpha|<\varepsilon$ it exceeds $1$ (it equals $1$ at $\alpha=0$ and is at most $1$ for
+purely imaginary exponents). Continued past the strip, at $\varepsilon=1/4$ with exponents $\pm1/4$, the Gram matrix is
+$\begin{pmatrix}-1/3&1\\1&-1/3\end{pmatrix}$ with eigenvalues $2/3$ and $-4/3$; the vector $(1,-1)$ has quadratic value $-8/3$.
+So positivity of the genuine integral cannot be transported through the continuation. Separately, if translation by $h$ scales a
+putative mean $M(f^2)$ by $e^{2ah}\ne1$ then $M(f^2)=0$, contradicting $M(f^2)M(f^{-2})\ge M(1)^2=1$: no normalized positive
+translation-invariant mean exists on an algebra containing $e^{au}$ and $e^{-au}$. Source: Astra's critique of an external
+Ces\`aro draft, formalized by Claude Code. This does not show zeta has off-line zeros and makes no claim about RH.
+
+\section{\emph{Which Way Is Forward?}: remaining finite statements}
+\lean{GppWhichWayV26.equal_lift_weight,GppWhichWayV26.equal_lift_weight_half,GppWhichWayV26.even_profile_deriv_odd,GppWhichWayV26.oriented_rate_eq_abs,GppWhichWayV26.half_flip_not_deck,GppWhichWayV26.det_lorentz_chart,GppWhichWayV26.det_hermitian_slice,GppWhichWayV26.so102_dimension_split,GppWhichWayV26.offdiag_branching_dimension,GppWhichWayV26.unit_character_inv_eq_conj}
+A weight on the four lifts invariant under the diagonal reversal gives $\mu(++)=\mu(--)$, $\mu(+-)=\mu(-+)$ and probability $1/2$ within
+each orbit. An even entropy profile has odd derivative, and with $t=\operatorname{sgn}\lambda$ the oriented rate is $|S'(\lambda)|$. No
+invertible $U$ satisfies $UR_t=-U$, so the temporal half flip is not the spin-deck sign. The Lorentz chart action $A\mapsto LAR^T$ and the
+Hermitian slice $A\mapsto LAL^\dagger$ preserve $\det A$. Dimension counts $66=28+6+32$ and $32=24+4+4$ for the $\mathrm{Spin}(10,2)$
+adjoint split. A unitary one-dimensional character satisfies $z^{-1}=\bar z$. Source: Daniel Toupin, \emph{Which Way Is Forward?} (v26),
+with AI assistance from Claude Code. The antilinear deck case, winding topology and the branching itself are not formalized. No claim about RH.
+\section{Feynman's checkerboard: mass is the reversal amplitude}
+\lean{GppCheckerboard.pathSum_eq,GppCheckerboard.weight_snoc,GppCheckerboard.turn_prod_eq_pow,GppCheckerboard.step_prod_eq_pow,GppCheckerboard.transfer_pow_massless,GppCheckerboard.transfer_sq,GppCheckerboard.transfer_sq_physical}
+Paths move one lattice step per time step at the speed of light; each reversal contributes a factor $w$ and each right or left step a
+factor $z_r$ or $z_l$. Summing the weights of all paths that start in direction $a$ and end in direction $b$ gives $z_a\,(T^n)_{ab}$ for
+the transfer matrix $T_{ab}=w^{[a\ne b]}z_b$, the discrete two-component Dirac evolution. The weight equals $w$ to the number of
+reversals times $z_r^{\#\mathrm{right}}z_l^{\#\mathrm{left}}$. At $w=0$ the evolution is diagonal, so a massless particle never turns.
+With $w=i\varepsilon m$, $z_{r,l}=e^{\pm i\theta}$: $T^2=2\cos\theta\,T-(1+\varepsilon^2m^2)I$, the lattice dispersion whose
+$\varepsilon\to0$ limit is $E^2=p^2+m^2$. Source: Feynman--Hibbs Problem 2-6; for Daniel Toupin's \emph{Which Way Is Forward?}
+(falsifier F8), with AI assistance from Claude Code. Exact $1+1$-dimensional algebra; the continuum limit and the $3+1$ case are not
+formalized. No claim about RH.
+\section{Ces\`aro metric defect and matrix-mean controls}
+\lean{GppCesaroMetricDefect.defect_eigen_identity,GppCesaroMetricDefect.defect_eigen_bound,GppCesaroMetricDefect.jordan_defect,GppCesaroMetricDefect.norlund_not_symmetric,GppCesaroMetricDefect.scalar_mean_psd}
+If $Av=\mu v$ then $v^*(A^*G+GA)v=2\,\mathrm{Re}(\mu)\,v^*Gv$; hence a relative invariance defect $|v^*Dv|\le\eta\,v^*Gv$ with $v^*Gv>0$
+forces $2|\mathrm{Re}\,\mu|\le\eta$. For the Jordan block the defect matrix is $\sigma_1$ for every diagonal metric $\mathrm{diag}(1,g)$.
+A matrix N\"orlund mean with positive-definite weights $\mathrm{diag}(2,1)$, $I$ on PSD inputs returns the non-symmetric matrix
+$\begin{pmatrix}1/3&1/3\\1/2&1/2\end{pmatrix}$, while nonnegative scalar weights preserve positivity. Source: Astra's notes on the
+Ces\`aro metric repair and matrix means, formalized by Claude Code. Finite linear algebra only; no arithmetic bound and no claim about RH.
+
+\section{Uniform moment-tail certificate}
+\lean{GppMomentTail.sq_norm_replacement,GppMomentTail.two_mul_le_eps,GppMomentTail.certificate_step,GppMomentTail.rhobar_lt,GppMomentTail.trbar_le,GppMomentTail.moment_tail_certificate}
+In a real inner-product space $|\|x\|^2-\|y\|^2|\le2\|y\|\|x-y\|+\|x-y\|^2$, the abstract form of the moment-replacement bound, and
+$2ab\le\varepsilon a^2+b^2/\varepsilon$ gives the operator sandwich. If $\rho<\delta$ and $(\delta-\rho)^2>4\rho T$ then
+$2\sqrt{\rho T}+\rho<\delta$. For Astra's rational envelopes $\bar\rho<10^{-100}$ and $\bar T\le17\cdot576\cdot4107/1000$, so
+$2\sqrt{\bar\rho\bar T}+\bar\rho<10^{-45}$. Source: Astra's uniform moment-tail note, formalized by Claude Code. The analytic link between the
+envelopes and the true tail integrals is not formalized; this controls one fixed block's frequency tail and is not a positivity
+certificate. No claim about RH.
+
+\section{Landau's theorem for Dirichlet series with nonnegative coefficients}
+\lean{GppLandau.iterate_logMul_apply,GppLandau.iterate_logMul_nonneg,GppLandau.norm_term_iterate,GppLandau.summable_of_taylor,GppLandau.landau}
+If $a\ge0$, $x$ is real to the right of the abscissa of absolute convergence and $f$ is holomorphic on $B(x,R)$ and equal to $L(a,\cdot)$
+near $x$, then $L(a,\cdot)$ converges absolutely at every real $y\in(x-R,x)$: the Taylor coefficients at $x$ are
+$(x-y)^k/k!\sum_n(\log n)^ka_nn^{-x}\ge0$, the double series is summable, and swapping the sums gives $\sum_na_nn^{-y}$. Hence, if the
+abscissa is a real number $\sigma$, $L(a,\cdot)$ has no holomorphic extension to $\{\operatorname{Re}s>\sigma\}\cup B(\sigma,\varepsilon)$
+(Landau 1905). Daniel Toupin / Golden Physics Project, with AI assistance from Claude Code. The Laplace-transform version is
+\texttt{GppLandauLaplace.landau\_laplace} (next sections). No claim about RH.
+\section{Causal dissipation identity for regulator removal}
+\lean{GppCausalDissipation.stage_sq_diff,GppCausalDissipation.stage_energy_identity,GppCausalDissipation.stage_contraction,GppCausalDissipation.log_energy_transfer}
+For a state $q$ with $q(0)=0$, input $v=q'+(a+e)q$ and output $w=q'+aq$, one has $v^2-w^2=2e\,qq'+e(2a+e)q^2$ and
+$\int_0^T(v^2-w^2)=e\,q(T)^2+e(2a+e)\int_0^Tq^2$; for $a,e\ge0$ each stage is an energy contraction. If $E_0\le e^{2eT}E_e$ then
+$\log(1+E_0)\le2eT+\log(1+E_e)$. Source: Astra's balanced-inverse-energy note, formalized by Claude Code. The two-stage composition for the
+prime signal and the pole argument are not formalized; no upper bound on $E_e$ is known. No claim about RH.
+
+\section{Rank-one inertia threshold: the inequality form}
+\lean{GppRankOneInertia.quad_decomp,GppRankOneInertia.psd_iff,GppRankOneInertia.psd_plus_half_iff,GppRankOneInertia.psd_minus_half_iff}
+Let $A$ be real symmetric invertible, positive definite on $c^\perp$, $u=A^{-1}c$, $s=c^TA^{-1}c\ne0$. Writing $x=\alpha u+y$ with $y\perp c$,
+$x^T(A+\kappa cc^T)x=y^TAy+\alpha^2s(1+\kappa s)$, so $A+\kappa cc^T\succeq0\iff s(1+\kappa s)\ge0$. Hence $A+\tfrac12cc^T\succeq0\iff s\le-2$ or $s>0$
+(even case) and $A-\tfrac12cc^T\succeq0\iff0<s\le2$ (odd case). Source: Grok's team review, generalizing \texttt{pole\_threshold\_neg};
+formalized by Claude Code. The Haynsworth equivalence with ``one negative eigenvalue'' is not proved. No claim about RH.
+\section{Landau's theorem for Laplace transforms with nonnegative integrand}
+\lean{GppLandauLaplace.iteratedDeriv_eq_of_hasFPowerSeriesAt,GppLandauLaplace.summable_of_nonneg_coeffs,GppLandauLaplace.lintegral_shift_eq_tsum,GppLandauLaplace.hasFPowerSeriesAt_laplace,GppLandauLaplace.lintegral_lt_top_of_holomorphic,GppLandauLaplace.landau_laplace}
+For $g\ge0$ with $\int_0^\infty g\,e^{-x't}<\infty$ and $x>x'$, the Laplace transform $\int_0^\infty g(t)e^{-zt}\,dt$ has the power series
+$\sum(-1)^nm_n(z-x)^n/n!$ at $x$, $m_n=\int_0^\infty t^ng\,e^{-xt}$, and $\int_0^\infty g\,e^{-(x-\rho)t}=\sum\rho^nm_n/n!$ (Tonelli). A holomorphic
+function on $B(x,R)$ equal to the transform near $x$ therefore forces $\int_0^\infty g\,e^{-yt}<\infty$ for real $y\in(x-R,x]$; hence the real
+point of the abscissa of convergence is a singularity (Landau). Daniel Toupin / Golden Physics Project, with AI assistance from Claude Code.
+This is the analytic input to the one-sided criterion \texttt{GppOneSidedRH} below, where the zeta identity is formalized; the lower
+bound on $\psi$ it would need is RH-strength and not proved.
+No claim about RH.
+
+\section{A one-sided bound on $\psi$ implies the Riemann Hypothesis (conditional)}
+\lean{GppOneSidedRH.differentiableOn_laplace,GppOneSidedRH.ne_zero_of_deriv_eq_neg_mul,GppOneSidedRH.ne_zero_of_re_logDeriv_bound,GppOneSidedRH.integral_psi_exp,GppOneSidedRH.laplace_defect,GppOneSidedRH.zeta_identity,GppOneSidedRH.riemannZeta₁_ne_zero_of_psi_lower,GppOneSidedRH.riemannZeta_ne_zero_of_psi_lower,GppOneSidedRH.riemannHypothesis_of_ne_zero,GppOneSidedRH.riemannHypothesis_of_psi_lower}
+If $0<a$ and $\psi(x)\ge x-Cx^a$ for all $x\ge1$, then $\zeta(s)\ne0$ for $\operatorname{Re}s>a$; if this holds for every $a>\tfrac12$ (with $C$
+depending on $a$), Mathlib's \texttt{RiemannHypothesis} follows. Only a lower bound on $\psi$ is assumed. Route: the defect
+$g(t)=\psi(e^t)-e^t+Ce^{at}\ge0$ has Laplace transform $L(z)=L(\Lambda,z)/z-1/(z-1)+C/(z-a)$ for $\operatorname{Re}z>\max(a,1)$
+(Abel summation and $x=e^t$); with $Z=(s-1)\zeta(s)$ entire and $A=zL+1-Cz/(z-a)$, the identity $ZA+Z'=0$ continues from
+$\operatorname{Re}z>\max(a,1)$ to the half-plane right of the abscissa $\sigma$ of $L$, where an entire solution of $Z'=-AZ$ cannot vanish.
+If $\sigma>a$, either $Z(\sigma)\ne0$ and $L$ continues across $\sigma$, contradicting Landau's theorem, or $Z(\sigma)=0$ and
+$\operatorname{Re}A\ge-K$ on $(\sigma,\sigma+1)$ (since $L(s)\ge0$) makes $\|Z(s)\|^2e^{-2Ks}$ nonincreasing, so it cannot tend to $0$.
+Zeros left of $\tfrac12$ reflect through the functional equation. A classical consequence of Landau's theorem (1905); compare
+Ingham, \emph{The Distribution of Prime Numbers}, Ch.~V, and Montgomery--Vaughan, \emph{Multiplicative Number Theory I}, Ch.~15. Daniel Toupin / Golden Physics Project,
+with AI assistance from Claude Code. This is a conditional theorem: the hypothesis is not proved, and by von Koch's converse it is
+equivalent to RH (von Koch 1901). No claim that RH is proved.
+
+\section{The Laplace transform of the prime signal $J_0$}
+\lean{GppPrimeSignalLaplace.integral_f,GppPrimeSignalLaplace.integral_J0,GppPrimeSignalLaplace.laplace_J0_eq}
+Source: Astra, \texttt{work/2026-10-21\_astra\_joint\_mobius\_abel\_obstruction.md} \S1, with Codex's normalization
+$J_0(t)=\int_0^te^{u/2}(e^{-u}\psi(e^u)-1)\,du$. For $\operatorname{Re}z>\tfrac12$:
+$\int_0^\infty e^{u/2}(e^{-u}\psi(e^u)-1)e^{-zu}du=L(\Lambda,z+\tfrac12)/(z+\tfrac12)-1/(z-\tfrac12)$, Fubini on $\{0<u\le t\}$ gives
+$\int_0^\infty J_0(t)e^{-zt}dt=z^{-1}\int_0^\infty J_0'(u)e^{-zu}du$, and together
+$\int_0^\infty J_0(t)e^{-zt}dt=-[\zeta'/\zeta(z+\tfrac12)+1/(z-\tfrac12)+1]/(z(z+\tfrac12))$. Daniel Toupin / Golden Physics Project, with AI
+assistance from Astra and Claude Code. Proved only for $\operatorname{Re}z>\tfrac12$; the continuation, the residues at zeros and the
+Abel-energy bound are not formalized. No claim about RH.
+
+\section{Uniform variation of $e^{-t}\psi(e^t)$ on logarithmic blocks}
+\lean{GppLogBlockVariation.cont_monotoneOn,GppLogBlockVariation.cont_sub_eq,GppLogBlockVariation.eVariationOn_phi_le,GppLogBlockVariation.eVariationOn_phi_unit_le,GppLogBlockVariation.eVariationOn_phi_unit_le_chebyshev}
+Source: Codex, \texttt{work/codex/2026-10-21\_arithmetic\_logblock\_BV\_ultraviolet\_tail\_alltime.md} \S1, audited by Grok (S79). If
+$\psi(x)\le Kx$ for $x\ge1$, then for $0\le a\le b$ the total variation of $\varphi(t)=e^{-t}\psi(e^t)$ on $[a,b]$ is at most $K(2(b-a)+1)$,
+so at most $3K$ on a unit block, and $3(\log4+4)$ unconditionally. Write $\varphi=g-k$ with $g(t)=\sum_{e^a<n\le e^t}\Lambda(n)/n$ and $k$ both
+nondecreasing; the Abel identity $k(b)-k(a)=\int_a^b\varphi$ then gives $\operatorname{Var}\varphi\le2\int_a^b\varphi+\varphi(b)-\varphi(a)$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The Fourier-tail and all-time ultraviolet parts of the
+note are not formalized. This uses only Chebyshev's bound, so it holds for Beurling systems as well. No claim about RH.
+
+\section{Critical GCD Gram: Euler packets collapse}
+\lean{GppGcdPacketClosability.double_sum_collapse,GppGcdPacketClosability.gcd_prod_primes,GppGcdPacketClosability.coef_eq_moebius,GppGcdPacketClosability.packet_gram,GppGcdPacketClosability.prefix_sum_lt_two,GppGcdPacketClosability.prod_primes_tends_small,GppGcdPacketClosability.coeff_one_unbounded}
+Source: Codex, \texttt{work/codex/2026-10-21\_gcd\_coefficient\_recovery\_closability\_zeta\_threshold.md} \S C, audited by Grok (S86). For the
+kernel $K_\varepsilon(m,n)=(\gcd(m,n)^2/(mn))^\varepsilon$ and a finite set $P$ of primes, the Euler packet $\prod_{p\in P}(1-p^{-\varepsilon}\chi_p)$,
+with coefficient $\mu(n)n^{-\varepsilon}$ on $\chi_n$, has $K_\varepsilon$-norm squared $\prod_{p\in P}(1-p^{-2\varepsilon})$. Summing over $T$ for fixed $S$ gives a product that
+vanishes unless $S=\emptyset$. Its prefix sums equal $1$ below $2$. For $0<\varepsilon\le\tfrac12$ the norms tend to $0$ (divergence of $\sum1/p$), so the
+$\chi_1$-coefficient functional is unbounded: the finite core of Codex's nonclosability theorem. Daniel Toupin / Golden Physics Project, with AI
+assistance from Codex and Claude Code. The $\varepsilon>\tfrac12$ dual norm $\zeta(2\varepsilon)\prod_{p\mid n}(1+p^{-2\varepsilon})$ and the Hilbert completion are not
+formalized. No claim about RH.
+
+\section{The one-prime GCD Gram: orthonormal basis and exact coefficient dual norms}
+\lean{GppOnePrimeToeplitz.gram_phi,GppOnePrimeToeplitz.expand,GppOnePrimeToeplitz.gram_self_eq,GppOnePrimeToeplitz.dual_norm_zero,GppOnePrimeToeplitz.dual_norm_succ}
+Source: Codex, \texttt{work/codex/2026-10-21\_gcd\_coefficient\_recovery\_closability\_zeta\_threshold.md} \S B (one prime). For the Gram
+$\langle u_i,u_j\rangle=r^{|i-j|}$ with $r^2<1$: $\varphi_0=u_0$, $\varphi_{k+1}=(u_{k+1}-ru_k)/\sqrt{1-r^2}$ is orthonormal; every vector expands in it with
+explicit coordinates and Parseval holds; and the coefficient functionals have exact dual norms $\|\mathrm{coeff}_0\|^2=1/(1-r^2)$ and
+$\|\mathrm{coeff}_j\|^2=(1+r^2)/(1-r^2)$ for interior $j$, both attained. Daniel Toupin / Golden Physics Project, with AI assistance from Codex and
+Claude Code. The tensor product over primes, giving $\zeta(2\varepsilon)\prod_{p\mid n}(1+p^{-2\varepsilon})$, is not formalized. No claim about RH.
+
+\section{A scalar Schur criterion at the form level}
+\lean{GppScalarSchurForm.nonneg_iff,GppScalarSchurForm.price_le,GppScalarSchurForm.price_attained,GppScalarSchurForm.truncation_nonneg_iff,GppScalarSchurForm.seven_witness}
+Source: Astra, \texttt{work/2026-10-22\_astra\_wave231\_assembly\_audit.md}. For a positive semidefinite bilinear form $a$, a linear functional $\ell$
+and $c\in\mathbb R$: $a(u,u)+2t\ell(u)+ct^2\ge0$ for all $(u,t)$ iff $c\ge0$ and $\ell(u)^2\le c\,a(u,u)$ for all $u$; no inverse or completion is needed.
+Example: $a_K(u)=\sum_{n\le K}u_n^2/n^2$, $\ell_K(u)=\sum_{n\le K}u_n/n$, $c=6$. The finite price is exactly $K$ (Cauchy--Schwarz, attained at $u_n=n$),
+so the truncated form is nonnegative iff $K\le6$, with value $-1$ at $K=7$, although $a$ and $\ell$ are bounded on $\ell^2$. Daniel Toupin / Golden
+Physics Project, with AI assistance from Astra and Claude Code. General quadratic-form facts; they prove no part of the RH assembly. No claim about RH.
+
+\section{The archimedean Hankel kernel: Gram expansion and the odd companion}
+\lean{GppArchimedeanHankelGram.hasSum_phi_mul,GppArchimedeanHankelGram.integral_phi_mul,GppArchimedeanHankelGram.arch_add_companion}
+Sources: Astra, \texttt{work/2026-10-22\_astra\_archimedean\_hankel\_realisation.md} \S1 and \texttt{work/2026-10-22\_astra\_cayley\_nested\_spectral\_audit.md}
+\S4, for Turbo's reported kernel $k_{\rm arch}(v)=-e^{-v/2}/(1-e^{-2v})$. With $\varphi_j(u)=e^{-(2j+1/2)u}$: $\sum_j\varphi_j(u)\varphi_j(v)=-k_{\rm arch}(u+v)$ for $u+v>0$,
+$\langle\varphi_j,\varphi_k\rangle_{L^2(0,\infty)}=1/(2j+2k+1)$, and $A+B=1/(2\sinh(v/2))$ for $A=e^{-v/2}/(1-e^{-2v})$, $B=e^{-3v/2}/(1-e^{-2v})$. Daniel Toupin /
+Golden Physics Project, with AI assistance from Astra and Claude Code. The $\pi/2$ Schur bound, the tail norm, the Mellin identity and the intertwiner
+no-go are not formalized. No claim about RH.
+
+\section{The sine-squared packet: no zeros off the imaginary axis}
+\lean{GppSineSquarePacket.S_eq,GppSineSquarePacket.S_eq_exp_mul_S_neg,GppSineSquarePacket.S_mul_S_neg,GppSineSquarePacket.S_ne_zero,GppSineSquarePacket.S_mul_S_neg_ne_zero,GppSineSquarePacket.autocorr_eq,GppSineSquarePacket.autocorr_zero}
+Sources: Codex, \texttt{work/codex/2026-10-22\_single\_packet\_detecting\_train\_stationary\_sewing\_frontier.md} \S2, and Astra,
+\texttt{work/2026-10-22\_astra\_detector\_kms\_sewing\_audit.md} \S1, for the window $g(x)=\sin^2(\pi x)$ on $[0,1]$. With $S(z)=\int_0^1e^{zx}g(x)\,dx$:
+$S(z)=2\pi^2(e^z-1)/(z(z^2+4\pi^2))$, $S(z)=e^zS(-z)$ for all $z$, $S(z)S(-z)=8\pi^4(\cosh z-1)/(z^2(z^2+4\pi^2)^2)$, and $S(z)S(-z)\neq0$ whenever
+$\operatorname{Re}z\neq0$. The autocorrelation is $G(r)=(1-r)/4+(1-r)\cos(2\pi r)/8+3\sin(2\pi r)/(16\pi)$ for $0\le r\le1$, with $G(0)=3/8$. Daniel Toupin /
+Golden Physics Project, with AI assistance from Codex, Astra and Claude Code. The multiplier $H(z)=z(z+\tfrac12)S(z)S(-z)$, the filtered Laplace identity
+and the criterion RH $\Leftrightarrow K_g$ bounded are not formalized. Facts about one test function; no claim about RH.
+
+\section{No bounded synthesis of the prime orbit}
+\lean{GppPrimeOrbitSynthesis.eq_zero_of_orbit_sum_le,GppPrimeOrbitSynthesis.orbit_synthesis_eq_zero,GppPrimeOrbitSynthesis.prime_intertwiner_eq_zero}
+Source: Astra, \texttt{work/2026-10-22\_astra\_prime\_packet\_construction.md} \S3. Let $T$ be a group of linear isometries of a complex normed space,
+indexed by $\mathbb R$, with $a\mapsto T_ag$ continuous at $0$. If $\|\sum_{j<M}T_{\log(N+j)}g\|\le C\sqrt M$ for all $N\ge1$ and $M$, then $g=0$. Hence a
+bounded $U:\ell^2(\mathbb N_{\ge1})\to H$ with $Ue_n=T_{\log n}g$ is zero, and so is any bounded $U$ with $Ue_{pn}=T_{\log p}Ue_n$ for all primes $p$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Astra and Claude Code. Weighted or unbounded synthesis, distributional maps, the
+compact prime-character model and the co-Poisson operator are untouched. No claim about RH.
+\section{The variational Schur scalar}
+\lean{GppVariationalSchurScalar.bound_iff,GppVariationalSchurScalar.block_nonneg_iff_bound,GppVariationalSchurScalar.bound_of_le,GppVariationalSchurScalar.rankOne_left_inv,GppVariationalSchurScalar.rankOne_right_inv}
+Source: Astra, \texttt{work/2026-10-23\_astra\_schur\_variational\_frontier.md}. For a positive semidefinite symmetric form $a$ and a linear functional
+$\ell$: $2\ell(v)-a(v,v)\le q$ for all $v$ iff $q\ge0$ and $\ell(v)^2\le q\,a(v,v)$ for all $v$, so $q_a(\ell)=\sup_v[2\ell(v)-a(v,v)]$ is the squared dual norm.
+The bordered form $a(u,u)+2t\ell(u)+dt^2$ is nonnegative iff $q_a(\ell)\le d$, and enlarging $a$ lowers $q_a$. Calibration: $x\mapsto x-c\langle e,x\rangle e$ with
+$\langle e,e\rangle=L$, $cL\ne1$, has inverse $x\mapsto x+\frac{c}{1-cL}\langle e,x\rangle e$. Daniel Toupin / Golden Physics Project, with AI assistance from Astra and
+Claude Code. The Hilbert-space range characterisation and the residual certificate are not formalized. No claim about RH.
+
+\section{The prime-torus heat trace}
+\lean{GppPrimeTorusTrace.gram_eq_sum_sq,GppPrimeTorusTrace.not_summable_heat,GppPrimeTorusTrace.not_summable_prime_heat}
+Source: Astra, \texttt{work/2026-10-22\_astra\_prime\_torus\_trace\_audit.md}. The Gram form of a finite trace $K_B(t)=\sum_{k\in B}e^{-tE_k}$ is the sum of squares
+$\sum_k(\sum_ic_ie^{-t_iE_k})^2$. For $a>0$ and $t>0$ the two-frequency trace $\sum_{(n,m)\in\mathbb Z^2}e^{-t(na+mb)^2}$ diverges, since the nearest $n$ to $-mb/a$
+gives $|na+mb|\le a/2$ for every $m$. With $a=\log2$, $b=\log3$, the proposed prime-torus heat operator is not trace class. Daniel Toupin / Golden
+Physics Project, with AI assistance from Astra and Claude Code. No claim about RH.
+
+\section{Last-coordinate pivots and the constant-barrier obstruction}
+\lean{GppPivotFloor.pivot_le_of_le,GppPivotFloor.le_pivot_of_coercive,GppPivotFloor.toeplitzPivot_succ_le,GppPivotFloor.toeplitzPivot_antitone,GppPivotFloor.tendsto_zero_of_antitone_of_root,GppPivotFloor.no_constant_barrier}
+Source: Astra, \texttt{work/2026-10-23\_astra\_pivot\_floor\_obstruction.md} \S2--\S3. The last-coordinate pivot $s(A)=\inf\{A(v):v_{K-1}=1\}$ is monotone in the Loewner order
+and satisfies $s(A)\ge d$ when $A(v)\ge d\sum v_i^2$. For a positive semidefinite Toeplitz kernel the pivots $t_K$ are nonincreasing (shift the competitor
+one slot). If positive nonincreasing $t_j$ have $(\prod_{j<K}t_j)^{1/K}\to0$ then $t_K\to0$; and if $0<s_K\le2t_K\to0$ while $s^\Delta_K\ge d>0$, no fixed
+$c>0$ has $s_K\ge c\,s^\Delta_K$ for all $K$. Daniel Toupin / Golden Physics Project, with AI assistance from Astra and Claude Code. The spectral input
+(under RH the packet kernel is pure-point, so $(\det Q_K)^{1/K}\to0$ by Ky Fan) is not formalized; a moving barrier $c_K>0$ is not ruled out. No claim about RH.
+\section{Riemann's $\Phi$ and $\Lambda$ as the Mellin transform of the theta series}
+\lean{GppRiemannPhi.hasDerivAt_psi,GppRiemannPhi.hasDerivAt_psi₁,GppRiemannPhi.phi_eq,GppRiemannPhi.one_add_two_mul_psi,GppRiemannPhi.psi_functional_equation,GppRiemannPhi.completedRiemannZeta_eq_mellin_psi}
+Source: Claude Code, \texttt{work/claude-code/2026-10-23\_holographic\_dictionary.md} \S1. With $\psi(x)=\sum_{n\ge1}e^{-\pi n^2x}$, the series may be differentiated
+termwise twice on $x>0$, and Riemann's kernel $\Phi(u)=\sum_{n\ge1}(2\pi^2n^4e^{9u}-3\pi n^2e^{5u})e^{-\pi n^2e^{4u}}$ satisfies
+$\Phi(u)=e^u[2x^2\psi''(x)+3x\psi'(x)]$ with $x=e^{4u}$. Also $1+2\psi(x)=\sum_{n\in\mathbb Z}e^{-\pi n^2x}$, the theta inversion
+$1+2\psi(x)=x^{-1/2}(1+2\psi(1/x))$ holds, and for $\operatorname{Re}s>1$, $\Lambda(s)=\int_0^\infty\psi(x)x^{s/2-1}\,dx$. Physically $4\sqrt y\,\psi(y)$ is the
+scalar sector of the self-dual $c=1$ compact boson. Daniel Toupin / Golden Physics Project, with AI assistance from Claude Code. The evenness of $\Phi$,
+the cosine representation of $\Xi$ and the Rankin--Selberg identity of arXiv 2107.10744 are not formalized. No claim about RH.
+\section{The arbitrary-predictor residual certificate}
+\lean{GppResidualCertificate.translate,GppResidualCertificate.bound_iff_residual,GppResidualCertificate.bound_of_residual,GppResidualCertificate.block_nonneg_of_residual}
+Source: Astra, \texttt{work/2026-10-23\_astra\_celestial\_transfer\_residual\_extension.md}. For a symmetric positive semidefinite form $a$, a functional $\ell$ and
+any predictor $x$, put $h=2\ell(x)-a(x,x)$ and $r=\ell-a(x,\cdot)$. Then $2\ell(x+w)-a(x+w,x+w)=h+2r(w)-a(w,w)$, so $q_a(\ell)=h+q_a(r)$; if
+$r(v)^2\le e\,a(v,v)$ with $e\ge0$ then $q_a(\ell)\le h+e$, and $h+e\le d$ certifies the bordered form $a(u,u)+2t\ell(u)+dt^2\ge0$. Daniel Toupin / Golden
+Physics Project, with AI assistance from Astra and Claude Code. The arithmetic dual-residual estimate is open and not assumed. No claim about RH.
+\section{A single off-line quartet breaks every bounded positive kernel}
+\lean{GppSingleQuartet.quartet_lower,GppSingleQuartet.phase_aligned,GppSingleQuartet.quartet_unbounded,GppSingleQuartet.not_psd_two,GppSingleQuartet.kernel_not_psd,GppSingleQuartet.blind_grid}
+Source: Astra, \texttt{work/2026-10-23\_astra\_single\_quartet\_sampling.md}, answering Claude Code's single-quartet injection test. For $z=\delta+i\gamma$,
+$\delta,\gamma>0$, $b\ne0$, the quartet kernel $D(u)=4\operatorname{Re}[b\cosh(zu)]$ satisfies $D(u_n)\ge2|b|(e^{\delta u_n}-e^{-\delta u_n})$ at
+$u_n=(2\pi n-\arg b)/\gamma$, so it is unbounded; added to any bounded background it makes some $2\times2$ block $(0,u)$ indefinite. On a grid
+$u=nh$ with $\gamma h\in\pi\mathbb Z$ and $\operatorname{Re}b=0$ every sample vanishes (the blind case). Daniel Toupin / Golden Physics Project, with AI
+assistance from Astra and Claude Code. The off-resonance unboundedness on a grid and the two-grid statement are not formalized; $b$ is not
+specialised to the sine-square window. No claim about RH.
+
+\section{Riemann's $\Phi$ is even}
+\lean{GppRiemannPhi.f_even,GppRiemannPhi.hasDerivAt_f,GppRiemannPhi.hasDerivAt_f₁,GppRiemannPhi.phi_eq_f,GppRiemannPhi.phi_even}
+Source: Claude Code, \texttt{work/claude-code/2026-10-23\_holographic\_dictionary.md} \S1; factor convention checked against Astra,
+\texttt{work/2026-10-23\_astra\_phi\_two\_wave\_interference.md}. With $\theta=1+2\psi$ and $f(u)=e^u\theta(e^{4u})$, theta inversion gives $f(-u)=f(u)$,
+and $\Phi(u)=(f''(u)-f(u))/16$. Differentiation sends even to odd to even, so $\Phi(-u)=\Phi(u)$. Daniel Toupin / Golden Physics Project, with AI
+assistance from Claude Code. Positivity and decay of $\Phi$ and the cosine representation of $\Xi$ are not formalized. No claim about RH.
+
+\section{An explicit rational rectangular Gram factor for $\hat P_6$}
+\lean{GppPhat6.phat6_eq,GppPhat6.phat6_rectangular_factor,GppPhat6.phat6_quadratic_nonneg}
+Source: Turbo, \texttt{MuseResearch/turbo-note-2026-10-23-phat6-data-for-gppverify.md} and \texttt{MuseResearch/Phat6Data.lean} (bridge \texttt{feedac1}).
+For the explicit $6\times6$ rational matrix $\hat P_6$ of Turbo's wave-252 (SS-sep) certificate and an explicit $C\in\mathbb Q^{24\times6}$, $\hat P_6=C^{\mathsf T}C$
+exactly, so $x^{\mathsf T}\hat P_6x=\|Cx\|^2\ge0$. Daniel Toupin / Golden Physics Project, with AI assistance from Turbo and Claude Code. $\hat P_6$ is a
+12-digit rational rounding of a numerically computed object; its agreement with the arithmetic matrix is not claimed, and the general factorisation over
+$\mathbb Q$ (which needs $LDL^{\mathsf T}$ over $\mathbb Q$) is not formalized. No claim about RH.
+
+\section{A quantitative margin for $\hat P_6$ and its transfer to nearby matrices}
+\lean{GppPhat6.phat6_shift_ldl,GppPhat6.dvec_pos,GppPhat6.phat6_margin,GppPhat6.margin_of_entrywise}
+Source: Codex, GPP-bridge PR \#11 comment 6376664595. With $c=1/5000000$, $\hat P_6-cI=LDL^{\mathsf T}$ over $\mathbb Q$ for an explicit unit lower triangular $L$
+and diagonal $D$ with positive entries, so $x^{\mathsf T}\hat P_6x\ge c\|x\|^2$. If a real matrix $A$ satisfies $|A_{ij}-(\hat P_6)_{ij}|\le\delta$ for all $i,j$, then
+$x^{\mathsf T}Ax\ge(c-6\delta)\|x\|^2$; with $\delta\le10^{-8}$ this gives $A\succeq1.4\cdot10^{-7}I$. Daniel Toupin / Golden Physics Project, with AI assistance from
+Codex and Claude Code. The entrywise enclosure of the arithmetic matrix that $\hat P_6$ rounds is not supplied (an open obligation). Finite $K=6$ only. No
+claim about RH.
+
+\section{The critical prime thermofield state: exact finite identities}
+\lean{GppCriticalPrimeTFD.local_overlap,GppCriticalPrimeTFD.sum_clock_coeff,GppCriticalPrimeTFD.phase_eq_one_of_overlap,GppCriticalPrimeTFD.lcm_div_gcd_factorization,GppCriticalPrimeTFD.lcm_div_gcd_mul_gcd_sq,GppCriticalPrimeTFD.gibbs_ratio_tendsto,GppCriticalPrimeTFD.fidelity_sq_tendsto}
+Source: Codex, GPP-bridge PR \#11 comments 6376282990, 6376325034, 6376349113, 6376360639 (audited there by Claude Code). The local thermofield overlap
+$\sum_k\sqrt{1-q_1}q_1^{k/2}\sqrt{1-q_2}q_2^{k/2}=\sqrt{(1-q_1)(1-q_2)}/(1-\sqrt{q_1q_2})$; the sum-clock coefficient $(1-q)\sum_kq^ke^{ik\theta}=(1-q)/(1-qe^{i\theta})$; a linear
+isometry fixing $\Omega$ with $Uw=cw$ forces $c=1$ when $\langle\Omega,w\rangle\ne0$ (no phase-diagonal unitary time on the critical TFD); $v_p(\mathrm{lcm}/\gcd)=\max-\min$ and
+$(\mathrm{lcm}/\gcd)\gcd^2=mn$ (the valuation step of the GCD Gram $(\gcd^2/(mn))^{\beta/2}$ at every $\beta>0$); $\zeta(1+(1+a)\delta)/\zeta(1+\delta)\to1/(1+a)$ (the Exp(1) Gibbs
+clock) and $\zeta(1+\tfrac{1+a}2\delta)^2/(\zeta(1+\delta)\zeta(1+a\delta))\to4a/(1+a)^2$ (the critical fidelity, squared). Daniel Toupin / Golden Physics Project, with AI
+assistance from Codex and Claude Code. The infinite tensor product, GNS disjointness and the Dickman limit are not formalized. No claim about RH.
+
+\section{Isometric semigroups have positive-definite lag kernels}
+\lean{GppSemigroupGram.gram_form_eq_norm_sq,GppSemigroupGram.gram_form_re_nonneg,GppSemigroupGram.semigroup_inner_shift,GppSemigroupGram.semigroup_lag_kernel_psd}
+Source: Turbo, Wave 272 (GPP-bridge PR \#11 comment 6377887735). For vectors $w_i$ and coefficients $c_i$, $\sum_{i,j}\overline{c_i}c_j\langle w_i,w_j\rangle=\|\sum_ic_iw_i\|^2\ge0$.
+For an isometric semigroup $V$ on $\mathbb N$, $\langle V_sv,V_{s+d}v\rangle=\langle v,V_dv\rangle$, so its lag kernel is positive definite. This is the finite Gram identity behind
+the sign obstruction to a diagonal (GS) representation of the ground-state detector. Daniel Toupin / Golden Physics Project, with AI assistance
+from Turbo and Claude Code. Discrete time only; Bochner's theorem and the Sz.-Nagy dilation step are not formalized; the sign data of $K$ is numerical. No
+claim about RH.
+
+\section{Riemann's theta split and the two-wave form of \texorpdfstring{$\xi$}{xi}}
+\lean{GppThetaSplit.completedRiemannZeta₀_eq_split,GppThetaSplit.completedRiemannZeta_eq_split,GppThetaSplit.halfWave_add_reflect,GppThetaSplit.halfWave_add_reflect_eq_xi}
+Source: Astra, \texttt{work/2026-10-24\_astra\_phi\_halfwave\_boundary\_identity.md} (GPP-bridge PR \#11 comment 6379118669). With $\psi(x)=\sum_{n\ge1}e^{-\pi n^2x}$ and
+$I(s)=\int_1^\infty\psi(x)x^{s/2-1}\,dx$, for every $s\in\mathbb C$ the entire $\Lambda_0(s)=\Lambda(s)+1/s+1/(1-s)$ equals $I(s)+I(1-s)$, read off from Mathlib's own
+definition of $\Lambda_0$ as a Mellin transform, with no continuation step. With the half-wave $B(s)=\tfrac14+(s-\tfrac12)\psi(1)+s(s-1)I(s)/2$, $B(s)+B(1-s)=\tfrac12+s(s-1)\Lambda_0(s)/2$,
+which is $s(s-1)\Lambda(s)/2=\xi(s)$ for $s\ne0,1$. Daniel Toupin / Golden Physics Project, with AI assistance from Astra and Claude Code. The identification of $B(s)$ with
+Astra's $A(s-\tfrac12)=4\int_0^\infty\Phi(u)e^{(2s-1)u}\,du$ (two integrations by parts) is not formalized. Classical; not claimed novel. No claim about RH.
+
+\section{The centred two-point kernel is a rank-two correction}
+\lean{GppRankTwoCentring.centred_quadratic_form,GppRankTwoCentring.centred_quadratic_form_of_neutral}
+Source: Codex, GPP-bridge PR \#11 comment 6380730175, on Turbo's Wave 295 decomposition $K^c(m,n)=K_1(m,n)-u(m)-u(n)+C$. For a finite real vector $r$ with
+$S=\sum_mr_m$ and $U=\sum_mu(m)r_m$, $r^{\mathsf T}K^cr=r^{\mathsf T}K_1r-2SU+CS^2$; on the neutral subspace $S=0$ the centred and uncentred forms coincide. Daniel Toupin /
+Golden Physics Project, with AI assistance from Codex and Claude Code. No positivity claim; for $r_n=\Lambda(n)-1$, $S=\psi(X)-\lfloor X\rfloor$ is not bounded here. No claim about RH.
+\section{Astra's half-wave boundary identity}
+\lean{GppThetaHalfWave.deriv_psi_one,GppThetaHalfWave.halfWaveA_eq_integral,GppThetaHalfWave.halfWaveA_eq_halfWave,GppThetaHalfWave.halfWaveA_add_reflect,GppThetaHalfWave.halfWaveA_add_reflect_eq_xi}
+Source: Astra, \texttt{work/2026-10-24\_astra\_phi\_halfwave\_boundary\_identity.md} (GPP-bridge PR \#11 comment 6379118669). With Riemann's kernel $\Phi$ put
+$A(z)=4\int_0^\infty\Phi(u)e^{2zu}\,du$. The substitution $x=e^{4u}$ gives $A(s-\tfrac12)=\int_1^\infty x^{s/2}(2x\psi''+3\psi')\,dx$; two integrations by parts, using
+$e^{-\pi(x-1)}$ decay of $\psi,\psi',\psi''$ on $[1,\infty)$ and $-2\psi'(1)=\tfrac14+\tfrac12\psi(1)$ (the derivative of theta inversion at $1$), give, for every $s\in\mathbb C$,
+$A(s-\tfrac12)=\tfrac14+(s-\tfrac12)\psi(1)+s(s-1)I(s)/2$. With the theta split, $A(s-\tfrac12)+A(\tfrac12-s)=\tfrac12+s(s-1)\Lambda_0(s)/2$, which is $\xi(s)$ for $s\ne0,1$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Astra and Claude Code. The endpoint expansion of $A(it)$ is not formalized; near-cancellation of the two
+waves at large height is generic. Classical; not claimed novel. No claim about RH.
+
+\section{Uniform-in-\texorpdfstring{$K$}{K} bounds for geometric Toeplitz and folded Hankel blocks}
+\lean{GppArchRowSum.schur_test,GppArchRowSum.toeplitz_row_sum,GppArchRowSum.toeplitz_form_le,GppArchRowSum.geom_partial_le,GppArchRowSum.toeplitz_form_le_geom,GppArchRowSum.gram_form_le_trace}
+Source: Codex, GPP-bridge PR \#11 comment 6381970052. Schur test: row and column sums of $|K|$ at most $R$ give $|v^{\mathsf T}Kv|\le R\|v\|^2$. A Toeplitz kernel
+$A(|i-j|)$ on $\{0,\dots,n-1\}$ has rows of $|A|$ summing to at most $|A_0|+2\sum_{1\le d<n}|A_d|$; if $|A_d|\le|A_2|q^{d-2}$ for $d\ge2$ with $0\le q<1$, then
+$|v^{\mathsf T}Tv|\le(|A_0|+2|A_1|+2|A_2|/(1-q))\|v\|^2$ for every $n$. For $C=-\sum_\lambda h_\lambda h_\lambda^{\mathsf T}$, $0\le-v^{\mathsf T}Cv\le(\sum_\lambda\|h_\lambda\|^2)\|v\|^2$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The identification with Discovery2's gamma entries and the enclosures of $A_0,A_1$
+are not formalized; this bounds the pure gamma Arch blocks only. No claim about RH.
+\section{One spectral atom: Toeplitz plus Hankel is a rank-one square}
+\lean{GppAtomSquare.toeplitz_form,GppAtomSquare.hankel_form,GppAtomSquare.add_form,GppAtomSquare.sub_form,GppAtomSquare.add_form_nonneg,GppAtomSquare.sub_form_nonneg}
+Source: Codex, GPP-bridge PR \#11 comment 6382027722; identified by Turbo's Wave 310 as the mechanism of the Wave 308 $\gamma_1$ near-cancellation. Hypotheses: one real
+spectral atom, $D_{ij}=m\cos(\omega(i-j))$, $C_{ij}=m\cos(\omega(i+j)+2\alpha)$. With $a=\sum_jv_j\cos(\omega j+\alpha)$, $b=\sum_jv_j\sin(\omega j+\alpha)$:
+$v^{\mathsf T}Dv=m(a^2+b^2)$, $v^{\mathsf T}Cv=m(a^2-b^2)$, so $v^{\mathsf T}(D+C)v=2ma^2$ and $v^{\mathsf T}(D-C)v=2mb^2$, both $\ge0$ for $m\ge0$ and every $K$. Daniel Toupin /
+Golden Physics Project, with AI assistance from Codex, Turbo and Claude Code. Finite algebra only; the block identification and the rest of the spectrum are not
+addressed. No claim about RH.
+
+\section{The cross-Arch moment matrix is positive definite, with a near-null direction}
+\lean{GppCrossArchMoment.moment_form_eq,GppCrossArchMoment.moment_form_nonneg,GppCrossArchMoment.moment_form_pos,GppCrossArchMoment.moment_form_of_vanishing}
+Source: Codex, GPP-bridge PR \#11 comment 6376886553. For $M_{jk}=\sum_nc_n^2r_n^{j+k}$ ($j,k<K$) and $P_v(x)=\sum_{j<K}v_jx^j$: $v^{\mathsf T}Mv=\sum_nc_n^2P_v(r_n)^2$; with distinct
+nodes, nonzero weights and at least $K$ nodes, $M$ is positive definite (Vandermonde, via a polynomial of degree $<K$ with $\ge K$ roots); if $P_v$ vanishes at the
+nodes in $S$, only the remaining nodes contribute (the Rayleigh witness behind $\lambda_{\min}\le e^{-X_K}/(\Lambda_K^2(1-e^{-7/5}))$). Daniel Toupin / Golden Physics
+Project, with AI assistance from Codex and Claude Code. The tail size estimate and the identification with the Arch modes are not formalized. No claim about RH.
+
+\section{A sequence witness of nonclosability survives every bounded perturbation}
+\lean{GppNonclosablePerturbation.not_isClosable_of_tendsto,GppNonclosablePerturbation.not_isClosable_vadd}
+Source: Codex, GPP-bridge \texttt{work/codex/2026-10-24\_pr11\_wave327\_strategic\_pivot\_source\_ward.md} (commit 5f5c9a3). If a partial linear map $B$ has test vectors
+$x_n\to0$ with $Bx_n\to g\ne0$, then $(0,g)$ lies in the closure of its graph, so $B$ is not closable; the same sequence shows $C+B$ is not closable for every continuous
+linear $C$. Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. Abstract operator theory; the GCD / critical-M\"obius packets that
+supply the sequence are not constructed here. No claim about RH.
+
+\section{Midpoint symmetry turns the sine-squared convolution into the shifted autocorrelation}
+\lean{GppSine2Convolution.autocorr_neg,GppSine2Convolution.conv_eq_autocorr,GppSine2Convolution.bump_symm,GppSine2Convolution.bump_conv_eq_autocorr}
+Source: Codex, GPP-bridge PR \#11 comment 6377118601. With $G(t)=\int f(u)f(u+t)\,du$: $G$ is even, and if $f(1-x)=f(x)$ then $(f*f)(s)=G(s-1)$. The bump
+$b(u)=\sin^2(\pi u)\mathbf 1_{[0,1]}(u)$ is symmetric about $\tfrac12$, so $(b*b)(s)=G_0(s-1)$: the step that rewrites the sewn prime kernel as an ordinary convolution.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The identities $\int e^{t/2}C_V=A_K^2$ and the parity split are not formalized.
+No claim about RH.
+
+\section{Exact duality does not locate spectral roots; a positive height does}
+\lean{GppDualityHeight.bad_dual,GppDualityHeight.good_dual,GppDualityHeight.bad_no_height,GppDualityHeight.good_height,GppDualityHeight.ftheta_coeff_bounds,GppDualityHeight.ftheta_coeff_not_int}
+Source: Codex, GPP-bridge PR \#11 comment 6389906209 (Discovery2 PR \#20). With $q=16$ and $J=\begin{psmallmatrix}0&1\\-1&0\end{psmallmatrix}$ over $\mathbb Q$, both
+$F_{\rm bad}=\mathrm{diag}(8,2)$ and $F_{\rm good}=\begin{psmallmatrix}0&-16\\1&0\end{psmallmatrix}$ satisfy $F^{\mathsf T}JF=qJ$; $F_{\rm bad}$ admits no positive definite $H$ with
+$F^{\mathsf T}HF=qH$ (the $(0,0)$ entry forces $64h_{00}=16h_{00}$), while $F_{\rm good}$ admits $H=\mathrm{diag}(1,16)$. Duality alone does not put the spectrum on $|\lambda|=\sqrt q$. Integrality gate (PR \#11 6389930457): the would-be local coefficient $2^{1/4}+2^{-1/4}$ of $F_{1/4}$ at $p=2$ lies strictly between $2$ and $3$, so it is not an integer, unlike $\#\mathbb P^1(\mathbb F_p)=p+1$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. $F_{\rm bad}$ is abstract, not a geometric Frobenius. No claim about RH or BSD.
+
+\section{A global mirror does not confine zeros to its fixed line: \texorpdfstring{$\mathbb P^1_{\mathbb Z}$}{P1}}
+\lean{GppP1Mirror.p1Xi_mirror,GppP1Mirror.differentiable_p1Xi,GppP1Mirror.p1Xi_zeros_off_mirror}
+Source: Codex, GPP-bridge PR \#11 comment 6390241157 (a correction of Codex's own phrase). With $\xi$ entire and $\xi(1-s)=\xi(s)$, the completion
+$\Xi(s)=\xi(s)\xi(s-1)$ of $\zeta(\mathbb P^1_{\mathbb Z},s)=\zeta(s)\zeta(s-1)$ is entire with $\Xi(2-s)=\Xi(s)$, yet every critical-line zero $\rho$ of $\xi$ gives zeros of $\Xi$ at
+$\rho$ and $\rho+1$, on $\operatorname{Re}s=\tfrac12$ and $\tfrac32$, off the mirror line $\operatorname{Re}s=1$. Daniel Toupin / Golden Physics Project, with AI assistance from Codex and
+Claude Code. Existence of critical-line zeros (Hardy) is a hypothesis here; the weight grading is not formalized. No claim about RH or BSD.
+
+\section{Leading minors of a symmetric \texorpdfstring{$3\times3$}{3x3} form: positive definite or signature \texorpdfstring{$(2,1)$}{(2,1)}}
+\lean{GppSylvester3.ldl3_identity,GppSylvester3.posDef_of_minors,GppSylvester3.signature_two_one_of_minors}
+Source: Codex, GPP-bridge PR \#11 comment 6390445769 (Discovery2 PR \#21). For $\begin{psmallmatrix}a&b&c\\b&d&e\\c&e&f\end{psmallmatrix}$ with $\Delta_1=a$, $\Delta_2=ad-b^2$, $\Delta_3=\det$:
+$a\Delta_2Q(x)=\Delta_2(ax_1+bx_2+cx_3)^2+(\Delta_2x_2+(ae-bc)x_3)^2+a\Delta_3x_3^2$; minors $(+,+,+)$ give positive definiteness, and $(+,+,-)$ give positivity on $x_3=0$ and an
+explicit negative vector (inertia $(2,1)$). Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The Arb-certified site intervals are not
+plugged in. No claim about RH or BSD.
+
+\section{The \texorpdfstring{$C_2$}{C2} class-character projection of the \texorpdfstring{$D=-20$}{D=-20} Epstein counts}
+\lean{GppC2ClassCharacter.idem_plus,GppC2ClassCharacter.idem_minus,GppC2ClassCharacter.idem_orth,GppC2ClassCharacter.idem_sum,GppC2ClassCharacter.g_mul_plus,GppC2ClassCharacter.g_mul_minus,GppC2ClassCharacter.inv_fourier,GppC2ClassCharacter.sol_bound_Q0,GppC2ClassCharacter.sol_bound_Q1,GppC2ClassCharacter.f0_not_mult,GppC2ClassCharacter.Aplus_mult_2_3,GppC2ClassCharacter.Aminus_mult_2_3}
+Source: Codex, GPP-bridge PR \#11 comment 6390593150 (Discovery2 PR \#22), from Grok's S99 Epstein audit. With $g^2=1$ and $2$ invertible, $e_\pm=(1\pm g)/2$ are complementary
+orthogonal idempotents with $ge_\pm=\pm e_\pm$. For $Q_0=x^2+5y^2$, $Q_1=2x^2+2xy+3y^2$ and $f_j=r_j/2$, every solution of $Q_j=n$ lies in $[-n,n]^2$; $f_0(2)=f_0(3)=0$ but
+$f_0(6)=2$, while $A_\pm=f_0\pm f_1$ give $A_+(2,3,6)=(1,2,2)$ and $A_-(2,3,6)=(-1,-2,2)$. Daniel Toupin / Golden Physics Project, with AI assistance from Codex, Grok and
+Claude Code. Only the pair $(2,3)$ is checked; the ideal-class and Hecke $L$-function identifications and Euler products (classical) are not formalized. No claim about RH,
+GRH or BSD.
+
+\section{The \texorpdfstring{$q$}{q}-binomial annihilator and its pole cancellation}
+\lean{GppQBinomialEdge.gauss_mul_prod,GppQBinomialEdge.prod_expand,GppQBinomialEdge.prod_eq_sum_vK,GppQBinomialEdge.laplace_train,GppQBinomialEdge.laplace_train_annihilated,GppQBinomialEdge.codex_B_K_eq_zero}
+Source: Codex, \texttt{work/codex/2026-10-23\_wave234\_full\_s1\_annihilator\_pnt\_residual\_q\_binomial.md} (Discovery2 PR \#12). With the Gaussian binomial $[M,j]_q$ (q-Pascal rule;
+closed form $[M,j]_q\prod_{l<j}(1-q^{l+1})=\prod_{l<j}(1-q^{M-l})$), $\prod_{m<M}(z-r_0q^mw)=\sum_{j\le M}(-r_0)^jq^{\binom j2}[M,j]_qz^{M-j}w^j$, so the annihilator
+$P(z)=\prod_{m<M}(z-r_0q^m)$ has $v_{M-j}=(-r_0)^jq^{\binom j2}[M,j]_q$. For a train $V=\sum_jv_jb(\cdot-a_0-j\delta)$,
+$\int e^{\sigma u}V=e^{\sigma a_0}\bigl(\int e^{\sigma u}b\bigr)P(e^{\sigma\delta})$, which vanishes when $r_0=e^{\sigma\delta}$; at $\sigma=-\tfrac12$, $\delta=\tfrac7{10}$ this is Codex's $B_K=0$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The $K\to\infty$ edge limit, the sewing square $A_K^2$ and any PNT comparison are not
+formalized. No claim about RH.
+
+\section{Astra's balanced-regulator Volterra identity}
+\lean{GppBalancedRegulator.mul_integral_exp,GppBalancedRegulator.volterra_atom,GppBalancedRegulator.volterra_sum,GppBalancedRegulator.primeSignal_eq,GppBalancedRegulator.volterra_primeSignal,GppBalancedRegulator.volterra_cont,GppBalancedRegulator.continuum_eq,GppBalancedRegulator.balanced_eq,GppBalancedRegulator.balanced_zero_eq,GppBalancedRegulator.volterra_balanced}
+Source: Astra, \texttt{work/2026-10-20\_astra\_balanced\_regulator\_transfer.md}. With $M_e(t)=2\sum_{n\le e^t}\Lambda(n)n^{-e}(n^{-1/2}-e^{-t/2})$,
+$C_e(t)=2\int_1^{e^t}(x^{-1/2}-e^{-t/2})x^{-e}dx+2(1-e^{-t/2})$ and $J_e=M_e-C_e$, for every real $e$ and $t\ge0$:
+$J_e(t)=e^{-et}J_0(t)+e(1+2e)\int_0^te^{-eu}J_0(u)\,du+e(1-2e)\int_0^te^{-(t-u)/2}e^{-eu}J_0(u)\,du$. Proof: each piece is a superposition of atoms
+$g_{e,s}(t)=e^{-es}\max(e^{-s/2}-e^{-t/2},0)$; the identity holds for each atom (closed-form exponential integrals), for finite sums, and for continuum
+superpositions by one Fubini swap. Daniel Toupin / Golden Physics Project, with AI assistance from Astra and Claude Code. The Laplace factorization and pole-transfer
+criterion are not formalized. At $e=0$, $J_0(\log X)=2\sum_{n\le X}\Lambda(n)/\sqrt n-2\psi(X)/\sqrt X-2\sqrt X+2$ (Astra, Laplace-growth audit). No claim about RH.
+
+\section{The \texorpdfstring{$\mathfrak{su}(2)$}{su(2)} ladder on the equator modes \texorpdfstring{$H_N$}{H\_N}}
+\lean{GppEquatorSU2.comm_HE,GppEquatorSU2.comm_HF,GppEquatorSU2.comm_EF,GppEquatorSU2.E_preserves,GppEquatorSU2.F_preserves,GppEquatorSU2.H_preserves,GppEquatorSU2.casimir,GppEquatorSU2.detailed_balance,GppEquatorSU2.adjoint}
+Source: Codex, GPP-bridge PR \#11 comment 6392046099 (Discovery2 PR \#23), a finite model of Daniel's equator hypothesis. On $H_N=\mathrm{span}\{e^{ik\varphi}:0\le k<N\}$,
+$Ee_k=ke_{k-1}$, $Fe_k=(N-1-k)e_{k+1}$, $He_k=(N-1-2k)e_k$ satisfy $[H,E]=2E$, $[H,F]=-2F$, $[E,F]=H$, preserve $H_N$, and $H^2+2(EF+FE)=(N-1)(N+1)$, i.e. $J^2=j(j+1)$ with
+$j=(N-1)/2$. With weights $w_k=1/\binom{N-1}{k}$, $\langle Ec,d\rangle_w=\langle c,Fd\rangle_w$. Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code.
+Classical spin-$j$ representation; the CAR Fock singlet count, the thermal falsifier and any black-hole entropy reading are not formalized. No claim about RH or BSD.
+
+\section{The free angular spectrum at the Hawking temperature has bounded entropy}
+\lean{GppEquatorThermal.hF_eq_binary,GppEquatorThermal.hF_le,GppEquatorThermal.hF_zero,GppEquatorThermal.term_le,GppEquatorThermal.thermalEntropy_le}
+Source: Codex, GPP-bridge PR \#11 comments 6392046099 and 6392063911 (Discovery2 PR \#23), the thermal falsifier. With $h_F(x)=\log(1+e^{-x})+x/(e^x+1)$ the binary entropy of
+the Fermi occupation, $h_F(x)\le(1+x)e^{-x}$ for $x\ge0$, and for the free spectrum $\varepsilon_\ell=\ell/R$ at $\beta_H=4\pi R$,
+$S_N=\sum_{\ell<N}(2\ell+1)h_F(4\pi\ell)\le\log2+10^{-3}$ for every $N$, against $N^2\log2$ for the maximal CAR Fock entropy. Daniel Toupin / Golden Physics Project, with AI
+assistance from Codex and Claude Code. Falsifier of one naive model; not a black-hole entropy statement. No claim about RH or BSD.
+
+\section{Half-density dilations in every boundary dimension}
+\lean{GppHalfDensityDilation.integral_normSq_dilate,GppHalfDensityDilation.dilate_homogeneous,GppHalfDensityDilation.norm_eigen,GppHalfDensityDilation.norm_eigen_eq_one_iff,GppHalfDensityDilation.norm_eigen_eq_one_iff_shadow}
+Source: Codex, GPP-bridge PR \#11 comment 6392669042, anchoring the equator thread in the existing holographic chain (\texttt{GppConformalShadowPrincipalSeries},
+\texttt{GppPrincipalSeriesDilationBridge}). On a $d$-dimensional real inner-product space with Haar measure, $(U_af)(x)=a^{d/2}f(ax)$ preserves $\int|f|^2$; the
+homogeneous mode $|x|^{-\Delta}$ has eigenvalue $\lambda_a(\Delta)=a^{d/2}a^{-\Delta}$ with $|\lambda_a(\Delta)|=a^{d/2-\operatorname{Re}\Delta}$, so for $a\ne1$,
+$|\lambda_a(\Delta)|=1\iff\operatorname{Re}\Delta=d/2\iff d-\Delta=\overline\Delta$. Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code.
+The principal-series completion and any $S^1\to S^2$ intertwiner are not constructed. No claim about RH, BSD or black-hole entropy.
+
+\section{Fixed-shift correlations vanish while the support grows like \texorpdfstring{$X^{2/3}$}{X\^{}(2/3)}}
+\lean{GppSparseChowla.gap_gt,GppSparseChowla.s_strictMono,GppSparseChowla.shift_pair_le,GppSparseChowla.corr_eventually_const,GppSparseChowla.mem_support_iff_cube,GppSparseChowla.count_ge,GppSparseChowla.count_le}
+Source: Codex, \texttt{work/codex/2026-10-21\_sparse\_fixedshift\_chowla\_cesaro\_energy\_obstruction.md}. With $s_k=\lfloor k^{3/2}\rfloor=\lfloor\sqrt{k^3}\rfloor$ and $a$ the
+indicator of $\{s_k:k\ge1\}$: $s_{k+1}>s_k+h$ for $k\ge(h+1)^2$; for every fixed $h\ge1$ the correlation $\sum_{n<X}a_na_{n+h}$ is constant for $X>s_{(h+1)^2}$; and
+$A(X)=\#\{k\ge1:s_k\le X\}$ satisfies $m^3<(X+1)^2\Rightarrow m\le A(X)$, $(X+1)^2\le(m+1)^3\Rightarrow A(X)\le m$, i.e.\ $A(X)=X^{2/3}+O(1)$. Fixed-shift input
+cannot control the Ces\`aro energy. Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The real asymptotics and $E_N\sim3N^{1/3}$ are
+not formalized; the sequence is not multiplicative. No claim about RH.
+
+\section{Gamma-free Poisson transport: channel identities and the intensity budget}
+\lean{GppPoissonTransport.poisson_total,GppPoissonTransport.poisson_mean,GppPoissonTransport.poisson_mgf,GppPoissonTransport.poisson_kl,GppPoissonTransport.pair_logMgf,GppPoissonTransport.V_eq,GppPoissonTransport.tilt_mean,GppPoissonTransport.tilt_kl,GppPoissonTransport.tilt_kl_le,GppPoissonTransport.alpha_eq,GppPoissonTransport.budget_lt_four,GppPoissonTransport.budget_gt_four}
+Source: Astra, \texttt{work/2026-10-16\_astra\_gamma\_free\_poisson\_transport.md}. For Poisson weights $p_\lambda(k)=e^{-\lambda}\lambda^k/k!$: total mass $1$, mean $\lambda$,
+$\sum e^{ck}p_\lambda(k)=\exp(\lambda(e^c-1))$ and $\sum p_\mu\log(p_\mu/p_\lambda)=\mu\log(\mu/\lambda)-\mu+\lambda$; the pair log-mgf is $2\lambda(\cosh(t/2)-1)$, giving
+$V(t)=8(\cosh(t/2)-1)$ at $\lambda=4$. Tilting to rates $\alpha e^{\pm u/2}$ gives mean $\alpha\sinh(u/2)$ and relative entropy $u\alpha\sinh(u/2)-2\alpha(\cosh(u/2)-1)$; the
+prime-power intensity is $2\Lambda(n)/(n-1)$, and $\sum_{n=2}^5 2\Lambda(n)/(n-1)<4<\sum_{n\in\{2,3,4,5,7\}}2\Lambda(n)/(n-1)$. Daniel Toupin / Golden Physics Project,
+with AI assistance from Astra and Claude Code. The probability layer, the Gibbs inequality and the Legendre transform are not formalized. No claim about RH.
+
+\section{Celestial nodal picture: exact reflection and two falsifiers}
+\lean{GppCelestialNodal.dimension_circles_coincide,GppCelestialNodal.xi_conj,GppCelestialNodal.G_reflect,GppCelestialNodal.G_im_eq_zero_of_norm_one,GppCelestialNodal.Ftheta_one_sub,GppCelestialNodal.Ftheta_conj,GppCelestialNodal.Ftheta_zeros_off_line,GppCelestialNodal.Ftheta_critical_eq_normSq,GppCelestialNodal.norm_cayley_lt_one_iff,GppCelestialNodal.norm_cayley_eq_one_iff,GppCelestialNodal.cayley_shifted_zero}
+Source: Codex, GPP-bridge PR \#11 comment 6393727134 (Discovery2 PR \#24). With $\Delta_d=ds$ and $w_d(\Delta)=(\Delta-d)/\Delta$, $w_d(ds)=(s-1)/s$ for every $d\ne0$, so the
+dimension circles coincide. $\xi(\bar s)=\overline{\xi(s)}$ for all $s$; $G(w)=\xi(1/(1-w))$ satisfies $G(1/\bar w)=\overline{G(w)}$, so $\operatorname{Im}G=0$ on $|w|=1$.
+The adversary $F_\theta(s)=\xi(s-\tfrac14)\xi(s+\tfrac14)$ has both symmetries yet zeros on $\operatorname{Re}s=\tfrac14,\tfrac34$. Daniel Toupin / Golden Physics Project, with
+AI assistance from Codex and Claude Code. Discovery2 \#25: $F_\theta(\tfrac12+it)=|\xi(\tfrac34+it)|^2\ge0$, and the chart $w_{h,a}(s)=(s-\tfrac12-ih-a)/(s-\tfrac12-ih+a)$ ($a>0$) sends $\operatorname{Re}s>\tfrac12$ to $|w|<1$, $\operatorname{Re}s=\tfrac12$ to $|w|=1$, and $\rho+\tfrac14$ to $w=-\tfrac13$ when $h=\gamma$, $a=\tfrac12$. Nodal crossings are a coordinate pullback; ``all zeros equatorial'' is RH and is not proved. No claim about RH or BSD.
+
+\section{Slowing or freezing finitely many prime rotations moves no zeta zero}
+\lean{GppPrimeSlowdown.slow_re_pos,GppPrimeSlowdown.one_sub_cpow_ne_zero,GppPrimeSlowdown.multiplier_ne_zero,GppPrimeSlowdown.differentiableAt_multiplier,GppPrimeSlowdown.zeros_invariant,GppPrimeSlowdown.R_tendsto_one,GppPrimeSlowdown.R_eq_zero,GppPrimeSlowdown.no_locallyUniform_limit}
+Source: Codex, GPP-bridge PR \#11 comment 6394506081. For a finite set $P$ of $p\ge2$ and $\alpha_p\in[0,1]$, put $s'_p=\tfrac12+\alpha_p(s-\tfrac12)$ and
+$M(s)=\prod_{p\in P}(1-p^{-s})/(1-p^{-s'_p})$. On $\operatorname{Re}s>0$ every factor is nonzero ($|p^{-z}|=p^{-\operatorname{Re}z}<1$), $M$ is holomorphic and nowhere zero, so
+$\zeta(s)M(s)=0\iff\zeta(s)=0$. Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. Finite Euler-factor edit only; the functional equation
+need not survive. All-prime freezing is singular (Codex 6394642859): $R_n(s)=\zeta(s)\prod_{p<n}(1-p^{-s})\to1$ on $\operatorname{Re}s>1$ and vanishes at every zero, so on an open preconnected $D\not\ni1$ meeting $\operatorname{Re}s>1$ and containing a zero, no subsequence converges locally uniformly (identity theorem). Elementary, not claimed novel. No claim about RH.
+
+\section{Legendre's sieve for rough integers}
+\lean{GppRoughSieve.sum_moebius_divisors,GppRoughSieve.legendre,GppRoughSieve.abs_count_sub_le}
+Source: Codex, \texttt{work/codex/2026-10-25\_rough\_source\_pole\_subtraction\_tempered\_escape.md}. For $P\ge1$ and $A_P(N)=\#\{1\le n\le N:\gcd(n,P)=1\}$:
+$\sum_{d\mid m}\mu(d)=[m=1]$, $A_P(N)=\sum_{d\mid P}\mu(d)\lfloor N/d\rfloor$, and $|A_P(N)-c_PN|\le\tau(P)$ with $c_P=\sum_{d\mid P}\mu(d)/d$. For $P=\prod_{p\le y}p$ this is
+Codex's $A_y(t)-c_yt=O_y(1)$ with constant $2^{\pi(y)}$. Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The Laplace
+reconstruction and the Mertens-based tempered-escape no-go are not formalized. No claim about RH.
+
+\section{The ground-state hypothesis implies RH (conditional)}
+\lean{GppGroundStateDetector.laplace_K_eq,GppGroundStateDetector.riemannZeta₁_ne_zero_of_bounded,GppGroundStateDetector.riemannHypothesis_of_bounded,GppGroundStateDetector.riemannHypothesis_of_ground_state}
+Sources: Codex, \texttt{work/codex/2026-10-22\_single\_packet\_detecting\_train\_stationary\_sewing\_frontier.md} \S3--\S4; Astra,
+\texttt{work/2026-10-22\_astra\_detector\_kms\_sewing\_audit.md}; Turbo, \texttt{MuseResearch/turbo-note-2026-10-23-boundary-ontology.md}. Following Daniel's
+direction of 2026-10-23, the ground-state property is taken as an explicit hypothesis. The detector signal is the prime side alone,
+$K(t)=\sum_{n\ge3}\Lambda(n)n^{-1/2}\sin^2(\pi(\log n-t))\mathbf 1_{[0,1]}(\log n-t)-S(\tfrac12)e^{t/2}$. If $K$ is bounded on $t>0$, then for $\operatorname{Re}z>1$
+$\mathcal LK(z)=S(z)(L(\Lambda,z+\tfrac12)-T_2(z))-S(\tfrac12)/(z-\tfrac12)$, and $(s-1)\zeta(s)\ne0$ for $\operatorname{Re}s>\tfrac12$; hence RH. In particular RH follows from
+(GS): $K(t)=\operatorname{Re}\langle v,U_tv\rangle+r(t)$ with $U_t$ isometries and $r$ bounded. Daniel Toupin / Golden Physics Project, with AI assistance from
+Codex, Astra, Turbo and Claude Code. A conditional theorem: with $v=0$ the hypothesis is bare boundedness of $K$, which is RH-equivalent, so (GS) has
+content only once $(v,U_t)$ is constructed from the boundary state, which is open. The converse (RH $\Rightarrow$ $K$ bounded) needs the explicit formula and is
+not formalized. RH is not claimed.
+
+
+\section{Finite positive-ground-state transform and Poincar\'e transport}
+\lean{GppGroundStateTransform.transformed_apply,GppGroundStateTransform.picone_form_identity,GppGroundStateTransform.picone_form_nonneg,GppGroundStateTransform.poincare_transport}
+Source: Codex, GPP-bridge PR \#11 handoff of 30 October (Priority 1), building on the edge identity of \texttt{GroundStatePicone}. On a finite set $X$ let $w$ be symmetric, $V$ real and
+$(H\psi)(x)=V(x)\psi(x)-\sum_yw(x,y)\psi(y)$. If $H\varphi=E_0\varphi$ then for every real $f$: $((H-E_0)(\varphi f))(x)=\sum_yw(x,y)\varphi(y)(f(x)-f(y))$ and
+$\sum_x\varphi f\,((H-E_0)(\varphi f))=\tfrac12\sum_{x,y}w\,\varphi(x)\varphi(y)(f(x)-f(y))^2$, which is $\ge0$ when $w\ge0$. A Poincar\'e inequality $\operatorname{Var}_{\varphi^2}(f)\le C\,D_\varphi(f)$ then gives
+$\sum\psi^2\le C\langle\psi,(H-E_0)\psi\rangle$ for every $\psi\perp\varphi$, via $f=\psi/\varphi$ (needs $\varphi>0$).
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. Real scalars on a finite set only; the complex case, uniqueness of the ground state, the Gibbs/Fisher algebra (Priority 2) and any uniform-in-volume constant $C$
+are not formalized, and the Poincar\'e inequality is a hypothesis. Not a gap certificate for any Yang--Mills Hamiltonian. No claim about RH.
+\section{Convolution squares are positive-type on any abelian group with an invariant measure}
+\lean{GppConvolutionSquareGroup.integrable_shift_mul_shift_group,GppConvolutionSquareGroup.convolution_shift_group,GppConvolutionSquareGroup.convolution_square_positive_type_group}
+Source: \texttt{haar\_positivity\_weil\_wightman.tex}, thm:haar-square-positive. The proof for $\mathbb R$ uses only translation invariance of the measure, so for an additive commutative group $G$
+with a right-invariant measure $\mu$ and integrable bounded real $f$, $P(x)=\int f(y)f(y-x)\,d\mu$ satisfies $0\le\sum_{i,j}\bar c_ic_jP(x_i-x_j)$ for all finite families (as a complex number).
+Daniel Toupin / Golden Physics Project, with AI assistance from Claude Code. This is the abstract statement only: instantiating it to the id\`ele class group needs that group as a topological
+group with a Haar measure, which Mathlib lacks, so the $C_k$ case stays a named stub. Positivity of a Haar square is unconditional and is not Weil positivity (RH-equivalent); a Haar square
+need not be reflection positive (\texttt{HaarSquareNotReflection}). No claim about RH.
+\section{Local Euler factors on the critical line: unitarity, density sign, mirror overlap}
+\lean{GppARPLocalFactors.norm_one_sub_cpow_conj,GppARPLocalFactors.local_gamma_unitary,GppARPLocalFactors.twisted_gamma_pair_unitary,GppARPLocalFactors.re_div_one_sub,GppARPLocalFactors.local_density_sign_pos,GppARPLocalFactors.local_density_sign_neg,GppARPLocalFactors.mirror_overlap_sq,GppARPLocalFactors.defect_lower,GppARPLocalFactors.mirror_product_tendsto_zero,GppARPLocalFactors.mirror_product_tendsto_zero_sigma}
+Source: Grok, \texttt{GPPDiscovery5/derivation/ARP.md} \S G.6 items 3, 4 and 6; the mirror overlap and its Kakutani-type dichotomy are due to Astra (PR \#11, 26 October).
+For $p>0$ and real $a,t$, $|1-p^{-(a+it)}|=|1-p^{-(a-it)}|$ (conjugation), so at $s=\tfrac12+it$ the local gamma factor $\gamma_p(s)=L_p(1-s)/L_p(s)$ has modulus $1$,
+and for real $\theta\ne\pm\tfrac12$ the pair product $\gamma_p^{(\theta)}(s)\gamma_p^{(-\theta)}(s)$ is unimodular on $\operatorname{Re}s=\tfrac12$.
+$\operatorname{Re}[z/(1-z)]=(\operatorname{Re}z-|z|^2)/|1-z|^2$ takes both signs on $|z|=r\in(0,1)$ (witnesses $z=\pm r$).
+With $R^2=(1-a^2)(1-b^2)/(1-ab)^2$: $1-R^2=(a-b)^2/(1-ab)^2$, and for $a=p^{-m}$, $b=p^{-(1-m)}$, $0<m<\tfrac12$, each prime has $1-R_p^2\ge c/p$ with $c=(1-2^{-(1-2m)})^2$,
+so by $\sum_p1/p=\infty$ the partial products $\prod_{p<N}R_p^2\to0$; the same holds for every $\sigma\in(0,1)$, $\sigma\ne\tfrac12$ by the symmetry $R(a,b)=R(b,a)$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Grok, Astra and Claude Code. Finite local identities and the divergence of the partial products only: the twisted factor
+$\gamma_p^{(\theta)}$ alone being non-unimodular is not formalized, and no measure-theoretic Kakutani equivalence is claimed. No claim about RH.
+
+\section{Finite Gibbs/Fisher algebra in the energy eigenbasis}
+\lean{GppGibbsFisher.trace_double_commutator,GppGibbsFisher.fisher_term,GppGibbsFisher.fisher_form_eq,GppGibbsFisher.ground_double_commutator}
+Source: Codex, GPP-bridge PR \#11 handoff of 30 October (Priority 2). With $H=\operatorname{diag}(E)$, $p_i=e^{-\beta E_i}/Z$, $\rho_\beta=\operatorname{diag}(p)$, $A=(a_{ij})$ Hermitian and $X=i[A,\rho_\beta]$:
+$\operatorname{Tr}(\rho_\beta[A,[H,A]])=\sum_{ij}p_i\cdot2(E_j-E_i)|a_{ij}|^2$ (as a matrix-trace identity), and
+$\sum_{ij}|X_{ij}|^2\,\frac{\log p_i-\log p_j}{p_i-p_j}=\beta\operatorname{Tr}(\rho_\beta[A,[H,A]])$, with the divided difference taken as $1/p_i$ when $p_i=p_j$ (where $X_{ij}=0$ anyway). For $\Omega=e_0$,
+$\sum_j2(E_j-E_0)|a_{0j}|^2=2\langle A_c\Omega,(H-E_0)A_c\Omega\rangle$ with $A_c\Omega=A\Omega-\langle\Omega,A\Omega\rangle\Omega$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. Finite eigenbasis algebra only: the analytic statement that the Hessian of the relative entropy along $e^{isA}\rho_\beta e^{-isA}$ equals this form
+(matrix logarithm, second derivative in $s$) is not formalized, nor is zero-temperature convergence or any infinite-dimensional or uniform-in-volume extension. No claim about RH or Yang--Mills.
+
+\section{Twisted convolution squares: cos and cosh polarization}
+\lean{GppTwistConvolution.twist_cos_sum,GppTwistConvolution.twist_cosh_krein,GppTwistConvolution.parallelogram_cplx}
+Source: Grok, \texttt{GPPDiscovery5/derivation/ARP.md} \S G.6 items 1 and 2. With $\tilde f(u)=f(-u)$ and $(f*\tilde g)(r)=\int f(u)g(u-r)\,du$: the cos and sin twists satisfy
+$(fc*\widetilde{fc})(r)+(fs*\widetilde{fs})(r)=\cos(\theta r)\,(f*\tilde f)(r)$ with $fc=f\cos\theta\cdot$, $fs=f\sin\theta\cdot$, and for $h_\pm=e^{\pm\theta u}f$,
+$(h_+*\tilde h_-)(r)+(h_-*\tilde h_+)(r)=2\cosh(\theta r)\,(f*\tilde f)(r)$; also $|A+iB|^2+|A-iB|^2=2|A|^2+2|B|^2$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Grok and Claude Code. Correction to the source: item 1 is stated there with a factor $2$ on the left, but $\cos a\cos b+\sin a\sin b=\cos(a-b)$ gives $\cos(\theta r)$ with no factor $2$ under the stated convention; the $2$ is correct for item 2.
+Real $f$ on $\mathbb R$ with Lebesgue measure. No claim about RH.
+
+\section{Pick matrix of a conjugate pole pair}
+\lean{GppPickConjugatePole.pickM_eq,GppPickConjugatePole.pickM_im_pos,GppPickConjugatePole.pick_kernel_eq,GppPickConjugatePole.pick_diag_pos,GppPickConjugatePole.pick_det,GppPickConjugatePole.pick_det_neg}
+Source: Astra, \texttt{work/2026-10-10\_astra\_pick\_continuation.md} \S2. For $m(k)=\frac1{\gamma+ia-k}+\frac1{\gamma-ia-k}$ ($a>0$) and nodes $k_j=\gamma+iy_j$, $y_j>a$: $m(\gamma+iy)=\frac{2iy}{y^2-a^2}$, so $\operatorname{Im}m>0$ at every node;
+the Pick kernel $\frac{m(k_i)-\overline{m(k_j)}}{k_i-\overline{k_j}}$ equals the real number $\frac{2(u_i+u_j)}{y_i+y_j}$ with $u=\frac{y}{y^2-a^2}$; the diagonal entries are positive; and
+$\det\operatorname{Pick}(k_1,k_2)=\frac{-4a^2(y_1-y_2)^2}{(y_1^2-a^2)^2(y_2^2-a^2)^2}<0$ for $y_1\ne y_2$. So pointwise correct sign does not imply a jointly positive (Pick) extension.
+Daniel Toupin / Golden Physics Project, with AI assistance from Astra and Claude Code. The exact two-node computation only: the note's criterion (RH iff all real-node Pick matrices are positive semidefinite, via Nevanlinna--Pick interpolation and analytic continuation), the polynomial $G(k)$ control values and the binary64 diagnostics are not formalized. No claim about RH.
+\section{The exact path sum-of-squares identity}
+\lean{GppPathSOS.term_identity,GppPathSOS.path_sos,GppPathSOS.sin_pos_idx,GppPathSOS.path_sos_nonneg,GppPathSOS.edge_amgm,GppPathSOS.edge_sum_le}
+Source: Codex, GPP-bridge PR \#11 comment 6539964860 (31 October), from \texttt{short\_support\_nilpotent\_tower.md}. For $k\ge1$, $\theta=\pi/(k+1)$, $w_j=\sin(j\theta)$ and complex $a_1,\dots,a_k$:
+$2\cos\theta\sum_{j=1}^k|a_j|^2-2\operatorname{Re}\sum_{j=1}^{k-1}\bar a_ja_{j+1}=\sum_{j=1}^{k-1}w_jw_{j+1}\,|a_j/w_j-a_{j+1}/w_{j+1}|^2\ge0$, so $2\operatorname{Re}\sum\bar a_ja_{j+1}\le2\cos\theta\sum|a_j|^2$
+(the Dirichlet ground-state transform of the path Laplacian, ground state $w$). The same exact square gives the weighted edge AM--GM $2\operatorname{Re}(\bar xy)\le\frac vu|x|^2+\frac uv|y|^2$ for $u,v>0$ and its finite weighted edge sum, the graph-SOS step of Codex's Hardy--Schur prime absorption (PR \#11, 31 October); the Hardy potential and the Arb interval checks are not formalized.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. Finite algebraic identity only: the analytic content of Codex's theorem ($Q_L[f]>\|f\|^2/200$ for $L\le5/32$, the 256-bit Arb certificate, the fiber disintegration, the gamma-tilt discount) is not formalized. No claim about RH.
+\section{Endpoint-moment tail: the exact geometric remainder}
+\lean{GppEndpointMomentTail.geom_remainder,GppEndpointMomentTail.tail_remainder_bound,GppEndpointMomentTail.sin_scaled_remainder_bound}
+Source: Astra, \texttt{work/2026-10-20\_astra\_endpoint\_moment\_arithmetic\_tail.md}. For $t,a\in\mathbb C$ with $t\ne0$, $t+a\ne0$: $\frac1{t+a}-\sum_{r<m}\frac{(-a)^r}{t^{r+1}}=\frac{(-a)^m}{t^m(t+a)}$. For complex $c_j$, real $a_j$ with $|a_j|\le A<|t|$,
+$M_r=\sum c_ja_j^r$ and $B_m=\sum|c_j||a_j|^m$: $\bigl\|\sum_j\frac{c_j}{t+a_j}-\sum_{r<m}\frac{(-1)^rM_r}{t^{r+1}}\bigr\|\le\frac{B_m}{|t|^m(|t|-A)}$, and with the prefactor $K\sin(tL)$, $K\ge0$, the bound is multiplied by $K$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Astra and Claude Code. Finite geometric division and the pointwise bound only: the digamma envelope for the arithmetic multiplier, the integrated error theorem, the Plancherel bookkeeping and the numerical evaluations in the note are not formalized. No claim about RH.
+
+\section{The Ces\`aro Gram operator and the discrete Casimir Jacobi form}
+\lean{GppCesaroCasimir.cesaro_gram_entry,GppCesaroCasimir.D_cesaro,GppCesaroCasimir.sum_D_sq,GppCesaroCasimir.key_ineq,GppCesaroCasimir.edge_ineq,GppCesaroCasimir.sum_AB,GppCesaroCasimir.coef_ge,GppCesaroCasimir.hardy_floor}
+Source: Codex/Discovery2, \texttt{research/2026-09-20\_cesaro\_discrete\_casimir\_principal\_series.md} \S\S1--3. With $(Cx)_n=\frac1n\sum_{k\le n}x_k$ and $(Dh)_n=nh_n-(n-1)h_{n-1}$ on sequences indexed from $1$:
+$\sum_kC_{mk}C_{nk}=1/\max(m,n)$ (the reciprocal Brownian kernel is the Ces\`aro Gram operator $CC^*$); $D(Cx)=x$; and $\sum_{n\le N+1}(Dh)_n^2=\sum_{n\le N}n(n+1)(h_n-h_{n+1})^2+(N+1)h_{N+1}^2$, so $\|Dh\|^2=\langle h,Lh\rangle=\sum n(n+1)|h_n-h_{n+1}|^2$ for finitely supported $h$.
+The one-sided $\tfrac14$ floor: $\tfrac14\sum_{n\le M}h_n^2\le\sum_{n\le M}n(n+1)(h_n-h_{n+1})^2$ for $h$ vanishing from $M+1$ on, by summing the Picone edge inequality for the ground profile $n^{-1/2}$ and the numerical bound $b^3(2b-a-c)\ge\tfrac14$ for $a=\sqrt{b^2-1}$, $c=\sqrt{b^2+1}$, $b^2\ge2$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. Finite identities and the lower bound only: the sharpness of $\tfrac14$, the identification with Stampach's Hilbert $L$-matrix, the exact spectrum $\sigma(L)=[\tfrac14,\infty)$ and \S\S4--6 of the note are not formalized. No claim about RH.
+
+\section{Arithmetic Poisson bulk: the logarithmic Hamiltonian as a Dirichlet-to-Neumann operator}
+\lean{GppArithmeticPoissonBulk.bulk_eq_cpow,GppArithmeticPoissonBulk.bulk_hasDerivAt_r,GppArithmeticPoissonBulk.bulk_hasDerivAt_t,GppArithmeticPoissonBulk.bulk_cauchy_riemann,GppArithmeticPoissonBulk.bulk_second_r,GppArithmeticPoissonBulk.bulk_second_t,GppArithmeticPoissonBulk.bulk_laplace,GppArithmeticPoissonBulk.dtn_eigen,GppArithmeticPoissonBulk.vonMangoldt_projection}
+Source: Codex/Discovery2, \texttt{research/2026-09-27\_arithmetic\_poisson\_bulk\_dtn\_hamiltonian.md} \S\S2, 3, 8. For one basis vector, $u(r,t)=a\,n^{-(r+it)}=a\,e^{-(r+it)L}$ with $L=\log n$: $\partial_ru=-Lu$, $\partial_tu=-iLu$, so $(\partial_r+i\partial_t)u=0$ and $\partial_r^2u+\partial_t^2u=0$ (the positive-frequency harmonic Hardy condition);
+at $r=t=0$ the outward normal derivative $-\partial_ru$ equals $L\,a$, i.e.\ the Dirichlet-to-Neumann operator acts as $H|n\rangle=(\log n)|n\rangle$; and $\sum_{d\ge2}\Lambda(d)[d\mid n]=\log n$, the decomposition $H=\sum_{d\ge2}\Lambda(d)P_d$ on the basis.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. Termwise identities for one basis vector: the summation over $n$, convergence of the Dirichlet series, the Hardy-space interpretation, $\operatorname{Tr}e^{-\beta H}=\zeta(\beta)$ and $\|k_s\|^2=\zeta(2\sigma)$ are not formalized here. No claim about RH.
+
+\section{The prime thermofield-double dictionary}
+\lean{GppPrimeTfd.geometric_trace,GppPrimeTfd.tanh_kappa,GppPrimeTfd.tfd_norm,GppPrimeTfd.mean_occupation,GppPrimeTfd.mass_sq,GppPrimeTfd.energy_of_mass,GppPrimeTfd.mu_eq_one_iff,GppPrimeTfd.sinh_kappa_five,GppPrimeTfd.kappa_five}
+Source: Codex/Discovery2, \texttt{research/2026-09-26\_prime\_tfd\_modular\_horizon\_dictionary.md} \S\S1, 2, 5. For $p>1$ and $\kappa_p=\operatorname{arsinh}(1/\sqrt{p-1})$: the Haar valuation law $(1-1/p)p^{-a}$ sums to $1$; $\tanh\kappa_p=p^{-1/2}$; the purification is normalised, $\cosh^{-2}\kappa_p\sum_a\tanh^{2a}\kappa_p=1$;
+the mean occupation is $\sum_aa(1-1/p)p^{-a}=\frac1{p-1}=\sinh^2\kappa_p$; with $\mu_p=2\sinh\kappa_p$, $\mu_p^2=\frac4{p-1}=\frac4{e^{\log p}-1}$ and $\log p=\log(1+4/\mu_p^2)$; $\mu_p=1\iff p=5$, where $\sinh\kappa_5=\tfrac12$ and $\kappa_5=\log\varphi$, $\varphi=\frac{1+\sqrt5}2$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The one-oscillator algebra only: the identification of the arithmetic and geometric modular generators (\S\S3--4), the global TFD and Hagedorn boundary (\S6) and all physical interpretation are not formalized. No claim about RH.
+
+\section{Shifted resolvent ratios of a finite real spectrum}
+\lean{GppPoissonResolventInner.norm_theta,GppPoissonResolventInner.norm_prod_theta,GppPoissonResolventInner.theta_hasDerivAt,GppPoissonResolventInner.phase_density_pos}
+Source: Codex/Discovery2, \texttt{research/2026-09-28\_poisson\_resolvent\_inner\_closure.md} \S\S1--2. For real $\gamma$ and $\omega>0$ let $\theta_\gamma(x)=\frac{\gamma-x+i\omega}{\gamma-x-i\omega}$. Then $|\theta_\gamma(x)|=1$ for real $x$ (hence $|\prod_k\theta_{\gamma_k}(x)|=1$), $\theta_\gamma'(x)=\theta_\gamma(x)\frac{2i\omega}{(\gamma-x)^2+\omega^2}$, and for a nonempty finite spectrum the phase density $2\omega\sum_k\frac1{(x-\gamma_k)^2+\omega^2}$ is strictly positive.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The finite algebra and calculus of the shifted ratio on the real axis only: that $\Theta$ is Schur/inner in the upper half-plane, the comparison with $\xi(\frac12\mp\omega-iz)$ and Suzuki's criterion, the CCM finite triples and the closure theorem (\S\S3--4) are not formalized. No claim about RH.
+
+\section{A graded-sphere countermodel: global mirror symmetry does not force one spectral line}
+\lean{GppGradedSphere.seed_mirror,GppGradedSphere.sphere_global_mirror,GppGradedSphere.zero_weight_zero,GppGradedSphere.zero_weight_two,GppGradedSphere.global_centre_nonzero,GppGradedSphere.weight_zero_centre,GppGradedSphere.weight_one_centre,GppGradedSphere.weight_two_centre,GppGradedSphere.tate_shift_centre,GppGradedSphere.quarter_shift_weight_not_integral}
+The polynomial $f(s)=(s-\frac12)^2$ satisfies $f(1-s)=f(s)$, and the product $F(s)=f(s)f(s-1)$ satisfies $F(2-s)=F(s)$ while $F(\frac12)=F(\frac32)=0$ and $F(1)\ne0$. Thus an ungraded whole-product mirror does not imply all zeros at its common centre. The motivic-weight centres $c_w=(w+1)/2$ give $c_0=\frac12$, $c_1=1$, $c_2=\frac32$ and $c_{w+2}=c_w+1$. The effective weight $+\frac12$ of a shifted fake factor is not integral. These are algebraic and rational-arithmetic identities for a deliberately NON-arithmetic polynomial model. The statements neither construct a zeta cohomology nor prove any spectral zero result for $\zeta$ or BSD. Source: Daniel Toupin's graded projective-sphere question; Codex, GPP-bridge PR \#11 and GPPVerify PR \#440.
+\section{The Gaussian vacuum partition function of the four-component arithmetic field}
+\lean{GppGaussianBpy.gaussian_laplace,GppGaussianBpy.mode_laplace,GppGaussianBpy.four_components,GppGaussianBpy.partition_tendsto}
+Source: Codex/Discovery2, \texttt{research/2026-09-27\_arithmetic\_free\_field\_holographic\_ladder.md} \S\S3--4. For $v>0$, $t\ge0$: $\int(2\pi v)^{-1/2}e^{-x^2/2v}e^{-tx^2}dx=(1+2tv)^{-1/2}$. One standard-normal mode with rate $t/(2\pi n^2)$ contributes $(1+t/(\pi n^2))^{-1/2}$, four components contribute $(1+t/(\pi n^2))^{-2}$, and for $\lambda>0$ ($t=\pi\lambda^2$) the partial products
+$\prod_{n\le N}(1+\lambda^2/n^2)^{-2}$ converge to $(\pi\lambda/\sinh\pi\lambda)^2$, using the Weierstrass product for $\sinh$ already in the tree; this is the squared celestial Plancherel weight.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The per-mode Gaussian integral and the limit of the product of per-mode transforms only: the cylindrical Gaussian measure on $\ell^2(\mathbb N)$, independence of the modes, the Fredholm determinant form $\det(I+2tC)^{-4/2}$ and the Mellin face $E[Q^{s/2}]=2\xi(s)$ (\S5) are not formalized. No claim about RH.
+\section{Rank-one Weil pole: the full negative-threshold Schur inequality}
+\lean{GppRankOneControls.pole_threshold_neg_iff}
+Source: Codex, GPPVerify PR \#402 (\texttt{codex/rankone-signed-schur-ineq-20261021}); completed on current main by Claude Code (one redundant tactic removed). For a symmetric invertible real matrix $A$ that is positive on $c^\perp$ and $s=c^{\mathsf T}A^{-1}c<0$:
+$A+\tfrac12cc^{\mathsf T}\succeq0\iff s\le-2$, by the exact decomposition $x=\alpha u+y$, $y\perp c$, $x^{\mathsf T}(A+\tfrac12cc^{\mathsf T})x=y^{\mathsf T}Ay+\alpha^2s(1+s/2)$. The threshold is $s\le-2$, not merely $s=-2$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. Finite linear algebra; no zeta-zero or Weil-form positivity is assumed. No claim about RH.
+
+\section{Positive-pole completion: a direct-sum quadratic certificate}
+\lean{GppEvenPositivePoleCompletion.two_channel_cauchy,GppEvenPositivePoleCompletion.positive_pole_completion,GppEvenPositivePoleCompletion.positive_pole_coercivity,GppEvenPositivePoleCompletion.two_component_positive_pole,GppEvenPositivePoleCompletion.pole_lambda_square_identity,GppEvenPositivePoleCompletion.pole_lambda_lower_bound,GppEvenPositivePoleCompletion.necessary_pole_lambda_budget}
+Source: Astra's 2026-10-15 even-sector lemma (audited by Grok S26), Codex formalization, GPPVerify PR \#367 (\texttt{codex/even-positive-pole-direct-sum-20261015}); completed on current main by Claude Code (the variable $\lambda$, a reserved token in Lean, renamed \texttt{lam}). The two-channel weighted Cauchy--Schwarz inequality: if $x^2\le\beta E$ then $(x+\lambda w)^2\le(\beta+\lambda^2/2)(E+2w^2)$, with its componentwise and coercivity corollaries. The factor $\lambda^2/2$ is essential.
+Daniel Toupin / Golden Physics Project, with AI assistance from Astra, Grok, Codex and Claude Code. Finite algebra only: the continuous Fourier multiplier, its Arb interval bounds, the DC-lift integral identity and RH/GRH are not formalized. No claim about RH.
+\section{Causal-diamond and York volume-reduction modules}
+\lean{GppDiamondADMHessian.quadratic_lapse_second_difference,GppDiamondADMHessian.diamond_x_hessian_diagonal,GppDiamondADMHessian.diamond_y_hessian_diagonal,GppDiamondADMHessian.diamond_z_hessian_diagonal,GppDiamondADMHessian.diamond_xy_hessian_mixed,GppDiamondADMHessian.flat_diamond_adm_hessian_is_pure_trace,GppDiamondADMHessian.flat_diamond_adm_york_magnitude,GppDiamondADMHessian.anisotropic_lapse_not_york,GppDiamondBoundaryCharge.constrained_volume_work_is_boundary_charge,GppDiamondBoundaryCharge.fixed_boundary_charge_forces_fixed_volume,GppDiamondBoundaryCharge.volume_change_requires_boundary_charge,GppDiamondBoundaryCharge.pure_gauge_interpretation_obstructed,GppDiamondExplicitBoundary.homogeneous_ball_bulk_surface_cancel,GppDiamondExplicitBoundary.homogeneous_ball_bulk_is_volume_work,GppDiamondExplicitBoundary.homogeneous_ball_surface_is_minus_york_work,GppDiamondExplicitBoundary.sphere_area_eq_three_vol_over_radius,GppDiamondExplicitBoundary.physical_three_ball_cancellation,GppDiamondExplicitBoundary.physical_three_ball_york_coefficient,GppDiamondExplicitBoundary.physical_three_ball_volume_response_nonzero,GppDiamondFlatFirstLaw.radial_polynomial_flat_green_identity,GppDiamondFlatFirstLaw.radial_polynomial_homogeneous_limit,GppDiamondFlatFirstLaw.einstein_diamond_first_law_from_green,GppDiamondFlatFirstLaw.generalized_entropy_work_from_green,GppDiamondFlatFirstLaw.entropy_stationary_iff_fixed_volume_from_green,GppDiamondFlatFirstLaw.generalized_entropy_offshell_residual,GppDiamondFlatFirstLaw.fixed_volume_entropy_iff_weighted_einstein_constraint,GppDiamondHaarNormalMoment.normal_moment_from_orthogonal_symmetries,GppDiamondHaarNormalMoment.isotropic_normal_contraction,GppDiamondHaarNormalMoment.any_constant_metric_bulk_surface_cancel,GppDiamondHaarNormalMoment.interior_trace_is_york_volume,GppDiamondHaarNormalMoment.traceless_anisotropy_invisible_to_scalar_channel,GppDiamondLapseMomentRecovery.quadratic_lapse_moment_ratio,GppDiamondLapseMomentRecovery.two_radii_determine_quadratic_constraint,GppDiamondLapseMomentRecovery.one_radius_not_enough,GppDiamondLapseMomentRecovery.small_radius_constant_coefficient,GppDiamondObserverTomography.ten_timelike_contractions_force_zero,GppDiamondObserverTomography.mixed_probe_is_timelike,GppDiamondObserverTomography.axial_probe_is_timelike,GppDiamondRadiusNoGo.flow_time_odd,GppDiamondRadiusNoGo.conformal_factor_time_odd,GppDiamondRadiusNoGo.conformal_factor_zero_midpoint,GppDiamondRadiusNoGo.radial_flow_zero_midpoint,GppDiamondRadiusNoGo.volume_radius_one_vs_two,GppDiamondRadiusNoGo.radial_volume_response_positive,GppDiamondRadiusNoGo.radial_volume_response_nonzero,GppDiamondRadiusNoGo.phase_quotient_does_not_fix_radius,GppDiamondWeightedLocalization.weighted_second_moment_exact,GppDiamondWeightedLocalization.two_radii_detect_constant_and_quadratic,GppDiamondWeightedLocalization.flat_diamond_two_radii_constraint_reconstruction,GppDoubledYorkOrientation.diagonal_york_relative_volume,GppDoubledYorkOrientation.anti_diagonal_york_total_volume,GppDoubledYorkOrientation.diagonal_york_null_on_matched_variation,GppDoubledYorkOrientation.common_volume_not_fixed_by_diagonal_reduction,GppDoubledYorkOrientation.anti_diagonal_null_iff_common_volume_fixed,GppOrientationYorkMomentMap.york_momentmap_differential_time_even,GppOrientationYorkMomentMap.entropy_blind_to_odd_york,GppOrientationYorkMomentMap.anti_symplectic,GppOrientationYorkMomentMap.york_odd,GppOrientationYorkMomentMap.volume_even,GppOrientationYorkMomentMap.york_pairs_with_even_volume,GppOrientationYorkMomentMap.york_pairing_detects_nonzero_volume,GppOrientationYorkMomentMap.orientation_invariant_family_variable_volume,GppTimeReversalVolume.traceK_time_odd,GppTimeReversalVolume.squareK_time_even,GppTimeReversalVolume.adm_scalar_constraint_time_even,GppTimeReversalVolume.momentum_constraint_time_odd,GppTimeReversalVolume.schmidt_entropy_time_even,GppTimeReversalVolume.reverse_twice,GppTimeReversalVolume.volume_time_even,GppTimeReversalVolume.two_sided_time_reversal_does_not_fix_volume,GppTimeReversalVolume.time_even_entropy_response_vanishes_on_odd_mode,GppTimeReversalVolume.even_quadratic_direction_not_null,GppYorkClockConstraint.clock_shift_preserves_constraint,GppYorkClockConstraint.size_clock_gauge_invariant,GppYorkClockConstraint.coupled_clock_constraint_does_not_fix_size,GppYorkClockConstraint.different_size_not_clock_gauge_equivalent,GppYorkClockConstraint.matching_clock_generator_forces_fixed_volume,GppYorkContinuum.continuum_york_pairing_equals_volume,GppYorkContinuum.continuum_null_forces_fixed_volume,GppYorkContinuum.continuum_fixed_volume_is_null,GppYorkContinuum.conformal_density_hasDerivAt_zero,GppYorkReduction.york_horizontal_iff_fixed_volume,GppYorkReduction.reduction_domain_forces_fixed_volume,GppYorkReduction.york_reduction_iff_volume_level,GppYorkReduction.nontrivial_volume_excludes_global_york_null,GppYorkReduction.no_unconstrained_york_reduction,GppYorkReduction.york_form_representative_invariant,GppYorkReduction.york_generator_preserves_volume,GppYorkReduction.york_quotient_pairing_well_defined,GppYorkReduction.adm_york_null_forces_fixed_volume,GppYorkReduction.adm_fixed_volume_implies_york_null,GppOrientationObservableObstruction.antisymplectic_invariant_form_zero,GppOrientationObservableObstruction.antisymplectic_fixed_tangents_isotropic,GppOrientationObservableObstruction.antisymplectic_nonzero_obstructs_descent,GppOrientationObservableObstruction.canonical_anti_symplectic_cannot_descend,GppOrientationObservableObstruction.opposite_relative_phase_same_reduced_state,GppOrientationObservableObstruction.opposite_relative_phase_distinguished_globally,GppOrientationObservableObstruction.full_ray_phase_fs_positive}
+Source: Codex, GPPVerify PRs \#452 and \#426 (drafts, \texttt{codex/volume-entanglement-localization-20261025} and \texttt{codex/york-offshell-green-final-20261023}), completed on current main by Claude Code, which found all sixteen modules build unchanged. Exact finite and polynomial statements about the flat causal diamond: the CKV lapse $N_R=(R^2-|x|^2)/(2R)$ has constant pure-trace ADM Hessian expression; the York momentum shift and the boundary-charge obstruction $dH=dC+dB$ (algebraic implication and converse); explicit flat-ball boundary compensation of the linearized scalar constraint; the flat-ball first law from the Green identity under stated hypotheses; the isotropic normal moment and unweighted York-volume response; polynomial and weighted-moment recovery of the local constraint from two radii; timelike observer tomography; the radius no-go (time-reflection symmetry and a ball modular flow do not fix the volume); York symplectic reduction forces fixed-volume tangents (and conversely); the continuum Bochner York pairing; the anti-symplectic orientation moment map, its double-sided version, the operational orientation obstruction and the time-reversal/Schmidt-entropy statement; and a finite canonical countermodel for the constraint-gauged York clock.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. Not formalized, as each module states: the Einstein--Hilbert Iyer--Wald surface charge and its vanishing for small diamonds, the multidimensional divergence theorem, the Lebesgue differentiation theorem for general residuals, differentiability of the finite-diamond gravitational Hamiltonian, the CFT ball modular Hamiltonian, the JT-gravity crossed-product algebra, and the identification of the abstract anti-symplectic involution with Wigner's antiunitary time reversal. No claim about RH.
+
+\section{Hidden zeros of planar scalar tree amplitudes}
+\label{sec:hidden-zeros}
+\lean{GppHiddenZeros.amp4_eq_zero_of_u_eq_zero,GppHiddenZeros.amp5_factor_of_c14_eq_zero,GppHiddenZeros.amp5_factor_of_c13_eq_zero,GppHiddenZeros.amp5_eq_zero_of_c13_c14_eq_zero,GppHiddenZeros.amp5_eq_zero_of_c14_c24_eq_zero,GppHiddenZeros.amp6_eq_zero_skinny_rectangle}
+\leanok
+The four-, five-, and six-point hidden-zero identities of Arkani-Hamed, Cao,
+Dong, Figueiredo and He (arXiv:2312.16282, sections 2--3) are formalized over
+an arbitrary field, with the stated linear kinematic relations and nonzero
+propagator denominators. The five-point results include factorization into
+two four-point amplitudes; the six-point result uses all fourteen hexagon
+triangulations on the skinny-rectangle locus. The general multiplicity
+statement and loop amplitudes are not formalized here. The displayed cyclic
+seeds in equation (3.6) generate eleven distinct terms under ordinary
+rotations; the definition includes the additional reflected three-term
+orbit required by the full triangulation sum. Formalization: Turbo;
+integration and independent orbit audit: Astra, Golden Physics Project.
+
+\section{The rank-one pole as a cosh-kernel form}
+\lean{GppPoleCoshSinh.pole_identity}
+Source: Codex/Discovery2, PR~\#11 comment of 2026-10-31 (exact completed semilocal Weil sum of squares): the pole term is $2|\int f\cosh|^2-2|\int f\sinh|^2$. For finitely many complex weights $c_j$ and real nodes $a_j$,
+$\bigl|\sum_j c_j\cosh a_j\bigr|^2-\bigl|\sum_j c_j\sinh a_j\bigr|^2=\sum_{i,j}\overline{c_i}\,c_j\cosh(a_i-a_j)$, from $\cosh a\cosh b-\sinh a\sinh b=\cosh(a-b)$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The finite-sum identity only: the integral version, the shift $a=(x-L/2)/2$ and any sign statement about the completed form are not formalized. No claim about RH.
+
+\section{Mean/variance supplier: Young step, decreasing jump weight, two-channel criterion}
+\lean{GppMeanVarianceSupplier.young_sq,GppMeanVarianceSupplier.pole_lower_bound,GppMeanVarianceSupplier.jump_weight_bound,GppMeanVarianceSupplier.two_channel}
+Source: Codex/Discovery2, PR~\#11 comment of 2026-10-31 (completed Weil positivity for $L\le 29/100$ by a mean/fluctuation split $f=a+g$, $\int g=0$). Scalar pieces only: for complex $u,v$ and $0<\eta$, $\|u+v\|^2\ge(1-\eta)\|u\|^2-(\eta^{-1}-1)\|v\|^2$; for $\eta\le1$, $\|c\|\le d$, $\|S\|\le s$, $2\|c_0+c\|^2-2\|S\|^2\ge 2(1-\eta)\|c_0\|^2-2(\eta^{-1}-1)d^2-2s^2$; for $w$ antitone on $(0,L]$ and $h\ge0$ integrable, $w(L)\int_0^L h\le\int_0^L wh$; and if $Q\ge Ma^2+FG^2$ with $M\ge\kappa L$, $F\ge\kappa$ and $\|f\|^2=La^2+G^2$ then $Q\ge\kappa\|f\|^2$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The continuous variance identity $\iint|f(x+y)-f(x)|^2=L\|g\|^2$, the Cauchy bounds on the centered moments, the Weil form itself and the Arb endpoint values (hypotheses of the two-channel step) are not formalized; Codex's CI receipts are not checked here. No claim about RH.
+
+\section{Elementary gamma surplus on $(0,1]$}
+\lean{GppGammaSurplus.sinh_le_poly,GppGammaSurplus.gamma_surplus}
+Source: Codex/Discovery2, PR~\#11 comment of 2026-10-31 (exact gamma surplus used to improve the completed gamma jump). For $0<y\le 1$, $\sinh y\le y+y^3/6+y^5/120+y^7/5040+\tfrac{9}{322560}y^8$ (Mathlib's exponential Taylor bound at $\pm y$, $n=8$), and
+$\dfrac{e^{y/2}}{2\sinh y}\ge\dfrac1{2y}+\dfrac16$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The elementary real inequality only: the stronger constant $11/50$ on $(0,7/10]$, the completed Weil form, the triangle variance integral and the Legendre spectrum are not formalized. No claim about RH.
+
+\section{Abstract low/high Schur lift}
+\lean{GppSchurLift.schur_pointwise,GppSchurLift.schur_lift}
+Source: Codex/Discovery2, PR~\#11 comments of 2026-10-31 (finite-low / infinite-high one-sided Schur used in the prime-free completed Weil positivity chain). For a real inner product space $F$, a normed space $E$, $a:E\to\mathbb R$, a cross vector $u:E\to F$ and $c:F\to\mathbb R$ with $c(y)\ge d\|y\|^2$: for $\delta<d$, $-\|u\|^2/(d-\delta)\le(d-\delta)\|y\|^2+2\langle u,y\rangle$; and if $\delta\|x\|^2+\|u(x)\|^2/(d-\delta)\le a(x)$ for all $x$ then $\delta(\|x\|^2+\|y\|^2)\le a(x)+2\langle u(x),y\rangle+c(y)$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The abstract completion of the square only: no Weil form, no Legendre spectrum, no verification of the Schur condition (Codex's Arb/LDL certificates are not formalized), and complex forms (realification) are not treated. No claim about RH.
+
+\section{Exact pieces of the thermal/KMS prime--Archimedean identity}
+\lean{GppThermalKmsPieces.gamma_ladder,GppThermalKmsPieces.gamma_split,GppThermalKmsPieces.prime_polarization}
+Source: Codex/Discovery2, PR~\#11 comment of 2026-10-31 (exact all-scale thermal/KMS identity for the completed prime--Archimedean form). For $y>0$, $\dfrac{e^{y/2}}{2\sinh y}=\sum_{k\ge0}e^{-(2k+1/2)y}$ (a geometric series); with $D=\|f-T_yf\|^2$ and $q=2N-D$, $\dfrac{2N-e^{y/2}q}{2\sinh y}=\dfrac{e^{y/2}}{2\sinh y}D-2N\dfrac{e^{y/2}-1}{2\sinh y}$; and for isometries $U_i$ and weights $c_i$ on a finite index set, $\sum c_i\|f-U_if\|^2-2(\sum c_i)\|f\|^2=-2\sum c_i\operatorname{Re}\langle f,U_if\rangle$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The elementary identities only: the Bost--Connes algebra and its KMS state, the midpoint identity, the value $\int_0^\infty r=\tfrac12\log2+\pi/4$ and the constant $\kappa_\infty$, the stabilization of the cutoff limit on compact supports, the signed pole and any positivity of the completed form are not formalized. The completed form is not a positive norm in this picture. No claim about RH.
+
+\section{The Hardy potential series}
+\lean{GppHardySeries.hardy_series,GppHardySeries.hardy_sum_two}
+Source: Codex/Discovery2, PR~\#11 comments of 2026-10-31 (quartic Hardy curvature). For $z>0$, $\log\coth(z/2)=\sum_{k\ge0}\frac{2}{2k+1}e^{-(2k+1)z}$ (the series for $\log\frac{1+x}{1-x}$ at $x=e^{-z}$), and for $|u|<a$, $\log\coth\frac{a+u}2+\log\coth\frac{a-u}2=\sum_{k\ge0}\frac{4}{2k+1}e^{-(2k+1)a}\cosh((2k+1)u)$.
+Daniel Toupin / Golden Physics Project, with AI assistance from Codex and Claude Code. The series only: the derivatives $H''=\cosh/\sinh^2$ and $H''''=(\cosh^2+5)\cosh/\sinh^4$, the quartic lower bound $V\ge H(a)+H''(a)u^2/2+H''''(a)u^4/24$ and every use in the Weil form are not formalized. No claim about RH.
+
 \end{document}
