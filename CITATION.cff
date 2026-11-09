@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "GPPVerify2: backup mirror of the GPPVerify Lean 4 library"
+abstract: "A backup mirror of GPPVerify, the Lean 4 + Mathlib library of kernel-checked theorems of the Golden Physics Project."
+authors:
+  - family-names: "Toupin"
+    given-names: "Daniel"
+    orcid: "https://orcid.org/0009-0003-7682-9579"
+license: "Apache-2.0"
+repository-code: "https://github.com/GoldenPhysicsProject/GPPVerify2"
