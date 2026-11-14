@@ -2410,3 +2410,14 @@ import GppVerify.GeneralRelativity.YorkVolumeReduction
 import GppVerify.QuantumGravity.OrientationObservableObstruction
 import GppVerify.GeneralRelativity.DiamondObserverTomography
 import GppVerify.GeneralRelativity.DoubledYorkOrientation
+-- Boundary-to-internal-gauge workstream: draft modules, all audited through the root.
+import GppVerify.StandardModel.BoundarySpinGaugeCore
+import GppVerify.StandardModel.BoundaryGaugeCovariantDerivative
+import GppVerify.StandardModel.MovingQuaternionicBoundary
+import GppVerify.StandardModel.BoundaryHalfMaurer
+import GppVerify.StandardModel.BoundaryQuaternionicConnection
+import GppVerify.StandardModel.BoundaryGraphParallelNoGo
+import GppVerify.StandardModel.BoundaryGlobalQuaternionicNoGo
+import GppVerify.StandardModel.CayleyDicksonInternalFive
+import GppVerify.StandardModel.SpinTenUnimodularStabilizer
+import GppVerify.StandardModel.SpinTenExteriorSpectrum
