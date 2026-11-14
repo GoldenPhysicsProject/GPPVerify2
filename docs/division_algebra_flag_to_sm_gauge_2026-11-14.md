@@ -74,3 +74,33 @@ On GPPVerify2 research/boundary-spin-gauge-2026-11-14, the exact new Lean source
 BoundarySpinGaugeCore, BoundaryGaugeCovariantDerivative, MovingQuaternionicBoundary, BoundaryHalfMaurer, BoundaryQuaternionicConnection, BoundaryGraphParallelNoGo, BoundaryGlobalQuaternionicNoGo, CayleyDicksonInternalFive, SpinTenUnimodularStabilizer, SpinTenExteriorSpectrum. All are imported into the root module. The finite-native-decision use identified by Turbo in the new modules was replaced by kernel-reduced decide; **CI and #print axioms must still actually pass before banking.**
 
 Claude: build and repair in pinned Lean 4 / Mathlib v4.33.1; formalize the octonionic multiplication, the actual rank-5 Hermitian bundle and stabilizer group, the Spin10 Clifford/exterior action, and gauge curvature. Turbo: audit the independent-carrier assumption, boundary flag-selection map, rank3+2 projector, combined-volume preservation, global Z6 quotient, and the no-equivariant-colour-line argument. Until these are resolved, this is a **conditional geometric construction**, not a physical derivation of the Standard Model.
+
+
+## H. Explicit common color representation and Pati–Salam SU4 bridge
+
+The same chosen complex structure right-multiplication-by-i on O gives an orthogonal complex decomposition O=C_i ⊕ C_i^perp≅C⊕C³, **complex rank 4**. Any g in Stab_G2(i) preserves norm, commutes with right multiplication by i (g(xi)=g(x)i), fixes the line C_i pointwise, and acts on its orthogonal complement as the SU3 fundamental. Therefore the representation homomorphism Stab_G2(i)≅SU3 -> SU(O,J)≅SU4 has the explicit block form g -> diag(1,g). This supplies the required representation-level intertwiner between the octonionic SU3 and the SU4 colour-lepton SU3: it is the same action on C_i^perp, not a name-matching identification.
+
+The primitive trace-zero Cartan generator for this line + triplet is X=diag(-3,1,1,1)=3(B-L), exactly the existing GppVerify2/StandardModel/PrimePatiSalamCartan.xBL. The finite complex-matrix embedding and multiplication identities are staged in OctonionicColorFourBridge.lean.
+
+A physical bridge to Gr2(C4) still needs a **selected complex-unitary bundle identification** between twistor C4 and O as a right-C_i module. The Gr point alone does not choose a complex line, as the no-equivariant-selector proof in section F shows.
+
+## I. One generator also yields the conventional GUT weak-angle normalization
+
+For the five-mode W=C³⊕C², let Y=diag(-1/3,-1/3,-1/3,+1/2,+1/2) and T3=diag(0,0,0,+1/2,-1/2). The matrix traces are
+
+  tr(Y²)=5/6, tr(T3²)=1/2, tr(Y²)/tr(T3²)=5/3.
+
+Equal SU5-normalized kinetic coupling yields sin²(theta_W)=(1/2)/((1/2)+(5/6))=3/8 at the **unification scale**. This is standard GUT tree-level input, not the measured low-energy weak angle. A new matrix calculation is staged in SpinTenGaugeNormalization.lean.
+
+## J. A second internal-algebra route, and its known provenance
+
+The chosen flag also provides a precise finite *-algebra candidate
+
+  A_F = C_i ⊕ H ⊕ End_{C_i}(C_i^perp)
+      ≅ C ⊕ H ⊕ M3(C).
+
+This is exactly the established finite internal algebra in the Connes–Chamseddine noncommutative-geometric Standard Model, NOT a new discovery. Its unitary group U1×Sp1×U3 has the right nonabelian factors; a unimodularity condition tied to its **actual fermion representation** relates the two abelian phases and produces a Standard Model group up to a finite quotient. One must construct the real finite spectral triple (A_F,H_F,D_F,J_F,γ_F), not infer hypercharge from A_F alone. This gives a practical alternative to an unconstrained SU5 gauge potential: generate physical internal one-forms through inner fluctuations of D_F and use a spectral/Yang–Mills action. Whether the proposed celestial boundary supplies the finite Dirac operator is OPEN.
+
+References: Alain Connes, Noncommutative Geometry and Reality (1995); Enrique Alvarez et al., Anomaly cancellation and gauge group of the standard model in NCG (1995), and modern reviews. Do not label the A_F algebra itself as novel.
+
+One further conflict to address before any physical claim: if the same G2 action is required to preserve BOTH an imaginary unit i and a chosen second imaginary unit j specifying H, the stabilizer drops from SU3 to SU2. Hence a single unmodified octonion-automorphism group cannot supply an independent color SU3 and weak SU2 simultaneously just by fixing the entire nested flag. The independent external modules / local Hermitian frame principle or finite spectral-algebra principle must be justified physically.
