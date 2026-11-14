@@ -80,28 +80,28 @@ def verticalCurvature : Matrix (Fin 4) (Fin 4) ℤ :=
 /-- The Grassmannian base projector is idempotent. -/
 theorem base_projector_sq :
     baseProjector * baseProjector = baseProjector := by
-  native_decide
+  decide
 
 /-- Horizontal bracket has an explicitly nonzero vertical component.
 This is a local witness for curvature of the canonical reductive connection.
 The global smooth curvature identity remains to be formalized. -/
 theorem horizontal_bracket_vertical :
     tangentX * tangentY - tangentY * tangentX = verticalCurvature := by
-  native_decide
+  decide
 
 /-- The curvature witness is not the zero matrix. -/
 theorem vertical_curvature_nonzero : verticalCurvature ≠ 0 := by
-  native_decide
+  decide
 
 /-- Vertical curvature commutes with the splitting projector. -/
 theorem vertical_curvature_preserves_projector :
     baseProjector * verticalCurvature = verticalCurvature * baseProjector := by
-  native_decide
+  decide
 
 /-- Horizontal tangent does not commute with the splitting projector. -/
 theorem horizontal_tangent_changes_projector :
     baseProjector * tangentX ≠ tangentX * baseProjector := by
-  native_decide
+  decide
 
 /-- Linear U(1) generator on X=3(B-L), r=2T3R. -/
 def linearHypercharge (a b : ℚ) (X r : ℤ) : ℚ :=
