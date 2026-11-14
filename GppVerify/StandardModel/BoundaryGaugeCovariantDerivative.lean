@@ -48,11 +48,11 @@ theorem inverse_differential_cancel
     (hderiv : dh * g + h * dg = 0) :
     dh + h * dg * h = 0 := by
   calc
-    dh + h * dg * h = (dh * g + h * dg) * h := by
-      rw [add_mul]
-      rw [mul_assoc, gh]
+    dh + h * dg * h = dh * (g * h) + h * dg * h := by
+      rw [gh]
       simp
-    _ = 0 := by simp [hderiv]
+    _ = (dh * g + h * dg) * h := by noncomm_ring
+    _ = 0 := by rw [hderiv]; simp
 
 /-- Exact first-jet gauge covariance.
 Writing h=g^{-1}, A' = h A g + h dg and ψ'=h ψ, the transformed
