@@ -47,10 +47,9 @@ theorem extend_color_one :
 theorem extend_color_injective : Function.Injective extendColor := by
   intro A B h
   ext i j
-  fin_cases i <;> fin_cases j
-  all_goals
-    have hij := congrArg
-      (fun X : Mat4 => X (Fin.succ i) (Fin.succ j)) h
+  have hij := congrArg
+    (fun X : Mat4 => X (Fin.succ i) (Fin.succ j)) h
+  fin_cases i <;> fin_cases j <;>
     simpa [extendColor] using hij
 
 /-- The previously formalized Pati-Salam trace-free X=3(B-L)
