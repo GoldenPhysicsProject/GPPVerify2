@@ -42,7 +42,7 @@ def sector (degree color : ℕ) : Finset (Finset Mode) :=
 
 /-- The positive half-spin occupation basis contains exactly 16 states. -/
 theorem even_occupation_card : evenBasis.card = 16 := by
-  native_decide
+  decide
 
 /-- Standard Model multiplet counts:
 ν^c:1, e^c:1, Q:6, u^c:3, d^c:3, L:2. -/
@@ -53,7 +53,7 @@ theorem six_sector_counts :
     (sector 2 2).card = 3 ∧
     (sector 4 2).card = 3 ∧
     (sector 4 3).card = 2 := by
-  native_decide
+  decide
 
 /-- Every even-basis state lies in one of the six physical sectors. -/
 theorem sector_exhaustiveness :
@@ -61,7 +61,7 @@ theorem sector_exhaustiveness :
       s ∈ sector 0 0 ∨ s ∈ sector 2 0 ∨
       s ∈ sector 2 1 ∨ s ∈ sector 2 2 ∨
       s ∈ sector 4 2 ∨ s ∈ sector 4 3 := by
-  native_decide
+  decide
 
 /-- The primitive SU(5) hypercharge weights of all six sectors. -/
 theorem six_sector_hypercharges :
@@ -71,20 +71,20 @@ theorem six_sector_hypercharges :
     (∀ s ∈ sector 2 2, chargeSix s = -4) ∧
     (∀ s ∈ sector 4 2, chargeSix s = 2) ∧
     (∀ s ∈ sector 4 3, chargeSix s = -3) := by
-  native_decide
+  decide
 
 /-- Full left-handed family has vanishing U(1)_Y-gravity anomaly.
 The factor of six in the charge is irrelevant to vanishing. -/
 theorem gravitational_hypercharge_anomaly :
     evenBasis.sum chargeSix = 0 := by
-  native_decide
+  decide
 
 /-- Full left-handed family has vanishing cubic hypercharge anomaly.
 This follows from actual exterior occupation weights, not a separately
 entered list of Standard Model multiplet charges. -/
 theorem cubic_hypercharge_anomaly :
     evenBasis.sum (fun s => (chargeSix s)^3) = 0 := by
-  native_decide
+  decide
 
 /-- The primitive integral cocharacter is SU(5) trace-free. -/
 theorem primitive_traceless :
