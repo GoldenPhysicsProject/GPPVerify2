@@ -84,16 +84,16 @@ def hyperchargeH6 : Matrix (Fin 5) (Fin 5) ℤ :=
 
 theorem color_projector_idempotent :
     colorProjector * colorProjector = colorProjector := by
-  native_decide
+  decide
 
 theorem hypercharge_trace_zero :
     Matrix.trace hyperchargeH6 = 0 := by
-  native_decide
+  decide
 
 theorem hypercharge_commutes_with_split :
     hyperchargeH6 * colorProjector =
       colorProjector * hyperchargeH6 := by
-  native_decide
+  decide
 
 /-- Tracelessness fixes the relative integer weights to the ratio -2:3;
 primitive integer normalization gives exactly this generator. -/
