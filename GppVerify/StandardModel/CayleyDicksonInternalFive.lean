@@ -41,19 +41,19 @@ def J4 : Matrix (Fin 4) (Fin 4) ℤ :=
 
 theorem octonionic_complement_complex_structure :
     J6 * J6 = -(1 : Matrix (Fin 6) (Fin 6) ℤ) := by
-  native_decide
+  decide
 
 theorem quaternionic_complex_structure :
     J4 * J4 = -(1 : Matrix (Fin 4) (Fin 4) ℤ) := by
-  native_decide
+  decide
 
 theorem octonionic_complement_orthogonal :
     J6.transpose * J6 = (1 : Matrix (Fin 6) (Fin 6) ℤ) := by
-  native_decide
+  decide
 
 theorem quaternionic_orthogonal :
     J4.transpose * J4 = (1 : Matrix (Fin 4) (Fin 4) ℤ) := by
-  native_decide
+  decide
 
 /-- Real dimensions of the division-algebra-derived internal carrier. -/
 theorem five_complex_modes_from_flag :
