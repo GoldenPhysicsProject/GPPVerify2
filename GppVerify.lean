@@ -2421,3 +2421,4 @@ import GppVerify.StandardModel.BoundaryGlobalQuaternionicNoGo
 import GppVerify.StandardModel.CayleyDicksonInternalFive
 import GppVerify.StandardModel.SpinTenUnimodularStabilizer
 import GppVerify.StandardModel.SpinTenExteriorSpectrum
+import GppVerify.StandardModel.SpinTenGaugeNormalization
